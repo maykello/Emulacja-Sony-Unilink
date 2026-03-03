@@ -1,1 +1,1 @@
-# Emulacja-Sony-Unilink
+# Emulowanie zmieniarki na protokole Sony Unilink
