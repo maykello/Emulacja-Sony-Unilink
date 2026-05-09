@@ -1,0 +1,25 @@
+Oryginalny kabel Unilink Sony:
+SYGNAŁ - KOLOR PRZEWODU
+CLOCK - zółty
+BUS ON - niebieski
+DATA - zielony
+RESET - fioletowy
+
+// notatki własne dla przewodu firmy Peiying ze złączem DB15 - Unilink
+//zakladajac że trzymam port DB15 do siebie i na górze jest więcej pinów
+//licząc od lewej do prawej tak jakby czytać tekst wierszami
+1 - + 12V
+2 - BUS ON
+3 - 
+4 - CLOCK
+5 - DATA
+6 - 
+7 - PRAWY KANAŁ AUDIO +
+8 - PRAWY/LEWY KANAŁ AUDIO MASA
+9 - 
+10 - BUS ON
+11 - 
+12 - 
+13 - 
+14 - MASA UNILINK
+15 - LEWY KANAŁ AUDIO +
