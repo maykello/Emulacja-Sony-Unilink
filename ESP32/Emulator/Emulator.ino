@@ -44,6 +44,12 @@ uint8_t cdState = 0xC0;
 unsigned long seekStartTime = 0;
 unsigned long initWaitTime = 0;
 
+// --- Strojenie czasów ---
+const unsigned long LOAD_DURATION_MS  = 200;  // 0x40 -> 0x20 (było 800)
+const unsigned long SEEK_DURATION_MS  = 200;  // 0x20 -> 0x00 (było 800)
+const unsigned long BREAK_INTERVAL_MS = 350;  // odstęp między Slave Breakami (było 800)
+const unsigned long BREAK_SILENCE_US  = 6000; // ile cisza musi trwać aby zaryzykować Break
+
 // Slave Break - flagi
 bool wantSlaveBreak = false;
 unsigned long lastBreakTime = 0;
@@ -397,18 +403,20 @@ void loop() {
     }
 
     // 0x40 -> 0x20 -> 0x00 (Loading -> Seeking -> Playing)
-    if (cdState == 0x40 && (now - seekStartTime > 800)) {
+    if (cdState == 0x40 && (now - seekStartTime > LOAD_DURATION_MS)) {
         cdState = 0x20;
         seekStartTime = millis();
         needDisplayUpdate = true;
+        lastBreakTime = 0; // wymuś natychmiastowy Slave Break
         Serial.println(">>> 40 -> 20 (Seeking)");
     }
-    else if (cdState == 0x20 && (now - seekStartTime > 800)) {
+    else if (cdState == 0x20 && (now - seekStartTime > SEEK_DURATION_MS)) {
         cdState = 0x00;
         needDisplayUpdate = true;
         lastSecondTick = millis();
         playSeconds = 0;
         playMinutes = 0;
+        lastBreakTime = 0; // wymuś natychmiastowy Slave Break
         Serial.println(">>> 20 -> 00 (Playing!)");
     }
 
@@ -424,16 +432,18 @@ void loop() {
         needDisplayUpdate = true;
     }
     
-    // Slave Break: zgłaszamy się tylko gdy mamy coś nowego do pokazania
-    // i na magistrali jest cicho (> 8ms od ostatniego clocka)
+    // Slave Break: zgłaszamy się gdy mamy coś nowego do pokazania
+    // i na magistrali jest cicho. Działa też w stanach 0x40/0x20, żeby
+    // szybciej dostać 01 13 i zaktualizować wyświetlacz po zmianie płyty/tracka.
     noInterrupts();
     bool silence = (micros() - lastClockTime > 5000); 
-    bool silToBreak = (micros() - lastClockTime > 8000); 
+    bool silToBreak = (micros() - lastClockTime > BREAK_SILENCE_US); 
     int count = rxIndex;
     interrupts();
     
-    if (needDisplayUpdate && silToBreak && deviceAllocated && cdState == 0x00) {
-        if (millis() - lastBreakTime > 800) { // Max 1 break na ~sekundę, jak prawdziwa zmieniarka
+    bool stateAllowsBreak = (cdState == 0x00 || cdState == 0x40 || cdState == 0x20);
+    if (needDisplayUpdate && silToBreak && deviceAllocated && stateAllowsBreak) {
+        if (millis() - lastBreakTime > BREAK_INTERVAL_MS) {
             issueSlaveBreak();
             lastBreakTime = millis();
             // NIE kasujemy needDisplayUpdate — skasuje się gdy radio odpyta 01 13
