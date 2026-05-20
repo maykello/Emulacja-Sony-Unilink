@@ -31,6 +31,13 @@ uint8_t playMinutes = 0;
 uint8_t currentDisk = 1;
 uint8_t currentTrack = 1; 
 
+// Hardkodowana długość każdej piosenki (s). Po upływie -> auto next track.
+const uint16_t SONG_DURATION_SEC = 70; // 1:10
+
+// Maksymalne wartości
+const uint8_t MAX_TRACK_PER_DISC = 99;
+const uint8_t MAX_DISC = 10;
+
 bool deviceAllocated = false;
 unsigned long lastPingTime = 0;
 
@@ -47,6 +54,7 @@ unsigned long initWaitTime = 0;
 // --- Strojenie czasów ---
 const unsigned long LOAD_DURATION_MS  = 50;   // 0x40 -> 0x20 (krótki, by uniknąć migania LOAD)
 const unsigned long SEEK_DURATION_MS  = 50;   // 0x20 -> 0x00 (krótki, by uniknąć migania LOAD)
+const unsigned long DISC_LOAD_MS      = 200;  // dłuższy seek przy zmianie płyty (bardziej realistyczne)
 const unsigned long BREAK_INTERVAL_MS = 150;  // odstęp między Slave Breakami
 const unsigned long BREAK_SILENCE_US  = 3500; // ile cisza musi trwać aby zaryzykować Break
 
@@ -246,12 +254,28 @@ void processIncomingPacket(uint8_t* buf, int len) {
     uint8_t op2 = buf[3];
     
     // ===== 1. ANYONE? (18 10 01 02) - Broadcast discovery =====
+    // Radio wysyła to wielokrotnie po starcie, żeby znaleźć WSZYSTKIE urządzenia.
+    // Odpowiadamy TYLKO gdy jeszcze nie mamy adresu — w przeciwnym razie radio
+    // przydzieli nam drugi/trzeci adres myśląc że jesteśmy nowym urządzeniem.
     if (rad == 0x18 && tad == 0x10 && op1 == 0x01 && op2 == 0x02) {
         if (!deviceAllocated) {
             // 10 30 8C D0 | 9C | 04 AC 1F A3 | 0E 00
             const uint8_t attr[] = {0x10, 0x30, 0x8C, 0xD0, 0x9C, 0x04, 0xAC, 0x1F, 0xA3, 0x0E, 0x00};
             sendRawPacket(attr, sizeof(attr));
             Serial.println(">> Odpowiadam na ANYONE? z atrybutami");
+        }
+    }
+
+    // ===== 1b. SYSTEM RESET (18 10 01 00) =====
+    // Radio wysyła to gdy chce przerwać sesję i zacząć discovery od nowa.
+    // Wtedy musimy zapomnieć stary adres i ponownie odpowiadać na ANYONE?.
+    else if (rad == 0x18 && tad == 0x10 && op1 == 0x01 && op2 == 0x00) {
+        if (deviceAllocated) {
+            Serial.println(">> Radio system reset! Reset deviceAllocated.");
+            deviceAllocated = false;
+            cdState = 0xC0;
+            initWaitTime = 0;
+            needDisplayUpdate = false;
         }
     }
     
@@ -296,58 +320,40 @@ void processIncomingPacket(uint8_t* buf, int len) {
     // NIE odpowiadamy na 31 14 01 13 - to jest pytanie do display processora (0x14), nie do nas!
     else if (rad == 0x31 && tad == 0x10 && op1 == 0x01 && op2 == 0x13) {
         needDisplayUpdate = false; // Obsłużone
-        
-        if (cdState == 0x00) {
-            // === PLAYING: Wysyłamy sekundnik ===
-            // Format z prawdziwej zmieniarki: 70 31 90 00 31 F1 F0 <secBCD> <discNibble>C <parity> 00
-            // Przykłady z logów:
-            //   70 31 90 00 31 F1 F0 01 6C 7F 00  (disc 6, track 1, 1 sek)
-            //   70 31 90 00 31 F1 F0 04 6C 84 00  (disc 6, track 1, 4 sek)
-            //   70 31 90 00 31 F1 F0 15 6E 95 00  (disc 6, track 1, 15 sek - BCD!)
-            
-            uint8_t secBCD = ((playSeconds / 10) << 4) | (playSeconds % 10);
-            
-            // discNibble: górny nibble = numer dysku, dolny nibble = marker (widzimy "6C", "1C" itd.)
-            uint8_t discNibble = ((currentDisk & 0x0F) << 4) | 0x0C;
-            // Track info: F<track_tens> w Data2, F<track_units> w Data1
-            // Z logów: 0x31=const, F1=track1 jedności, F0=track1 dziesiątki
-            uint8_t trackOnes = 0xF0 | (currentTrack % 10);    // np. F1 for track 1
-            uint8_t trackTens = 0xF0 | ((currentTrack / 10) % 10); // np. F0 for track <10
-            
-            // Medium response: RAD=70 TAD=31 CMD1=90 CMD2=00 P1(auto) D1=trackOnes D2=trackTens D3=secBCD D4=discNibble P2(auto) END=00
-            // Z logów: 70 31 90 00 [31] F1 F0 01 6C [7F] 00
-            //   P1 = (0x70+0x31+0x90+0x00) = 0x31 (auto)
-            //   D1=F1, D2=F0, D3=01(sec), D4=6C(disc6+markerC)
-            //   P2 = 0x7F (auto)
-            sendMediumResponse(0x70, 0x31, 0x90, 0x00, 
-                             trackOnes, trackTens, secBCD, discNibble);
-            
-            Serial.printf(">> DISPLAY: Playing CD%d TR%d %02d:%02d sec\n", 
-                         currentDisk, currentTrack, playMinutes, playSeconds);
+
+        // ZAWSZE wysyłamy pakiet "Playing" (90 00) niezależnie od cdState.
+        // Stan loading/seek/play radio bierze z PING-a (01 12), a tutaj zawsze
+        // chcemy żeby ekran pokazywał aktualny utwór i czas. Wysyłanie pakietu
+        // Loading (C0 40) powodowało miganie "LOAD" przy szybkich zmianach tracka.
+        //
+        // Format: 70 31 90 00 P1 D1 D2 D3 D4 P2 00
+        //   D1 = TRACK BCD (z paddingiem 0xF dla pojedynczych cyfr: F1=01 ... 99=99)
+        //   D2 = MINUTY BCD (z paddingiem 0xF)
+        //   D3 = SEKUNDY BCD (00..59)
+        //   D4 = górny nibble = numer dysku (1..A), dolny nibble = 0xC marker
+        uint8_t secBCD = ((playSeconds / 10) << 4) | (playSeconds % 10);
+
+        uint8_t trackBCD;
+        if (currentTrack < 10) {
+            trackBCD = 0xF0 | currentTrack;
+        } else {
+            trackBCD = ((currentTrack / 10) << 4) | (currentTrack % 10);
         }
-        else if (cdState == 0x40 || cdState == 0x20) {
-            // === LOADING/SEEKING ===
-            // Long response: 70 31 C0 40 | P1 | D1-D9 | P2 | 00
-            // Z logów: 70 31 C0 40 A1 00 00 00 00 00 F1 F0 00 50 D2 00 (disc 5, track 1)
-            uint8_t trackOnes = 0xF0 | (currentTrack % 10);
-            uint8_t trackTens = 0xF0 | ((currentTrack / 10) % 10);
-            uint8_t discNibble = ((currentDisk & 0x0F) << 4);
-            
-            sendLongResponse(0x70, 0x31, 0xC0, 0x40,
-                           0x00, 0x00, 0x00, 0x00, 0x00,
-                           trackOnes, trackTens, 0x00, discNibble);
-            
-            Serial.printf(">> DISPLAY: Loading/Seeking CD%d TR%d\n", currentDisk, currentTrack);
+
+        uint8_t minBCD;
+        if (playMinutes < 10) {
+            minBCD = 0xF0 | playMinutes;
+        } else {
+            minBCD = ((playMinutes / 10) << 4) | (playMinutes % 10);
         }
-        else {
-            // C0 (init) lub 0x80 (idle) - odpowiadamy czymś prostym
-            // Z logów widać "8E" pakiety podczas różnych faz init
-            // Na starcie prawdziwa odpowiadała: 70 31 8E F0 1F F5 00 00 10 24 00
-            // Spróbujmy medium z pustą informacją
-            sendMediumResponse(0x70, 0x31, 0x8E, 0xC0, 0x00, 0x00, 0x00, 0x40);
-            
-            Serial.printf(">> DISPLAY: Init/Idle state 0x%02X\n", cdState);
-        }
+
+        uint8_t discNibble = ((currentDisk & 0x0F) << 4) | 0x0C;
+
+        sendMediumResponse(0x70, 0x31, 0x90, 0x00,
+                         trackBCD, minBCD, secBCD, discNibble);
+
+        Serial.printf(">> DISPLAY: CD%d TR%d %02d:%02d (state=0x%02X)\n",
+                     currentDisk, currentTrack, playMinutes, playSeconds, cdState);
     }
     
     // ===== 6. WAKE UP / PLAY command (31 10 20 00) =====
@@ -360,26 +366,26 @@ void processIncomingPacket(uint8_t* buf, int len) {
     else if (rad == 0x31 && tad == 0x11) {
         if (op1 == 0x26 && op2 == 0x10) {
             currentTrack++;
-            if(currentTrack > 99) currentTrack = 1;
+            if(currentTrack > MAX_TRACK_PER_DISC) currentTrack = 1;
             enterSeekMode();
             Serial.printf(">> NEXT TRACK: %d\n", currentTrack);
         } 
         else if (op1 == 0x27 && op2 == 0x10) {
-            currentTrack--;
-            if(currentTrack < 1) currentTrack = 99;
+            if (currentTrack <= 1) currentTrack = MAX_TRACK_PER_DISC;
+            else currentTrack--;
             enterSeekMode();
             Serial.printf(">> PREV TRACK: %d\n", currentTrack);
         }
         else if (op1 == 0x28) {
             currentDisk++;
-            if(currentDisk > 10) currentDisk = 1;
+            if(currentDisk > MAX_DISC) currentDisk = 1;
             currentTrack = 1;
             enterSeekMode();
             Serial.printf(">> NEXT DISC: %d\n", currentDisk);
         }
         else if (op1 == 0x29) {
-            currentDisk--;
-            if(currentDisk < 1) currentDisk = 10;
+            if (currentDisk <= 1) currentDisk = MAX_DISC;
+            else currentDisk--;
             currentTrack = 1;
             enterSeekMode();
             Serial.printf(">> PREV DISC: %d\n", currentDisk);
@@ -434,6 +440,20 @@ void loop() {
         }
         lastSecondTick = millis();
         needDisplayUpdate = true;
+
+        // Auto-next: po SONG_DURATION_SEC przeskakujemy na kolejny utwór.
+        // Dojechaliśmy do końca płyty -> kolejna płyta. Z disc 10 wracamy na 1.
+        uint16_t totalSec = (uint16_t)playMinutes * 60 + playSeconds;
+        if (totalSec >= SONG_DURATION_SEC) {
+            currentTrack++;
+            if (currentTrack > MAX_TRACK_PER_DISC) {
+                currentTrack = 1;
+                currentDisk++;
+                if (currentDisk > MAX_DISC) currentDisk = 1;
+            }
+            enterSeekMode();
+            Serial.printf(">> AUTO-NEXT: CD%d TR%d\n", currentDisk, currentTrack);
+        }
     }
     
     // Slave Break: zgłaszamy się gdy mamy coś nowego do pokazania
