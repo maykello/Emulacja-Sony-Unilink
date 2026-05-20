@@ -56,7 +56,8 @@ const unsigned long LOAD_DURATION_MS  = 50;   // 0x40 -> 0x20 (krótki, by unikn
 const unsigned long SEEK_DURATION_MS  = 50;   // 0x20 -> 0x00 (krótki, by uniknąć migania LOAD)
 const unsigned long DISC_LOAD_MS      = 200;  // dłuższy seek przy zmianie płyty (bardziej realistyczne)
 const unsigned long BREAK_INTERVAL_MS = 150;  // odstęp między Slave Breakami
-const unsigned long BREAK_SILENCE_US  = 3500; // ile cisza musi trwać aby zaryzykować Break
+const unsigned long BREAK_SILENCE_US  = 6000; // ile cisza musi trwać aby zaryzykować Break
+const unsigned long BREAK_HOLD_US     = 2500; // jak długo trzymać DATA LOW jako Slave Break
 
 // Slave Break - flagi
 bool wantSlaveBreak = false;
@@ -68,15 +69,18 @@ void setTxData(bool bitVal) {
     digitalWrite(PIN_DATA, outVal ? HIGH : LOW);
 }
 
-// Slave Break: ściągnięcie DATA w dół na 4ms w fazie idle magistrali
+// Slave Break: ściągnięcie DATA w dół na chwilę w fazie idle magistrali.
+// Trzymamy DATA krótko i NIE wyłączamy przerwań na cały czas — ESP32 przy
+// 4ms noInterrupts() gubi clocki od radia i potrafi rozsypać kolejny pakiet,
+// co radio interpretuje jako kolizję i wysyła system-reset (01 00).
 void issueSlaveBreak() {
-    noInterrupts();
     pinMode(PIN_DATA, OUTPUT);
-    digitalWrite(PIN_DATA, LOW); 
-    delayMicroseconds(4000); 
+    digitalWrite(PIN_DATA, LOW);
+    delayMicroseconds(BREAK_HOLD_US);
     pinMode(PIN_DATA, INPUT);
     // Reset stanu odbiornika - uniknij interpretacji "ogona" naszego break-a
     // jako początku bajtu od radia
+    noInterrupts();
     rxBitIndex = 0;
     rxIncomingByte = 0;
     lastClockTime = micros();
@@ -417,7 +421,6 @@ void loop() {
         cdState = 0x20;
         seekStartTime = millis();
         needDisplayUpdate = true;
-        lastBreakTime = 0; // wymuś natychmiastowy Slave Break
         Serial.println(">>> 40 -> 20 (Seeking)");
     }
     else if (cdState == 0x20 && (now - seekStartTime > SEEK_DURATION_MS)) {
@@ -426,7 +429,6 @@ void loop() {
         lastSecondTick = millis();
         playSeconds = 0;
         playMinutes = 0;
-        lastBreakTime = 0; // wymuś natychmiastowy Slave Break
         Serial.println(">>> 20 -> 00 (Playing!)");
     }
 
@@ -457,16 +459,17 @@ void loop() {
     }
     
     // Slave Break: zgłaszamy się gdy mamy coś nowego do pokazania
-    // i na magistrali jest cicho. Działa też w stanach 0x40/0x20, żeby
-    // szybciej dostać 01 13 i zaktualizować wyświetlacz po zmianie płyty/tracka.
+    // i na magistrali jest cicho. Tylko w stanie 0x00 (Playing), nie wysyłamy
+    // pakietu Loading który powodowałby miganie LOAD.
     noInterrupts();
-    bool silence = (micros() - lastClockTime > 5000); 
-    bool silToBreak = (micros() - lastClockTime > BREAK_SILENCE_US); 
+    bool silence = (micros() - lastClockTime > 5000);
+    bool silToBreak = (micros() - lastClockTime > BREAK_SILENCE_US);
+    bool busy = isAnswering; // nie przerywaj własnej odpowiedzi
     int count = rxIndex;
     interrupts();
-    
+
     bool stateAllowsBreak = (cdState == 0x00);
-    if (needDisplayUpdate && silToBreak && deviceAllocated && stateAllowsBreak) {
+    if (needDisplayUpdate && silToBreak && !busy && deviceAllocated && stateAllowsBreak) {
         if (millis() - lastBreakTime > BREAK_INTERVAL_MS) {
             issueSlaveBreak();
             lastBreakTime = millis();
