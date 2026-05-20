@@ -45,10 +45,10 @@ unsigned long seekStartTime = 0;
 unsigned long initWaitTime = 0;
 
 // --- Strojenie czasów ---
-const unsigned long LOAD_DURATION_MS  = 200;  // 0x40 -> 0x20 (było 800)
-const unsigned long SEEK_DURATION_MS  = 200;  // 0x20 -> 0x00 (było 800)
-const unsigned long BREAK_INTERVAL_MS = 350;  // odstęp między Slave Breakami (było 800)
-const unsigned long BREAK_SILENCE_US  = 6000; // ile cisza musi trwać aby zaryzykować Break
+const unsigned long LOAD_DURATION_MS  = 50;   // 0x40 -> 0x20 (krótki, by uniknąć migania LOAD)
+const unsigned long SEEK_DURATION_MS  = 50;   // 0x20 -> 0x00 (krótki, by uniknąć migania LOAD)
+const unsigned long BREAK_INTERVAL_MS = 150;  // odstęp między Slave Breakami
+const unsigned long BREAK_SILENCE_US  = 3500; // ile cisza musi trwać aby zaryzykować Break
 
 // Slave Break - flagi
 bool wantSlaveBreak = false;
@@ -67,8 +67,12 @@ void issueSlaveBreak() {
     digitalWrite(PIN_DATA, LOW); 
     delayMicroseconds(4000); 
     pinMode(PIN_DATA, INPUT);
-    interrupts();
+    // Reset stanu odbiornika - uniknij interpretacji "ogona" naszego break-a
+    // jako początku bajtu od radia
+    rxBitIndex = 0;
+    rxIncomingByte = 0;
     lastClockTime = micros();
+    interrupts();
 }
 
 // Przerwanie obsługujące odbiór i nadawanie pojedynczych bitów
@@ -441,7 +445,7 @@ void loop() {
     int count = rxIndex;
     interrupts();
     
-    bool stateAllowsBreak = (cdState == 0x00 || cdState == 0x40 || cdState == 0x20);
+    bool stateAllowsBreak = (cdState == 0x00);
     if (needDisplayUpdate && silToBreak && deviceAllocated && stateAllowsBreak) {
         if (millis() - lastBreakTime > BREAK_INTERVAL_MS) {
             issueSlaveBreak();
