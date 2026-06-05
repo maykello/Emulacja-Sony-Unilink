@@ -23,3 +23,8 @@ RESET - fioletowy
 13 - 
 14 - MASA UNILINK
 15 - LEWY KANAŁ AUDIO +
+
+Wlutowane w zmieniarkę:
+Fioletowy - BUS ON
+Niebieski - DATA
+Zielony - CLOCK

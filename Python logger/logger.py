@@ -31,10 +31,48 @@ def main():
         sys.exit(1)
         
     selected_port = ports[choice].device
+    
+    # Wybór urządzenia
+    print("\nCo logujemy?")
+    print("[1] Emulator")
+    print("[2] Prawdziwa zmieniarka")
+    
+    try:
+        device_choice = int(input("Wybierz opcję (1 lub 2): "))
+        if device_choice not in [1, 2]:
+            print("Nieprawidłowy wybór. Zamykam program.")
+            sys.exit(1)
+    except ValueError:
+        print("Błędna wartość. Zamykam program.")
+        sys.exit(1)
+
+    # Ustalenie nazwy dla wybranego urządzenia
+    device_name = "emulator" if device_choice == 1 else "zmieniarka"
+
+    # Wybór modelu radia dla wybranego urządzenia
+    print(f"\nDla jakiego radia pracuje {device_name}?")
+    print("[1] MEX-BT3800U")
+    print("[2] CDX-M670")
+    
+    try:
+        radio_choice = int(input("Wybierz radio (1 lub 2): "))
+        if radio_choice == 1:
+            radio_name = "MEX-BT3800U"
+        elif radio_choice == 2:
+            radio_name = "CDX-M670"
+        else:
+            print("Nieprawidłowy wybór. Zamykam program.")
+            sys.exit(1)
+    except ValueError:
+        print("Błędna wartość. Zamykam program.")
+        sys.exit(1)
+
+    # Konstrukcja końcowej nazwy pliku
+    log_prefix = f"unilink_log_{device_name}_{radio_name}"
     baud_rate = 115200
 
     now = datetime.datetime.now()
-    filename = now.strftime("unilink_log_%Y%m%d_%H%M%S.txt")
+    filename = now.strftime(f"{log_prefix}_%Y%m%d_%H%M%S.txt")
     
     print(f"\nUruchamiam nasłuch na porcie {selected_port} przy baudrate={baud_rate}...")
     print(f"Dane logów będą dodatkowo zapisywane do pliku: {filename}")
