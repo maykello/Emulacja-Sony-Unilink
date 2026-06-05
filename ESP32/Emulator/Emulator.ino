@@ -64,6 +64,41 @@ bool wantSlaveBreak = false;
 unsigned long lastBreakTime = 0;
 bool needDisplayUpdate = false;
 
+// --- BUS_ON tracking ---
+// Stan magistrali z pinu BUS_ON. Prawdziwa zmieniarka jest zasilana z magistrali,
+// wiec gdy radio wylacza zasilanie magistrali (BUS=0) - zmieniarka jest WYLACZONA
+// i NIE odpowiada na nic. CDX-M670 wykorzystuje fazy BUS=0/1 do dyskryminacji
+// urzadzen wewnetrznych (CD radia, addr 0x3B) od zewnetrznych zmieniarek (0x31).
+// Nasz ESP32 jest zasilany z USB i bez tego pinu odpowiadalby zawsze - co radio
+// interpretuje jako konflikt urzadzenia wewnetrznego z zewnetrznym i wpada
+// w nieskonczona petle SYSTEM RESET. Sprawdzamy wiec BUS_ON i symulujemy
+// brak zasilania gdy BUS=0.
+bool busPoweredLast = false;
+
+// --- CDX-M670 specific tracking ---
+// Rozroznienie pomiedzy MEX-BT3800u i CDX-M670:
+//   MEX:      pelne discovery z jednym ANYONE? -> APPOINT (op2=0x21) -> dziala.
+//   CDX-M670: 2-fazowe discovery. Faza preliminary (op2=0x11/0x12) jest dla
+//             wewnetrznych urzadzen radia (jego wlasne CD pod 0x3B i kontroler
+//             pod 0x71). Prawdziwa zmieniarka odpowiada DOPIERO w fazie glownej,
+//             gdy radio wysyla "puste" ANYONE? po cyklu BUS_ON. Jesli odpowiemy
+//             w fazie preliminary, zostaniemy przydzieleni w slot op2=0x12 zamiast
+//             wlasciwego op2=0x14, co powoduje nieskonczona petle RESET.
+//
+// Markery CDX-M670 (nie wystepuja na MEX):
+//   - 3B 10 02 11 = appoint dla wewnetrznego CD radia
+//   - DB 10 02 12 = appoint dla wewnetrznego pomocniczego
+// Po zobaczeniu DB nastepuje OKNO PRELIMINARY (~250ms), w ktorym IGNORUJEMY
+// ANYONE?. Po tym oknie reagujemy normalnie.
+bool isCdxM670 = false;
+unsigned long lastPreliminaryTime = 0;
+const unsigned long PRELIMINARY_WINDOW_MS = 250;
+int anyoneIgnoredCount = 0;   // tylko do logowania
+
+// Licznik resetow w petli - po kilku resetach probujemy bardziej agresywnie
+// odpowiedziec na 01 01 / 01 11, zeby sprowokowac radio do cyklu BUS_ON.
+int resetLoopCount = 0;
+
 void setTxData(bool bitVal) {
     bool outVal = INVERT_DATA ? !bitVal : bitVal;
     digitalWrite(PIN_DATA, outVal ? HIGH : LOW);
@@ -226,7 +261,8 @@ void sendRawPacket(const uint8_t* data, int len) {
 
 void setup() {
     Serial.begin(115200);
-    Serial.println("--- Sony UniLink EMULATOR (10-CD) v3 ---");
+    Serial.println("--- Sony UniLink EMULATOR (10-CD) v8 ---");
+    Serial.println("Obsluga: MEX-BT3800u + CDX-M670 (poprawne 01 15: cmd2=01/04/05 wg stanu)");
     Serial.println("Oczekuje na radio (Stan C0 - Init)...");
     
     pinMode(PIN_BUS_ON, INPUT);
@@ -256,17 +292,65 @@ void processIncomingPacket(uint8_t* buf, int len) {
     uint8_t tad = buf[1];
     uint8_t op1 = buf[2];
     uint8_t op2 = buf[3];
-    
+
+    // ===== 0a. Detekcja CDX-M670 + okno preliminary =====
+    // 3B 10 02 11 = appoint wewnetrznego CD radia (TYLKO CDX-M670 to wysyla)
+    // DB 10 02 12 = appoint wewnetrznego pomocniczego (TYLKO CDX-M670)
+    // Po tych pakietach zaczynamy ignorowac ANYONE? na ~250ms zeby radio
+    // dokonczylo preliminary discovery bez nas (tak zachowuje sie prawdziwa
+    // zmieniarka, ktora jest wtedy bez zasilania).
+    if (rad == 0x3B && tad == 0x10 && op1 == 0x02 && op2 == 0x11) {
+        if (!isCdxM670) {
+            isCdxM670 = true;
+            Serial.println("== Wykryto CDX-M670 (widziano 3B 10 02 11) ==");
+        }
+        lastPreliminaryTime = millis();
+        return;
+    }
+    if (rad == 0xDB && tad == 0x10 && op1 == 0x02 && op2 == 0x12) {
+        lastPreliminaryTime = millis();
+        return;
+    }
+
     // ===== 1. ANYONE? (18 10 01 02) - Broadcast discovery =====
     // Radio wysyła to wielokrotnie po starcie, żeby znaleźć WSZYSTKIE urządzenia.
     // Odpowiadamy TYLKO gdy jeszcze nie mamy adresu — w przeciwnym razie radio
     // przydzieli nam drugi/trzeci adres myśląc że jesteśmy nowym urządzeniem.
     if (rad == 0x18 && tad == 0x10 && op1 == 0x01 && op2 == 0x02) {
         if (!deviceAllocated) {
-            // 10 30 8C D0 | 9C | 04 AC 1F A3 | 0E 00
-            const uint8_t attr[] = {0x10, 0x30, 0x8C, 0xD0, 0x9C, 0x04, 0xAC, 0x1F, 0xA3, 0x0E, 0x00};
+            // CDX-M670: ignoruj ANYONE? w oknie preliminary - to faza dla
+            // wewnetrznych urzadzen radia, nie dla nas. Inaczej wpadamy w slot
+            // op2=0x12 zamiast wlasciwego op2=0x14 -> nieskonczona petla RESET.
+            if (isCdxM670 && lastPreliminaryTime != 0 &&
+                (millis() - lastPreliminaryTime) < PRELIMINARY_WINDOW_MS) {
+                anyoneIgnoredCount++;
+                Serial.printf(">> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#%d, %lums po DB)\n",
+                              anyoneIgnoredCount, millis() - lastPreliminaryTime);
+                return;
+            }
+
+            // ATRYBUTY ZGODNE Z PRAWDZIWA ZMIENIARKA (CDX-M670 sniff):
+            //   10 30 8C D0 | 9C | 05 A8 1F A3 | 0B 00
+            const uint8_t attr[] = {0x10, 0x30, 0x8C, 0xD0, 0x9C, 0x05, 0xA8, 0x1F, 0xA3, 0x0B, 0x00};
             sendRawPacket(attr, sizeof(attr));
             Serial.println(">> Odpowiadam na ANYONE? z atrybutami");
+        }
+    }
+
+    // ===== 1a. UNAPPOINTED CHANGER QUERY (18 10 01 11) i (18 10 01 01) =====
+    // Radio wysyla to zeby sprawdzic czy jest nieprzydzielona zmieniarka.
+    // Prawdziwa zmieniarka odpowiada wtedy magicznym pakietem 10 18 04 00 2C 00
+    // (patrz log sniff zmieniarki linia 164). To wywoluje u radia SYSTEM RESET
+    // i nastepnie cykl BUS_ON, ktory inicjuje WLASCIWE discovery z op2=0x14.
+    //
+    // Odpowiadamy TYLKO gdy nie jestesmy przydzieleni. W trybie CDX-M670
+    // odpowiadamy tez na op2=0x01 (CDX-M670 wysyla 01 01 zamiast 01 11).
+    else if (rad == 0x18 && tad == 0x10 && op1 == 0x01 &&
+             (op2 == 0x11 || (isCdxM670 && op2 == 0x01))) {
+        if (!deviceAllocated) {
+            const uint8_t magic[] = {0x10, 0x18, 0x04, 0x00, 0x2C, 0x00};
+            sendRawPacket(magic, sizeof(magic));
+            Serial.printf(">> Odpowiadam na 01 %02X (nieprzydzielona zmieniarka): magic 10 18 04 00\n", op2);
         }
     }
 
@@ -274,33 +358,67 @@ void processIncomingPacket(uint8_t* buf, int len) {
     // Radio wysyła to gdy chce przerwać sesję i zacząć discovery od nowa.
     // Wtedy musimy zapomnieć stary adres i ponownie odpowiadać na ANYONE?.
     else if (rad == 0x18 && tad == 0x10 && op1 == 0x01 && op2 == 0x00) {
+        resetLoopCount++;
         if (deviceAllocated) {
-            Serial.println(">> Radio system reset! Reset deviceAllocated.");
+            Serial.printf(">> Radio system reset (#%d)! Reset deviceAllocated.\n", resetLoopCount);
             deviceAllocated = false;
             cdState = 0xC0;
             initWaitTime = 0;
             needDisplayUpdate = false;
+        } else {
+            Serial.printf(">> Radio system reset (#%d) (juz bylem nieprzydzielony)\n", resetLoopCount);
         }
+        // Po resecie zaczynamy nowy cykl preliminary - kasujemy znacznik czasu,
+        // bedzie ustawiony ponownie gdy zobaczymy 3B/DB w nowym cyklu.
+        lastPreliminaryTime = 0;
+        anyoneIgnoredCount = 0;
     }
     
-    // ===== 2. ADDRESS APPOINT (31 10 02 21) =====
-    else if (rad == 0x31 && tad == 0x10 && op1 == 0x02 && op2 == 0x21) {
-        deviceAllocated = true; 
+    // ===== 2. ADDRESS APPOINT (31 10 02 XX) =====
+    // Radio przydziela nam adres 0x31. Bajt op2 to numer sesji/sekwencji
+    // i ROZNI SIE miedzy radiami:
+    //   - Sony MEX-BT3800u: 31 10 02 21 (op2=0x21)
+    //   - Sony CDX-M670:    31 10 02 14 (op2=0x14)
+    // Dlatego akceptujemy KAZDE op2 - liczy sie tylko ze radio
+    // przydziela adres 0x31 do klasy 0x10 (CD changer) komenda 0x02.
+    else if (rad == 0x31 && tad == 0x10 && op1 == 0x02) {
+        deviceAllocated = true;
         cdState = 0xC0;
         initWaitTime = 0;
-        // Potwierdzenie: 10 31 8C D0 | 9D | 04 AC 1F A3 | 0F 00
-        const uint8_t status[] = {0x10, 0x31, 0x8C, 0xD0, 0x9D, 0x04, 0xAC, 0x1F, 0xA3, 0x0F, 0x00};
+        // ATRYBUTY ZGODNE Z PRAWDZIWA ZMIENIARKA (CDX-M670 sniff):
+        //   10 31 8C D0 | 9D | 04 A8 1F A3 | 0B 00
+        // Vs poprzednia: D2=A8 (bylo AC). Patrz komentarz przy ANYONE? wyzej.
+        const uint8_t status[] = {0x10, 0x31, 0x8C, 0xD0, 0x9D, 0x04, 0xA8, 0x1F, 0xA3, 0x0B, 0x00};
         sendRawPacket(status, sizeof(status));
-        Serial.println(">> Adres przydzielony! deviceAllocated=true");
+        Serial.printf(">> Adres przydzielony (op2=0x%02X)! deviceAllocated=true\n", op2);
     }
     
     // ===== 3. SLAVE POLL - Who wants display? (18 10 01 15) =====
-    // Gdy radio widzi Slave Break, pyta kto chce aktualizować wyświetlacz
+    // Gdy radio widzi Slave Break, pyta kto chce aktualizować wyświetlacz.
+    // Format odpowiedzi (zgodny z prawdziwa zmieniarka, sniff CDX-M670):
+    //   10 18 82 XX | PAR1 | 00 00 00 00 | PAR2 00
+    // gdzie XX (cmd2) = TYP zadanego ekranu:
+    //   0x00 = "nic, nie pytaj mnie o ekran"   <-- BLAD! Tego radio nie obsluguje
+    //   0x01 = "ekran startowy / idle"         <-- prawdziwa zmieniarka w stanie Init/Idle
+    //   0x04 = "ekran odtwarzania (track/time)" <-- prawdziwa zmieniarka w stanie Play
+    //   0x05 = "ekran przejsciowy (loading/seeking)"
+    // Bajty D1-D4 sa zawsze 0x00 (informacja jest w cmd2).
+    //
+    // Poprzednia wersja wysylala cmd2=0x00 + D1=0x10, co radio interpretowalo
+    // jako "nic nie chce" -> nigdy nie wysylalo nam 01 13 (UPDATE DISPLAY) -> nie
+    // dalo sie wejsc na zmieniarke.
     else if (rad == 0x18 && tad == 0x10 && op1 == 0x01 && op2 == 0x15) {
-        // Odpowiedz: 10 18 82 00 | AA | 10 00 00 00 | BA 00
-        // Bajt D1 = 0x10 oznacza "urządzenie 10 (my/CD changer) chce ekran"
-        sendMediumResponse(0x10, 0x18, 0x82, 0x00, 0x10, 0x00, 0x00, 0x00);
-        Serial.println(">> Odpowiadam na 01 15 (Slave Poll): chcę ekran!");
+        uint8_t displayType;
+        if (cdState == 0x00) {
+            displayType = 0x04;  // Playing - chce pelny ekran z track/czas
+        } else if (cdState == 0x40 || cdState == 0x20) {
+            displayType = 0x05;  // Loading/Seeking - ekran przejsciowy
+        } else {
+            displayType = 0x01;  // Init/Idle - ekran startowy
+        }
+        sendMediumResponse(0x10, 0x18, 0x82, displayType, 0x00, 0x00, 0x00, 0x00);
+        Serial.printf(">> Odpowiadam na 01 15 (Slave Poll): chce ekran typ 0x%02X (stan=0x%02X)\n",
+                      displayType, cdState);
     }
     
     // ===== 4. PING - Status query (31 10 01 12) =====
@@ -400,6 +518,37 @@ void processIncomingPacket(uint8_t* buf, int len) {
 void loop() {
     unsigned long now = millis();
 
+    // ===== BUS_ON detection =====
+    // Symulujemy zachowanie zmieniarki zasilanej z magistrali: gdy BUS=0,
+    // jestesmy "wylaczeni" (nie odpowiadamy, gubimy stan). To NIEZBEDNE dla
+    // CDX-M670, ktore w fazie BUS=0 prowadzi wewnetrzna komunikacje (do
+    // wlasnego CD-radia) i jakakolwiek odpowiedz zewnetrznego urzadzenia
+    // w tej fazie powoduje konflikt i petle resetow.
+    bool busPowered = (digitalRead(PIN_BUS_ON) == HIGH);
+    if (busPowered != busPoweredLast) {
+        busPoweredLast = busPowered;
+        Serial.printf("=== BUS_ON = %d ===\n", busPowered ? 1 : 0);
+        if (!busPowered) {
+            // Magistrala wylaczona - resetujemy caly stan tak jakby zasilanie znikalo
+            deviceAllocated = false;
+            cdState = 0xC0;
+            initWaitTime = 0;
+            wantSlaveBreak = false;
+            needDisplayUpdate = false;
+            // Skasuj tez bufor odbiorczy - bajty z BUS=0 sa "obce"
+            noInterrupts();
+            rxIndex = 0;
+            rxBitIndex = 0;
+            rxIncomingByte = 0;
+            interrupts();
+            // Reset markerow preliminary (ale NIE isCdxM670 - to zostaje na zawsze
+            // po wykryciu, zeby przezyc cykl BUS_ON)
+            lastPreliminaryTime = 0;
+            anyoneIgnoredCount = 0;
+            resetLoopCount = 0;
+        }
+    }
+
     // Timeout: radio zniknęło
     if (deviceAllocated && (now - lastPingTime > 5000)) {
         deviceAllocated = false;
@@ -469,7 +618,7 @@ void loop() {
     interrupts();
 
     bool stateAllowsBreak = (cdState == 0x00);
-    if (needDisplayUpdate && silToBreak && !busy && deviceAllocated && stateAllowsBreak) {
+    if (needDisplayUpdate && silToBreak && !busy && deviceAllocated && stateAllowsBreak && busPowered) {
         if (millis() - lastBreakTime > BREAK_INTERVAL_MS) {
             issueSlaveBreak();
             lastBreakTime = millis();
@@ -477,7 +626,9 @@ void loop() {
         }
     }
     
-    // Przetwarzanie odebranych pakietów
+    // Przetwarzanie odebranych pakietów - TYLKO gdy BUS_ON=1.
+    // Gdy BUS=0, pochlaniamy bajty (czyscimy bufor) ale ich NIE przetwarzamy
+    // i NIE odpowiadamy. To kluczowe dla wspolpracy z CDX-M670.
     if (silence && count > 0) {
         uint8_t tempBuf[RX_BUFFER_SIZE];
         noInterrupts();
@@ -485,15 +636,18 @@ void loop() {
         rxIndex = 0;
         rxBitIndex = 0;
         interrupts();
-        
-        // Debug output
-        Serial.print("RX: ");
-        for(int i = 0; i < count; i++) {
-             if (tempBuf[i] < 0x10) Serial.print("0");
-             Serial.print(tempBuf[i], HEX); Serial.print(" ");
+
+        if (busPowered) {
+            // Debug output
+            Serial.print("RX: ");
+            for(int i = 0; i < count; i++) {
+                 if (tempBuf[i] < 0x10) Serial.print("0");
+                 Serial.print(tempBuf[i], HEX); Serial.print(" ");
+            }
+            Serial.println();
+
+            processIncomingPacket(tempBuf, count);
         }
-        Serial.println();
-        
-        processIncomingPacket(tempBuf, count);
+        // gdy !busPowered: cisza, tylko opuszczamy bufor
     }
 }
