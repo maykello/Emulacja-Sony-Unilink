@@ -1,5 +1,6 @@
 #include "AudioPlayer.h"
 #include "UsbDrive.h"
+#include "Config.h"
 #include "Audio.h"     // ESP32-audioI2S by schreibfaul1
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -195,11 +196,13 @@ static void audioTaskFunc(void *param) {
             
             // Diagnostyka co 1 sekundę
             if (isPlaying && millis() - lastDebugTime > 1000) {
-                uint32_t size = audio.getFileSize();
-                uint32_t time = audio.getAudioCurrentTime();
-                bool running = audio.isRunning();
-                Serial.printf("[Audio-Diag] FileSize: %lu bytes | Czas: %lu s | isRunning: %d\n", 
-                              (unsigned long)size, (unsigned long)time, running);
+                if (DEBUG_VERBOSE) {
+                    uint32_t size = audio.getFileSize();
+                    uint32_t time = audio.getAudioCurrentTime();
+                    bool running = audio.isRunning();
+                    Serial.printf("[Audio-Diag] FileSize: %lu bytes | Czas: %lu s | isRunning: %d\n", 
+                                  (unsigned long)size, (unsigned long)time, running);
+                }
                 lastDebugTime = millis();
             }
             
