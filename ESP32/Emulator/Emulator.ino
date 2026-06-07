@@ -112,6 +112,15 @@ bool wantSlaveBreak = false;
 unsigned long lastBreakTime = 0;
 bool needDisplayUpdate = false;
 
+// --- Ochrona przed kolizja z odpowiedzia wewnetrznych urzadzen radia ---
+// Radio odpytuje swoje wewnetrzne urzadzenia (0x3B = CD radia, 0x71 = kontroler),
+// ktore odpowiadaja z opoznieniem ~9-12ms. Prog ciszy do Slave Break (8ms) potrafil
+// trafic w te luke i zderzyc sie z ich odpowiedzia (uszkodzona ramka -> radio robi
+// SYSTEM RESET, co objawia sie restartem utworu po dluzszej grze). Gdy zobaczymy poll
+// mastera do INNEGO urzadzenia, blokujemy break na to okno, az tamto zdazy odpowiedziec.
+unsigned long suppressBreakUntil = 0;
+const unsigned long FOREIGN_POLL_GUARD_MS = 30;
+
 // --- BUS_ON tracking ---
 // Stan magistrali z pinu BUS_ON. Prawdziwa zmieniarka jest zasilana z magistrali,
 // wiec gdy radio wylacza zasilanie magistrali (BUS=0) - zmieniarka jest WYLACZONA
@@ -389,6 +398,16 @@ void processIncomingPacket(uint8_t* buf, int len) {
         return; // bledny checksum — ignoruj cala ramke
     }
 
+    // ===== Okno ochronne: poll mastera do INNEGO urzadzenia =====
+    // tad == 0x10 oznacza ramke OD mastera (radia). Jesli adresatem (rad) jest
+    // ktos inny niz my i nie jest to broadcast 0x18, to radio wlasnie odpytalo
+    // swoje wewnetrzne urzadzenie (0x3B/0x71/...), ktore za chwile (~9-12ms)
+    // odpowie. Wstrzymujemy Slave Break na to okno, zeby nie zderzyc sie z ta
+    // odpowiedzia (kolizja psula ramke i wywolywala SYSTEM RESET radia).
+    if (tad == 0x10 && rad != myAddr && rad != 0x18) {
+        suppressBreakUntil = millis() + FOREIGN_POLL_GUARD_MS;
+    }
+
     // ===== 0a. Detekcja CDX-M670 + okno preliminary =====
     // 3B 10 02 11 = appoint wewnetrznego CD radia (TYLKO CDX-M670 to wysyla)
     // DB 10 02 12 = appoint wewnetrznego pomocniczego (TYLKO CDX-M670)
@@ -604,11 +623,24 @@ void processIncomingPacket(uint8_t* buf, int len) {
     // ===== 6. WAKE UP / PLAY command (3X 10 20 00) =====
     else if (rad == myAddr && tad == 0x10 && op1 == 0x20 && op2 == 0x00) {
         // Radio potrafi WIELOKROTNIE wysylac PLAY w trakcie grania (widoczne w
-        // logach co kilka sekund). Jesli juz gramy ten sam utwor, NIE restartuj
-        // go od zera — to powodowalo ze piosenka ciagle skakala na 00:00 i
-        // sprawiala wrazenie "muly". Restartujemy tylko gdy faktycznie stoimy.
-        if (cdState == 0x00 && audioIsPlaying()) {
-            Serial.println(">> PLAY (juz gram — ignoruje, nie restartuje utworu)");
+        // logach co kilka sekund). Jesli juz gramy, NIE restartuj utworu od zera.
+        // Dotyczy to TAKZE sytuacji po SYSTEM RESET radia w trakcie grania:
+        // audio nie zostalo zatrzymane (gra dalej przez cala re-inicjalizacje),
+        // wiec zamiast przeladowac plik od 00:00 wracamy tylko do stanu Playing
+        // i synchronizujemy licznik czasu z realna pozycja w utworze.
+        if (audioIsPlaying()) {
+            if (cdState != 0x00) {
+                uint32_t t = audioGetCurrentTimeSec();
+                playMinutes = t / 60;
+                playSeconds = t % 60;
+                lastSecondTick = millis();
+                cdState = 0x00;
+                needDisplayUpdate = true;
+                Serial.printf(">> PLAY (wznowienie bez restartu, np. po resecie radia: %02d:%02d)\n",
+                              playMinutes, playSeconds);
+            } else {
+                Serial.println(">> PLAY (juz gram — ignoruje, nie restartuje utworu)");
+            }
         } else {
             Serial.println(">> PLAY command received!");
             enterSeekMode();
@@ -846,7 +878,8 @@ void loop() {
     //  - a przekłamane ramki i tak odrzucamy po sumie kontrolnej.
     const bool ENABLE_SLAVE_BREAK = true;
     if (ENABLE_SLAVE_BREAK &&
-        needDisplayUpdate && silToBreak && !busy && deviceAllocated && stateAllowsBreak && busPowered) {
+        needDisplayUpdate && silToBreak && !busy && deviceAllocated && stateAllowsBreak &&
+        busPowered && millis() >= suppressBreakUntil) {
         if (millis() - lastBreakTime > BREAK_INTERVAL_MS) {
             issueSlaveBreak();
             lastBreakTime = millis();
