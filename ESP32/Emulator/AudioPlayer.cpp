@@ -26,6 +26,14 @@ static bool wasUsbMounted = false;   // do wykrywania hot-plug/unplug
 // awaryjny detektor konca utworu odpalal AUTO-NEXT i przeskakiwal na TR2.
 static volatile bool trackChanging = false;
 
+// Flaga "utwor faktycznie ruszyl" — ustawiana gdy biblioteka zacznie dekodowac
+// (audio.isRunning()==true). Kasowana przy zadaniu nowego utworu. Dzieki niej
+// wykrywamy KONIEC utworu nawet gdy biblioteka zeruje getAudioCurrentTime() do 0
+// (tak dzieje sie przy naturalnym EOF). Wczesniej detektor zapasowy wymagal
+// getAudioCurrentTime() > 0, przez co po skonczeniu utworu (czas=0, isRunning=0)
+// nigdy nie odpalal AUTO-NEXT i zegar tykal w nieskonczonosc.
+static volatile bool songStarted = false;
+
 // --- Synchronizacja audio (osobny task FreeRTOS) ---
 static SemaphoreHandle_t audioMutex = NULL;
 static TaskHandle_t audioTaskHandle = NULL;
@@ -289,6 +297,7 @@ bool audioPlayTrack(uint8_t disc, uint8_t track) {
     strlcpy(playRequestPath, path, sizeof(playRequestPath));
     songFinishedFlag = false;
     trackChanging = true;     // blokuj awaryjny detektor konca utworu
+    songStarted = false;      // nowy utwor jeszcze nie ruszyl
     playRequestPending = true;
     
     return true; // Sukces logistyczny (fizyczne otwarcie w tle)
@@ -375,24 +384,34 @@ void audioLoop() {
     // z priorytetem 2, dzięki czemu nie jest blokowane przez obsługę Unilink.
     
     // --- Wykryj koniec piosenki (zabezpieczenie) ---
-    // Jeśli isRunning nagle zmieniło się na false, a czas > 0 (czyli zagrało chociaż kawałek)
-    // oznacza to że piosenka się skończyła z jakiegoś powodu bez callbacku eof.
-    // UWAGA: gatujemy to flaga trackChanging i playRequestPending oraz debouncem,
-    // bo podczas zmiany utworu audio.stopSong() chwilowo daje isRunning()=false
-    // przy starym czasie >0 — co wczesniej powodowalo falszywy AUTO-NEXT na TR2.
+    // Jeśli isRunning zmieniło się na false PO tym jak utwor faktycznie ruszyl
+    // (songStarted), oznacza to koniec utworu — nawet gdy callback eof nie przyszedl.
+    // UWAGA: gatujemy to flagami trackChanging i playRequestPending oraz debouncem,
+    // bo podczas zmiany utworu audio.stopSong() chwilowo daje isRunning()=false.
+    // NIE polegamy juz na getAudioCurrentTime() > 0 — przy naturalnym EOF biblioteka
+    // zeruje czas do 0, przez co stary warunek nigdy nie wykrywal konca utworu
+    // (zegar tykal w nieskonczonosc, brak AUTO-NEXT).
     static unsigned long notRunningSince = 0;
     if (isPlaying && !trackChanging && !playRequestPending) {
-        if (!audio.isRunning()) {
+        if (audio.isRunning()) {
+            // Utwor faktycznie gra — zapamietaj, ze ruszyl, i wyzeruj licznik ciszy.
+            songStarted = true;
+            notRunningSince = 0;
+        } else if (songStarted) {
+            // Utwor wczesniej gral, a teraz isRunning()==false -> to koniec.
+            // NIE sprawdzamy juz getAudioCurrentTime() > 0, bo biblioteka przy
+            // naturalnym EOF zeruje czas do 0 (widoczne w logach: "Czas: 0 s").
+            // Falszywe wykrycia podczas zmiany utworu sa juz odciete flagami
+            // trackChanging / playRequestPending powyzej.
             if (notRunningSince == 0) {
                 notRunningSince = millis();
-            } else if (millis() - notRunningSince > 300 && audio.getAudioCurrentTime() > 0) {
+            } else if (millis() - notRunningSince > 300) {
                 Serial.println("[Audio] Wykryto koniec odtwarzania (isRunning()==false, debounce)");
                 isPlaying = false;
+                songStarted = false;
                 songFinishedFlag = true;
                 notRunningSince = 0;
             }
-        } else {
-            notRunningSince = 0;
         }
     } else {
         notRunningSince = 0;
@@ -435,6 +454,7 @@ void audio_eof_mp3(const char *info) {
     Serial.printf("[Audio-eof] Koniec utworu: %s\n", info);
     songFinishedFlag = true;
     isPlaying = false;
+    songStarted = false;
 }
 
 void audio_showstation(const char *info) {
