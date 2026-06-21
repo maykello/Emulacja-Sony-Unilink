@@ -42,8 +42,26 @@ uint32_t audioGetCurrentTimeSec();
 // Pobierz całkowity czas trwania utworu (sekundy). 0 jeśli nieznany.
 uint32_t audioGetDurationSec();
 
+// Przewijanie wzgledne w obrebie biezacego utworu (+/- sekundy). Ogranicza do
+// [0, czas_trwania). Zwraca true jesli skok sie powiodl.
+bool audioSeekRelative(int deltaSec);
+
 // Ile tracków ma dany dysk (1..10). 0 = dysk pusty/brak folderu.
 uint8_t audioGetTrackCount(uint8_t disc);
+
+// --- INTERFEJS NAZW (źródło dla CD-TEXT) ---
+// Zwraca nazwę utworu (źródło: nazwa pliku) dla danego dysku/utworu.
+// disc: 1..10, track: 1..99 (1-based, jak na radiu).
+// Nazwa kopiowana do `out` (zawsze zakończona NUL-em, ograniczona do maxLen).
+// Zwraca liczbę zapisanych znaków (bez terminatora).
+// Dysk/utwór poza zakresem, brak nośnika lub pusty bufor -> out="" i zwraca 0.
+// UWAGA: zwraca SUROWĄ nazwę (po odcięciu rozszerzenia pliku). Sanityzacja do
+// drukowalnego ASCII odbywa się później w module CdText (nie tutaj).
+size_t audioGetTrackName(uint8_t disc, uint8_t track, char* out, size_t maxLen);
+
+// Zwraca nazwę płyty (źródło: nazwa katalogu, np. "CD01") dla danego dysku.
+// disc: 1..10. Pozostałe zasady jak w audioGetTrackName.
+size_t audioGetDiscName(uint8_t disc, char* out, size_t maxLen);
 
 // Znajdź następny niepusty dysk (startując od disc+1, zawijając do 1..10).
 // Zwraca 0 jeśli ŻADEN dysk nie ma tracków.

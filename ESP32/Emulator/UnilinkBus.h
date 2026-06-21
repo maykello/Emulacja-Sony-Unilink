@@ -50,6 +50,17 @@ unsigned long microsSinceLastClock();
 // W przeciwnym razie zwraca 0. Caly odczyt/reset wykonywany atomowo.
 int readPacketIfIdle(uint8_t* out, int maxLen, unsigned long idleUs);
 
+// Odczyt kompletnej ramki z granica wyznaczona przez CMD1 (Kompendium §3,
+// Wymaganie 3.4/3.5). KRYTERIUM PODSTAWOWE: gdy w buforze sa >= 3 bajty,
+// czytamy CMD1 (rxBuffer[2]) i wyznaczamy oczekiwana dlugosc przez
+// UnilinkFrame::lengthFromCmd1; po zgromadzeniu tylu bajtow udostepniamy
+// dokladnie tyle (reszta — poczatek kolejnej ramki — zostaje w buforze).
+// Cisza (READ_SILENCE_US) sluzy WYLACZNIE jako zabezpieczenie awaryjne:
+// gdy po ciszy w buforze tkwi niekompletny/nadmiarowy zlepek, bufor jest
+// oprozniany (resynchronizacja), by uniknac zakleszczenia. Zwraca liczbe
+// bajtow udostepnionej ramki lub 0. Caly odczyt/przesuw wykonywany atomowo.
+int readFrame(uint8_t* out, int maxLen);
+
 // Wyzeruj bufor odbiorczy (np. gdy BUS=0 — bajty z tej fazy sa "obce").
 void resetRx();
 

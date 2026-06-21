@@ -69,7 +69,7 @@ def main():
 
     # Konstrukcja końcowej nazwy pliku
     log_prefix = f"unilink_log_{device_name}_{radio_name}"
-    baud_rate = 115200
+    baud_rate = 921600
 
     now = datetime.datetime.now()
     filename = now.strftime(f"{log_prefix}_%Y%m%d_%H%M%S.txt")

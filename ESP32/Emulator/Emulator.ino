@@ -25,7 +25,9 @@
 static bool busPoweredLast = false;
 
 void setup() {
-    Serial.begin(115200);
+    Serial.begin(921600);   // wyzszy baud: pelne logowanie ramek (DEBUG_FRAMES)
+                            // nie obciaza petli (przy 115200 ~12% czasu = ryzyko
+                            // kolizji). Logger musi uzywac tego samego baudu.
     Serial.println("--- Sony UniLink EMULATOR (10-CD) v9 + AUDIO ---");
     Serial.println("Obsluga: MEX-BT3800u + CDX-M670 + PCM5102A DAC + USB");
     Serial.println("Oczekuje na radio (Stan C0 - Init)...");
@@ -81,8 +83,17 @@ void loop() {
     // ===== Maszyna stanow + sekundnik =====
     CdChanger::update(now, UnilinkProtocol::isAllocated());
 
+    // ===== Harmonogram ramki pozycji 0x90 (1Hz w stanie Playing) =====
+    UnilinkProtocol::servicePositionFrame1Hz(now);
+
+    // ===== Harmonogram ramki pelnego statusu 0xC0 (co ~30s w stanie Playing) =====
+    UnilinkProtocol::serviceFullStatusFrame(now);
+
     // ===== Auto-next po koncu utworu =====
     CdChanger::serviceAutoAdvance();
+
+    // ===== Auto-powtarzanie przewijania przy przytrzymanym FF/REW =====
+    CdChanger::serviceSeekRepeat(now);
 
     // ===== Slave Break (zgloszenie chec aktualizacji wyswietlacza) =====
     UnilinkProtocol::serviceSlaveBreak(busPowered);
@@ -93,8 +104,11 @@ void loop() {
     static uint8_t packet[RX_BUFFER_SIZE];
     int count = UnilinkBus::readPacketIfIdle(packet, sizeof(packet), READ_SILENCE_US);
     if (count > 0 && busPowered) {
-        if (DEBUG_VERBOSE) {
-            Serial.print("RX: ");
+        if (DEBUG_FRAMES) {
+            static unsigned long lastRxMs = 0;
+            unsigned long nowRx = millis();
+            Serial.printf("[+%4lums] RX ", lastRxMs ? (nowRx - lastRxMs) : 0);
+            lastRxMs = nowRx;
             for (int i = 0; i < count; i++) {
                 if (packet[i] < 0x10) Serial.print("0");
                 Serial.print(packet[i], HEX);
@@ -108,4 +122,10 @@ void loop() {
 
     // ===== Dekodowanie audio (hot-plug + wykrywanie konca utworu) =====
     audioLoop();
+
+    // ===== Odroczony zapis NVS — tylko gdy magistrala bezczynna =====
+    CdChanger::servicePersist(UnilinkBus::microsSinceLastClock());
+
+    // ===== Lekka diagnostyka (1 linia / 2s): czy radio nas pollu­je o ekran =====
+    UnilinkProtocol::serviceStats(now);
 }

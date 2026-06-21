@@ -4,8 +4,18 @@
 #include "UnilinkBus.h"
 #include "Config.h"
 #include "Diagnostics.h"
+#include "UnilinkFrame.h"  // jedno zrodlo prawdy dla sum kontrolnych (Parity1/Parity2)
 
 namespace UnilinkBus {
+
+// --- STROJENIE CZASOW (kompatybilne z protokolem §1) ---
+// Okres bitu: ~20 µs (zgodnie z Kompendium §1). Przerwanie onClockEvent() sygnalizuje
+// zbocze zegara i probkuje bit na linii DATA. Zmiana timingu bitu zaklocy komunikacje.
+// Czas bajtu (8 bitów + przerwa): ~1 ms. Parity1/Parity2 sa liczone po odebraniu
+// calych bajtow ramki (UnilinkFrame::parity1/parity2).
+// Slave Break: trzeba czekac na cisze ~8 ms (BREAK_SILENCE_US) przed jego wystawieniem.
+// [HIGH-RISK] Zmiana timinguSlave Break (BREAK_SILENCE_US/BREAK_HOLD_US w Config.h)
+// moze spowodowac kolizje lub brak wykrycia break przez radio.
 
 // --- STAN ODBIORU (RX) ---
 static volatile uint8_t       rxBuffer[RX_BUFFER_SIZE];
@@ -25,6 +35,13 @@ static volatile int     txLength    = 0;
 static inline void setTxData(bool bitVal) {
     bool outVal = INVERT_DATA ? !bitVal : bitVal;
     digitalWrite(PIN_DATA, outVal ? HIGH : LOW);
+}
+
+// Odczyt LOGICZNEGO poziomu DATA (z uwzglednieniem sprzetowego inwertera).
+// Uzywane przez issueSlaveBreak do synchronizacji z fala idle (§2.2).
+static inline bool readDataLogic() {
+    bool v = digitalRead(PIN_DATA);
+    return INVERT_DATA ? !v : v;
 }
 
 // Przerwanie zegara: nadaje lub odbiera pojedynczy bit.
@@ -93,19 +110,22 @@ void begin() {
 void sendShort(uint8_t rad, uint8_t tad, uint8_t cmd1, uint8_t cmd2) {
     uint8_t pkt[6] = {
         rad, tad, cmd1, cmd2,
-        (uint8_t)(rad + tad + cmd1 + cmd2),  // Parity
-        0x00                                  // End byte
+        UnilinkFrame::parity1(rad, tad, cmd1, cmd2),  // Parity1
+        0x00                                          // End byte
     };
     startTransmit(pkt, sizeof(pkt));
 }
 
 void sendMedium(uint8_t rad, uint8_t tad, uint8_t cmd1, uint8_t cmd2,
                 uint8_t d1, uint8_t d2, uint8_t d3, uint8_t d4) {
+    uint8_t p1   = UnilinkFrame::parity1(rad, tad, cmd1, cmd2);
+    uint8_t data[4] = { d1, d2, d3, d4 };
+    uint8_t p2   = UnilinkFrame::parity2(p1, data, 4);
     uint8_t pkt[11] = {
         rad, tad, cmd1, cmd2,
-        (uint8_t)(rad + tad + cmd1 + cmd2),                    // Parity1
+        p1,                       // Parity1
         d1, d2, d3, d4,
-        (uint8_t)(rad + tad + cmd1 + cmd2 + d1 + d2 + d3 + d4),// Parity2
+        p2,                       // Parity2
         0x00
     };
     startTransmit(pkt, sizeof(pkt));
@@ -114,12 +134,13 @@ void sendMedium(uint8_t rad, uint8_t tad, uint8_t cmd1, uint8_t cmd2,
 void sendLong(uint8_t rad, uint8_t tad, uint8_t cmd1, uint8_t cmd2,
               uint8_t d1, uint8_t d2, uint8_t d3, uint8_t d4,
               uint8_t d5, uint8_t d6, uint8_t d7, uint8_t d8, uint8_t d9) {
-    uint8_t sum1 = (uint8_t)(rad + tad + cmd1 + cmd2);
-    uint8_t sum2 = (uint8_t)(sum1 + d1 + d2 + d3 + d4 + d5 + d6 + d7 + d8 + d9);
+    uint8_t p1   = UnilinkFrame::parity1(rad, tad, cmd1, cmd2);
+    uint8_t data[9] = { d1, d2, d3, d4, d5, d6, d7, d8, d9 };
+    uint8_t p2   = UnilinkFrame::parity2(p1, data, 9);
     uint8_t pkt[16] = {
-        rad, tad, cmd1, cmd2, sum1,
+        rad, tad, cmd1, cmd2, p1,
         d1, d2, d3, d4, d5, d6, d7, d8, d9,
-        sum2, 0x00
+        p2, 0x00
     };
     startTransmit(pkt, sizeof(pkt));
 }
@@ -153,6 +174,51 @@ int readPacketIfIdle(uint8_t* out, int maxLen, unsigned long idleUs) {
     rxBitIndex = 0;
     interrupts();
     return count;
+}
+
+int readFrame(uint8_t* out, int maxLen) {
+    if (maxLen <= 0) return 0;
+    noInterrupts();
+    int count = rxIndex;
+
+    // --- KRYTERIUM PODSTAWOWE: granica ramki wyznaczona przez CMD1 (R3.4/R3.5) ---
+    // Uklad bufora: rxBuffer[0]=RAD, [1]=TAD, [2]=CMD1. Gdy mamy >= 3 bajty,
+    // znamy CMD1 i dlugosc calej ramki. Udostepniamy ja dopiero gdy zebrano
+    // >= expected bajtow; ewentualna nadwyzka to poczatek kolejnej ramki i
+    // zostaje w buforze (ciecie strumienia po granicach z CMD1, nie po ciszy).
+    if (count >= 3) {
+        uint8_t cmd1 = rxBuffer[2];
+        int expected = UnilinkFrame::lengthFromCmd1(cmd1);
+        if (expected > 0 && count >= expected) {
+            int n = expected;
+            if (n > maxLen) n = maxLen;
+            for (int i = 0; i < n; i++) out[i] = rxBuffer[i];
+            // przesun nadmiarowe bajty (poczatek nastepnej ramki) na poczatek bufora
+            int remaining = count - expected;
+            for (int i = 0; i < remaining; i++) rxBuffer[i] = rxBuffer[expected + i];
+            rxIndex = remaining;
+            interrupts();
+            return n;
+        }
+    }
+
+    // --- ZABEZPIECZENIE AWARYJNE: resynchronizacja po ciszy (R3.5) ---
+    // Gdy po READ_SILENCE_US w buforze tkwi niekompletny zlepek (count < 3 albo
+    // count < expected) lub nieznana ramka, oprozniamy bufor (jak dotychczas),
+    // by uniknac zakleszczenia. Wartosci czasowe pozostaja nietkniete.
+    bool idle = (micros() - lastClockTime > READ_SILENCE_US);
+    if (idle && count > 0) {
+        int n = count;
+        if (n > maxLen) n = maxLen;
+        for (int i = 0; i < n; i++) out[i] = rxBuffer[i];
+        rxIndex = 0;
+        rxBitIndex = 0;
+        interrupts();
+        return n;
+    }
+
+    interrupts();
+    return 0;
 }
 
 void resetRx() {

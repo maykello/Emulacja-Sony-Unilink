@@ -43,6 +43,17 @@ static TaskHandle_t audioTaskHandle = NULL;
 static volatile bool playRequestPending = false;
 static char playRequestPath[128];
 
+// Sterowanie audio z GLOWNEJ petli (Core 1) NIGDY nie moze blokowac sie na
+// audioMutex — w przeciwnym razie nacisniecie klawisza czeka, az task audio
+// zwolni mutex (np. po connecttoFS/decode), co zamraza odpowiedzi na radio,
+// licznik czasu i gubi powtorzone komendy FF/REW. Dlatego seek/stop/volume
+// przekazujemy jako ZADANIA, ktore realizuje task audio (Core 0).
+static volatile bool seekRequestPending = false;
+static volatile int  seekRequestDelta   = 0;   // akumulowany skok (+/- s)
+static volatile bool stopRequestPending = false;
+static volatile bool volRequestPending  = false;
+static volatile uint8_t volRequestValue = AUDIO_VOLUME;
+
 
 // ============================================================
 // Pomocnicza: czy plik ma obsługiwane rozszerzenie audio?
@@ -169,6 +180,33 @@ static void audioTaskFunc(void *param) {
     unsigned long lastDebugTime = 0;
     
     for (;;) {
+        // --- Żądania sterujace z Core 1 (nieblokujace dla glownej petli) ---
+        if (stopRequestPending) {
+            stopRequestPending = false;
+            if (audioMutex) xSemaphoreTake(audioMutex, portMAX_DELAY);
+            audio.stopSong();
+            if (audioMutex) xSemaphoreGive(audioMutex);
+            isPlaying = false;
+            songStarted = false;
+        }
+        if (volRequestPending) {
+            volRequestPending = false;
+            uint8_t v = volRequestValue;
+            if (audioMutex) xSemaphoreTake(audioMutex, portMAX_DELAY);
+            audio.setVolume(v);
+            if (audioMutex) xSemaphoreGive(audioMutex);
+        }
+        if (seekRequestPending) {
+            seekRequestPending = false;
+            int d = seekRequestDelta;
+            seekRequestDelta = 0;
+            if (d != 0 && audio.isRunning()) {
+                if (audioMutex) xSemaphoreTake(audioMutex, portMAX_DELAY);
+                audio.setTimeOffset(d);
+                if (audioMutex) xSemaphoreGive(audioMutex);
+            }
+        }
+
         // --- Obsługa żądania nowej piosenki ---
         if (playRequestPending) {
             playRequestPending = false;
@@ -255,10 +293,15 @@ bool audioInit() {
         return false;
     }
     
-    // Task dekodowania audio — Core 1, priorytet 2 (wyższy niż Arduino loop=1)
-    // Dzięki temu audio.loop() nie jest głodzone przez obsługę magistrali Unilink
+    // Task dekodowania audio — Core 0 (razem z USB Host), priorytet 2.
+    // KLUCZOWE: trzymamy dekoder z DALA od Core 1, na ktorym dziala petla
+    // Arduino + przerwanie zegara magistrali Unilink. Wczesniej dekoder (Core 1,
+    // prio 2) wywlaszczal petle (prio 1) na 10-20ms przy napelnianiu bufora, co
+    // powodowalo spoznione odpowiedzi na radio, gubione klawisze i nierowne
+    // odliczanie czasu. Teraz Core 1 nalezy w calosci do warstwy czasu
+    // rzeczywistego (Unilink), a Core 0 do "mediow" (USB + dekoder audio).
     BaseType_t ret = xTaskCreatePinnedToCore(
-        audioTaskFunc, "audio_dec", 8192, NULL, 2, &audioTaskHandle, 1);
+        audioTaskFunc, "audio_dec", 8192, NULL, 2, &audioTaskHandle, 0);
     if (ret != pdPASS) {
         Serial.println("[Audio] BŁĄD: Nie mogę uruchomić tasku audio!");
         return false;
@@ -307,11 +350,11 @@ bool audioPlayTrack(uint8_t disc, uint8_t track) {
 }
 
 void audioStop() {
-    if (audioMutex) xSemaphoreTake(audioMutex, portMAX_DELAY);
-    audio.stopSong();
-    if (audioMutex) xSemaphoreGive(audioMutex);
+    // Nieblokujaco: zlec zatrzymanie taskowi audio. isPlaying gasimy od razu,
+    // by reszta systemu natychmiast widziala "nie gram".
     isPlaying = false;
-    Serial.println("[Audio] ⏹ Zatrzymano.");
+    stopRequestPending = true;
+    Serial.println("[Audio] ⏹ Zatrzymano (zlecone).");
 }
 
 bool audioIsPlaying() {
@@ -327,9 +370,64 @@ uint32_t audioGetDurationSec() {
     return audio.getAudioFileDuration();
 }
 
+bool audioSeekRelative(int deltaSec) {
+    if (!audioIsPlaying()) return false;
+    // Nieblokujaco: akumulujemy skok i zlecamy go taskowi audio. Glowna petla
+    // (Core 1) nie czeka na audioMutex, wiec radio i licznik czasu nie zwisza.
+    seekRequestDelta += deltaSec;
+    seekRequestPending = true;
+    return true;
+}
+
 uint8_t audioGetTrackCount(uint8_t disc) {
     if (disc < 1 || disc > MAX_DISCS) return 0;
     return trackCount[disc];
+}
+
+// ============================================================
+// Interfejs nazw (źródło dla modułu CD-TEXT)
+// ============================================================
+
+// Pomocnicza: kopiuje napis do bufora, NUL-terminuje, zwraca liczbę znaków.
+static size_t copyBounded(const char* src, char* out, size_t maxLen) {
+    if (!out || maxLen == 0) return 0;
+    size_t n = 0;
+    if (src) {
+        while (src[n] != '\0' && n < maxLen - 1) {
+            out[n] = src[n];
+            n++;
+        }
+    }
+    out[n] = '\0';
+    return n;
+}
+
+size_t audioGetTrackName(uint8_t disc, uint8_t track, char* out, size_t maxLen) {
+    if (out && maxLen > 0) out[0] = '\0';
+    if (disc < 1 || disc > MAX_DISCS) return 0;
+    if (track < 1 || track > trackCount[disc]) return 0;
+
+    // track jest 1-based, tablica 0-based — nazwa pliku to nazwa utworu.
+    const String &filename = trackFiles[disc][track - 1];
+    if (filename.length() == 0) return 0;
+
+    // Odetnij rozszerzenie (.mp3/.wav/...) — nie jest częścią nazwy utworu.
+    // To NIE jest sanityzacja ASCII (ta odbywa się w CdText) — tylko wyodrębnienie
+    // właściwej nazwy z nazwy pliku.
+    int dotPos = filename.lastIndexOf('.');
+    String name = (dotPos > 0) ? filename.substring(0, dotPos) : filename;
+
+    return copyBounded(name.c_str(), out, maxLen);
+}
+
+size_t audioGetDiscName(uint8_t disc, char* out, size_t maxLen) {
+    if (out && maxLen > 0) out[0] = '\0';
+    if (disc < 1 || disc > MAX_DISCS) return 0;
+
+    // Źródło nazwy płyty to nazwa katalogu na pendrivie (foldery CD01..CD10).
+    char dirName[8];
+    snprintf(dirName, sizeof(dirName), "CD%02d", disc);
+    return copyBounded(dirName, out, maxLen);
 }
 
 uint8_t audioFindNextNonEmptyDisc(uint8_t disc) {
@@ -368,9 +466,7 @@ void audioLoop() {
     else if (!isMounted && wasUsbMounted) {
         // Pendrive odłączony → zatrzymaj audio, wyczyść tracki
         Serial.println("[Audio] Pendrive odłączony — zatrzymuję odtwarzanie.");
-        if (audioMutex) xSemaphoreTake(audioMutex, portMAX_DELAY);
-        audio.stopSong();
-        if (audioMutex) xSemaphoreGive(audioMutex);
+        stopRequestPending = true;   // nieblokujaco (task audio wykona stopSong)
         isPlaying = false;
         songFinishedFlag = false;
         for (int i = 1; i <= MAX_DISCS; i++) {
@@ -430,10 +526,10 @@ void audioRescan() {
 
 void audioSetVolume(uint8_t vol) {
     if (vol > 21) vol = 21;
-    if (audioMutex) xSemaphoreTake(audioMutex, portMAX_DELAY);
-    audio.setVolume(vol);
-    if (audioMutex) xSemaphoreGive(audioMutex);
-    Serial.printf("[Audio] Głośność: %d/21\n", vol);
+    // Nieblokujaco: zlec zmiane glosnosci taskowi audio.
+    volRequestValue = vol;
+    volRequestPending = true;
+    Serial.printf("[Audio] Głośność: %d/21 (zlecone)\n", vol);
 }
 
 // ============================================================
