@@ -538,7 +538,6 @@ void audioSetVolume(uint8_t vol) {
 
 // Jeśli biblioteka została skompilowana jako C, może szukać symboli C
 #ifdef __cplusplus
-extern "C" {
 #endif
 
 void audio_info(const char *info) {
@@ -585,5 +584,4 @@ void audio_eof_speech(const char *info) {
 }
 
 #ifdef __cplusplus
-}
 #endif
