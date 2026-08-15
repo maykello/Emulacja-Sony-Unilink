@@ -148,7 +148,7 @@ void loop() {
     // ===== Auto-powtarzanie przewijania przy przytrzymanym FF/REW =====
     CdChanger::serviceSeekRepeat(now);
 
-    // ===== Slave Break (awaryjne wybudzenie mastera) =====
+    // ===== Slave Break (OE: wakeup Request Polling na tik ~1 Hz) =====
     UnilinkProtocol::serviceSlaveBreak(busPowered);
 
     pumpBus(busPowered);

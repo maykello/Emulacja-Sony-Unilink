@@ -558,14 +558,26 @@ void audioSetVolume(uint8_t vol) {
 
 void audio_info(const char *info) {
     if (!info) return;
-    // Lawina tych komunikatow przy setTimeOffset (seek MP3) blokuje wspoldzielony
-    // UART — Core 1 gubi okno odpowiedzi na `01 15` i radio zamraza ekran.
-    // Filtrujemy zawsze; przy infoSquelch (skan FF/REW) milczymy calkiem.
+    // Lawina tych komunikatow przy setTimeOffset (seek MP3) i otwarciu pliku
+    // blokuje wspoldzielony UART — Core 1 gubi okno odpowiedzi na `01 15`.
     if (infoSquelch) return;
     if (strstr(info, "decode error") ||
         strstr(info, "INVALID_") ||
         strstr(info, "syncword") ||
-        strstr(info, "stream ready")) {
+        strstr(info, "stream ready") ||
+        strstr(info, "buffers freed") ||
+        strstr(info, "Reading file") ||
+        strstr(info, "Content-Length") ||
+        strstr(info, "ID3 ") ||
+        strstr(info, "Audio-Length") ||
+        strstr(info, "Channels:") ||
+        strstr(info, "SampleRate") ||
+        strstr(info, "BitsPerSample") ||
+        strstr(info, "BitRate") ||
+        strstr(info, "PSRAM") ||
+        strstr(info, "MP3Decoder") ||
+        strstr(info, "inputBufferSize") ||
+        strstr(info, "free Heap")) {
         return;
     }
     Serial.printf("[Audio-info] %s\n", info);

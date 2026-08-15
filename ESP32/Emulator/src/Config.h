@@ -76,28 +76,24 @@ constexpr unsigned long INIT_DURATION_MS = 800;  // 0xC0 -> 0x80 (po pierwszym P
 constexpr unsigned long LOAD_DURATION_MS = 50;   // 0x40 -> 0x20 (krotki, by uniknac migania LOAD)
 constexpr unsigned long SEEK_DURATION_MS = 50;   // 0x20 -> 0x00 (krotki, by uniknac migania LOAD)
 
-// --- SLAVE BREAK: TYLKO AWARYJNE WYBUDZANIE MASTERA ---
-// Odswiezaniem ekranu zajmuje sie arbitraz `01 15` -> `10 18 82 <maska>` ->
-// grant `01 13` (UnilinkProtocol::claimMask). Break zostaje na wypadek, gdyby
-// master calkiem przestal prowadzic arbitraz.
-// DISPLAY_STARVED_MS: po tylu ms bez grantu uznajemy, ze master o nas zapomnial.
-// Sniff prawdziwej zmieniarki: naturalne przerwy Request Polling 2-9 s, potem
-// Slave Break wznawia `01 15`. 1.5 s bylo za agresywne — break w srodku naturalnej
-// pauzy, przy Hold trzymanym przez takt mastera, korumowal pierwsze `01 15` i
-// zamrazal ekran na stale (log: break=N/N, poll15=0).
-constexpr unsigned long DISPLAY_STARVED_MS = 2000;
-// DISPLAY_REFRESH_MS: historycznie sterowalo czestotliwoscia claim w `01 15`.
-// Prawdziwa zmieniarka zglasza sie na KAZDY poll — claim jest zawsze wlaczony
-// (patrz wantsBus). Stala zostaje jako dokumentacja oczekiwanego tempa tikow
-// 0x90 (~1 s w sniffe spokojnego grania; przy aktywnym Request Polling granty
-// leca ~10 Hz i sendFreshDisplay i tak buduje lekki 0x90).
+// --- SLAVE BREAK + ARBITRAZ (model OE ze sniffu CDX-M670) ---
+// Sniff prawdziwej zmieniarki (103× `01 15`):
+//   * claim przy udziale w sesji: zawsze `82 04` (0× `82 00` w trakcie burstu),
+//   * BURSTY: typowo 1–4 polle, potem przerwa 0.5–9.5 s (35 luk >0.5 s),
+//   * NIE ma ciaglego Request Polling @ ~23 Hz przez 15+ s.
+// Emulator z always-claim non-stop trzymal sesje ~16 s, potem master ja konczyl;
+// Break (Hold 3 ms) nie wznawial `01 15` (log 16:11: break=N/N, poll15=0).
+// Model OE: krotka sesja claim → 1–2 granty/ekran → `82 00` konczy burst →
+// po ~1 s Slave Break budzi nowa sesje.
+//
 constexpr unsigned long DISPLAY_REFRESH_MS = 1000;
-// BREAK_RETRY_MS: minimalny odstep miedzy kolejnymi probami breaka.
-constexpr unsigned long BREAK_RETRY_MS     = 800;
-// BREAK_RECOVERY_MS: po udanym Hold nie uzbrajaj ponownie — daj masterowi czas
-// na start Request Polling (`01 15`). Hammering co 800 ms w logu 154053
-// (break=2/2, 3/3, poll15=0) uniemozliwial wznowienie arbitrazu.
-constexpr unsigned long BREAK_RECOVERY_MS  = 3000;
+// Break gdy sesja chce nadac, a brak `01 15` / grantu tak dlugo:
+constexpr unsigned long DISPLAY_STARVED_MS = 800;
+// `01 15` w tym oknie = Request Polling zywy → NIGDY Break.
+constexpr unsigned long POLL15_ALIVE_MS    = 400;
+constexpr unsigned long BREAK_RETRY_MS     = 1000;
+constexpr unsigned long BREAK_RECOVERY_MS  = 1500;
+constexpr unsigned long BREAK_BACKOFF_MAX_MS = 8000;
 // READ_SILENCE_US sluzy juz TYLKO jako awaryjna resynchronizacja bufora RX.
 // Normalne ciecie strumienia na ramki robi UnilinkBus::readFrame po dlugosci
 // wynikajacej z CMD1, wiec ta wartosc nie wplywa juz na czas odpowiedzi.
@@ -120,16 +116,15 @@ constexpr unsigned long BYTE_RESYNC_GAP_US = 1000;
 //   2) czekaj 2 ms w HIGH,
 //   3) sciagnij DATA LOW na ~3 ms,
 //   4) pusc — reszta fazy HIGH.
-// BREAK_IDLE_LOW_US: ile musi trwac obserwowana faza LOW, bysmy uznali ja za
-// faze fali idle (Mictronics: pelne 8 ms LOW przed faza HIGH).
+// BREAK_IDLE_LOW_US: Mictronics = pelne ~8 ms LOW przed faza HIGH.
 constexpr unsigned long BREAK_IDLE_LOW_US = 8000;
-// BREAK_SETTLE_US: odstep od zbocza w gore do sciagniecia linii (Mictronics: 2 ms).
+// BREAK_IDLE_LOW_MIN_US: spozniona probka juz na HIGH po wystarczajacym LOW.
+constexpr unsigned long BREAK_IDLE_LOW_MIN_US = 6000;
 constexpr unsigned long BREAK_SETTLE_US   = 2000;
-// BREAK_HOLD_US: nominalny impuls DATA LOW w fazie HIGH (Mictronics: 3 ms).
 constexpr unsigned long BREAK_HOLD_US     = 3000;
-// BREAK_MIN_VISIBLE_US: minimalny impuls, po ktorym wolno puscic linie gdy master
-// juz zaczyna takt (wykrył break → Request Poll). Trzymanie dalej korumuje `01 15`.
-constexpr unsigned long BREAK_MIN_VISIBLE_US = 2000;
+// Trzymaj pelne 3 ms — nie przerywaj na wczesnym zegarze (wypelniacz idle HIGH
+// SophWiki: 8 bit clock w fazie HIGH). Puszczamy dopiero po HOLD_US.
+constexpr unsigned long BREAK_MIN_VISIBLE_US = 3000;
 // BREAK_ARM_TIMEOUT_US: jak dlugo czekamy na czysta fale idle po uzbrojeniu.
 // Time Poll CDX-M670 ~600 ms — 300 ms bylo za krotkie (log: break=N/0, Hold
 // nigdy nie startowal). 2.5 s obejmuje kilka cykli keepalive.

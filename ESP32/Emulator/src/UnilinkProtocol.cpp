@@ -77,11 +77,20 @@ static int           resetLoopCount      = 0;   // licznik resetow w petli
 // --- SLAVE BREAK / OCHRONA KOLIZJI ---
 static unsigned long suppressBreakUntil = 0;
 static unsigned long lastBreakTime      = 0;
-// Czas ostatniego pobrania naszego ekranu przez radio (01 13). Keepalive-break
-// budzi radio, gdy ta wartosc sie zestarzeje.
+// Czas ostatniego pobrania naszego ekranu przez radio (01 13).
 static unsigned long lastDisplayServedMs = 0;
-// Czas ostatniej ODDANEJ ramki ekranu (lustrzane lastDisplayServedMs).
+// Czas ostatniej ODDANEJ ramki ekranu.
 static unsigned long lastDisplaySentMs = 0;
+// Czas ostatniego `18 10 01 15` — Request Polling zywy ⇒ nie wolno Break.
+static unsigned long lastPoll15Ms = 0;
+// --- SESJA REQUEST POLLING (model burst OE) ---
+// true = claim `82 <mask>`; false = `82 00` (konczymy burst jak OE po oddaniu ekranu).
+static bool requestSessionActive = true;
+static uint8_t sessionGrants = 0;
+// Backoff gdy Hold OK, ale poll15 nie wraca.
+static unsigned long breakBackoffMs = BREAK_RETRY_MS;
+// Po udanym Hold czekamy na `01 15`; brak = zwieksz backoff przy kolejnym arm.
+static unsigned long breakOkAwaitingPollMs = 0;
 
 // --- HARMONOGRAM RAMKI POZYCJI 0x90 (1 Hz) ---
 // Znacznik millis() ostatniej aktualizacji pozycji (0x90). Co sekundę,
@@ -135,8 +144,7 @@ void enqueue(uint8_t priority, const uint8_t* bytes, int len) {
 void serviceStats(unsigned long now) {
     if (now - lastStatMs < 2000) return;
     lastStatMs = now;
-    statBreakOk += UnilinkBus::takeBreakCompleted();
-    // Wypisuj tylko gdy cos sie dzieje (nie zasmiecaj gdy magistrala cicha).
+    // takeBreakCompleted() zjadane w serviceSlaveBreak (backoff / sesja).
     if (statPoll15 || statDisp13Us || statDisp13_3B || statPing12Us || statBtn ||
         statBreak || statBreakOk) {
         Serial.printf("[STAT] poll15=%u disp13(my)=%u disp13(3B)=%u ping12(my)=%u btn=%u break=%u/%u txt=%u seek=%u | alloc=%d state=0x%02X CD%d TR%d %02d:%02d\n",
@@ -182,54 +190,83 @@ bool serviceTimeout(unsigned long now) {
 
 // Czy zglaszamy sie w arbitrazu `01 15`?
 //
-// Sniff prawdziwej zmieniarki CDX-M670: na KAZDE `18 10 01 15` odpowiada
-// `10 18 82 <claimMask>` (0 zgloszen z maska 0x00 na 103 pollach). Master
-// utrzymuje Request Polling tylko gdy slave sie zglasza — odpowiedzi `82 00`
-// (~95% przy DISPLAY_REFRESH_MS) po ~10-15 s koncza petle `01 15` i ekran
-// zamraza sie mimo zywego Time Poll (`01 12`) i dzialajacych przyciskow.
+// Sniff CDX-M670: w BURSCOE zawsze `82 04`; serie krotkie (1–4), potem przerwa.
+// Always-claim non-stop ~16 s → master konczy sesje; Break nie wznawial poll15.
 static bool wantsBus() {
-    return deviceAllocated;
+    if (!deviceAllocated) return false;
+    if (!txQueue.isEmpty() || CdChanger::isDisplayDirty()) return true;
+    return requestSessionActive;
+}
+
+static void openRequestSession() {
+    requestSessionActive = true;
+    sessionGrants = 0;
+}
+
+static void maybeCloseRequestSession() {
+    if (sessionGrants >= 1 && txQueue.isEmpty() && !CdChanger::isDisplayDirty()) {
+        requestSessionActive = false;
+    }
 }
 
 void serviceSlaveBreak(bool busPowered) {
-    // --- SLAVE BREAK JEST TERAZ TYLKO AWARYJNY ---
-    // Wlasciwym mechanizmem "chce nadawac" jest arbitraz `01 15` -> `10 18 82
-    // <maska>` -> grant `01 13` (patrz claimMask). Break sluzy wylacznie do
-    // wybudzenia mastera, gdy ten CALKOWICIE przestal prowadzic arbitraz.
-    //
-    // Poprzednia wersja traktowala break jako podstawowe narzedzie odswiezania
-    // ekranu i wystawiala go nawet kilka razy na sekunde. Kazdy taki break
-    // trafial w losowa faze ruchu na magistrali, psul cudze ramki i konczyl sie
-    // petla SYSTEM RESET.
     if (!busPowered || !deviceAllocated) {
         UnilinkBus::cancelSlaveBreak();
         return;
     }
 
-    UnilinkBus::serviceSlaveBreak();          // przesun maszyne stanow breaka
-    if (UnilinkBus::slaveBreakPending()) return;
+    UnilinkBus::serviceSlaveBreak();
 
     const unsigned long nowMs = millis();
-    // Po udanym Hold master potrzebuje chwili na start `01 15` — nie hammeruj.
+
+    // Po udanym Hold — otworz sesje claim; na `01 15` czekamy w POLL15 handlerze.
+    const uint16_t justDone = UnilinkBus::takeBreakCompleted();
+    if (justDone) {
+        statBreakOk += justDone;
+        openRequestSession();
+        breakOkAwaitingPollMs = nowMs;
+    }
+
+    if (UnilinkBus::slaveBreakPending()) return;
+
+    // Tik ~1 Hz lub zdarzenie — otworz sesje (claim / Break).
+    if (!txQueue.isEmpty() || CdChanger::isDisplayDirty() ||
+        (nowMs - lastDisplaySentMs) >= DISPLAY_REFRESH_MS) {
+        if (!requestSessionActive) openRequestSession();
+    }
+
+    if ((nowMs - lastPoll15Ms) < POLL15_ALIVE_MS) {
+        breakBackoffMs = BREAK_RETRY_MS;
+        breakOkAwaitingPollMs = 0;
+        return;
+    }
+
+    // Poprzedni Hold nie wzbudzil Request Polling — zwieksz odstęp.
+    if (breakOkAwaitingPollMs != 0 &&
+        (nowMs - breakOkAwaitingPollMs) >= BREAK_RECOVERY_MS) {
+        if (breakBackoffMs < BREAK_BACKOFF_MAX_MS) {
+            unsigned long next = breakBackoffMs * 2;
+            if (next < BREAK_RETRY_MS) next = BREAK_RETRY_MS;
+            if (next > BREAK_BACKOFF_MAX_MS) next = BREAK_BACKOFF_MAX_MS;
+            breakBackoffMs = next;
+        }
+        breakOkAwaitingPollMs = 0;
+    }
+
     if (UnilinkBus::breakRecoveryActive(nowMs)) return;
     if (nowMs < suppressBreakUntil) return;
-    if (nowMs - lastBreakTime < BREAK_RETRY_MS) return;
-
-    // Jedyny wyzwalacz: master od dawna nie dal nam grantu, a mamy co pokazac.
-    // "Mamy co pokazac" to dokladnie ten sam warunek, ktorym zglaszamy sie do
-    // arbitrazu — wlacznie z sekundowym tikiem czasu. Wczesniej bylo tu tylko
-    // `dirty || kolejka niepusta`, wiec w sytuacji, gdy master przestal prowadzic
-    // arbitraz podczas spokojnego grania (nic nie dirty, kolejka pusta), break
-    // NIE padal ani razu i ekran zostawal zamrozony na ostatniej sekundzie.
-    const bool starved = (nowMs - lastDisplayServedMs > DISPLAY_STARVED_MS);
-    if (!starved) return;
+    if (nowMs - lastBreakTime < breakBackoffMs) return;
     if (!wantsBus()) return;
+    if ((nowMs - lastDisplayServedMs) <= DISPLAY_STARVED_MS &&
+        !CdChanger::isDisplayDirty() && txQueue.isEmpty()) {
+        return;
+    }
 
     UnilinkBus::requestSlaveBreak();
     lastBreakTime = nowMs;
     statBreak++;
-    // Zawsze loguj — break jest rzadki i krytyczny dla odzyskania ekranu.
-    Serial.printf("   BREAK armed (brak grantu od %lums)\n", nowMs - lastDisplayServedMs);
+    Serial.printf("   BREAK armed (grant %lums ago, poll15 %lums ago, backoff %lums)\n",
+                  nowMs - lastDisplayServedMs, nowMs - lastPoll15Ms, breakBackoffMs);
 }
 
 // ------------------------------------------------------------
@@ -693,7 +730,14 @@ void handlePacket(const uint8_t* buf, int len) {
     uint8_t op2 = buf[3];
 
     // ===== Diagnostyka: zliczanie kluczowych ramek =====
-    if (rad == ADDR_BROADCAST && op1 == 0x01 && op2 == 0x15) statPoll15++;
+    if (rad == ADDR_BROADCAST && op1 == 0x01 && op2 == 0x15) {
+        statPoll15++;
+        lastPoll15Ms = millis();
+        breakBackoffMs = BREAK_RETRY_MS;  // master prowadzi arbitraz
+        if (UnilinkBus::slaveBreakPending()) {
+            UnilinkBus::cancelSlaveBreak();
+        }
+    }
     else if (rad == myAddr && op1 == 0x01 && op2 == 0x13)     statDisp13Us++;
     else if (rad == 0x3B && op1 == 0x01 && op2 == 0x13)       statDisp13_3B++;
     if (rad == myAddr && op1 == 0x01 && op2 == 0x12)          statPing12Us++;
@@ -819,6 +863,9 @@ void handlePacket(const uint8_t* buf, int len) {
         // zaglodzonych — emulator wystawilby Slave Break w srodku discovery.
         lastDisplayServedMs = millis();
         lastDisplaySentMs   = lastDisplayServedMs;
+        lastPoll15Ms        = lastDisplayServedMs;
+        openRequestSession();
+        breakBackoffMs = BREAK_RETRY_MS;
         CdChanger::resetToInit();
         // POTWIERDZENIE device info 0x8C, TAD = myAddr (R4.3). Atrybuty zgodne z
         // prawdziwa zmieniarka (sniff, adres 0x31):
@@ -840,8 +887,7 @@ void handlePacket(const uint8_t* buf, int len) {
         // Dopoki nie mamy adresu, nie mamy tez przydzielonego bitu — milczymy,
         // dokladnie tak jak prawdziwa zmieniarka przed appointem.
         if (!deviceAllocated) return;
-        // Zawsze zglaszamy swoj bit (jak prawdziwa zmieniarka). Zero maski
-        // pozwala masterowi wyjsc z Request Polling — patrz wantsBus().
+        // W bursocie OE: `82 <mask>`; po zamknieciu sesji: `82 00` (koniec burstu).
         const uint8_t mask = wantsBus() ? claimMask : 0x00;
         UnilinkBus::sendMedium(0x10, 0x18, 0x82, mask, 0x00, 0x00, 0x00, 0x00);
         if (DEBUG_VERBOSE) {
@@ -877,23 +923,19 @@ void handlePacket(const uint8_t* buf, int len) {
     // tak jak prawdziwa zmieniarka, ktora na kazdy grant odpowiada aktualnym
     // stanem (0x90 tik czasu / 0xC0 pelny status / 0x8E ekran spoczynku).
     else if (rad == myAddr && tad == ADDR_MASTER && op1 == 0x01 && op2 == 0x13) {
-        lastDisplayServedMs = millis();  // radio wlasnie pobralo nasz ekran
+        lastDisplayServedMs = millis();
         lastDisplaySentMs   = lastDisplayServedMs;
+        sessionGrants++;
         CdChanger::notePolled();
         Tx::TxItem item;
         if (txQueue.dequeue(item)) {
-            // Ramka w kolejce jest juz gotowa (z parzystosciami) — nadajemy
-            // surowo, niezaleznie od jej dlugosci (short/medium/long).
             UnilinkBus::sendRaw(item.bytes, item.len);
         } else {
-            // Kolejka pusta: zbuduj i NADAJ NATYCHMIAST swiezy ekran. W ustalonym
-            // Playing to lekki tik 0x90 (radio interpoluje sekundy -> gladki czas);
-            // przy zmianie plyty/utworu lub poza Playing -> pelny 0xC0 (numer plyty).
-            // Flage "ekran sie zmienil" kasujemy DOPIERO tutaj: buildStatusC0
-            // wpisuje ja w dolny nibbel D9, wiec radio musi ja najpierw zobaczyc.
             sendFreshDisplay();
             CdChanger::clearDisplayDirty();
         }
+        // Zamknij burst — kolejne `01 15` dostana `82 00` (krotkie serie OE).
+        maybeCloseRequestSession();
     }
 
     // ===== 6. WAKE UP / PLAY (3X 10 20 00) =====

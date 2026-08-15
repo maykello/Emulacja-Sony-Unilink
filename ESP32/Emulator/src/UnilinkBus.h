@@ -72,9 +72,9 @@ void resetRx();
 //
 // Typowe uzycie: requestSlaveBreak() uzbraja, serviceSlaveBreak() wolane w
 // KAZDEJ iteracji loop() przesuwa maszyne o krok i sama zwalnia linie.
-// Aktywnosc zegara przed Hold resetuje obserwacje fali idle. W Hold: impuls
-// BREAK_HOLD_US (Mictronics 3 ms); jesli master zacznie takt po
-// BREAK_MIN_VISIBLE_US — puszczamy DATA natychmiast (Request Poll).
+// Aktywnosc zegara przed Hold resetuje obserwacje fali idle. W Hold: pelny
+// impuls BREAK_HOLD_US (Mictronics 3 ms) — nie przerywamy na filler clock
+// w fazie HIGH (wczesny release = Break „OK” bez powrotu `01 15`).
 void requestSlaveBreak();
 void serviceSlaveBreak();
 bool slaveBreakPending();

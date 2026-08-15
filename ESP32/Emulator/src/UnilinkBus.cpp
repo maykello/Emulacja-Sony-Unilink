@@ -328,7 +328,18 @@ inline bool busStillQuiet(unsigned long ref) {
     return lc == ref;
 }
 
-// Zakoncz Hold: pusc DATA (Hi-Z), wyczysc faze RX, zalicz sukces + cooldown.
+// Wejscie w Hold: sciagnij DATA (logicznie LOW) — Mictronics 3 ms w fazie HIGH.
+inline void enterHold(unsigned long now) {
+    Diagnostics::recordNote("BREAK");
+    pinMode(PIN_DATA, OUTPUT);
+    digitalWrite(PIN_DATA, INVERT_DATA ? HIGH : LOW);   // DATA logicznie LOW
+    noInterrupts();
+    s_breakClockRef = lastClockTime;
+    interrupts();
+    s_breakState = BreakState::Hold;
+    s_breakMark  = now;
+}
+
 inline void finishHoldSuccess() {
     pinMode(PIN_DATA, INPUT);
     s_breakState = BreakState::Idle;
@@ -352,7 +363,7 @@ inline void finishHoldAbort() {
 } // namespace
 
 void requestSlaveBreak() {
-    if (s_breakState != BreakState::Idle) return;   // juz uzbrojony
+    if (s_breakState != BreakState::Idle) return;
     s_breakState   = BreakState::WaitLow;
     s_breakMark    = micros();
     s_breakArmedAt = s_breakMark;
@@ -390,36 +401,25 @@ void serviceSlaveBreak() {
 
     const unsigned long now = micros();
 
-    // Bezpiecznik: nie probuj w nieskonczonosc, gdyby magistrala nigdy nie byla
-    // dostatecznie dlugo bezczynna.
     if (now - s_breakArmedAt > BREAK_ARM_TIMEOUT_US) {
         cancelSlaveBreak();
         return;
     }
 
-    // Hold — Mictronics: 3 ms DATA LOW w fazie HIGH idle, potem pusc (reszta
-    // HIGH zostaje Hi-Z). Krytyczne: gdy master WYKRYJE break i zacznie takt
-    // Request Poll (`01 15`), NIE wolno dalej trzymac DATA LOW — korumujemy
-    // bity mastera i radio porzuca arbitraz na stale (log 154053: break=N/N,
-    // poll15=0 mimo ukonczenia Hold). Wczesniejszy abort na pierwszym zboczu
-    // (<1 ms) byl za krotki do wykrycia; kompromis: pelne 3 ms w ciszy LUB
-    // wczesny release po BREAK_MIN_VISIBLE_US gdy pojawi sie zegar.
+    // Hold — Mictronics: pelne 3 ms LOW w fazie HIGH, potem Hi-Z na reszte HIGH.
+    // SophWiki: w fazie HIGH bywa 8-bitowy filler clock — NIE przerywamy impulsu
+    // na wczesnym zboczu (inaczej master nie wykrywa Break; log: Hold „OK”
+    // bez powrotu `01 15`). Po HOLD_US puszczamy nawet gdy master juz taktuje.
     if (s_breakState == BreakState::Hold) {
-        const unsigned long held = now - s_breakMark;
-        const bool clocked = !busStillQuiet(s_breakClockRef);
-        if (held >= BREAK_HOLD_US) {
+        if (now - s_breakMark >= BREAK_HOLD_US) {
             finishHoldSuccess();
-        } else if (clocked && held >= BREAK_MIN_VISIBLE_US) {
-            finishHoldSuccess();
-        } else if (clocked) {
-            // Zegar przed minimalnym impulsem — kolizja / zla faza, nie sukces.
-            finishHoldAbort();
         }
         return;
     }
 
-    // Jakakolwiek aktywnosc zegara poza Hold oznacza, ze magistrala nie jest
-    // juz bezczynna — zaczynamy obserwacje fali od nowa.
+    // Zegar = magistrala aktywna — tylko pelna fala idle (NIE "fallback" na
+    // ciszy 5 ms: przerwy miedzy ramkami Request Polling sa ~6 ms i fallback
+    // wstrzeliwal Break w srodek wymiany → RESYNC → 18 10 01 00).
     if (!busStillQuiet(s_breakClockRef)) {
         noInterrupts();
         s_breakClockRef = lastClockTime;
@@ -431,16 +431,22 @@ void serviceSlaveBreak() {
 
     switch (s_breakState) {
         case BreakState::WaitLow:
-            if (!readDataLogic()) {          // zlapalismy faze LOW fali idle
+            if (!readDataLogic()) {
                 s_breakState = BreakState::ConfirmLow;
                 s_breakMark  = now;
             }
             break;
 
         case BreakState::ConfirmLow:
-            if (readDataLogic()) {           // za krotko — to nie byla faza idle
-                s_breakState = BreakState::WaitLow;
-                s_breakMark  = now;
+            if (readDataLogic()) {
+                // Spozniona probka na HIGH po wystarczajaco dlugim LOW = OK.
+                if (now - s_breakMark >= BREAK_IDLE_LOW_MIN_US) {
+                    s_breakState = BreakState::Settle;
+                    s_breakMark  = now;
+                } else {
+                    s_breakState = BreakState::WaitLow;
+                    s_breakMark  = now;
+                }
             } else if (now - s_breakMark >= BREAK_IDLE_LOW_US) {
                 s_breakState = BreakState::WaitHigh;
                 s_breakMark  = now;
@@ -448,22 +454,18 @@ void serviceSlaveBreak() {
             break;
 
         case BreakState::WaitHigh:
-            if (readDataLogic()) {           // zbocze w gore — start fazy HIGH
+            if (readDataLogic()) {
                 s_breakState = BreakState::Settle;
                 s_breakMark  = now;
             }
             break;
 
         case BreakState::Settle:
-            if (!readDataLogic()) {          // faza HIGH zniknela przedwczesnie
+            if (!readDataLogic()) {
                 s_breakState = BreakState::WaitLow;
                 s_breakMark  = now;
             } else if (now - s_breakMark >= BREAK_SETTLE_US) {
-                Diagnostics::recordNote("BREAK");
-                pinMode(PIN_DATA, OUTPUT);
-                digitalWrite(PIN_DATA, INVERT_DATA ? HIGH : LOW);   // DATA logicznie LOW
-                s_breakState = BreakState::Hold;
-                s_breakMark  = now;
+                enterHold(now);
             }
             break;
 
