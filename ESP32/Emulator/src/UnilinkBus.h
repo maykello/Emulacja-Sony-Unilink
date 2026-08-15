@@ -65,10 +65,18 @@ int readFrame(uint8_t* out, int maxLen);
 void resetRx();
 
 // --- SLAVE BREAK ---
-// Sciagniecie linii DATA w dol w fazie idle, by zasygnalizowac radiu chec
-// aktualizacji wyswietlacza. Sam weryfikuje cisze tuz przed pociagnieciem i
-// natychmiast porzuca break, gdy radio ruszy z zegarem (unika kolizji).
-void issueSlaveBreak();
+// Sciagniecie linii DATA w dol, by zasygnalizowac masterowi chec nadawania poza
+// kolejnoscia. Musi trafic w faze HIGH fali idle (8 ms LOW / 8 ms HIGH), ktora
+// master generuje na DATA przy bezczynnej magistrali — stad NIEBLOKUJACA
+// maszyna stanow zamiast jednorazowego szarpniecia linii.
+//
+// Typowe uzycie: requestSlaveBreak() uzbraja, serviceSlaveBreak() wolane w
+// KAZDEJ iteracji loop() przesuwa maszyne o krok i sama zwalnia linie.
+// Jakakolwiek aktywnosc zegara przerywa procedure (zero kolizji z radiem).
+void requestSlaveBreak();
+void serviceSlaveBreak();
+bool slaveBreakPending();
+void cancelSlaveBreak();
 
 } // namespace UnilinkBus
 

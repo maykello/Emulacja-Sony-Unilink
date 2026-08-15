@@ -24,6 +24,21 @@ static MechState     cdState      = MechState::Init;
 static unsigned long seekStartTime = 0;
 static unsigned long initWaitTime  = 0;   // 0 = jeszcze nie bylo pierwszego PINGa
 
+// Ile razy radio odpytalo nas o status/ekran, odkad weszlismy w biezacy stan.
+// Prawdziwa zmieniarka jest wolna: kazdy etap (ladowanie, zmiana plyty) trwa u
+// niej dosc dlugo, by radio zdazylo go ODCZYTAC i pokazac na wyswietlaczu.
+// Nasz mechanizm jest wirtualny i przelaczalby stany w kilkadziesiat ms —
+// szybciej, niz radio zdazy zapytac. Radio widzialoby wtedy tylko stan koncowy,
+// przez co ekran nie odswiezal numeru plyty ani napisu LOAD. Dlatego kazde
+// przejscie wymaga NIE TYLKO uplywu czasu, ale i tego, by radio przynajmniej
+// raz zobaczylo biezacy stan.
+static uint16_t pollsInState = 0;
+
+static inline void enterState(MechState s) {
+    cdState = s;
+    pollsInState = 0;
+}
+
 // --- FLAGA AKTUALIZACJI WYSWIETLACZA ---
 static bool needDisplayUpdate = false;
 
@@ -83,7 +98,7 @@ static void loadLast() {
 // Wejscie w faze ladowania/szukania + start odtwarzania pliku
 // ============================================================
 static void enterSeek() {
-    cdState = MechState::LoadingTrack;
+    enterState(MechState::LoadingTrack);
     seekStartTime = millis();
     playSeconds = 0;
     playMinutes = 0;
@@ -110,18 +125,22 @@ void update(unsigned long now, bool radioEngaged) {
     // C0 -> 80 (po INIT_DURATION_MS od pierwszego PINGa, gdy sesja aktywna)
     if (cdState == MechState::Init && radioEngaged && initWaitTime != 0 &&
         (now - initWaitTime > INIT_DURATION_MS)) {
-        cdState = MechState::Idle;
+        enterState(MechState::Idle);
         Serial.println(">>> C0 -> 80 (Idle)");
     }
 
-    // 0x40 -> 0x20 -> 0x00 (LoadingTrack -> ChangedCd -> Playing)
-    if (cdState == MechState::LoadingTrack && (now - seekStartTime > LOAD_DURATION_MS)) {
-        cdState = MechState::ChangedCd;
+    // 0x40 -> 0x20 -> 0x00 (LoadingTrack -> ChangedCd -> Playing).
+    // Warunek `pollsInState` gwarantuje, ze radio zobaczylo stan posredni —
+    // patrz komentarz przy deklaracji pollsInState.
+    if (cdState == MechState::LoadingTrack &&
+        (now - seekStartTime > LOAD_DURATION_MS) && pollsInState > 0) {
+        enterState(MechState::ChangedCd);
         seekStartTime = millis();
         needDisplayUpdate = true;
         Serial.println(">>> 40 -> 20 (ChangedCd)");
-    } else if (cdState == MechState::ChangedCd && (now - seekStartTime > SEEK_DURATION_MS)) {
-        cdState = MechState::Playing;
+    } else if (cdState == MechState::ChangedCd &&
+               (now - seekStartTime > SEEK_DURATION_MS) && pollsInState > 0) {
+        enterState(MechState::Playing);
         needDisplayUpdate = true;
         playBaseMs = now;       // 00:00 biezacego utworu = teraz
         playSeconds = 0;
@@ -133,7 +152,7 @@ void update(unsigned long now, bool radioEngaged) {
     // Wymaganie 10.2: broadcast 0x08 0x00 (RAD=0x18) zwraca do Playing.
     // Zatrzymanie skanu zatrzaskowego (seekScanDir=0) tez powinno zwrócic do Playing.
     if (cdState == MechState::Seeking && seekScanDir == 0) {
-        cdState = MechState::Playing;
+        enterState(MechState::Playing);
         needDisplayUpdate = true;
         // NIE resetujemy tu czasu! playBaseMs/playMinutes/playSeconds zostaly juz
         // ustawione przez doSeekStep na pozycje, do ktorej przewinieto. Wczesniej
@@ -148,9 +167,7 @@ void update(unsigned long now, bool radioEngaged) {
     // dryftu/przeskokow niezaleznie od jitteru petli.
     //
     // Zmiana sekundy NIE ustawia needDisplayUpdate. Plynne odswiezanie ekranu
-    // zapewnia keepalive-break w UnilinkProtocol::serviceSlaveBreak (budzi radio
-    // gdy dawno nas nie pytalo o 01 13). needDisplayUpdate sluzy tylko do
-    // NATYCHMIASTOWEGO push przy realnej zmianie (utwor/plyta/stan).
+    // idzie przez arbitraz `01 15` (wantsBus raz na DISPLAY_REFRESH_MS).
     if (cdState == MechState::Playing) {
         uint32_t elapsed = (now - playBaseMs) / 1000;
         uint8_t newMin = (uint8_t)((elapsed / 60) % 100);
@@ -158,14 +175,6 @@ void update(unsigned long now, bool radioEngaged) {
         if (newSec != playSeconds || newMin != playMinutes) {
             playSeconds = newSec;
             playMinutes = newMin;
-            // NIE ustawiamy tu needDisplayUpdate. Wymuszanie Slave Break co sekundę
-            // (zeby radio odpytalo ekran 1 Hz) okazalo sie destabilizujace na tej
-            // magistrali: radio nie honoruje breakow niezawodnie, a ~2.5-3 Hz
-            // breakow co jakis czas koliduje z ruchem radia -> poszarpane ramki
-            // (np. 88 A0 08 ..) -> radio robi pelne re-discovery (crash, brak
-            // powrotu do zmieniarki). Czas odswieza sie teraz, gdy radio samo nas
-            // odpytuje (autonomicznie + burst po zmianie). Push-break zostaje TYLKO
-            // dla realnych zmian (utwor/plyta/stan), ktore sa rzadkie.
         }
     }
 }
@@ -195,7 +204,7 @@ void serviceAutoAdvance() {
     //   - Repeat Off  -> nastepny utwor, dopoki jakis jest.
     bool stop = (playModesState.repeat == RepeatMode::Off) && !moved;
     if (stop) {
-        cdState = MechState::Idle;        // koniec listy — zatrzymanie mechanizmu
+        enterState(MechState::Idle);      // koniec listy — zatrzymanie mechanizmu
         needDisplayUpdate = true;
         Serial.println(">> AUTO-NEXT: koniec (Repeat Off, ostatni utwor) — STOP");
     } else {
@@ -243,7 +252,7 @@ void handlePlayCommand() {
             playMinutes = (uint8_t)((t / 60) % 100);
             playSeconds = (uint8_t)(t % 60);
             playBaseMs = millis() - (unsigned long)t * 1000;  // baza = teraz - pozycja
-            cdState = MechState::Playing;
+            enterState(MechState::Playing);
             needDisplayUpdate = true;
             Serial.printf(">> PLAY (wznowienie bez restartu, np. po resecie radia: %02d:%02d)\n",
                           playMinutes, playSeconds);
@@ -339,7 +348,7 @@ void seek(int deltaSec) {
 
     // Start skanowania (lub odwrocenie kierunku) — ustaw stan Seeking.
     if (seekScanDir == 0 || seekScanDir == -dir) {
-        cdState = MechState::Seeking;
+        enterState(MechState::Seeking);
         needDisplayUpdate = true;
     }
 
@@ -412,7 +421,7 @@ void selectDiscTrack(uint8_t disc, uint8_t track) {
 }
 
 void resetToInit() {
-    cdState = MechState::Init;
+    enterState(MechState::Init);
     initWaitTime = 0;
 }
 
@@ -453,12 +462,16 @@ void noteFirstPing() {
     }
 }
 
+void notePolled() {
+    if (pollsInState < 0xFFFF) pollsInState++;
+}
+
 void sleep() {
     // Radio uspione/wylaczone — zatrzymaj dzwiek i zapamietaj ostatni utwor.
     // Magistrala jest juz wylaczona, wiec blokujacy zapis NVS nikomu nie szkodzi.
     doPersist();
     audioStop();
-    cdState = MechState::Init;
+    enterState(MechState::Init);
     initWaitTime = 0;
     needDisplayUpdate = false;
 }

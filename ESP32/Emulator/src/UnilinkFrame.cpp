@@ -107,6 +107,10 @@ uint8_t discNibbleToNumber(uint8_t encoded) {
     return static_cast<uint8_t>(encoded & 0x0F);   // 0xF1 -> 1
 }
 
+uint8_t discHighNibble(uint8_t discNumber, uint8_t flags) {
+    return static_cast<uint8_t>(((discNumber & 0x0F) << 4) | (flags & 0x0F));
+}
+
 // --- KODOWANIE BCD CZASU/UTWORU (Wymaganie 11) ---
 uint8_t encodeBcd(uint8_t value) {
     // 59 -> 0x59, 7 -> 0x07.
@@ -135,14 +139,20 @@ void encodeIconData(uint8_t repeatMode, bool shuffle, bool intro, uint8_t* out) 
     if (out == nullptr) {
         return;
     }
-    uint8_t d1 = 0;
-    if (shuffle) d1 |= 0x01;                              // bit0 = shuffle
-    if (intro)   d1 |= 0x02;                              // bit1 = intro
-    d1 |= static_cast<uint8_t>((repeatMode & 0x03) << 4); // bity 4-5 = repeat
-    out[0] = d1;
-    out[1] = 0x00;   // D2 rezerwa
-    out[2] = 0x00;   // D3 rezerwa
-    out[3] = 0x00;   // D4 rezerwa
+    // Repeat w dolnym nibblu D1: 0x08 OFF / 0x09 REPEAT-1 / 0x0A REPEAT-2.
+    uint8_t repeatBits;
+    switch (repeatMode) {
+        case 1:  repeatBits = 0x09; break;   // Repeat One
+        case 2:  repeatBits = 0x0A; break;   // Repeat All
+        default: repeatBits = 0x08; break;   // Repeat Off
+    }
+    // Intro w gornym nibblu D1: 0x20 OFF / 0x30 ON.
+    const uint8_t introBits = intro ? 0x30 : 0x20;
+
+    out[0] = static_cast<uint8_t>(introBits | repeatBits);   // D1
+    out[1] = shuffle ? 0xD0 : 0x80;                          // D2 = SHUF-1 / SHUF OFF
+    out[2] = 0x80;                                           // D3 = BANK OFF
+    out[3] = 0x00;                                           // D4
 }
 
 void decodeIconData(const uint8_t* data, uint8_t& repeatMode, bool& shuffle, bool& intro) {
@@ -152,10 +162,13 @@ void decodeIconData(const uint8_t* data, uint8_t& repeatMode, bool& shuffle, boo
         intro = false;
         return;
     }
-    const uint8_t d1 = data[0];
-    shuffle    = (d1 & 0x01) != 0;
-    intro      = (d1 & 0x02) != 0;
-    repeatMode = static_cast<uint8_t>((d1 >> 4) & 0x03);
+    switch (data[0] & 0x0F) {
+        case 0x09: repeatMode = 1; break;
+        case 0x0A: repeatMode = 2; break;
+        default:   repeatMode = 0; break;
+    }
+    intro   = ((data[0] & 0xF0) == 0x30);
+    shuffle = (data[1] == 0xD0);
 }
 
 } // namespace UnilinkFrame

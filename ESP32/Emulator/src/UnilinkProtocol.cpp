@@ -26,6 +26,28 @@ static uint8_t myAddr          = AddressManager::ADDR_GROUP_CD;  // = ADDR_DEFAU
 static bool    deviceAllocated = false;
 static unsigned long lastPingTime = 0;
 
+// --- MASKA ZGLOSZENIA DO ARBITRAZU (odpowiedz na `18 10 01 15`) ---
+// Master odpytuje wszystkie urzadzenia jednoczesnie ramka `18 10 01 15`, a one
+// ODPOWIADAJA ROWNOCZESNIE ramka `10 18 82 <maska>`. Magistrala jest typu
+// wired-OR, wiec bajty wszystkich zgloszen sumuja sie bitowo — master widzi
+// jedna ramke z maska wszystkich chetnych i po kolei rozdaje im granty `01 13`.
+//
+// Kazde urzadzenie dostaje swoj bit przy przydziale adresu: maska = dolny
+// nibbel CMD2 ramki appoint. Potwierdzone sniffem CDX-M670:
+//   3B 10 02 11  -> maska 0x01, w polls widac `82 01`, grant leci do 0x3B
+//   31 10 02 14  -> maska 0x04, w polls widac `82 04`, grant leci do 0x31
+//   oba chetne   -> `82 05` (0x01|0x04), master daje grant najpierw 0x3B, potem 0x31
+//
+// Wczesniej wysylalismy tu "typ ekranu" (0x01/0x04/0x05) zalezny od stanu
+// mechanizmu. Przypadkiem trafialo to czasem w nasz bit, ale zwykle zglaszalo
+// CUDZE urzadzenie — dlatego radio pytalo o ekran 0x3B zamiast nas, a my
+// probowalismy wymusic swoje okno Slave Breakiem (i wywolywalismy kolizje).
+constexpr uint8_t CLAIM_MASK_DEFAULT = 0x04;   // jak zmieniarka na 0x31
+static uint8_t claimMask = CLAIM_MASK_DEFAULT;
+
+// Czy mamy cokolwiek do nadania? Tylko wtedy zglaszamy sie w arbitrazu.
+static bool wantsBus();
+
 // Projekcja lokalnych zmiennych <-> AddressManager::State (jedno zrodlo prawdy
 // dla regul; tutaj tylko przeladunek pol).
 static inline AddressManager::State addrState() {
@@ -58,6 +80,9 @@ static unsigned long lastBreakTime      = 0;
 // Czas ostatniego pobrania naszego ekranu przez radio (01 13). Keepalive-break
 // budzi radio, gdy ta wartosc sie zestarzeje.
 static unsigned long lastDisplayServedMs = 0;
+// Czas ostatniej ODDANEJ ramki ekranu. Steruje sekundowym tikiem w wantsBus():
+// dopoki nic sie nie zmienilo, zglaszamy sie do arbitrazu raz na sekunde.
+static unsigned long lastDisplaySentMs = 0;
 
 // --- HARMONOGRAM RAMKI POZYCJI 0x90 (1 Hz) ---
 // Znacznik millis() ostatniej aktualizacji pozycji (0x90). Co sekundę,
@@ -137,81 +162,72 @@ void onBusOff() {
 }
 
 bool serviceTimeout(unsigned long now) {
-    if (deviceAllocated && (now - lastPingTime > RADIO_TIMEOUT_MS)) {
-        // Radio zniklo — wracamy do stanu startowego (R4.1, R4.5).
-        setAddrState(AddressManager::apply(addrState(), AddressManager::Event::Start, 0));
-        return true;
-    }
-    return false;
+    if (!deviceAllocated) return false;
+    // Porownanie ZE ZNAKIEM. `now` moze byc minimalnie starsze od lastPingTime,
+    // jesli wywolujacy pobral millis() przed obsluga ramek. Na typie bez znaku
+    // taka roznica podwija sie do ~4 mld ms i timeout wywala sesje natychmiast
+    // po przydzieleniu adresu — to byla przyczyna petli SYSTEM RESET.
+    if ((long)(now - lastPingTime) <= (long)RADIO_TIMEOUT_MS) return false;
+
+    // Radio zniklo — wracamy do stanu startowego (R4.1, R4.5).
+    setAddrState(AddressManager::apply(addrState(), AddressManager::Event::Start, 0));
+    claimMask = CLAIM_MASK_DEFAULT;   // wlasciwy bit nadejdzie z kolejnym appointem
+    lastPingTime = now; // nie zglaszaj tego samego timeoutu raz za razem
+    return true;
+}
+
+// Czy chcemy dostac grant `01 13`?
+//
+// Na kazde odpytanie `01 15` odpowiadamy ramka zgloszenia (maska albo 0x00).
+// Milczenie zamiast odpowiedzi zamyka serie arbitrazu i ekran w ogole sie nie
+// pojawia — tak bylo w logach po 22:01. Ta wersja wraca do zachowania, przy
+// ktorym ekran dzialal (czas sie aktualizowal), nawet jesli po kilkunastu
+// sekundach master czasem przestawal odpytywac.
+static bool wantsBus() {
+    if (!deviceAllocated) return false;
+    if (!txQueue.isEmpty()) return true;             // czeka konkretna ramka
+    if (CdChanger::isDisplayDirty()) return true;    // zmienil sie utwor/plyta/stan
+    return (millis() - lastDisplaySentMs) >= DISPLAY_REFRESH_MS;
 }
 
 void serviceSlaveBreak(bool busPowered) {
-    // Radio pollu­je nas o ekran (01 13) tylko ~0.3Hz samo z siebie, a czas ma
-    // sie odswiezac ~1Hz. Slave Break to nasza dzwignia: budzi radio, by pobralo
-    // ekran. Dwa tryby:
-    //   - PUSH (isDisplayDirty): natychmiast po realnej zmianie (utwor/plyta),
-    //     odstep BREAK_INTERVAL_MS — szybki feedback klawiszy.
-    //   - KEEPALIVE: gdy radio nie pobralo ekranu od >DISPLAY_KEEPALIVE_MS,
-    //     budzimy je, odstep DISPLAY_KEEPALIVE_MS => maks ~2Hz (bez sztormu,
-    //     ktory przy ~6.7Hz dawal SYSTEM RESET).
-    // Break sam sie chroni (porzuca, gdy radio ruszy zegarem). Po wystawieniu
-    // kasujemy dirty (push obsluzony).
-    if (!busPowered || !deviceAllocated) return;
-    // Break dozwolony w stanach "aktywnego ekranu CD": Playing oraz przejsciowych
-    // (ladowanie/zmiana plyty, seek). Dzieki temu po nacisnieciu klawisza radio
-    // jest budzone NATYCHMIAST (nie czeka ~100ms az wrocimy do Playing) — szybszy
-    // feedback. Blokujemy tylko stany, w ktorych nie ma czego pokazywac na ekranie
-    // czasu (Init/Idle/Ejecting).
-    {
-        CdChanger::MechState ms = CdChanger::mechState();
-        bool activeForDisplay = (ms == CdChanger::MechState::Playing      ||
-                                 ms == CdChanger::MechState::LoadingTrack ||
-                                 ms == CdChanger::MechState::ChangedCd    ||
-                                 ms == CdChanger::MechState::Changing     ||
-                                 ms == CdChanger::MechState::Seeking);
-        if (!activeForDisplay) return;
+    // --- SLAVE BREAK JEST TERAZ TYLKO AWARYJNY ---
+    // Wlasciwym mechanizmem "chce nadawac" jest arbitraz `01 15` -> `10 18 82
+    // <maska>` -> grant `01 13` (patrz claimMask). Break sluzy wylacznie do
+    // wybudzenia mastera, gdy ten CALKOWICIE przestal prowadzic arbitraz.
+    //
+    // Poprzednia wersja traktowala break jako podstawowe narzedzie odswiezania
+    // ekranu i wystawiala go nawet kilka razy na sekunde. Kazdy taki break
+    // trafial w losowa faze ruchu na magistrali, psul cudze ramki i konczyl sie
+    // petla SYSTEM RESET.
+    if (!busPowered || !deviceAllocated) {
+        UnilinkBus::cancelSlaveBreak();
+        return;
     }
 
-    bool silToBreak = (UnilinkBus::microsSinceLastClock() > BREAK_SILENCE_US);
-    if (!silToBreak || UnilinkBus::isTransmitting()) return;
+    UnilinkBus::serviceSlaveBreak();          // przesun maszyne stanow breaka
+    if (UnilinkBus::slaveBreakPending()) return;
 
-    unsigned long nowMs = millis();
+    const unsigned long nowMs = millis();
     if (nowMs < suppressBreakUntil) return;
+    if (nowMs - lastBreakTime < BREAK_RETRY_MS) return;
 
-    // Wyzwalacze Slave Break:
-    //   - change : realna zmiana ekranu (utwor/plyta) — szybki feedback (PUSH),
-    //   - stale  : radio dawno nie pobralo ekranu (keepalive),
-    //   - queued : w kolejce TX czeka ramka (status/disc ID/info/nazwa/czas) i
-    //              trzeba sprowokowac grant 0x13, by ja wyslac.
-    // Kolejka TX traktowana jak PUSH (szybki odstep BREAK_INTERVAL_MS).
-    bool change = CdChanger::isDisplayDirty();
-    bool stale  = (nowMs - lastDisplayServedMs > DISPLAY_KEEPALIVE_MS);
-    bool queued = !txQueue.isEmpty();
-    if (!change && !stale && !queued) return;
+    // Jedyny wyzwalacz: master od dawna nie dal nam grantu, a mamy co pokazac.
+    // "Mamy co pokazac" to dokladnie ten sam warunek, ktorym zglaszamy sie do
+    // arbitrazu — wlacznie z sekundowym tikiem czasu. Wczesniej bylo tu tylko
+    // `dirty || kolejka niepusta`, wiec w sytuacji, gdy master przestal prowadzic
+    // arbitraz podczas spokojnego grania (nic nie dirty, kolejka pusta), break
+    // NIE padal ani razu i ekran zostawal zamrozony na ostatniej sekundzie.
+    const bool starved = (nowMs - lastDisplayServedMs > DISPLAY_STARVED_MS);
+    if (!starved) return;
+    if (!wantsBus()) return;
 
-    // [HIGH-RISK] Stale czasowe. `change` (realna zmiana ekranu: klawisz / nowy
-    // utwor / tik sekundy) dostaje SZYBKI odstep ~40ms, by feedback klawiszy byl
-    // niemal natychmiastowy. To NIE jest sztorm: `change` (dirty) ustawiany jest
-    // przy DYSKRETNYCH zdarzeniach (raz na sekunde dla czasu, raz na nacisniecie)
-    // i kasowany po wystawieniu break — wiec realnie ~1 break/s + 1 na klawisz.
-    // Sztorm, ktory dawal SYSTEM RESET, bral sie z `queued` trzymanego stale przy
-    // zalegajacej kolejce (juz nie wystepuje — czas budujemy swiezo na grant).
-    // Naturalny prog to i tak BREAK_SILENCE_US (8ms ciszy) wymagany nizej.
-    const unsigned long BREAK_CHANGE_FAST_MS = 40;
-    unsigned long minInterval;
-    if (change)      minInterval = BREAK_CHANGE_FAST_MS;   // szybki feedback klawiszy/czasu
-    else if (queued) minInterval = BREAK_INTERVAL_MS;      // kolejka (CD-TEXT/disc ID)
-    else             minInterval = DISPLAY_KEEPALIVE_MS;   // keepalive
-    if (nowMs - lastBreakTime < minInterval) return;
-
-    UnilinkBus::issueSlaveBreak();
+    UnilinkBus::requestSlaveBreak();
     lastBreakTime = nowMs;
     statBreak++;
     if (DEBUG_FRAMES) {
-        Serial.printf("   BREAK (change=%d stale=%d queued=%d)\n",
-                      change ? 1 : 0, stale ? 1 : 0, queued ? 1 : 0);
+        Serial.printf("   BREAK (brak grantu od %lums)\n", nowMs - lastDisplayServedMs);
     }
-    CdChanger::clearDisplayDirty();
 }
 
 // ------------------------------------------------------------
@@ -303,89 +319,130 @@ static void enqueueCdTextField(bool isDisc, int field) {
 //   zadanie : 31 71 84 D7 FD 70 00 00 01 6E 00   (op2=0xD7, tad=0x71=proc.ekranu)
 //   odpowiedz: 70 31 D2 4B BE 61 70 69 74 61 02 00 F1 10 D0 00  ("Kapita")
 //             70 31 D2 6E E1 73 6B 69 65 20 74 01 F1 10 23 00  ("nskie…")
-// Format ramki 0xD2 (long, 16B): pierwszy znak w CMD2, kolejne 5 w D1..D5
-// (6 znakow na ramke), D6=0x00, D7=numer pola, D8=numer plyty F|nr, D9=0x10.
-// Radio NIE podaje numeru pola w zadaniu (D-bajty stale) — wysyla te samo
-// zadanie wielokrotnie, a ZMIENIARKA STRUMIENIUJE kolejne pola. Trzymamy wiec
-// wlasny licznik pola, zerowany przy zmianie plyty/utworu; po wyczerpaniu nazwy
-// zawijamy do pola 0 (radio sklada nazwe wg numeru pola w D7).
+// Format ramki 0xD2 (long, 16B) odczytany z tych ramek:
+//   "Kapita"  -> CMD2='K', D1..D5="apita", D6=0x02, D7=0x00, D8=0xF1, D9=0x10
+//   "nskie t" -> CMD2='n', D1..D6="skie t",         D7=0x01, D8=0xF1, D9=0x10
+// czyli tekst leje sie przez sloty CMD2,D1..D6, D6=0x02 znaczy "ciag dalszy",
+// a D7=0x01 znaczy "to ostatnia ramka nazwy". D8 = numer UTWORU jako F|nr
+// (0xF1..0xF4 dla utworow 1..4 w sniffie), D9 = 0x10. Zaraz po nazwie utworu
+// zmieniarka wysyla ramke 0xDA z nazwa plyty (D8 = numer plyty).
+//
+// Wczesniej wpisywalismy w D7 numer pola, a w D8 numer plyty i wysylalismy po
+// jednej ramce na zadanie — radio nie mialo jak rozpoznac konca nazwy i nie
+// skladalo tekstu.
 //
 // [WARIANT_PROTOKOLU §10.3] To jest format uzywany przez CDX-M670. Starszy
 // handler 0xC9/0xD9 (8 znakow) pozostaje dla radii uzywajacych wariantu §10.2.
-static uint8_t s_d2Field      = 0;
-static uint8_t s_d2ForDisc    = 0;
-static uint8_t s_d2ForTrack   = 0;
+// Maksymalna dlugosc nazwy przesylanej w tym wariancie. Prawdziwa zmieniarka
+// obcina KAZDA nazwe do 13 znakow (wszystkie zaobserwowane nazwy: "Kapitanskie t",
+// "Do zakochania", "Staruszek Swi" — dokladnie 13 znakow, dwie ramki 6+7).
+constexpr int D2_MAX_CHARS  = 13;
+constexpr int D2_SLOT_COUNT = 8;   // CMD2 + D1..D7
 
-static void enqueueCdTextD2Track() {
-    uint8_t disc  = CdChanger::disk();
-    uint8_t track = CdChanger::track();
-
-    // Reset strumienia przy zmianie selekcji (nowa plyta/utwor => od pola 0).
-    if (disc != s_d2ForDisc || track != s_d2ForTrack) {
-        s_d2ForDisc  = disc;
-        s_d2ForTrack = track;
-        s_d2Field    = 0;
+// Zbuduj 8 slotow jednego segmentu nazwy (CMD2, D1..D7) wg ukladu ze sniffu:
+//   segment NIEOSTATNI : 6 znakow w slotach 0..5, slot6 = 0x02 ("ciag dalszy"),
+//                        slot7 = 0x00
+//   segment OSTATNI    : do 7 znakow w slotach 0..6 (reszta 0x00),
+//                        slot7 = 0x01 ("koniec nazwy")
+// Zwraca liczbe znakow zuzytych z `name`.
+static int buildTextSegment(const char* name, int offset, bool last, uint8_t* slots) {
+    for (int i = 0; i < D2_SLOT_COUNT; ++i) slots[i] = 0x00;
+    const int capacity = last ? 7 : 6;
+    int used = 0;
+    while (used < capacity && name[offset + used] != '\0') {
+        slots[used] = (uint8_t)name[offset + used];
+        used++;
     }
+    slots[6] = last ? slots[6] : 0x02;   // marker kontynuacji tuz za tekstem
+    slots[7] = last ? 0x01 : 0x00;       // 0x01 = ostatnia ramka nazwy
+    return used;
+}
+
+// Zloz i zakolejkuj jedna ramke nazwy (0xD2 = utwor, 0xDA = plyta).
+// Uklad long (16B): CMD2 + D1..D5 = znaki, D6/D7 = markery, D8 = numer utworu
+// F|nr (0xD2) albo numer plyty (0xDA), D9 = 0x10.
+static void enqueueTextFrame(uint8_t cmd1, const uint8_t* slots, uint8_t d8) {
+    uint8_t frame[16];
+    frame[0]  = 0x70;                      // RAD = wyswietlacz
+    frame[1]  = myAddr;                    // TAD = nasz adres
+    frame[2]  = cmd1;                      // CMD1 = 0xD2 (utwor) / 0xDA (plyta)
+    frame[3]  = slots[0];                  // CMD2 = znak 0
+    frame[4]  = UnilinkFrame::parity1(frame[0], frame[1], frame[2], frame[3]);
+    for (int i = 1; i < D2_SLOT_COUNT; ++i) {
+        frame[4 + i] = slots[i];           // D1..D7 = znaki 1..5 + markery
+    }
+    frame[12] = d8;                        // D8 = numer utworu / plyty
+    frame[13] = 0x10;                      // D9 (stale w sniffie CDX-M670)
+    frame[14] = UnilinkFrame::parity2(frame[4], &frame[5], 9);
+    frame[15] = 0x00;                      // END
+    enqueue(Tx::PRIO_CD_TEXT, frame, sizeof(frame));
+}
+
+// Zakolejkuj CALA nazwe (wszystkie segmenty) jednym ciagiem. Prawdziwa
+// zmieniarka odpowiada na kolejne granty dokladnie tak: segment 0, segment 1,
+// a potem ramka nazwy plyty 0xDA.
+static void enqueueTextName(uint8_t cmd1, const char* rawName, uint8_t d8) {
+    char sane[64];
+    CdText::sanitizeAscii(rawName, sane, sizeof(sane));
+    int total = 0;
+    while (sane[total] != '\0' && total < D2_MAX_CHARS) total++;
+    sane[total] = '\0';
+
+    uint8_t slots[D2_SLOT_COUNT];
+    if (total == 0) {
+        // Pusta nazwa: zmieniarka i tak wysyla jedna ramke-placeholder z
+        // markerem kontynuacji (sniff: `70 31 DA 00 7B 00 00 00 00 00 02 00 ...`).
+        buildTextSegment(sane, 0, /*last=*/false, slots);
+        enqueueTextFrame(cmd1, slots, d8);
+        return;
+    }
+
+    int offset = 0;
+    while (offset < total) {
+        const bool last = (total - offset) <= 7;
+        offset += buildTextSegment(sane, offset, last, slots);
+        enqueueTextFrame(cmd1, slots, d8);
+    }
+}
+
+// Odpowiedz na `84 D7`: nazwa biezacego utworu (0xD2), a po niej nazwa plyty
+// (0xDA) — dokladnie taka sekwencje wysyla prawdziwa zmieniarka.
+static void enqueueCdTextD2Track() {
+    const uint8_t disc  = CdChanger::disk();
+    const uint8_t track = CdChanger::track();
+
+    // Nie duplikuj nazw, gdy poprzedni komplet jeszcze nie zszedl z kolejki.
+    if (!txQueue.isEmpty()) return;
 
     char raw[64];
     audioGetTrackName(disc, track, raw, sizeof(raw));
-    char name[64];
-    CdText::sanitizeAscii(raw, name, sizeof(name));
+    enqueueTextName(0xD2, raw, UnilinkFrame::encodeDiscNibble(track));
 
-    // Po wyczerpaniu nazwy zawijamy do pola 0 (radio i tak sklada wg D7).
-    if (!CdText::fieldExists(name, s_d2Field, CdText::FIELDD2_CHARS)) {
-        s_d2Field = 0;
-        if (!CdText::fieldExists(name, 0, CdText::FIELDD2_CHARS)) return;  // pusta nazwa
-    }
-
-    uint8_t chars[CdText::FIELDD2_CHARS];   // 6 znakow (pierwszy -> CMD2)
-    CdText::buildFieldD2(name, s_d2Field, chars);
-
-    uint8_t frame[16];
-    frame[0]  = 0x70;                          // RAD = wyswietlacz
-    frame[1]  = myAddr;                         // TAD = nasz adres
-    frame[2]  = 0xD2;                           // CMD1 = 0xD2 (CD-TEXT tryb CD)
-    frame[3]  = chars[0];                       // CMD2 = znak 0
-    frame[4]  = UnilinkFrame::parity1(frame[0], frame[1], frame[2], frame[3]);
-    frame[5]  = chars[1];                       // D1 = znak 1
-    frame[6]  = chars[2];                       // D2 = znak 2
-    frame[7]  = chars[3];                       // D3 = znak 3
-    frame[8]  = chars[4];                       // D4 = znak 4
-    frame[9]  = chars[5];                       // D5 = znak 5
-    frame[10] = 0x00;                           // D6 (rezerwa)
-    frame[11] = s_d2Field;                      // D7 = numer pola (sklejanie w radiu)
-    frame[12] = UnilinkFrame::encodeDiscNibble(disc);  // D8 = plyta F|nr
-    frame[13] = 0x10;                           // D9 (stale w sniffie CDX-M670)
-    frame[14] = UnilinkFrame::parity2(frame[4], &frame[5], 9);
-    frame[15] = 0x00;                           // END
-
-    enqueue(Tx::PRIO_CD_TEXT, frame, sizeof(frame));
-    s_d2Field++;   // nastepne zadanie -> kolejne pole (strumien)
+    audioGetDiscName(disc, raw, sizeof(raw));
+    enqueueTextName(0xDA, raw, (uint8_t)(disc & 0x0F));
 }
 
 // ------------------------------------------------------------
 // MAGAZYNEK: ADRESOWANIE ODPOWIEDZI (RAD)
 // ------------------------------------------------------------
-// Ramki magazynka (0x95 mapa / 0x97 info) i disc ID (0xD5) adresujemy RAD=0x70
-// (wyswietlacz) — SPÓJNIE z pozostalymi ramkami kolejkowanymi w TxQueue: status
-// odtwarzania 0xC0 (sendDisplayStatus) i nazwy CD-TEXT (enqueueCdTextField)
-// rowniez uzywaja RAD=0x70. Wszystkie te odpowiedzi schodza z kolejki po tym
-// samym grancie request-poll `0x01 0x13` (kierowanym do nas: rad=myAddr,
-// tad=0x10), wiec adresujemy je jednolicie jak inne ramki ekranowe. TAD=myAddr
-// (nasz przydzielony adres) we wszystkich odpowiedziach. (design.md §7,
-// Kompendium §8.2 — disc/magazyn info odsylane do warstwy ekranu radia.)
+// Ramki opisujace TRESC EKRANU (0x95 mapa magazynka, 0x97 info plyty, 0x94
+// ikony, 0xC0 status, nazwy CD-TEXT) ida na RAD=0x70 — tak jak w sniffie
+// (`70 31 95 ...`, `70 31 8E ...`, `70 31 C0 ...`). Wyjatkiem sa ramki
+// identyfikatora plyty 0xC5/0xD5, ktore prawdziwa zmieniarka adresuje do
+// mastera (`10 31 C5 ...`) — obsluguje je enqueueDiscId, nie ten helper.
+// TAD=myAddr we wszystkich odpowiedziach.
 static constexpr uint8_t MAGAZINE_RAD = 0x70;  // RAD = wyswietlacz (jak 0xC0 / CD-TEXT)
 
 // ------------------------------------------------------------
 // Magazynek: zbuduj i ZAKOLEJKUJ ramke middle (0x95 mapa / 0x97 info plyty).
 // data4 = 4 bajty danych (D1..D4). CMD1 0x80..0xBF => ramka middle (11B).
 // ------------------------------------------------------------
-static void enqueueMagazineMiddle(uint8_t cmd1, const uint8_t* data4) {
+static void enqueueMagazineMiddle(uint8_t cmd1, uint8_t cmd2, const uint8_t* data4) {
     uint8_t frame[11];
     frame[0]  = MAGAZINE_RAD;          // RAD = wyswietlacz
     frame[1]  = myAddr;                // TAD = nasz adres
     frame[2]  = cmd1;                  // CMD1 = 0x95 / 0x97 (middle)
-    frame[3]  = 0x00;                  // CMD2
+    frame[3]  = cmd2;                  // CMD2
     frame[4]  = UnilinkFrame::parity1(frame[0], frame[1], frame[2], frame[3]);
     frame[5]  = data4[0];              // D1
     frame[6]  = data4[1];              // D2
@@ -397,33 +454,63 @@ static void enqueueMagazineMiddle(uint8_t cmd1, const uint8_t* data4) {
 }
 
 // ------------------------------------------------------------
-// Magazynek: zbuduj i ZAKOLEJKUJ ramke disc ID 0xD5 (long, 9 bajtow danych).
+// Magazynek: zbuduj i ZAKOLEJKUJ ramke disc ID 0xC5/0xD5 (long, 9B danych).
 // ------------------------------------------------------------
-// Wywolywane przy skanie magazynka / zmianie plyty (R7.3). Disc ID jest staly
-// dla danej plyty miedzy zadaniami (R7.5) — Magazine::buildDiscId cache'uje go.
-// CMD1 >= 0xC0 => ramka long (16B). Publiczne API, aby kod wykrywajacy zmiane
-// plyty (inne zadania w CdChanger / wybor 0xB0) mogl je wywolac.
-//
-// [WIRING] Wpiecie w detekcje zmiany plyty zyje w module CdChanger (nextDisc/
-// prevDisc/0xB0), ktory nalezy do innych zadan — tutaj wystawiamy gotowy helper
-// (deklaracja w UnilinkProtocol.h), by te zadania mogly go wywolac bez
-// duplikowania logiki budowania ramki.
-void enqueueDiscId(uint8_t disc) {
+// Wywolywane przy skanie magazynka (0xC5) i przy zmianie plyty (0xD5) — R7.3.
+// Disc ID jest staly dla danej plyty miedzy zadaniami (R7.5); cache'uje go
+// Magazine::buildDiscId. CMD1 >= 0xC0 => ramka long (16B).
+void enqueueDiscId(uint8_t disc, bool discChangeVariant) {
     uint8_t d[Magazine::DISC_ID_DATA_LEN];
-    Magazine::buildDiscId(disc, d);
+    uint8_t cmd2 = 0x00;
+    Magazine::buildDiscId(disc, discChangeVariant, cmd2, d);
 
     uint8_t frame[16];
-    frame[0]  = MAGAZINE_RAD;          // RAD = wyswietlacz
+    // RAD = 0x10 (master), NIE 0x70. Sniff CDX-M670:
+    //   10 31 C5 A2 A8 | 24 77 52 F0 00 00 00 00 88 | 0D 00   (skan magazynka)
+    //   10 31 D5 A2 B8 | 24 77 52 F1 00 00 00 00 88 | 1E 00   (zmiana plyty)
+    // Identyfikator plyty to dane dla logiki radia (Custom File), a nie tresc
+    // ekranu — dlatego trafia do mastera. Wczesniej wysylalismy go na 0x70.
+    frame[0]  = ADDR_MASTER;           // RAD = master
     frame[1]  = myAddr;                // TAD = nasz adres
-    frame[2]  = 0xD5;                  // CMD1 = 0xD5 (long, disc ID)
-    frame[3]  = 0x00;                  // CMD2
+    frame[2]  = discChangeVariant ? 0xD5 : 0xC5;
+    frame[3]  = cmd2;                  // CMD2 = 0xA|setne sekundy TOC
     frame[4]  = UnilinkFrame::parity1(frame[0], frame[1], frame[2], frame[3]);
     for (int i = 0; i < Magazine::DISC_ID_DATA_LEN; ++i) {
-        frame[5 + i] = d[i];           // D1..D9 = ID plyty + F|nr
+        frame[5 + i] = d[i];           // D1..D9 = TOC plyty + numer plyty
     }
     frame[14] = UnilinkFrame::parity2(frame[4], &frame[5], Magazine::DISC_ID_DATA_LEN);  // P2 nad D1..D9
     frame[15] = 0x00;                  // END
     enqueue(Tx::PRIO_DISC_ID, frame, sizeof(frame));
+}
+
+// ------------------------------------------------------------
+// ZMIANA PLYTY: ramka 0x9C (middle) — powiadomienie dla radia.
+// ------------------------------------------------------------
+// Sniff CDX-M670: `90 31 9C 00 | 5D | 00 00 00 10 | 6D | 00` (CD1) oraz
+// `90 31 9C 00 5D 00 00 00 88 E5 00` (CD8). RAD=0x90, CMD2=0x00, D1..D3=0,
+// D4 = numer plyty w gornym nibblu. Emulator wczesniej w ogole nie wysylal tej
+// ramki, przez co radio nie odswiezalo numeru plyty po `0x28`/`0x29`/`0xB0`.
+static void enqueueDiscChange(uint8_t disc) {
+    uint8_t frame[11];
+    frame[0]  = 0x90;                  // RAD = 0x90 (wg sniffu)
+    frame[1]  = myAddr;                // TAD = nasz adres
+    frame[2]  = 0x9C;                  // CMD1 = 0x9C (middle, zmiana plyty)
+    frame[3]  = 0x00;                  // CMD2
+    frame[4]  = UnilinkFrame::parity1(frame[0], frame[1], frame[2], frame[3]);
+    frame[5]  = 0x00;                  // D1
+    frame[6]  = 0x00;                  // D2
+    frame[7]  = 0x00;                  // D3
+    frame[8]  = UnilinkFrame::discHighNibble(disc, 0x00);   // D4 = numer plyty
+    frame[9]  = UnilinkFrame::parity2(frame[4], &frame[5], 4);
+    frame[10] = 0x00;                  // END
+    enqueue(Tx::PRIO_STATUS, frame, sizeof(frame));
+}
+
+// Wspolna reakcja na KAZDA zmiane plyty (0x28 / 0x29 / 0xB0 / auto-advance):
+// powiadomienie 0x9C + identyfikator plyty 0xD5 (R7.3).
+static void onDiscChanged(uint8_t disc) {
+    enqueueDiscChange(disc);
+    enqueueDiscId(disc, /*discChangeVariant=*/true);
 }
 
 // ------------------------------------------------------------
@@ -440,7 +527,6 @@ void enqueueDiscId(uint8_t disc) {
 // informacja statusowa zblizona charakterem do info magazynka (oba to ramki
 // middle 0x9X z biezacym stanem urzadzenia), wiec uzywamy Tx::PRIO_MAGAZINE.
 // Adresowanie jak inne ramki ekranowe: RAD=0x70 (wyswietlacz), TAD=myAddr.
-// Zawiera kodowanie stanu trybow w D1 (shuffle bit0, intro bit1, repeat w bity 4-5).
 void enqueueModeIconsHelper(uint8_t repeatMode, bool shuffle, bool intro) {
     uint8_t data[UnilinkFrame::ICON_DATA_LEN];
     UnilinkFrame::encodeIconData(repeatMode, shuffle, intro, data);
@@ -566,13 +652,10 @@ void enqueuePositionFrameFull() {
 }
 
 // Harmonogram 1Hz — ZACHOWANY dla zgodnosci API, ale CELOWO NIE pre-kolejkuje
-// juz ramek czasu. Ramka 0xC0 jest budowana SWIEZO na grant 0x13 (patrz sekcja 5
-// handlePacket), wiec radio zawsze dostaje aktualny czas/utwor/plyte. Wczesniejsze
-// pre-kolejkowanie co sekunde powodowalo:
-//   - zaleganie nieaktualnych ramek przy wolniejszym odpytywaniu (miganie plyty
-//     CD01->CD02->CD01, opoznione reakcje),
-//   - utrzymywanie txQueue niepustej => Slave Break wyzwalany flaga `queued`
-//     nawet co BREAK_INTERVAL_MS (150ms) => sztorm break => SYSTEM RESET radia.
+// juz ramek czasu. Ekran budujemy SWIEZO na grant 0x13 (patrz sekcja 5
+// handlePacket), wiec radio zawsze dostaje aktualny czas/utwor/plyte.
+// Pre-kolejkowanie co sekunde powodowalo zaleganie nieaktualnych ramek przy
+// wolniejszym odpytywaniu (miganie plyty CD01->CD02->CD01, opoznione reakcje).
 // Plynny licznik utrzymuje CdChanger::update() (z playBaseMs); radio dolicza
 // sekundy lokalnie miedzy odpytaniami (UNILINK_PROTOKOL.md §7).
 void servicePositionFrame1Hz(unsigned long now) {
@@ -676,16 +759,25 @@ void handlePacket(const uint8_t* buf, int len) {
         }
     }
 
-    // ===== 1a. UNAPPOINTED CHANGER QUERY (18 10 01 11 / 18 10 01 01) =====
-    // Prawdziwa zmieniarka odpowiada magicznym pakietem 10 18 04 00 2C 00, ktory
-    // wywoluje u radia SYSTEM RESET i cykl BUS_ON inicjujacy wlasciwe discovery.
-    // W trybie CDX-M670 odpowiadamy tez na op2=0x01.
-    else if (rad == ADDR_BROADCAST && tad == ADDR_MASTER && op1 == 0x01 &&
-             (op2 == 0x11 || (isCdxM670 && op2 == 0x01))) {
+    // ===== 1a. UNAPPOINTED CHANGER QUERY (18 10 01 11) =====
+    // Prawdziwa zmieniarka odpowiada magicznym pakietem `10 18 04 00 2C 00`,
+    // po ktorym master robi SYSTEM RESET i uruchamia wlasciwe discovery. Sniff:
+    //   18 10 01 11 3A 00
+    //   10 18 04 00 2C 00     <- zmieniarka
+    //   18 10 01 00 29 00     <- master: system reset -> discovery
+    // Po przydzieleniu adresu zmieniarka MILCZY na `01 11` (w sniffie kilkadziesiat
+    // takich odpytan bez odpowiedzi) — stad warunek `!deviceAllocated`.
+    //
+    // Wczesniej odpowiadalismy magic-pakietem takze na `01 01` (w trybie
+    // CDX-M670). Prawdziwa zmieniarka NIGDY tego nie robi — `01 01` przechodzi u
+    // niej bez echa. Nasza dodatkowa odpowiedz wywolywala u radia zbedny SYSTEM
+    // RESET w srodku discovery, czyli dokladnie te petle resetow, ktora mielismy
+    // naprawiac.
+    else if (rad == ADDR_BROADCAST && tad == ADDR_MASTER && op1 == 0x01 && op2 == 0x11) {
         if (!deviceAllocated) {
             const uint8_t magic[] = {0x10, 0x18, 0x04, 0x00, 0x2C, 0x00};
             UnilinkBus::sendRaw(magic, sizeof(magic));
-            Serial.printf(">> Odpowiadam na 01 %02X (nieprzydzielona zmieniarka): magic 10 18 04 00\n", op2);
+            Serial.println(">> Odpowiadam na 01 11 (nieprzydzielona zmieniarka): magic 10 18 04 00");
         }
     }
 
@@ -715,6 +807,16 @@ void handlePacket(const uint8_t* buf, int len) {
     // Kompendium §6.2). op2 i sam adres roznia sie miedzy radiami.
     else if (tad == ADDR_MASTER && op1 == 0x02 && AddressManager::isCdGroup(rad)) {
         setAddrState(AddressManager::apply(addrState(), AddressManager::Event::Appoint, rad));
+        // Wraz z adresem master przydziela nam bit w arbitrazu `01 15` — jest to
+        // dolny nibbel CMD2 tej ramki (0x14 -> 0x04 w sniffie CDX-M670).
+        if ((op2 & 0x0F) != 0) {
+            claimMask = (uint8_t)(op2 & 0x0F);
+        }
+        // Okno "master o mnie zapomnial" liczymy od przydzialu adresu. Bez tego
+        // lastDisplayServedMs zostaje na 0 i tuz po appoincie wygladamy na
+        // zaglodzonych — emulator wystawilby Slave Break w srodku discovery.
+        lastDisplayServedMs = millis();
+        lastDisplaySentMs   = lastDisplayServedMs;
         CdChanger::resetToInit();
         // POTWIERDZENIE device info 0x8C, TAD = myAddr (R4.3). Atrybuty zgodne z
         // prawdziwa zmieniarka (sniff, adres 0x31):
@@ -727,26 +829,22 @@ void handlePacket(const uint8_t* buf, int len) {
         Serial.printf(">> Adres przydzielony: 0x%02X (op2=0x%02X)! deviceAllocated=true\n", myAddr, op2);
     }
 
-    // ===== 3. SLAVE POLL — kto chce wyswietlacz? (18 10 01 15) =====
-    // Format: 10 18 82 <typ> | PAR1 | 00 00 00 00 | PAR2 00, gdzie typ ekranu:
-    //   0x01 = startowy/idle, 0x04 = odtwarzanie, 0x05 = przejsciowy.
+    // ===== 3. ARBITRAZ — kto chce nadawac? (18 10 01 15) =====
+    // Odpowiedz: 10 18 82 <maska> | PAR1 | 00 00 00 00 | PAR2 00.
+    // <maska> to NASZ bit przydzielony przy appoint (patrz claimMask), a nie
+    // "typ ekranu" — wszystkie urzadzenia odpowiadaja rownoczesnie, a wired-OR
+    // skleja ich bity w jedna ramke, ktora master rozklada na kolejne granty.
     else if (rad == ADDR_BROADCAST && tad == ADDR_MASTER && op1 == 0x01 && op2 == 0x15) {
-        uint8_t displayType;
-        CdChanger::MechState ms = CdChanger::mechState();
-        if (ms == CdChanger::MechState::Playing ||
-            ms == CdChanger::MechState::Seeking) {
-            displayType = 0x04;  // Playing/FF-REW — pelny ekran z track/czas
-        } else if (ms == CdChanger::MechState::Changing ||
-                   ms == CdChanger::MechState::LoadingTrack ||
-                   ms == CdChanger::MechState::ChangedCd) {
-            displayType = 0x05;  // zmiana/ladowanie plyty — ekran przejsciowy
-        } else {
-            displayType = 0x01;  // Init/Idle/Ejecting — ekran startowy
-        }
-        UnilinkBus::sendMedium(0x10, 0x18, 0x82, displayType, 0x00, 0x00, 0x00, 0x00);
+        // Dopoki nie mamy adresu, nie mamy tez przydzielonego bitu — milczymy,
+        // dokladnie tak jak prawdziwa zmieniarka przed appointem.
+        if (!deviceAllocated) return;
+        // Zglaszamy WYLACZNIE swoj bit (claimMask). Zero => "nie chce magistrali";
+        // w wired-OR nie psuje to zgloszen innych urzadzen (ich bity sie dosumuja).
+        const uint8_t mask = wantsBus() ? claimMask : 0x00;
+        UnilinkBus::sendMedium(0x10, 0x18, 0x82, mask, 0x00, 0x00, 0x00, 0x00);
         if (DEBUG_VERBOSE) {
-            Serial.printf(">> Odpowiadam na 01 15 (Slave Poll): chce ekran typ 0x%02X (status=0x%02X)\n",
-                          displayType, statusByteFromState(CdChanger::mechState()));
+            Serial.printf(">> 01 15 (arbitraz): zglaszam maske 0x%02X (status=0x%02X)\n",
+                          mask, statusByteFromState(CdChanger::mechState()));
         }
     }
 
@@ -759,6 +857,7 @@ void handlePacket(const uint8_t* buf, int len) {
     else if (rad == myAddr && (tad == ADDR_MASTER || tad == ADDR_DISPLAY) &&
              op1 == 0x01 && op2 == 0x12) {
         if (tad == ADDR_MASTER) CdChanger::noteFirstPing();
+        CdChanger::notePolled();   // radio zobaczylo biezacy stan mechanizmu
         // Odpowiedz: <pytajacy> <addr> 00 <statusByte> <parity> 00
         // [DEVIATION §7.1] Init->0x80 (Idle) zamiast starych 0xC0 (Ejecting).
         // Mapowanie zyje w UnilinkFrame::statusByte, tu wykorzystujemy helper.
@@ -771,13 +870,14 @@ void handlePacket(const uint8_t* buf, int len) {
     // ===== 5. UPDATE DISPLAY (3X 10 01 13) =====
     // TYLKO gdy tad == 0x10 (pytanie do nas). NIE odpowiadamy na 31 14 01 13 —
     // to pytanie do display processora (0x14), nie do nas.
-    // Grant request-poll: zdejmujemy DOKLADNIE JEDNA ramke z kolejki TX i ja
-    // nadajemy (Kompendium §7.2 / §12.4). Po zakonczeniu zadania 14.2 (ramka 0xC0)
-    // kolejka jest zawsze pelna (ramki 0x90 i 0xC0 saenqueueowane co sekunde / 30s),
-    // wiec sendDisplayStatus() nie jest juz wywolywane.
+    // Grant po arbitrazu `01 15`: zdejmujemy DOKLADNIE JEDNA ramke z kolejki TX
+    // i ja nadajemy. Gdy kolejka jest pusta, budujemy swiezy ekran w miejscu —
+    // tak jak prawdziwa zmieniarka, ktora na kazdy grant odpowiada aktualnym
+    // stanem (0x90 tik czasu / 0xC0 pelny status / 0x8E ekran spoczynku).
     else if (rad == myAddr && tad == ADDR_MASTER && op1 == 0x01 && op2 == 0x13) {
         lastDisplayServedMs = millis();  // radio wlasnie pobralo nasz ekran
-        CdChanger::clearDisplayDirty();
+        lastDisplaySentMs   = lastDisplayServedMs;
+        CdChanger::notePolled();
         Tx::TxItem item;
         if (txQueue.dequeue(item)) {
             // Ramka w kolejce jest juz gotowa (z parzystosciami) — nadajemy
@@ -787,7 +887,10 @@ void handlePacket(const uint8_t* buf, int len) {
             // Kolejka pusta: zbuduj i NADAJ NATYCHMIAST swiezy ekran. W ustalonym
             // Playing to lekki tik 0x90 (radio interpoluje sekundy -> gladki czas);
             // przy zmianie plyty/utworu lub poza Playing -> pelny 0xC0 (numer plyty).
+            // Flage "ekran sie zmienil" kasujemy DOPIERO tutaj: buildStatusC0
+            // wpisuje ja w dolny nibbel D9, wiec radio musi ja najpierw zobaczyc.
             sendFreshDisplay();
+            CdChanger::clearDisplayDirty();
         }
     }
 
@@ -868,11 +971,11 @@ void handlePacket(const uint8_t* buf, int len) {
     }
     else if (rad == myAddr && op1 == 0x28) {
         CdChanger::nextDisc();
-        enqueueDiscId(CdChanger::disk());   // R7.3: disc ID przy zmianie plyty
+        onDiscChanged(CdChanger::disk());   // R7.3: 0x9C + disc ID
     }
     else if (rad == myAddr && op1 == 0x29) {
         CdChanger::prevDisc();
-        enqueueDiscId(CdChanger::disk());   // R7.3: disc ID przy zmianie plyty
+        onDiscChanged(CdChanger::disk());   // R7.3: 0x9C + disc ID
     }
 
     // ===== 8. Zadanie CD-TEXT — nazwa utworu (3X .. 84 D9) =====
@@ -901,19 +1004,22 @@ void handlePacket(const uint8_t* buf, int len) {
     }
 
     // ===== 10. Zadanie mapy magazynka (3X .. 84 95) =====
-    // Radio prosi o mape obecnosci plyt. Odsylamy ramke 0x95 (middle), w ktorej
-    // 16-bitowa mapa Magazine::presenceMap() trafia do D1 (mlodszy bajt) i D2
-    // (starszy bajt); D3/D4 = 0. Bit i = plyta (i+1) obecna (R7.1). Odpowiedz
-    // kolejkowana (Tx::PRIO_MAGAZINE), nadawana po grancie 0x13.
+    // Radio prosi o mape obecnosci plyt (R7.1). Odpowiedz kolejkowana
+    // (Tx::PRIO_MAGAZINE), nadawana po grancie 0x13.
     else if (rad == myAddr && op1 == 0x84 && op2 == 0x95) {
-        uint16_t pm = Magazine::presenceMap();
+        // Sony NIE uklada bitow obecnosci po kolei. Sniff CDX-M670 z jedna
+        // plyta (CD8) w magazynku: `70 31 95 08 3E 00 00 00 8A C8 00` — bit3
+        // CMD2 = CD8, D1..D3 = 0, D4 = numer plyty w gornym nibblu | 0x0A.
+        // Wczesniej wysylalismy zwykla mape liniowa w D1/D2, wiec radio
+        // pokazywalo pusty magazynek.
+        const uint16_t pm = Magazine::presenceMap();
         uint8_t data[4] = {
-            (uint8_t)(pm & 0xFF),          // D1 = mlodszy bajt mapy (plyty 1..8)
-            (uint8_t)((pm >> 8) & 0xFF),   // D2 = starszy bajt mapy (plyty 9..16)
-            0x00,                          // D3
-            0x00                           // D4
+            Magazine::magazineD1FromMap(pm),                                  // D1 = CD9/CD10
+            0x00,                                                             // D2
+            0x00,                                                             // D3
+            UnilinkFrame::discHighNibble(CdChanger::disk(), 0x0A)             // D4 = biezaca plyta
         };
-        enqueueMagazineMiddle(0x95, data);
+        enqueueMagazineMiddle(0x95, Magazine::magazineCmd2FromMap(pm), data);
     }
 
     // ===== 10b. Bezposredni wybor płyty (0xB0) — Wymaganie 9 =====
@@ -922,8 +1028,19 @@ void handlePacket(const uint8_t* buf, int len) {
     // ustawia biezaca płyte/utwór, wejdz w SEEK i zakolejkuj zaktualizowany status.
     // Poza zakresem zignoruj bez zmiany stanu.
     else if (rad == myAddr && op1 == 0xB0) {
-        uint8_t disc = op2;  // CMD2
-        uint8_t track  = buf[4];  // D1
+        // 0xB0 lezy w 0x80..0xBF => ramka MIDDLE (11B): D1 to buf[5], a NIE
+        // buf[4] (buf[4] to Parity1!). Numer plyty siedzi w dolnym nibblu CMD2,
+        // a numer utworu jest zakodowany w BCD — wczesniej czytalismy bajt
+        // parzystosci jako numer utworu i interpretowalismy go binarnie, przez
+        // co bezposredni wybor plyty praktycznie nigdy nie trafial w cel.
+        uint8_t disc  = (uint8_t)(op2 & 0x0F);
+        uint8_t track = 1;
+        if (len >= 11) {
+            const uint8_t raw = buf[5];
+            track = ((raw & 0xF0) == 0xF0) ? (uint8_t)(raw & 0x0F)
+                                           : UnilinkFrame::decodeBcd(raw);
+            if (track == 0) track = 1;
+        }
 
         // Walidacja płyty: 1..10, obecna w magazynku
         bool discValid = (disc >= 1 && disc <= 10) && ((Magazine::presenceMap() >> (disc - 1)) & 1);
@@ -935,7 +1052,7 @@ void handlePacket(const uint8_t* buf, int len) {
         if (discValid && trackValid) {
             // Zmiana plyty/utworu — wejdz w SEEK i zakolejkuj status
             CdChanger::selectDiscTrack(disc, track);
-            enqueueDiscId(disc);
+            onDiscChanged(disc);
             Serial.printf(">> 0xB0: CD%d TR%d (zakres OK)\n", disc, track);
         } else {
             Serial.printf(">> 0xB0: CD%d TR%d (poza zakresem, ignoruje)\n", disc, track);
@@ -959,7 +1076,7 @@ void handlePacket(const uint8_t* buf, int len) {
         }
         uint8_t data[Magazine::DISC_INFO_DATA_LEN];
         Magazine::buildDiscInfo(disc, data);
-        enqueueMagazineMiddle(0x97, data);
+        enqueueMagazineMiddle(0x97, 0x01, data);
     }
 }
 
@@ -972,38 +1089,24 @@ void handlePacket(const uint8_t* buf, int len) {
 //
 // Struktura ramki 0xC0 (long word, Kompendium §3.1):
 //   {RAD, TAD, CMD1, CMD2, Parity1, D1, D2, D3, D4, D5, D6, D7, D8, D9, Parity2, 0}
-// Gdzie:
-//   RAD = 0x70 (display)
-//   TAD = myAddr (nasz przydzielony adres)
-//   CMD1 = 0xC0 (full status / play status)
-//   CMD2 = 0x00
-//   D1-D5 = 0x00 (rezerwa)
-//   D6 (D2_2) = liczba utworów (0..99)
-//   D7 (D2_3) = minuty (BCD, 00..59)
-//   D8 (D2_4) = sekundy (BCD, 00..59)
-//   D9 (D2_5) = numer płyty (F|nr encoding, np. 0xF1 dla CD1)
-//   Parity1/Parity2 = sumy kontrolne
+// Dokladny uklad pol i wartosci — patrz komentarz przy buildStatusC0 nizej.
 
-// Zbuduj i zakolejkuj ramkę 0xC0 (long, status odtwarzania) wg UDOKUMENTOWANEGO,
-// DZIALAJACEGO formatu z UNILINK_PROTOKOL.md §6 (potwierdzonego sniffem CDX-M670,
-// "ten dziala — pokazuje track i czas"):
+// Zbuduj ramke 0xC0 (long, status odtwarzania) 1:1 wg sniffu prawdziwej
+// zmieniarki na CDX-M670:
 //
-//   70 <addr> C0 00 | P1 | 00 00 00 00 30 <TRK> <MIN> <SEK> <DISC> | P2 | 00
+//   70 31 C0 40 | A1 | 00 00 00 00 00 F1 F0 00 11 | 93 | 00   (CD1 TR1 00:00)
+//   70 31 C0 20 | 81 | 00 00 00 00 00 F1 FF FF 80 | F0 | 00   (CD8, ladowanie)
 //
 // Kodowanie pol:
-//   D5 (byte9)  = 0x30  — MARKER strony "ekran odtwarzania" (czas/utwor).
-//                 BEZ tego markera radio interpretuje ramke jako LOAD/info plyty
-//                 (a NIE jako czas) — patrz ostrzezenie w §6. To byl glowny powod,
-//                 dla ktorego "wyswietlacz wariowal / znikala plyta".
-//   D6 (byte10) = TRK   — numer utworu, BCD z F-paddingiem (F1..F9 dla 1-9, 10..99)
-//   D7 (byte11) = MIN   — minuty, BCD z F-paddingiem (F0 dla 0, F1..F9, 10..99)
-//   D8 (byte12) = SEK   — sekundy, zwykle BCD (00..59)
-//   D9 (byte13) = DISC  — numer plyty w STARSZYM nibblu (0x10=CD1 ... 0xA0=CD10)
-//
-// [HIGH-RISK] Ukladu pol ani markera 0x30 NIE zmieniac bez ponownego sniffu —
-// to format zweryfikowany empirycznie wobec CDX-M670. Wczesniejsza wersja miala
-// D5=0x00 (brak markera), liczbe utworow w D6 i plyte w D9 jako F|nr — przez co
-// radio nie rozpoznawalo ramki jako czasu i mieszalo pola plyty/utworu.
+//   CMD2        = bajt statusu mechanizmu (0x00 gra, 0x20 zmiana plyty,
+//                 0x40 ladowanie, 0x80 idle, 0xC0 wysuwanie) — ten sam, ktory
+//                 idzie w PONG na `01 12`.
+//   D1..D5      = 0x00
+//   D6 (byte10) = TRK   — numer utworu, BCD z F-paddingiem (F1..F9, 10..99)
+//   D7 (byte11) = MIN   — minuty, BCD z F-paddingiem; 0xFF gdy czas nieznany
+//   D8 (byte12) = SEK   — sekundy, zwykle BCD; 0xFF gdy czas nieznany
+//   D9 (byte13) = DISC  — numer plyty w STARSZYM nibblu (0x10=CD1 ... 0xA0=CD10),
+//                 w dolnym nibblu flaga "ekran sie zmienil" (0 albo 1)
 //
 // `prio` pozwala uzyc tej samej ramki jako natychmiastowego push (PRIO_STATUS).
 // UWAGA: ramki czasu NIE sa juz pre-kolejkowane okresowo — buduje sie je SWIEZO
@@ -1015,30 +1118,46 @@ static void buildStatusC0(uint8_t* frame) {
     uint8_t track = CdChanger::track();
     uint8_t min   = CdChanger::minutes();
     uint8_t sec   = CdChanger::seconds();
+    CdChanger::MechState ms = CdChanger::mechState();
 
-    uint8_t trkB  = UnilinkFrame::encodeBcdFpad(track);   // F-padded BCD
-    uint8_t minB  = UnilinkFrame::encodeBcdFpad(min);     // F-padded BCD
-    uint8_t secB  = UnilinkFrame::encodeBcd(sec);         // zwykle BCD
-    // D9 = numer plyty w starszym nibblu + flaga stanu w mlodszym. Prawdziwa
-    // zmieniarka w stanie Playing KONSEKWENTNIE ustawia bit3 (0x08) — w sniffie
-    // CDX-M670 widziano np. CD8 -> 0x88, CD1 -> 0x18. Odwzorowujemy to 1:1 wobec
-    // realnego sprzetu (UNILINK_PROTOKOL.md §6 podaje uproszczone 0x10=CD1 bez
-    // flagi; gdyby radio nie pokazywalo plyty, sprobuj wlasnie 0x10|disc<<4).
-    uint8_t discB = (uint8_t)(((disc & 0x0F) << 4) | 0x08);
+    // CMD2 = BAJT STATUSU MECHANIZMU — dokladnie ten sam, ktory odsylamy w PONG
+    // na `01 12`. W sniffie CDX-M670 korelacja jest jednoznaczna:
+    //   ping -> `10 31 00 40`, a rownolegle `70 31 C0 40 ...` (ladowanie)
+    //   ping -> `10 31 00 20`, a rownolegle `70 31 C0 20 ...` (zmiana plyty)
+    // Wczesniej wysylalismy tu na sztywno 0x00 (Playing) niezaleznie od stanu,
+    // przez co radio podczas ladowania/zmiany plyty dostawalo sprzeczne
+    // informacje (status 0x40 w PONG, 0x00 w ramce ekranu).
+    const uint8_t st = statusByteFromState(ms);
+
+    // Czas jest znany tylko wtedy, gdy mechanizm faktycznie odtwarza. Podczas
+    // ladowania/zmiany plyty prawdziwa zmieniarka wysyla 0xFF w minutach i
+    // sekundach (ekran pokazuje "--:--") — patrz `... F1 FF FF 80 ...` w sniffie.
+    const bool timeKnown = (ms == CdChanger::MechState::Playing ||
+                            ms == CdChanger::MechState::Seeking);
+    const uint8_t trkB = UnilinkFrame::encodeBcdFpad(track);
+    const uint8_t minB = timeKnown ? UnilinkFrame::encodeBcdFpad(min) : 0xFF;
+    const uint8_t secB = timeKnown ? UnilinkFrame::encodeBcd(sec)     : 0xFF;
+
+    // D9 = numer plyty w GORNYM nibblu, w dolnym flaga "tresc ekranu sie
+    // zmienila". Sniff CDX-M670: 0x11/0x10 na CD1, 0x21..0x81 podczas skakania
+    // po plytach, 0x80/0x81 na CD8 — dolny nibbel to zawsze 0 albo 1.
+    // Wczesniej wpisywalismy tu na stale 0x08 (czyli np. 0x18 dla CD1), co jest
+    // wzorcem z ramki 0x90, a NIE z 0xC0.
+    const uint8_t discB = UnilinkFrame::discHighNibble(disc, CdChanger::isDisplayDirty() ? 0x01 : 0x00);
 
     frame[0]  = 0x70;                      // RAD = display
     frame[1]  = myAddr;                    // TAD = nasz adres
     frame[2]  = 0xC0;                      // CMD1 = 0xC0 (status odtwarzania)
-    frame[3]  = 0x00;                      // CMD2 = 0x00 (strona "czas", patrz §6)
+    frame[3]  = st;                        // CMD2 = bajt statusu mechanizmu
     frame[4]  = UnilinkFrame::parity1(frame[0], frame[1], frame[2], frame[3]);
     frame[5]  = 0x00;                      // D1 = rezerwa
     frame[6]  = 0x00;                      // D2 = rezerwa
     frame[7]  = 0x00;                      // D3 = rezerwa
     frame[8]  = 0x00;                      // D4 = rezerwa
-    frame[9]  = 0x30;                      // D5 = MARKER strony odtwarzania
+    frame[9]  = 0x00;                      // D5 = rezerwa (w sniffie 0x00)
     frame[10] = trkB;                      // D6 = numer utworu (F-padded BCD)
-    frame[11] = minB;                      // D7 = minuty (F-padded BCD)
-    frame[12] = secB;                      // D8 = sekundy (BCD)
+    frame[11] = minB;                      // D7 = minuty (F-padded BCD / 0xFF)
+    frame[12] = secB;                      // D8 = sekundy (BCD / 0xFF)
     frame[13] = discB;                     // D9 = numer plyty (starszy nibbel)
     frame[14] = UnilinkFrame::parity2(frame[4], &frame[5], 9);  // P2 nad D1..D9
     frame[15] = 0x00;                      // END
@@ -1110,10 +1229,40 @@ static uint8_t s_tickCounter    = 0;
 //     interpoluje), a co kilka grantow pelny 0xC0. Prawdziwa zmieniarka tez
 //     przeplata 0x90/0xC0 — to dodatkowo zabezpiecza aktualizacje czasu, gdyby
 //     dane radio nie doliczalo sekund z samego 0x90.
+// Ekran BEZCZYNNEJ zmieniarki: ramka 0x8E. W sniffie CDX-M670, gdy zmieniarka
+// stoi z wybrana plyta i nie gra, na kazdy grant leci dokladnie:
+//   70 31 8E C0 | EF | 00 00 00 80 | 6F | 00       (CD8)
+// czyli CMD2=0xC0, D1..D3=0, D4 = numer plyty w gornym nibblu. Wczesniej
+// wysylalismy tu ramke czasu 0xC0 z zerowym licznikiem, przez co radio w stanie
+// spoczynku pokazywalo "00:00" zamiast normalnego ekranu zmieniarki.
+static void sendIdleScreen0x8E() {
+    uint8_t frame[11];
+    frame[0]  = 0x70;                  // RAD = wyswietlacz
+    frame[1]  = myAddr;                // TAD = nasz adres
+    frame[2]  = 0x8E;                  // CMD1 = 0x8E (middle, ekran spoczynku)
+    frame[3]  = 0xC0;                  // CMD2
+    frame[4]  = UnilinkFrame::parity1(frame[0], frame[1], frame[2], frame[3]);
+    frame[5]  = 0x00;                  // D1
+    frame[6]  = 0x00;                  // D2
+    frame[7]  = 0x00;                  // D3
+    frame[8]  = UnilinkFrame::discHighNibble(CdChanger::disk(), 0x00);   // D4
+    frame[9]  = UnilinkFrame::parity2(frame[4], &frame[5], 4);
+    frame[10] = 0x00;                  // END
+    UnilinkBus::sendRaw(frame, sizeof(frame));
+}
+
 static void sendFreshDisplay() {
     uint8_t disc  = CdChanger::disk();
     uint8_t track = CdChanger::track();
-    bool playing  = (CdChanger::mechState() == CdChanger::MechState::Playing);
+    CdChanger::MechState ms = CdChanger::mechState();
+    bool playing  = (ms == CdChanger::MechState::Playing);
+
+    // Mechanizm stoi (Init/Idle/Ejecting) — nie ma czasu do pokazania.
+    if (ms == CdChanger::MechState::Idle || ms == CdChanger::MechState::Init) {
+        sendIdleScreen0x8E();
+        if (DEBUG_FRAMES) Serial.printf("   TX 0x8E (idle) CD%d\n", disc);
+        return;
+    }
 
     bool changed = (disc != s_lastShownDisc || track != s_lastShownTrack);
     if (!playing || changed) {

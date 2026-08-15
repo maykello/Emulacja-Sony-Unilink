@@ -101,6 +101,10 @@ bool selectNextTrackAuto();
 // --- ZARZADZANIE STANEM SESJI (wywolywane przez protokol) ---
 void resetToInit();         // ustaw stan INIT (po appoint/reset radia)
 void noteFirstPing();       // pierwszy PING w stanie INIT startuje licznik 0xC0->0x80
+// Radio wlasnie odpytalo nas o status (`01 12`) albo pobralo ekran (`01 13`).
+// Maszyna stanow mechanizmu opuszcza stan przejsciowy dopiero, gdy radio zdazylo
+// go zobaczyc — inaczej wirtualny mechanizm przeskakiwalby etapy niezauwazenie.
+void notePolled();
 void sleep();               // BUS=0 / timeout: zatrzymaj audio + zapisz NVS
 void wake();                // BUS=1: przywroc docelowa glosnosc
 
@@ -123,7 +127,7 @@ bool       intro();
 void setDisk(uint8_t disc);
 void setTrack(uint8_t track);
 
-// Flaga "ekran wymaga aktualizacji" - sterownik Slave Break (protokol).
+// Flaga "ekran wymaga aktualizacji".
 bool isDisplayDirty();
 void clearDisplayDirty();
 

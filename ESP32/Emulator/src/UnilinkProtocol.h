@@ -7,9 +7,10 @@
 // UnilinkProtocol — warstwa aplikacyjna protokolu Sony UniLink
 // =============================================================================
 // Interpretuje odebrane ramki, prowadzi discovery i przydzial adresu, obsluguje
-// kwirki radia CDX-M670 (2-fazowe discovery, okno preliminary) oraz harmonogram
-// Slave Break. Stan sesji z radiem (przydzielony adres, flagi discovery) trzyma
-// w sobie. Zalezy od UnilinkBus (wysylanie/break) i CdChanger (stan zmieniarki).
+// kwirki radia CDX-M670 (2-fazowe discovery, okno preliminary) oraz arbitraz
+// dostepu do magistrali (`01 15` -> maska -> grant `01 13`). Stan sesji z radiem
+// (przydzielony adres, maska arbitrazu, flagi discovery) trzyma w sobie. Zalezy
+// od UnilinkBus (wysylanie/break) i CdChanger (stan zmieniarki).
 // =============================================================================
 
 namespace UnilinkProtocol {
@@ -23,19 +24,18 @@ void handlePacket(const uint8_t* buf, int len);
 // Zakolejkuj gotowa ramke (z parzystosciami) do nadania po grancie request-poll
 // `0x01 0x13` (Kompendium §7.2 / §12.4). `priority` to jeden ze stalych
 // Tx::PRIO_* (nizszy numer = wyzszy priorytet); `bytes`/`len` to kompletna
-// ramka. Po zakolejkowaniu kolejny serviceSlaveBreak wystawi Slave Break, by
-// radio przyznalo nam glos. Time-poll PONG (`0x01 0x12`) NIE idzie przez
-// kolejke — odpowiadamy na niego natychmiast. Uzywane przez modul CD-TEXT,
-// magazynka, ikon i ramki czasu (zadania 9.x/10.x/11.x/13.x/14.x).
+// ramka. O glos prosimy w arbitrazu `0x01 0x15` (maska urzadzenia), a nie
+// Slave Breakiem. Time-poll PONG (`0x01 0x12`) NIE idzie przez kolejke —
+// odpowiadamy na niego natychmiast. Uzywane przez modul CD-TEXT, magazynka,
+// ikon i ramki czasu.
 void enqueue(uint8_t priority, const uint8_t* bytes, int len);
 
-// Zbuduj i zakolejkuj ramke identyfikatora plyty `0xD5` (long, 9 bajtow danych)
-// z Magazine::buildDiscId(disc, ...) i priorytetem Tx::PRIO_DISC_ID. Wywolywane
-// przy skanie magazynka / zmianie plyty (R7.3); disc ID jest staly per plyta
-// (R7.5). Wystawione publicznie, by kod wykrywajacy zmiane plyty (CdChanger /
-// bezposredni wybor 0xB0 — inne zadania) mogl je wywolac bez duplikowania
-// logiki budowania ramki.
-void enqueueDiscId(uint8_t disc);
+// Zbuduj i zakolejkuj ramke identyfikatora plyty (long, 9 bajtow danych) z
+// Magazine::buildDiscId(disc, ...) i priorytetem Tx::PRIO_DISC_ID. Adresowana
+// do mastera (RAD=0x10) — to dane dla logiki Custom File radia, nie tresc
+// ekranu. `discChangeVariant` wybiera CMD1: 0xD5 przy zmianie plyty w trakcie
+// pracy, 0xC5 przy skanie magazynka (R7.3). Disc ID jest staly per plyta (R7.5).
+void enqueueDiscId(uint8_t disc, bool discChangeVariant = true);
 
 // Pomocnik do zakolejkowania ramki ikon 0x94. Wywolywane przez CdChanger
 // po kazdej zmianie trybu (toggleRepeat/Shuffle/Intro lub auto-advance).
@@ -71,31 +71,18 @@ void enqueuePositionFrameFull();
 // Rama 0xC0 (long, 16B) wysyłana okresowo w stanie Playing, uzupełniając lekki
 // tik 0x90. Zawiera numer płyty, liczbę utworów, minuty i sekundy wg §11.5.
 //
-// Struktura ramki 0xC0 (long):
-//   Byte 0-3: RAD TAD CMD1 CMD2
-//   Byte 4:   Parity1 = (RAD+TAD+CMD1+CMD2) mod 256
-//   Byte 5-13: D1..D9 = dane (kompatybilne z CDX-805 sniff)
-//     D1 (D2_1): rezerwa (0x00)
-//     D2 (D2_2): rezerwa (0x00)
-//     D3 (D2_3): rezerwa (0x00)
-//     D4 (D2_4): rezerwa (0x00)
-//     D5 (D2_5): liczba utworów (BCD)
-//     D6 (D2_6): minuty (BCD)
-//     D7 (D2_7): sekundy (BCD)
-//     D8 (D2_8): numer płyty (F|nr)
-//     D9 (D2_9): rezerwa (0x00)
-//   Byte 14:  Parity2 = (Parity1 + D1..D9) mod 256
-//   Byte 15:  END = 0x00
-// [HIGH-RISK] Struktura ramki 0xC0 (długość 16B, parzystości, D1..D9) jest
-// zgodna z Kompendium §11.5. Zmiana struktury ramki wymaga aktualizacji
-// Parity1/Parity2 wedlug wzorów w UnilinkFrame.h.
+// Struktura ramki 0xC0 (long, 16B) — odtworzona ze sniffu CDX-M670:
+//   70 <addr> C0 <status> | P1 | 00 00 00 00 00 <TRK> <MIN> <SEK> <DISC> | P2 | 00
+//     CMD2   : bajt statusu mechanizmu (0x00 gra / 0x20 zmiana / 0x40 ladowanie
+//              / 0x80 idle / 0xC0 wysuwanie) — ten sam co w PONG na `01 12`
+//     D1..D5 : 0x00
+//     D6     : numer utworu (BCD z F-paddingiem)
+//     D7     : minuty (BCD z F-paddingiem), 0xFF gdy czas nieznany
+//     D8     : sekundy (BCD), 0xFF gdy czas nieznany
+//     D9     : numer plyty w gornym nibblu, flaga zmiany w dolnym
+// Zmiana ukladu wymaga aktualizacji Parity1/Parity2 wg wzorow w UnilinkFrame.h.
 
-// Zbuduj i zakolejkuj ramkę 0xC0 (long, pełny status) z numerem płyty,
-// liczbą utworów, minutami i sekundami wg Kompendium §11.5.
-// RAMKA: RAD=0x70, TAD=myAddr, CMD1=0xC0, CMD2=0x00, Parity1, D1..D9, Parity2, 0
-// D1-D4: rezerwa (0x00), D5 (D2_1): rezerwa (0x00), D6 (D2_2): liczba utworów,
-// D7 (D2_3): minuty (BCD), D8 (D2_4): sekundy (BCD), D9 (D2_5): numer płyty (F|nr).
-// Priorytet: Tx::PRIO_STATUS (najwyższy, pierwszy w kolejce po 0x90).
+// Zbuduj i zakolejkuj ramke 0xC0 z priorytetem Tx::PRIO_STATUS.
 void enqueueFullStatusFrame();
 
 // Harmonogram 1Hz dla ramki 0x90 — wywoływać w loop() przy BUS=1.

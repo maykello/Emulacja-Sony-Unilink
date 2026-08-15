@@ -39,7 +39,7 @@ constexpr int SEEK_STEP_SEC = 5;
 // onClockEvent (UnilinkBus.cpp) moze zaklocic komunikacje z radiem.
 // Czas bajtu (8 bitów + przerwa): ~1 ms. Zmiana w czasie nadawania bajtu
 // moze spowodowac bledy Parity1/Parity2 (Wymaganie 2).
-// Slave Break: trzeba czekac na cisze ~8 ms (BREAK_SILENCE_US) przed jego wystawieniem.
+// Slave Break musi trafic w faze HIGH fali idle (patrz sekcja BREAK_* nizej).
 // Zmiana tych wartosci wymaga ponownego strojenia pod konkretny radio.
 
 // --- SKANOWANIE PRZEWIJANIEM (FF/REW) ---
@@ -68,36 +68,46 @@ constexpr unsigned long INIT_DURATION_MS = 800;  // 0xC0 -> 0x80 (po pierwszym P
 constexpr unsigned long LOAD_DURATION_MS = 50;   // 0x40 -> 0x20 (krotki, by uniknac migania LOAD)
 constexpr unsigned long SEEK_DURATION_MS = 50;   // 0x20 -> 0x00 (krotki, by uniknac migania LOAD)
 
-// --- STROJENIE SLAVE BREAK ---
-constexpr unsigned long BREAK_INTERVAL_MS = 150;   // min. odstep dla PUSH przy zmianie
-// Keepalive odswiezania ekranu: gdy radio nie pobralo naszego ekranu (01 13)
-// dluzej niz tyle, wystawiamy break, by je obudzic. Tez min. odstep miedzy
-// takimi breakami => maks. ~1000/te ms breakow/s. Czas zmienia sie 1x/s, wiec
-// ~2Hz odswiezania wystarcza na plynny licznik. NIE schodzic za nisko (~150ms)
-// — to byl sztorm, ktory dawal SYSTEM RESET.
-// [TUNING/STABILNOSC] Podniesione 500 -> 1000 ms. Agresywny keepalive (~2 Hz
-// breakow gdy radio nie odpytuje) razem z breakiem co sekunde dawal ~2.5-3 Hz
-// breakow, ktore co jakis czas kolidowaly z ruchem radia -> poszarpane ramki ->
-// radio robilo pelne re-discovery (crash). Lagodniejszy keepalive = mniej
-// breakow = stabilniej. Czas moze byc bardziej "skokowy", ale magistrala
-// nie wariuje. Aby wrocic do plynniejszego (ryzykownego) odswiezania: zmniejsz.
-constexpr unsigned long DISPLAY_KEEPALIVE_MS = 1000;
-constexpr unsigned long READ_SILENCE_US   = 5000;  // cisza po ktorej przetwarzamy odebrana ramke
-// BREAK_SILENCE_US: wymagana CISZA przed Break. MUSI byc TUZ POWYZEJ przerwy
-// command->ack radia (~6ms w sniffie). Przy 6000us lapalismy moment nadejscia
-// ACK -> kolizja -> SYSTEM RESET. Przy 8000us ACK juz przyszedl. Za duzo (12000)
-// = break sie nie wyzwala (czarny ekran).
-// [HIGH-RISK] BREAK_SILENCE_US (8000us): timing krytyczny dla unikania kolizji
-// na magistrali. Zmiana tej wartosci moze spowodowac SYSTEM RESET radia.
-// Aby przywrocic wczesniejsze strojenie: zwiekszyc BREAK_SILENCE_US powyzej
-// 8000us (np. 10000-12000), jezli radio nadal wykrywa kolizje.
-constexpr unsigned long BREAK_SILENCE_US  = 8000;
-// BREAK_HOLD_US: jak dlugo trzymac DATA LOW (na tyle, by radio wykrylo Break).
-// [HIGH-RISK] BREAK_HOLD_US (2500us): timing krytyczny dla wykrycia Break przez
-// radio. Zbyt krotki break nie zostanie wykryty, zbyt dlugi moze zaklocac radio.
-// Aby przywrocic wczesniejsze strojenie: zmieniac BREAK_HOLD_US w zakresie
-// 2000-3000us i testowac z radiem.
+// --- SLAVE BREAK: TYLKO AWARYJNE WYBUDZANIE MASTERA ---
+// Odswiezaniem ekranu zajmuje sie arbitraz `01 15` -> `10 18 82 <maska>` ->
+// grant `01 13` (UnilinkProtocol::claimMask). Break zostaje na wypadek, gdyby
+// master calkiem przestal prowadzic arbitraz.
+// DISPLAY_STARVED_MS: po tylu ms bez grantu uznajemy, ze master o nas zapomnial.
+constexpr unsigned long DISPLAY_STARVED_MS = 3000;
+// DISPLAY_REFRESH_MS: jak czesto zglaszamy sie po ekran, gdy NIC sie nie zmienilo.
+// Sniff CDX-M670 podczas grania: kolejne ramki 70 31 90 / 70 31 C0 padaja co ~1 s.
+constexpr unsigned long DISPLAY_REFRESH_MS = 1000;
+// BREAK_RETRY_MS: minimalny odstep miedzy kolejnymi probami breaka.
+constexpr unsigned long BREAK_RETRY_MS     = 1000;
+// READ_SILENCE_US sluzy juz TYLKO jako awaryjna resynchronizacja bufora RX.
+// Normalne ciecie strumienia na ramki robi UnilinkBus::readFrame po dlugosci
+// wynikajacej z CMD1, wiec ta wartosc nie wplywa juz na czas odpowiedzi.
+constexpr unsigned long READ_SILENCE_US   = 5000;
+
+// --- RESYNCHRONIZACJA FAZY BITOWEJ (ISR odbioru) ---
+// Przerwa miedzy zboczami zegara dluzsza niz ta wartosc oznacza poczatek nowej
+// ramki i zeruje licznik bitow. Wyliczenie ze znacznikow `t=` w sniffie CDX-M670:
+//   * ramka 16-bajtowa trwa 14965-15000 us -> ~937 us/bajt -> ~117 us/bit,
+//     przy czym bity ida ciagiem (brak przerwy miedzy bajtami w ramce),
+//   * najkrotsza zaobserwowana przerwa MIEDZY ramkami to ~5970 us.
+// 1000 us lezy wygodnie miedzy tymi skalami: ~8x wiecej niz okres bitu i ~6x
+// mniej niz najkrotsza przerwa miedzyramkowa.
+constexpr unsigned long BYTE_RESYNC_GAP_US = 1000;
+
+// --- SLAVE BREAK: SYNCHRONIZACJA Z FALA IDLE (§2.2) ---
+// Przy bezczynnej magistrali master utrzymuje na DATA fale ~8 ms LOW / ~8 ms
+// HIGH. Break jest wazny WYLACZNIE w fazie HIGH, ~2 ms po zboczu w gore.
+// BREAK_IDLE_LOW_US: ile musi trwac obserwowana faza LOW, bysmy uznali ja za
+// faze fali idle (a nie za zwykla serie zer w danych).
+constexpr unsigned long BREAK_IDLE_LOW_US = 6000;
+// BREAK_SETTLE_US: odstep od zbocza w gore do sciagniecia linii.
+constexpr unsigned long BREAK_SETTLE_US   = 2000;
+// BREAK_HOLD_US: jak dlugo trzymamy DATA LOW (na tyle, by master wykryl break,
+// ale krocej niz polowa fazy HIGH).
 constexpr unsigned long BREAK_HOLD_US     = 2500;
+// BREAK_ARM_TIMEOUT_US: bezpiecznik — po tylu mikrosekundach bez zlapania
+// odpowiedniej fazy porzucamy proboe (magistrala jest po prostu zajeta).
+constexpr unsigned long BREAK_ARM_TIMEOUT_US = 300000;
 
 // --- OCHRONA PRZED KOLIZJA Z URZADZENIAMI WEWNETRZNYMI RADIA ---
 // Radio odpytuje swoje urzadzenia (0x3B = CD radia, 0x71 = kontroler), ktore

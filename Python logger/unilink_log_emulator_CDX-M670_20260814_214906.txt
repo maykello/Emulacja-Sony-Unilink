@@ -1,0 +1,55 @@
+[21:49:08.098] Obsluga: MEX-BT3800u + CDX-M670 + PCM5102A DAC + USB
+[21:49:08.099] Oczekuje na radio (Stan C0 - Init)...
+[21:49:08.100] [NVS] Wczytano ostatni utwor: CD5 TR3
+[21:49:08.101] [Audio] Inicjalizacja...
+[21:49:08.103] [UsbDrive] Inicjalizacja USB Host...
+[21:49:08.106] [UsbDrive] USB Host gotowy. Podłącz pendrive'a do portu USB-OTG...
+[21:49:08.107] [UsbDrive] Nowe urządzenie USB (addr=1)
+[21:49:08.109] [UsbDrive] Konfiguruję urządzenie MSC (addr=1)...
+[21:49:08.111] [UsbDrive] VID=0x0951 PID=0x1653
+[21:49:08.112] [UsbDrive] Znaleziono interfejs MSC #0
+[21:49:08.113] [UsbDrive] Bulk IN:  0x81 (MPS=64)
+[21:49:08.115] [UsbDrive] Bulk OUT: 0x02 (MPS=64)
+[21:49:08.117] [UsbDrive] Czekam na gotowość urządzenia...
+[21:49:08.120] [UsbDrive] Pendrive: Kingston DT 100 G2
+[21:49:08.123] [UsbDrive] Dysk: 15644912 sektorów × 512 B = 7639 MB
+[21:49:08.125] [UsbDrive] Sektor 0 to GPT Protective MBR — parsowanie GPT...
+[21:49:08.127] [UsbDrive] GPT: wpisy od LBA 2, 128 wpisów × 128 B
+[21:49:08.129] [UsbDrive]   GPT wpis 0: start=2048 end=15644671 (Microsoft Basic Data)
+[21:49:08.131] [UsbDrive] ✓ Używam partycji GPT na sektorze 2048
+[21:49:08.134] [UsbDrive] ✓ System plików zamontowany pod /usb
+[21:49:08.136] [Audio] setPinout(BCK=7, LRCK=15, DIN=13) = OK
+[21:49:08.138] [Audio] Task dekodowania uruchomiony na rdzeniu 0
+[21:49:08.139] [Audio] CD01: 1 track(ów)
+[21:49:08.140] [Audio]   TR01: 01- Hasta Manana.mp3
+[21:49:08.141] [Audio] CD02: 2 track(ów)
+[21:49:08.142] [Audio]   TR01: 01. Waterloo.mp3
+[21:49:08.144] [Audio]   TR02: 02. Head Over Heels.mp3
+[21:49:08.145] [Audio] CD03: 3 track(ów)
+[21:49:08.146] [Audio]   TR01: 02. Mamma Mia.mp3
+[21:49:08.150] [Audio]   TR02: 03. Gimme! Gimme! Gimme! (A Man After Midnight).mp3
+[21:49:08.152] [Audio]   TR03: 03. I Do, I Do, I Do, I Do, I Do.mp3
+[21:49:08.153] [Audio] CD04: 4 track(ów)
+[21:49:08.155] [Audio]   TR01: 04. Dancing Queen.mp3
+[21:49:08.156] [Audio]   TR02: 04. Honey, Honey.mp3
+[21:49:08.157] [Audio]   TR03: 05. Take A Chance On Me.mp3
+[21:49:08.160] [Audio]   TR04: 06. Knowing Me, Knowing You.mp3
+[21:49:08.161] [Audio] CD05: 5 track(ów)
+[21:49:08.162] [Audio]   TR01: 06. Ring Ring.mp3
+[21:49:08.164] [Audio]   TR02: 07 Wrap Your Arms Around Me.mp3
+[21:49:08.166] [Audio]   TR03: 07. Eagle.mp3
+[21:49:08.168] [Audio]   TR04: 07. The Winner Takes It All.mp3
+[21:49:08.169] [Audio]   TR05: 08- Nina, pretty balerina.mp3
+[21:49:08.170] [Audio] CD06: 1 track(ów)
+[21:49:08.172] [Audio]   TR01: 03. I Do, I Do, I Do, I Do, I Do.mp3
+[21:49:08.173] [Audio] CD07: 1 track(ów)
+[21:49:08.175] [Audio]   TR01: 07 Wrap Your Arms Around Me.mp3
+[21:49:08.176] [Audio] CD08: 1 track(ów)
+[21:49:08.177] [Audio]   TR01: 07. Eagle.mp3
+[21:49:08.178] [Audio] CD09: 1 track(ów)
+[21:49:08.179] [Audio]   TR01: 07. The Winner Takes It All.mp3
+[21:49:08.181] [Audio] CD10: 1 track(ów)
+[21:49:08.183] [Audio]   TR01: 08- Nina, pretty balerina.mp3
+[21:49:08.185] [Audio] Inicjalizacja zakończona — pendrive gotowy.
+[21:49:08.187] [Audio] Gotowy do odtwarzania.
+[21:49:08.189] >>> Wykryto USB. Wznawiam zapamietana plyte: CD5 TR3

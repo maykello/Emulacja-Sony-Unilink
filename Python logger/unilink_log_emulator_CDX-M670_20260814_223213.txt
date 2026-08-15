@@ -1,0 +1,336 @@
+[22:32:15.292] Obsluga: MEX-BT3800u + CDX-M670 + PCM5102A DAC + USB
+[22:32:15.292] Oczekuje na radio (Stan C0 - Init)...
+[22:32:15.292] [NVS] Wczytano ostatni utwor: CD5 TR5
+[22:32:15.292] [Audio] Inicjalizacja...
+[22:32:15.292] [UsbDrive] Inicjalizacja USB Host...
+[22:32:15.299] [UsbDrive] USB Host gotowy. Podłącz pendrive'a do portu USB-OTG...
+[22:32:15.300] [UsbDrive] Nowe urządzenie USB (addr=1)
+[22:32:15.300] [UsbDrive] Konfiguruję urządzenie MSC (addr=1)...
+[22:32:15.300] [UsbDrive] VID=0x0951 PID=0x1653
+[22:32:15.300] [UsbDrive] Znaleziono interfejs MSC #0
+[22:32:15.300] [UsbDrive] Bulk IN:  0x81 (MPS=64)
+[22:32:15.300] [UsbDrive] Bulk OUT: 0x02 (MPS=64)
+[22:32:15.300] [UsbDrive] Czekam na gotowość urządzenia...
+[22:32:15.300] [UsbDrive] Pendrive: Kingston DT 100 G2
+[22:32:15.300] [UsbDrive] Dysk: 15644912 sektorów × 512 B = 7639 MB
+[22:32:15.312] [UsbDrive] Sektor 0 to GPT Protective MBR — parsowanie GPT...
+[22:32:15.312] [UsbDrive] GPT: wpisy od LBA 2, 128 wpisów × 128 B
+[22:32:15.316] [UsbDrive]   GPT wpis 0: start=2048 end=15644671 (Microsoft Basic Data)
+[22:32:15.316] [UsbDrive] ✓ Używam partycji GPT na sektorze 2048
+[22:32:15.320] [UsbDrive] ✓ System plików zamontowany pod /usb
+[22:32:15.320] [Audio] setPinout(BCK=7, LRCK=15, DIN=13) = OK
+[22:32:15.320] [Audio] Task dekodowania uruchomiony na rdzeniu 0
+[22:32:15.320] [Audio] CD01: 1 track(ów)
+[22:32:15.320] [Audio]   TR01: 01- Hasta Manana.mp3
+[22:32:15.320] [Audio] CD02: 2 track(ów)
+[22:32:15.320] [Audio]   TR01: 01. Waterloo.mp3
+[22:32:15.320] [Audio]   TR02: 02. Head Over Heels.mp3
+[22:32:15.320] [Audio] CD03: 3 track(ów)
+[22:32:15.332] [Audio]   TR01: 02. Mamma Mia.mp3
+[22:32:15.332] [Audio]   TR02: 03. Gimme! Gimme! Gimme! (A Man After Midnight).mp3
+[22:32:15.332] [Audio]   TR03: 03. I Do, I Do, I Do, I Do, I Do.mp3
+[22:32:15.332] [Audio] CD04: 4 track(ów)
+[22:32:15.332] [Audio]   TR01: 04. Dancing Queen.mp3
+[22:32:15.332] [Audio]   TR02: 04. Honey, Honey.mp3
+[22:32:15.332] [Audio]   TR03: 05. Take A Chance On Me.mp3
+[22:32:15.332] [Audio]   TR04: 06. Knowing Me, Knowing You.mp3
+[22:32:15.332] [Audio] CD05: 5 track(ów)
+[22:32:15.332] [Audio]   TR01: 06. Ring Ring.mp3
+[22:32:15.332] [Audio]   TR02: 07 Wrap Your Arms Around Me.mp3
+[22:32:15.332] [Audio]   TR03: 07. Eagle.mp3
+[22:32:15.348] [Audio]   TR04: 07. The Winner Takes It All.mp3
+[22:32:15.348] [Audio]   TR05: 08- Nina, pretty balerina.mp3
+[22:32:15.348] [Audio] CD06: 1 track(ów)
+[22:32:15.348] [Audio]   TR01: 03. I Do, I Do, I Do, I Do, I Do.mp3
+[22:32:15.348] [Audio] CD07: 1 track(ów)
+[22:32:15.348] [Audio]   TR01: 07 Wrap Your Arms Around Me.mp3
+[22:32:15.348] [Audio] CD08: 1 track(ów)
+[22:32:15.348] [Audio]   TR01: 07. Eagle.mp3
+[22:32:15.348] [Audio] CD09: 1 track(ów)
+[22:32:15.348] [Audio]   TR01: 07. The Winner Takes It All.mp3
+[22:32:15.348] [Audio] CD10: 1 track(ów)
+[22:32:15.348] [Audio]   TR01: 08- Nina, pretty balerina.mp3
+[22:32:15.363] [Audio] Inicjalizacja zakończona — pendrive gotowy.
+[22:32:15.363] [Audio] Gotowy do odtwarzania.
+[22:32:15.363] >>> Wykryto USB. Wznawiam zapamietana plyte: CD5 TR5
+[22:32:17.976] === BUS_ON = 1 ===
+[22:32:17.976] [Audio] Głośność: 18/21 (zlecone)
+[22:32:17.976] === BUS_ON = 0 ===
+[22:32:17.976] === SEN: magistrala wylaczona — zatrzymuje audio ===
+[22:32:17.976] [Audio] ⏹ Zatrzymano (zlecone).
+[22:32:18.287] === BUS_ON = 1 ===
+[22:32:18.287] [Audio] Głośność: 18/21 (zlecone)
+[22:32:18.684] === BUS_ON = 0 ===
+[22:32:18.684] === SEN: magistrala wylaczona — zatrzymuje audio ===
+[22:32:18.692] [Audio] ⏹ Zatrzymano (zlecone).
+[22:32:18.874] === BUS_ON = 1 ===
+[22:32:18.890] [Audio] Głośność: 18/21 (zlecone)
+[22:32:19.448] [+   0ms] RX 18 10 01 00 29 00
+[22:32:19.463] ===== CZARNA SKRZYNKA (RADIO SYSTEM RESET 18 10 01 00) — ostatnie 1 zdarzen =====
+[22:32:19.463] [-    0ms] RX    18 10 01 00 29 00
+[22:32:19.463] ======================================================
+[22:32:19.463] >> Radio system reset (#1) (juz bylem nieprzydzielony)
+[22:32:19.527] [+  64ms] RX 3B 10 02 11 5E 00
+[22:32:19.527] == Wykryto CDX-M670 (widziano 3B 10 02 11) ==
+[22:32:19.543] [+  16ms] RX 10 3B 8C 00 D7 05 1C 2E 12 38 00
+[22:32:19.554] [+  11ms] RX DB 10 02 12 FF 00
+[22:32:19.590] [+  49ms] RX 18 10 01 02 2B 00
+[22:32:19.590] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 49ms po DB)
+[22:32:19.606] [+  16ms] RX 18 70 8C 00 14 80 05 0A 01 A4 00
+[22:32:19.625] [+  11ms] RX 71 10 02 12 95 00
+[22:32:19.638] [+  16ms] RX 18 71 8C 00 15 80 05 0A 01 A5 00
+[22:32:19.655] [+  11ms] RX 71 10 01 05 87 00
+[22:32:19.669] [+  16ms] RX 18 71 8D 06 1C 06 11 06 00 39 00
+[22:32:19.683] [+  11ms] RX 18 10 01 04 2D 00
+[22:32:19.733] [+  49ms] RX 18 10 01 02 2B 00
+[22:32:19.733] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 178ms po DB)
+[22:32:19.781] [+  49ms] RX 18 10 01 02 2B 00
+[22:32:19.784] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#3, 227ms po DB)
+[22:32:19.828] [+  49ms] RX 18 10 01 02 2B 00
+[22:32:19.828] >> Odpowiadam na ANYONE? device info 0x8C
+[22:32:19.844] [+  27ms] RX 31 10 02 14 57 00
+[22:32:19.844] >> Adres przydzielony: 0x31 (op2=0x14)! deviceAllocated=true
+[22:32:19.876] [+  27ms] RX 18 10 01 04 2D 00
+[22:32:19.925] [+  49ms] RX 18 10 01 02 2B 00
+[22:32:19.972] [+  49ms] RX 18 10 01 02 2B 00
+[22:32:20.031] [+  49ms] RX 18 10 01 02 2B 00
+[22:32:20.068] [+  49ms] RX 18 10 01 03 2C 00
+[22:32:20.098] [+  21ms] RX 18 91 8C 00 35 80 FD E8 0C A6 00
+[22:32:20.114] [+  22ms] RX 18 91 8D 40 76 00 00 00 00 76 00
+[22:32:20.145] [+  22ms] RX 18 21 8C 00 C5 01 0D 00 00 D3 00
+[22:32:20.160] [+  22ms] RX 18 C1 8C 00 65 00 04 00 00 69 00
+[22:32:20.190] [+  22ms] RX 18 51 8C 06 FB 84 C3 80 02 C4 00
+[22:32:20.208] [+  22ms] RX 18 51 8D 10 06 00 00 00 00 06 00
+[22:32:20.226] [+  22ms] RX 18 10 8C 00 B4 01 00 00 01 B6 00
+[22:32:20.256] [+  22ms] RX 20 10 88 C0 78 00 80 00 00 F8 00
+[22:32:20.272] [+  22ms] RX 30 10 88 11 D9 F0 11 00 00 DA 00
+[22:32:20.299] [+  22ms] RX 50 10 88 FF E7 FF 26 00 00 0C 00
+[22:32:20.319] [+  22ms] RX 60 10 88 00 F8 00 00 00 00 F8 00
+[22:32:20.335] [+  22ms] RX 70 10 88 11 19 04 F0 00 10 1D 00
+[22:32:20.351] [+  22ms] RX 70 10 89 01 0A 10 00 00 00 1A 00
+[22:32:20.383] [+  22ms] RX 91 10 88 00 29 2A 8D E8 01 C9 00
+[22:32:20.398] [+  22ms] RX 92 10 88 00 2A 2A 80 00 01 D5 00
+[22:32:20.432] [+  22ms] RX 93 10 88 00 2B 2A 80 00 01 D6 00
+[22:32:20.454] [+  22ms] RX 94 10 88 00 2C 2A 80 00 01 D7 00
+[22:32:20.476] [+  22ms] RX 95 10 88 00 2D 2A 80 00 01 D8 00
+[22:32:20.497] [+  22ms] RX 91 10 89 40 6A 00 00 00 40 AA 00
+[22:32:20.517] [+  22ms] RX 92 10 89 00 2B 00 00 00 00 2B 00
+[22:32:20.540] [+  22ms] RX 93 10 89 00 2C 00 00 00 00 2C 00
+[22:32:20.558] [+  22ms] RX 94 10 89 00 2D 00 00 00 00 2D 00
+[22:32:20.576] [+  22ms] RX 95 10 89 00 2E 00 00 00 00 2E 00
+[22:32:20.604] [+  22ms] RX C0 10 88 02 5A 20 00 00 00 7A 00
+[22:32:20.628] [+  22ms] RX D0 10 88 00 68 B0 00 00 00 18 00
+[22:32:20.651] [+  22ms] RX 53 10 88 00 EB 00 00 00 00 EB 00
+[22:32:20.671] [+  21ms] RX 53 10 89 80 6C 00 00 00 00 6C 00
+[22:32:20.699] [+  27ms] RX 30 10 F9 12 4B 00 00 00 12 00 00 00 00 22 7F 00
+[22:32:20.715] [+  17ms] RX 18 10 01 01 2A 00
+[22:32:20.730] BREAK uzbrojony (brak grantu od 873ms)
+[22:32:20.738] [+  22ms] RX 18 10 87 2B DA 02 00 00 00 DC 00
+[22:32:20.742] >> [Audio Bus] Radio sygnalizuje audio ON (87 2B) — tylko log
+[22:32:20.753] [+  22ms] RX 18 10 87 6B 1A 02 00 00 00 1C 00
+[22:32:20.753] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B) — tylko log
+[22:32:20.769] [+  22ms] RX 18 10 81 00 A9 00 00 01 01 AB 00
+[22:32:20.805] [+  22ms] RX 70 10 91 00 11 00 00 00 00 11 00
+[22:32:20.833] [+  27ms] RX 70 10 C4 00 44 00 00 00 00 00 00 00 00 00 44 00
+[22:32:20.858] [+  27ms] RX 70 10 C4 00 44 00 00 00 00 00 00 00 01 00 45 00
+[22:32:20.880] [+  22ms] RX 70 10 B1 7C AD 05 03 00 C4 79 00
+[22:32:20.896] [+  17ms] RX 70 10 2A 10 BA 00
+[22:32:20.914] [+  17ms] RX 70 11 27 10 B8 00
+[22:32:20.927] [+  17ms] RX 90 11 3E 0A E9 00
+[22:32:20.943] [+  22ms] RX 70 11 9F B5 D5 02 00 00 00 D7 00
+[22:32:20.959] [+  17ms] RX 18 10 08 00 30 00
+[22:32:20.991] [+  22ms] RX 70 C1 91 F1 B3 00 02 11 C0 86 00
+[22:32:21.023] [+  33ms] RX 18 10 01 15 3E 00
+[22:32:21.026] BREAK porzucony w fazie 2 (brak okna idle)
+[22:32:21.038] [+  27ms] RX 31 10 01 13 55 00
+[22:32:21.038] TX 0x8E (idle) CD5
+[22:32:21.086] [+  43ms] RX 18 10 01 15 3E 00
+[22:32:21.110] [+  16ms] RX 10 18 82 01 AB 00 00 00 00 AB 00
+[22:32:21.118] [+  11ms] RX 3B 10 01 13 5F 00
+[22:32:21.133] [+  11ms] RX 10 3B 00 C0 0B 00
+[22:32:21.150] [+  27ms] RX 18 10 01 15 3E 00
+[22:32:21.166] [+  16ms] RX 10 18 82 01 AB 00 00 00 00 AB 00
+[22:32:21.182] [+  11ms] RX 3B 10 01 13 5F 00
+[22:32:21.198] [+  16ms] RX 70 3B 8E C0 F9 00 00 00 F0 E9 00
+[22:32:21.230] [+  27ms] RX 18 10 01 15 3E 00
+[22:32:21.246] [+  15ms] RX 10 18 82 01 AB 00 00 00 00 AB 00
+[22:32:21.246] [+  11ms] RX 3B 10 01 13 5F 00
+[22:32:21.268] [+  11ms] RX 30 3B 70 A0 7B 00
+[22:32:21.278] [STAT] poll15=4 disp13(my)=1 disp13(3B)=3 ping12(my)=0 btn=0 break=1 txt=0 seek=0 | alloc=1 state=0x80 CD5 TR5 00:00
+[22:32:21.294] [+  27ms] RX 18 10 01 15 3E 00
+[22:32:21.309] [+  16ms] RX 10 18 82 01 AB 00 00 00 00 AB 00
+[22:32:21.321] [+  11ms] RX 3B 10 01 13 5F 00
+[22:32:21.327] [+  11ms] RX 30 3B 70 90 6B 00
+[22:32:21.341] [+  11ms] RX 3B 10 01 12 5E 00
+[22:32:21.354] [+  11ms] RX 10 3B 00 C0 0B 00
+[22:32:21.373] [+  27ms] RX 18 10 01 15 3E 00
+[22:32:21.389] [+  16ms] RX 10 18 82 01 AB 00 00 00 00 AB 00
+[22:32:21.404] [+  11ms] RX 3B 10 01 13 5F 00
+[22:32:21.404] [+  11ms] RX 10 3B 71 00 BC 00
+[22:32:21.958] [+ 538ms] RX 71 10 01 12 94 00
+[22:32:21.964] [+  11ms] RX 10 71 00 00 81 00
+[22:32:22.581] [+ 618ms] RX 31 10 01 12 54 00
+[22:32:23.215] [+ 629ms] RX 18 10 01 11 3A 00
+[22:32:23.279] [STAT] poll15=2 disp13(my)=0 disp13(3B)=2 ping12(my)=1 btn=0 break=0 txt=0 seek=0 | alloc=1 state=0x80 CD5 TR5 00:00
+[22:32:23.385] >>> C0 -> 80 (Idle)
+[22:32:23.814] [+ 608ms] RX 3B 10 01 12 5E 00
+[22:32:23.830] [+  11ms] RX 10 3B 00 C0 0B 00
+[22:32:24.452] [+ 618ms] RX 71 10 01 12 94 00
+[22:32:24.464] [+  11ms] RX 10 71 00 00 81 00
+[22:32:25.068] [+ 618ms] RX 31 10 01 12 54 00
+[22:32:25.274] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0 txt=0 seek=0 | alloc=1 state=0x80 CD5 TR5 00:00
+[22:32:25.433] [+ 362ms] RX 18 11 87 EB 9B 02 00 00 00 9D 00
+[22:32:25.465] [+  27ms] RX 18 10 F7 00 1F 00 00 00 00 00 00 00 00 00 1F 00
+[22:32:25.497] [+  27ms] RX 18 10 F0 51 69 FF FF FF FF 00 00 00 00 00 65 00
+[22:32:25.518] [+  22ms] RX 18 10 80 18 C0 0A 00 00 00 CA 00
+[22:32:25.532] [+  22ms] RX 18 10 81 00 A9 00 00 01 01 AB 00
+[22:32:25.561] [+  22ms] RX 77 10 91 00 18 00 00 00 00 18 00
+[22:32:25.575] [+  17ms] RX 18 10 08 00 30 00
+[22:32:25.591] [+  17ms] RX 51 10 23 10 94 00
+[22:32:25.617] [+  22ms] RX 70 C1 91 F1 B3 00 07 11 C0 8B 00
+[22:32:25.641] [+  22ms] RX 10 51 93 03 F7 01 01 00 15 0E 00
+[22:32:25.657] [+  17ms] RX 10 51 75 10 E6 00
+[22:32:25.681] [+  22ms] RX 10 51 93 03 F7 01 01 00 15 0E 00
+[22:32:25.695] [+  17ms] RX 18 10 08 00 30 00
+[22:32:25.718] [+  27ms] RX 18 10 F0 51 69 FF FF FF FF 00 00 00 00 40 A5 00
+[22:32:25.743] [+  22ms] RX 18 10 80 18 C0 0A 00 00 00 CA 00
+[22:32:25.768] [+  22ms] RX 18 10 81 00 A9 00 00 01 01 AB 00
+[22:32:25.782] [+  22ms] RX 10 51 93 03 F7 01 01 00 15 0E 00
+[22:32:25.812] [+  27ms] RX 70 51 C0 00 81 00 00 00 04 11 F8 75 00 F0 F3 00
+[22:32:25.845] [+  27ms] RX 70 51 C1 2D AF 2D 2D 2D 2D 2D 2D 2D 00 02 EC 00
+[22:32:25.866] [+  21ms] RX 70 51 92 00 53 00 00 00 00 53 00
+[22:32:25.887] [+  22ms] RX 70 91 90 1F B0 2A 0B 21 02 08 00
+[22:32:25.910] [+  22ms] RX 70 91 9A 06 A1 00 00 02 02 A5 00
+[22:32:25.932] [+  22ms] RX 70 91 9A 08 A3 00 00 03 02 A8 00
+[22:32:25.941] [+  22ms] RX 70 91 94 0F A4 00 00 00 00 A4 00
+[22:32:25.972] [+  22ms] RX 70 91 95 30 C6 00 00 00 00 C6 00
+[22:32:25.988] [+  27ms] RX 70 91 DA C0 9B 07 20 38 50 68 80 98 B0 00 7A 00
+[22:32:26.030] [+  27ms] RX 70 91 DB C0 9C 01 0A 07 04 04 04 05 06 00 C5 00
+[22:32:26.053] [+  27ms] RX 70 91 D0 10 E1 C0 20 00 07 0A 0A 15 00 12 03 00
+[22:32:26.068] [+  17ms] RX 18 10 01 11 3A 00
+[22:32:26.385] [+ 315ms] RX 70 51 C0 00 81 00 00 00 04 11 F8 75 00 F0 F3 00
+[22:32:26.401] [+  27ms] RX 70 51 C1 2D AF 2D 2D 2D 2D 2D 2D 2D 00 02 EC 00
+[22:32:26.437] [+  21ms] RX 70 51 92 00 53 00 00 00 00 53 00
+[22:32:26.677] [+ 241ms] RX 3B 10 01 12 5E 00
+[22:32:26.686] [+  11ms] RX 10 3B 00 C0 0B 00
+[22:32:27.303] [+ 618ms] RX 71 10 01 12 94 00
+[22:32:27.316] [+  11ms] RX 10 71 00 00 81 00
+[22:32:27.935] [+ 618ms] RX 31 10 01 12 54 00
+[22:32:28.431] [+ 495ms] RX 70 51 C0 00 81 00 00 00 04 11 F8 75 00 F2 F5 00
+[22:32:28.446] [+  27ms] RX 70 51 C1 2D AF 2D 2D 2D 2D 2D 2D 2D 00 02 EC 00
+[22:32:28.480] [+  22ms] RX 70 51 92 00 53 00 00 00 00 53 00
+[22:32:28.553] [+  81ms] RX 18 10 01 11 3A 00
+[22:32:29.154] [+ 608ms] RX 3B 10 01 12 5E 00
+[22:32:29.178] [+  11ms] RX 10 3B 00 C0 0B 00
+[22:32:29.277] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0 txt=0 seek=0 | alloc=1 state=0x80 CD5 TR5 00:00
+[22:32:29.760] [+ 580ms] RX 18 11 F7 00 20 00 00 00 00 00 00 00 00 00 20 00
+[22:32:29.787] [+  27ms] RX 18 10 F0 31 49 51 FF FF FF 00 00 00 00 40 D7 00
+[22:32:29.809] [+  22ms] RX 18 10 80 08 B0 0A 00 00 00 BA 00
+[22:32:29.831] [+  22ms] RX 18 10 81 00 A9 00 00 01 01 AB 00
+[22:32:29.839] [+  17ms] RX 31 10 20 00 61 00
+[22:32:29.839] >> PLAY command received!
+[22:32:29.839] BREAK uzbrojony (brak grantu od 8795ms)
+[22:32:29.858] [Audio-info] PSRAM found, inputBufferSize: 283615 bytes
+[22:32:29.869] [+  22ms] RX 77 10 91 00 18 00 00 00 00 18 00
+[22:32:29.880] [+  17ms] RX 18 10 08 00 30 00
+[22:32:29.908] [+  21ms] RX 70 91 90 1F B0 2A 0B 21 02 08 00
+[22:32:29.908] [Audio-info] buffers freed, free Heap: 268332 bytes
+[22:32:29.912] [Audio-info] Reading file: "/CD05/08- Nina, pretty balerina.mp3"
+[22:32:29.932] [Audio-info] MP3Decoder has been initialized, free Heap: 263952 bytes
+[22:32:29.934] [Audio] Async connecttoFS("/CD05/08- Nina, pretty balerina.mp3") = OK
+[22:32:29.937] [Audio] ▶ Odtwarzam: /CD05/08- Nina, pretty balerina.mp3 (rozpoczęto dekodowanie)
+[22:32:29.939] [+  27ms] RX 70 51 C0 02 83 00 00 00 04 11 F8 75 00 F2 F7 00
+[22:32:29.944] [Audio-info] Content-Length: 5603155
+[22:32:29.944] [Audio-info] ID3 framesSize: 4352
+[22:32:29.944] [Audio-info] ID3 version: 2.3
+[22:32:29.944] [+  22ms] RX 70 91 9A 06 A1 00 01 02 02 A6 00
+[22:32:29.960] [Audio-info] ID3 normal frames
+[22:32:29.985] [+  27ms] RX 70 51 C1 2D AF 2D 2D 2D 2D 2D 2D 2D 00 02 EC 00
+[22:32:29.991] [+  22ms] RX 70 91 9A 08 A3 00 00 03 02 A8 00
+[22:32:30.022] [+  22ms] RX 70 51 92 02 55 00 00 00 00 55 00
+[22:32:30.022] [Audio-id3] Album: ABBA
+[22:32:30.038] [+  22ms] RX 70 91 94 0F A4 00 00 00 00 A4 00
+[22:32:30.070] [+  22ms] RX 70 91 95 30 C6 00 00 00 00 C6 00
+[22:32:30.086] [+  27ms] RX 70 91 DA C0 9B 07 20 38 50 68 80 98 B0 00 7A 00
+[22:32:30.103] [Audio-id3] Artist: ABBA
+[22:32:30.117] [+  27ms] RX 70 91 DB C0 9C 01 0A 07 04 04 04 05 06 00 C5 00
+[22:32:30.137] BREAK porzucony w fazie 1 (brak okna idle)
+[22:32:30.148] [+  27ms] RX 70 91 D0 10 E1 C0 20 00 07 0A 0A 15 00 12 03 00
+[22:32:30.164] [+  17ms] RX 18 10 08 00 30 00
+[22:32:30.172] [Audio-id3] Band: ABBA
+[22:32:30.180] [+  17ms] RX 71 10 01 12 94 00
+[22:32:30.196] [+  11ms] RX 10 71 00 00 81 00
+[22:32:30.228] [Audio-id3] Composer: Benny Andersson; Björn Ulvaeus
+[22:32:30.235] [Audio-id3] ContentType: Rock
+[22:32:30.237] [Audio-id3] Length (ms): 175186
+[22:32:30.244] [Audio-id3] Publisher: Aaom
+[22:32:30.248] [Audio-id3] Title: Nina, pretty balerina
+[22:32:30.248] [Audio-id3] Track: 8
+[22:32:30.255] [Audio-id3] Year: 2019
+[22:32:30.339] [Audio-info] Audio-Length: 5598803
+[22:32:30.339] [Audio-info] stream ready
+[22:32:30.339] [Audio-info] syncword found at pos 0
+[22:32:30.355] [Audio-info] Channels: 2
+[22:32:30.355] [Audio-info] SampleRate: 44100
+[22:32:30.355] [Audio-info] BitsPerSample: 16
+[22:32:30.355] [Audio-info] BitRate: 256000
+[22:32:30.800] [+ 602ms] RX 31 10 01 12 54 00
+[22:32:30.802] >>> 40 -> 20 (ChangedCd)
+[22:32:30.847] BREAK uzbrojony (brak grantu od 9795ms)
+[22:32:30.861] BREAK wystawiony na DATA
+[22:32:31.275] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=2 txt=0 seek=0 | alloc=1 state=0x20 CD5 TR5 00:00
+[22:32:31.418] [+ 629ms] RX 18 10 01 11 3A 00
+[22:32:31.846] BREAK uzbrojony (brak grantu od 10795ms)
+[22:32:31.862] BREAK wystawiony na DATA
+[22:32:32.021] [+ 608ms] RX 3B 10 01 12 5E 00
+[22:32:32.039] [+  11ms] RX 10 3B 00 C0 0B 00
+[22:32:32.643] [+ 602ms] RX 71 10 01 12 94 00
+[22:32:32.653] [+  11ms] RX 10 71 00 00 81 00
+[22:32:32.843] BREAK uzbrojony (brak grantu od 11795ms)
+[22:32:32.843] BREAK wystawiony na DATA
+[22:32:33.256] [+ 602ms] RX 31 10 01 12 54 00
+[22:32:33.256] >>> 20 -> 00 (Playing!)
+[22:32:33.271] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=2 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR5 00:00
+[22:32:33.846] BREAK uzbrojony (brak grantu od 12795ms)
+[22:32:33.861] BREAK wystawiony na DATA
+[22:32:33.875] [+ 613ms] RX 18 10 01 11 3A 00
+[22:32:34.482] [+ 608ms] RX 3B 10 01 12 5E 00
+[22:32:34.482] [+  11ms] RX 10 3B 00 C0 0B 00
+[22:32:34.845] BREAK uzbrojony (brak grantu od 13795ms)
+[22:32:34.861] BREAK wystawiony na DATA
+[22:32:35.105] [+ 617ms] RX 71 10 01 12 94 00
+[22:32:35.120] [+  11ms] RX 10 71 00 00 81 00
+[22:32:35.279] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=0 btn=0 break=2 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR5 00:02
+[22:32:35.739] [+ 618ms] RX 31 10 01 12 54 00
+[22:32:35.843] BREAK uzbrojony (brak grantu od 14795ms)
+[22:32:35.865] BREAK wystawiony na DATA
+[22:32:36.369] [+ 629ms] RX 18 10 01 11 3A 00
+[22:32:36.845] BREAK uzbrojony (brak grantu od 15795ms)
+[22:32:36.857] BREAK wystawiony na DATA
+[22:32:36.973] [+ 608ms] RX 3B 10 01 12 5E 00
+[22:32:36.988] [+  11ms] RX 10 3B 00 C0 0B 00
+[22:32:37.281] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=2 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR5 00:04
+[22:32:37.594] [+ 618ms] RX 71 10 01 12 94 00
+[22:32:37.610] [+  11ms] RX 10 71 00 00 81 00
+[22:32:37.845] BREAK uzbrojony (brak grantu od 16795ms)
+[22:32:37.848] BREAK wystawiony na DATA
+[22:32:38.228] [+ 618ms] RX 31 10 01 12 54 00
+[22:32:38.847] BREAK uzbrojony (brak grantu od 17795ms)
+[22:32:38.848] BREAK wystawiony na DATA
+[22:32:38.864] [+ 629ms] RX 18 10 01 11 3A 00
+[22:32:39.276] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=2 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR5 00:06
+[22:32:39.466] [+ 608ms] RX 3B 10 01 12 5E 00
+[22:32:39.482] [+  11ms] RX 10 3B 00 C0 0B 00
+[22:32:39.755] [+ 271ms] RX 18 10 87 6A 19 02 00 00 00 1B 00
+[22:32:39.755] >> [Audio Bus] Radio sygnalizuje audio OFF (87 6A) — tylko log
+[22:32:39.768] [+  22ms] RX 18 10 87 2A D9 02 00 00 00 DB 00
+[22:32:39.779] >> [Audio Bus] Radio sygnalizuje audio OFF (87 2A) — tylko log
+[22:32:39.784] [+  22ms] RX 18 10 81 00 A9 00 00 01 01 AB 00
+[22:32:39.816] [+  22ms] RX 70 10 91 00 11 00 00 00 00 11 00
+[22:32:39.850] [+  27ms] RX 70 10 C4 00 44 00 00 00 00 00 00 00 00 00 44 00
+[22:32:39.876] [+  27ms] RX 70 10 C4 00 44 00 00 00 00 00 00 00 01 00 45 00
+[22:32:39.898] [+  22ms] RX 70 C1 91 F1 B3 00 21 11 C0 A5 00
+[22:32:39.905] BREAK uzbrojony (brak grantu od 18853ms)
+[22:32:39.921] BREAK wystawiony na DATA
+[22:32:39.926] [+  33ms] RX 18 10 08 00 30 00
+[22:32:40.089] [+ 161ms] RX 71 10 01 12 94 00

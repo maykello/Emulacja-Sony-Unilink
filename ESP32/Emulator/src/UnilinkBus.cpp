@@ -13,9 +13,10 @@ namespace UnilinkBus {
 // zbocze zegara i probkuje bit na linii DATA. Zmiana timingu bitu zaklocy komunikacje.
 // Czas bajtu (8 bitów + przerwa): ~1 ms. Parity1/Parity2 sa liczone po odebraniu
 // calych bajtow ramki (UnilinkFrame::parity1/parity2).
-// Slave Break: trzeba czekac na cisze ~8 ms (BREAK_SILENCE_US) przed jego wystawieniem.
-// [HIGH-RISK] Zmiana timinguSlave Break (BREAK_SILENCE_US/BREAK_HOLD_US w Config.h)
-// moze spowodowac kolizje lub brak wykrycia break przez radio.
+// Slave Break musi trafic w faze HIGH fali idle na linii DATA (patrz sekcja
+// SLAVE BREAK na koncu tego pliku).
+// [HIGH-RISK] Zmiana timingu Slave Break (BREAK_* w Config.h) moze spowodowac
+// kolizje albo brak wykrycia breaka przez radio.
 
 // --- STAN ODBIORU (RX) ---
 static volatile uint8_t       rxBuffer[RX_BUFFER_SIZE];
@@ -38,7 +39,7 @@ static inline void setTxData(bool bitVal) {
 }
 
 // Odczyt LOGICZNEGO poziomu DATA (z uwzglednieniem sprzetowego inwertera).
-// Uzywane przez issueSlaveBreak do synchronizacji z fala idle (§2.2).
+// Uzywane przez maszyne Slave Break do synchronizacji z fala idle (§2.2).
 static inline bool readDataLogic() {
     bool v = digitalRead(PIN_DATA);
     return INVERT_DATA ? !v : v;
@@ -46,7 +47,9 @@ static inline bool readDataLogic() {
 
 // Przerwanie zegara: nadaje lub odbiera pojedynczy bit.
 static void IRAM_ATTR onClockEvent() {
-    lastClockTime = micros();
+    const unsigned long nowUs = micros();
+    const unsigned long gapUs = nowUs - lastClockTime;
+    lastClockTime = nowUs;
 
     if (isAnswering) {
         if (txIndex < txLength) {
@@ -61,10 +64,32 @@ static void IRAM_ATTR onClockEvent() {
                 if (txIndex >= txLength) {
                     isAnswering = false;
                     pinMode(PIN_DATA, INPUT);
+                    // Wracamy do odbioru na granicy bajtu — wyzeruj czesciowo
+                    // zlozony bajt, zeby pierwszy bajt po naszej transmisji nie
+                    // odziedziczyl bitow sprzed niej.
+                    rxBitIndex = 0;
+                    rxIncomingByte = 0;
                 }
             }
         }
     } else {
+        // --- RESYNCHRONIZACJA FAZY BITOWEJ NA PRZERWIE MIEDZY RAMKAMI ---
+        // Wewnatrz ramki zbocza zegara ida co ~117 us bez zadnej przerwy miedzy
+        // bajtami (wyliczone ze znacznikow `t=` w sniffie: ramka 16-bajtowa trwa
+        // 14965-15000 us, czyli ~937 us/bajt). Kolejne ramki dzieli natomiast co
+        // najmniej ~5970 us. Przerwa dluzsza niz BYTE_RESYNC_GAP_US oznacza wiec
+        // POCZATEK NOWEJ RAMKI i musi zerowac licznik bitow.
+        //
+        // Bez tego pojedyncze zgubione zbocze (petla robi tez audio, USB host,
+        // Serial 921600 i zapisy NVS) przesuwalo faze na STALE: caly strumien szedl
+        // dalej przesuniety o bit i zamiast `18 10 01 15 3E 00` odbieralismy
+        // `30 20 02 2A 7C`. W logu widac dokladnie takie ramki-widma. Faza wracala
+        // dopiero przy awaryjnym czyszczeniu bufora w readFrame.
+        if (gapUs > BYTE_RESYNC_GAP_US) {
+            rxBitIndex = 0;
+            rxIncomingByte = 0;
+        }
+
         bool bitVal = digitalRead(PIN_DATA);
         if (INVERT_DATA) bitVal = !bitVal;
 
@@ -76,8 +101,20 @@ static void IRAM_ATTR onClockEvent() {
 
         rxBitIndex++;
         if (rxBitIndex > 7) {
-            if (rxIndex < RX_BUFFER_SIZE) {
-                rxBuffer[rxIndex++] = rxIncomingByte;
+            // --- SYNCHRONIZACJA POCZATKU RAMKI ---
+            // Master taktuje po kazdej ramce jeszcze JEDEN pusty slot bajtu
+            // (widoczny w sniffie jako samotne `00` ~6 ms po ramce). Gdyby taki
+            // bajt wypelniacza trafil do bufora jako RAD, cala reszta strumienia
+            // przesunelaby sie o jeden bajt i KAZDA kolejna ramka bylaby
+            // odrzucana na parzystosci — az do najblizszej dluzszej ciszy.
+            // Pierwszym bajtem ramki jest RAD, ktory ZAWSZE ma niezerowy gorny
+            // nibbel (0x10 master, 0x18 broadcast, 0x3X zmieniarki, 0x70 ekran,
+            // 0x9X...). Bajt < 0x10 na pozycji 0 to wiec wypelniacz — gubimy go.
+            const bool plausibleAddress = (rxIncomingByte >= 0x10);
+            if (rxIndex != 0 || plausibleAddress) {
+                if (rxIndex < RX_BUFFER_SIZE) {
+                    rxBuffer[rxIndex++] = rxIncomingByte;
+                }
             }
             rxBitIndex = 0;
             rxIncomingByte = 0;
@@ -181,6 +218,24 @@ int readFrame(uint8_t* out, int maxLen) {
     noInterrupts();
     int count = rxIndex;
 
+    // --- RESYNCHRONIZACJA PO PARITY1 ---
+    // KAZDY CMD1 ma przypisana dlugosc, wiec sama dlugosc nie wykryje przesuniecia
+    // bajtowego. Robi to Parity1: jest liczona z pierwszych czterech bajtow i
+    // musi sie zgadzac z piatym. Gdy sie nie zgadza, prawie na pewno zaczelismy
+    // skladac ramke od zlego bajtu — zrzucamy jeden bajt i probujemy od nastepnego,
+    // zamiast konsumowac (i psuc) caly nastepny pakiet.
+    if (count >= 5) {
+        const uint8_t p1 = UnilinkFrame::parity1(rxBuffer[0], rxBuffer[1],
+                                                 rxBuffer[2], rxBuffer[3]);
+        if (rxBuffer[4] != p1) {
+            for (int i = 0; i + 1 < count; i++) rxBuffer[i] = rxBuffer[i + 1];
+            rxIndex = count - 1;
+            interrupts();
+            Diagnostics::recordNote("RESYNC");
+            return 0;
+        }
+    }
+
     // --- KRYTERIUM PODSTAWOWE: granica ramki wyznaczona przez CMD1 (R3.4/R3.5) ---
     // Uklad bufora: rxBuffer[0]=RAD, [1]=TAD, [2]=CMD1. Gdy mamy >= 3 bajty,
     // znamy CMD1 i dlugosc calej ramki. Udostepniamy ja dopiero gdy zebrano
@@ -189,7 +244,7 @@ int readFrame(uint8_t* out, int maxLen) {
     if (count >= 3) {
         uint8_t cmd1 = rxBuffer[2];
         int expected = UnilinkFrame::lengthFromCmd1(cmd1);
-        if (expected > 0 && count >= expected) {
+        if (count >= expected) {
             int n = expected;
             if (n > maxLen) n = maxLen;
             for (int i = 0; i < n; i++) out[i] = rxBuffer[i];
@@ -229,33 +284,153 @@ void resetRx() {
     interrupts();
 }
 
-void issueSlaveBreak() {
-    // Ostateczna kontrola ciszy TUZ przed pociagnieciem (clock mogl wlasnie przyjsc).
-    noInterrupts();
-    unsigned long lastClk = lastClockTime;
-    bool stillIdle = (micros() - lastClk > BREAK_SILENCE_US);
-    interrupts();
-    if (!stillIdle) return;  // radio zaczelo nadawac — NIE przerywaj, odpusc break
+// =============================================================================
+// SLAVE BREAK — zsynchronizowany z fala idle linii DATA
+// =============================================================================
+// Gdy magistrala jest bezczynna, master generuje na linii DATA fale prostokatna
+// 8 ms LOW / 8 ms HIGH. Slave zglasza chec nadawania WYLACZNIE wewnatrz fazy
+// HIGH: czeka az zobaczy pelna faze LOW, potem 2 ms po zboczu w gore sciaga DATA
+// do zera na ~2 ms i puszcza. Dzieki temu break miesci sie w oknie, w ktorym
+// zaden inny slave ani master nie nadaje.
+//
+// Poprzednia implementacja IGNOROWALA fale DATA i sciagala linie po samej ciszy
+// zegara. Trafiala wiec w losowa faze — czesto w moment, gdy master zaczynal
+// takt — co niszczylo ramke i konczylo sie petla SYSTEM RESET radia. Dodatkowo
+// blokowala petle glowna na czas trzymania linii.
+//
+// Teraz jest to NIEBLOKUJACA maszyna stanow: `requestSlaveBreak()` ja uzbraja,
+// a `serviceSlaveBreak()` (wolane w kazdej iteracji loop()) przesuwa ja o krok.
+// Kazda aktywnosc zegara natychmiast ja przerywa — nigdy nie kolidujemy.
+namespace {
 
-    Diagnostics::recordNote("BREAK");
-    pinMode(PIN_DATA, OUTPUT);
-    digitalWrite(PIN_DATA, LOW);
-    // Trzymaj DATA nisko, ale PRZERWIJ natychmiast gdy radio ruszy z zegarem.
-    // Trzymanie na sztywno niszczylo pakiet radia -> SYSTEM RESET.
-    unsigned long t0 = micros();
-    while ((micros() - t0) < BREAK_HOLD_US) {
-        noInterrupts();
-        unsigned long lc = lastClockTime;
-        interrupts();
-        if (lc != lastClk) break;  // przyszedl clock = radio nadaje -> puszczamy
-    }
-    pinMode(PIN_DATA, INPUT);
-    // Reset stanu odbiornika — uniknij interpretacji "ogona" break-a jako bajtu.
+enum class BreakState : uint8_t {
+    Idle,        // nieuzbrojony
+    WaitLow,     // czekam na poczatek fazy LOW fali idle
+    ConfirmLow,  // faza LOW musi potrwac BREAK_IDLE_LOW_US
+    WaitHigh,    // czekam na zbocze w gore
+    Settle,      // 2 ms w fazie HIGH przed sciagnieciem linii
+    Hold,        // trzymam DATA LOW
+};
+
+BreakState    s_breakState   = BreakState::Idle;
+unsigned long s_breakMark    = 0;   // micros() poczatku biezacej fazy
+unsigned long s_breakArmedAt = 0;   // micros() uzbrojenia (bezpiecznik)
+unsigned long s_breakClockRef = 0;  // lastClockTime w chwili wejscia w faze
+
+// Czy od `ref` nie bylo zadnego zbocza zegara (magistrala nadal bezczynna)?
+inline bool busStillQuiet(unsigned long ref) {
     noInterrupts();
-    rxBitIndex = 0;
-    rxIncomingByte = 0;
-    lastClockTime = micros();
+    unsigned long lc = lastClockTime;
     interrupts();
+    return lc == ref;
+}
+
+} // namespace
+
+void requestSlaveBreak() {
+    if (s_breakState != BreakState::Idle) return;   // juz uzbrojony
+    s_breakState   = BreakState::WaitLow;
+    s_breakMark    = micros();
+    s_breakArmedAt = s_breakMark;
+    noInterrupts();
+    s_breakClockRef = lastClockTime;
+    interrupts();
+}
+
+bool slaveBreakPending() {
+    return s_breakState != BreakState::Idle;
+}
+
+void cancelSlaveBreak() {
+    if (s_breakState == BreakState::Hold) {
+        pinMode(PIN_DATA, INPUT);
+    }
+    s_breakState = BreakState::Idle;
+}
+
+void serviceSlaveBreak() {
+    if (s_breakState == BreakState::Idle) return;
+
+    const unsigned long now = micros();
+
+    // Bezpiecznik: nie probuj w nieskonczonosc, gdyby magistrala nigdy nie byla
+    // dostatecznie dlugo bezczynna.
+    if (now - s_breakArmedAt > BREAK_ARM_TIMEOUT_US) {
+        cancelSlaveBreak();
+        return;
+    }
+
+    // Jakakolwiek aktywnosc zegara (poza faza Hold, gdzie i tak przerywamy
+    // natychmiast) oznacza, ze magistrala nie jest juz bezczynna — zaczynamy
+    // obserwacje fali od nowa, zeby nie wejsc w srodek transmisji.
+    if (!busStillQuiet(s_breakClockRef)) {
+        if (s_breakState == BreakState::Hold) {
+            pinMode(PIN_DATA, INPUT);   // radio ruszylo — natychmiast puszczamy
+            s_breakState = BreakState::Idle;
+            return;
+        }
+        noInterrupts();
+        s_breakClockRef = lastClockTime;
+        interrupts();
+        s_breakState = BreakState::WaitLow;
+        s_breakMark  = now;
+        return;
+    }
+
+    switch (s_breakState) {
+        case BreakState::WaitLow:
+            if (!readDataLogic()) {          // zlapalismy faze LOW fali idle
+                s_breakState = BreakState::ConfirmLow;
+                s_breakMark  = now;
+            }
+            break;
+
+        case BreakState::ConfirmLow:
+            if (readDataLogic()) {           // za krotko — to nie byla faza idle
+                s_breakState = BreakState::WaitLow;
+                s_breakMark  = now;
+            } else if (now - s_breakMark >= BREAK_IDLE_LOW_US) {
+                s_breakState = BreakState::WaitHigh;
+                s_breakMark  = now;
+            }
+            break;
+
+        case BreakState::WaitHigh:
+            if (readDataLogic()) {           // zbocze w gore — start fazy HIGH
+                s_breakState = BreakState::Settle;
+                s_breakMark  = now;
+            }
+            break;
+
+        case BreakState::Settle:
+            if (!readDataLogic()) {          // faza HIGH zniknela przedwczesnie
+                s_breakState = BreakState::WaitLow;
+                s_breakMark  = now;
+            } else if (now - s_breakMark >= BREAK_SETTLE_US) {
+                Diagnostics::recordNote("BREAK");
+                pinMode(PIN_DATA, OUTPUT);
+                digitalWrite(PIN_DATA, INVERT_DATA ? HIGH : LOW);   // DATA logicznie LOW
+                s_breakState = BreakState::Hold;
+                s_breakMark  = now;
+            }
+            break;
+
+        case BreakState::Hold:
+            if (now - s_breakMark >= BREAK_HOLD_US) {
+                pinMode(PIN_DATA, INPUT);
+                s_breakState = BreakState::Idle;
+                // Ogon breaka nie moze zostac wziety za bit danych.
+                noInterrupts();
+                rxBitIndex = 0;
+                rxIncomingByte = 0;
+                interrupts();
+            }
+            break;
+
+        case BreakState::Idle:
+        default:
+            break;
+    }
 }
 
 } // namespace UnilinkBus

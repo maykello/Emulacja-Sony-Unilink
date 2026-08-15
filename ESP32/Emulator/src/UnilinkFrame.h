@@ -74,6 +74,13 @@ ValidateResult validate(const uint8_t* frame, int len);
 uint8_t encodeDiscNibble(uint8_t discNumber);   // 1 -> 0xF1, 4 -> 0xF4
 uint8_t discNibbleToNumber(uint8_t encoded);     // 0xF1 -> 1 (odwrotnosc)
 
+// --- NUMER PLYTY W STARSZYM NIBBLU (sniff CDX-M670) ---
+// Prawdziwa zmieniarka podaje numer plyty w GORNYM nibblu, a w dolnym flagi
+// stanu/nazwy: 0x8 = brak nazwy plyty, 0xC = nazwa dostepna, 0xA/0xB = warianty
+// widziane w ramkach 0x90/0x95. Przyklady z logu (CD8): 0x88, 0x8A, 0x8B.
+// To NIE jest to samo co encodeDiscNibble (F|nr) — F|nr wystepuje w innych polach.
+uint8_t discHighNibble(uint8_t discNumber, uint8_t flags);
+
 // --- KODOWANIE BCD CZASU/UTWORU (Wymaganie 11) ---
 uint8_t encodeBcd(uint8_t value);                // 59 -> 0x59, 7 -> 0x07
 uint8_t decodeBcd(uint8_t bcd);                  // 0x59 -> 59
@@ -87,11 +94,17 @@ uint8_t encodeBcdFpad(uint8_t value);            // 7 -> 0xF7, 12 -> 0x12
 // na typach prymitywnych: `repeatMode` = 0 (Off) / 1 (One) / 2 (All).
 //
 // 0x94 to CMD1 w zakresie 0x80..0xBF => ramka middle (4 bajty danych D1..D4).
-// UKLAD (samospojny, round-trippable dla repeatMode w {0,1,2}):
-//   D1 bit0      = shuffle
-//   D1 bit1      = intro
-//   D1 bity 4-5  = repeat mode (0/1/2)  (gorny nibble, dolne 2 bity)
-//   D2 = D3 = D4 = 0x00 (rezerwa)
+//
+// UKLAD ZGODNY Z TABELA KOMEND UNILINK (Mictronics command table, sekcja 0x94
+// przy CMD2=0x00 — "CD/MD mode icons"). Poprzednia wersja uzywala WYMYSLONEGO
+// ukladu (shuffle=bit0, intro=bit1, repeat=bity 4-5), ktorego zaden wyswietlacz
+// Sony nie interpretuje — ikony trybow po prostu sie nie zapalaly.
+//
+//   D1 (dolny nibble) = REPEAT:  0x08 = OFF, 0x09 = REPEAT-1, 0x0A = REPEAT-2
+//   D1 (gorny nibble) = INTRO :  0x20 = INTRO OFF, 0x30 = INTRO ON
+//   D2                = SHUFFLE: 0x80 = SHUF OFF, 0xD0 = SHUF-1
+//   D3                = BANK   : 0x80 = BANK OFF
+//   D4                = 0x00
 constexpr int ICON_DATA_LEN = 4;
 
 // Zakoduj stan trybow do `out[ICON_DATA_LEN]` (D1..D4 ramki 0x94).

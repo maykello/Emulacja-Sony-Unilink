@@ -43,16 +43,26 @@ uint16_t presenceMap() {
 
 void buildDiscInfo(uint8_t disc, uint8_t* d) {
     // Liczba utworow z nosnika. AudioPlayer nie udostepnia calkowitego czasu
-    // plyty (tylko czas biezacego utworu), wiec min/sek raportujemy jako 0
-    // (nieznany) — radio i tak liczy czas z licznika 0x90.
+    // plyty, wiec bierzemy go z tego samego deterministycznego "TOC-a", ktory
+    // zasila ramke 0xC5/0xD5 — dzieki temu 0x97 i 0xD5 raportuja SPOJNY czas
+    // plyty (radio potrafi je porownywac przy dopasowaniu Custom File).
     uint8_t trackCount = audioGetTrackCount(disc);
-    buildDiscInfoData(disc, trackCount, /*minutes=*/0, /*seconds=*/0, d);
+    uint8_t minutes = 0, seconds = 0, hundredths = 0;
+    discIdToc(cachedDiscId(disc), minutes, seconds, hundredths);
+    if (trackCount == 0) {
+        // Pusta szuflada: prawdziwa zmieniarka raportuje 99 utworow i czas 00:00.
+        buildDiscInfoData(disc, 99, 0, 0, d);
+        return;
+    }
+    buildDiscInfoData(disc, trackCount, minutes, seconds, d);
 }
 
-void buildDiscId(uint8_t disc, uint8_t* d) {
+void buildDiscId(uint8_t disc, bool discChangeVariant, uint8_t& cmd2, uint8_t* d) {
     // Stały, cache'owany identyfikator -> ten sam disc daje te same bajty
     // miedzy kolejnymi zadaniami (Wymaganie 7.5).
-    fillDiscIdData(disc, cachedDiscId(disc), d);
+    uint8_t trackCount = audioGetTrackCount(disc);
+    if (trackCount == 0) trackCount = 99;
+    fillDiscIdData(disc, cachedDiscId(disc), trackCount, discChangeVariant, cmd2, d);
 }
 
 } // namespace Magazine

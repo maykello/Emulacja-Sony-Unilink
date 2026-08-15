@@ -50,14 +50,54 @@ void setup() {
     UnilinkProtocol::begin();
 }
 
+// ===== ODBIOR I PRZETWARZANIE RAMEK =====
+// Master wymaga odpowiedzi w scisle okreslonym oknie (w sniffie kolejne ramki
+// dziela ~6 ms, a odpowiedz slave'a pada w nastepnym slocie). Dlatego:
+//   * tniemy strumien po DLUGOSCI Z CMD1 (UnilinkBus::readFrame), a nie po
+//     ciszy — ramka jest gotowa do obsluzenia w chwili odebrania ostatniego
+//     bajtu, a nie 5 ms pozniej,
+//   * oprozniamy CALY bufor w jednej iteracji, bo w jednym przebiegu petli
+//     potrafi sie zebrac kilka ramek (poll -> grant -> komenda),
+//   * wolamy to KILKA RAZY w petli, przeplatajac z reszta obowiazkow.
+// Poprzednia wersja uzywala readPacketIfIdle(5 ms) i brala tylko jedna porcje
+// na iteracje: krotkie ramki sklejaly sie z bajtem wypelniacza, dlugie byly
+// ciete w polowie, a odpowiedzi spozialy sie na tyle, ze radio resetowalo
+// magistrale.
+static void pumpBus(bool busPowered) {
+    static uint8_t packet[RX_BUFFER_SIZE];
+    for (int guard = 0; guard < 8; ++guard) {
+        if (UnilinkBus::isTransmitting()) return;
+        int count = UnilinkBus::readFrame(packet, sizeof(packet));
+        if (count <= 0) return;
+        if (!busPowered) continue;   // przy BUS=0 pochlaniamy bez odpowiedzi
+
+        if (DEBUG_FRAMES) {
+            static unsigned long lastRxMs = 0;
+            unsigned long nowRx = millis();
+            Serial.printf("[+%4lums] RX ", lastRxMs ? (nowRx - lastRxMs) : 0);
+            lastRxMs = nowRx;
+            for (int i = 0; i < count; i++) {
+                if (packet[i] < 0x10) Serial.print("0");
+                Serial.print(packet[i], HEX);
+                Serial.print(" ");
+            }
+            Serial.println();
+        }
+
+        UnilinkProtocol::handlePacket(packet, count);
+    }
+}
+
 void loop() {
-    unsigned long now = millis();
+    // Magistrala ma bezwzgledne pierwszenstwo przed cala reszta obowiazkow.
+    bool busPoweredNow = (digitalRead(PIN_BUS_ON) == HIGH);
+    pumpBus(busPoweredNow);
 
     // ===== Detekcja zasilania magistrali (BUS_ON) =====
     // Prawdziwa zmieniarka jest zasilana z magistrali: gdy BUS=0, jest WYLACZONA
     // i nie odpowiada. CDX-M670 wykorzystuje fazy BUS=0/1 do dyskryminacji
     // urzadzen wewnetrznych od zewnetrznych — odpowiedz przy BUS=0 = petla RESET.
-    bool busPowered = (digitalRead(PIN_BUS_ON) == HIGH);
+    bool busPowered = busPoweredNow;
     if (busPowered != busPoweredLast) {
         busPoweredLast = busPowered;
         Serial.printf("=== BUS_ON = %d ===\n", busPowered ? 1 : 0);
@@ -71,8 +111,21 @@ void loop() {
         }
     }
 
+    pumpBus(busPowered);
+
     // ===== Wykrycie nosnika USB (wznowienie zapamietanej plyty) =====
     CdChanger::serviceMediaMount();
+
+    // ZNACZNIK CZASU BIERZEMY DOPIERO TERAZ — PO OBSLUDZE MAGISTRALI.
+    // handlePacket() zapisuje wlasne znaczniki przez millis() (lastPingTime w
+    // UnilinkProtocol, initWaitTime/seekStartTime w CdChanger). Gdyby `now`
+    // pochodzilo z POCZATKU petli, byloby STARSZE od tych znacznikow, a roznica
+    // `now - znacznik` na typie bez znaku podwinelaby sie do ~4 mld ms. Kazdy
+    // warunek "minelo juz X ms" spelnialby sie wtedy NATYCHMIAST: timeout radia
+    // kasowal przydzielony adres w 3 ms po jego otrzymaniu (radio pytalo potem
+    // `31 10 01 12`, my milczelismy jako 0x30 i radio szlo w SYSTEM RESET), a
+    // maszyna mechanizmu przeskakiwala stany bez czekania.
+    unsigned long now = millis();
 
     // ===== Timeout: radio zniknelo =====
     if (UnilinkProtocol::serviceTimeout(now)) {
@@ -95,33 +148,15 @@ void loop() {
     // ===== Auto-powtarzanie przewijania przy przytrzymanym FF/REW =====
     CdChanger::serviceSeekRepeat(now);
 
-    // ===== Slave Break (zgloszenie chec aktualizacji wyswietlacza) =====
+    // ===== Slave Break (awaryjne wybudzenie mastera) =====
     UnilinkProtocol::serviceSlaveBreak(busPowered);
 
-    // ===== Odbior i przetwarzanie ramki =====
-    // Bufor oproznia sie zawsze (po READ_SILENCE_US ciszy), ale przetwarzamy
-    // tylko gdy BUS=1. Przy BUS=0 bajty sa pochlaniane bez odpowiedzi.
-    static uint8_t packet[RX_BUFFER_SIZE];
-    int count = UnilinkBus::readPacketIfIdle(packet, sizeof(packet), READ_SILENCE_US);
-    if (count > 0 && busPowered) {
-        if (DEBUG_FRAMES) {
-            static unsigned long lastRxMs = 0;
-            unsigned long nowRx = millis();
-            Serial.printf("[+%4lums] RX ", lastRxMs ? (nowRx - lastRxMs) : 0);
-            lastRxMs = nowRx;
-            for (int i = 0; i < count; i++) {
-                if (packet[i] < 0x10) Serial.print("0");
-                Serial.print(packet[i], HEX);
-                Serial.print(" ");
-            }
-            Serial.println();
-        }
-
-        UnilinkProtocol::handlePacket(packet, count);
-    }
+    pumpBus(busPowered);
 
     // ===== Dekodowanie audio (hot-plug + wykrywanie konca utworu) =====
     audioLoop();
+
+    pumpBus(busPowered);
 
     // ===== Odroczony zapis NVS — tylko gdy magistrala bezczynna =====
     CdChanger::servicePersist(UnilinkBus::microsSinceLastClock());
