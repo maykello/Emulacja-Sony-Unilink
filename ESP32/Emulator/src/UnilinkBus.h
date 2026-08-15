@@ -72,11 +72,19 @@ void resetRx();
 //
 // Typowe uzycie: requestSlaveBreak() uzbraja, serviceSlaveBreak() wolane w
 // KAZDEJ iteracji loop() przesuwa maszyne o krok i sama zwalnia linie.
-// Jakakolwiek aktywnosc zegara przerywa procedure (zero kolizji z radiem).
+// Aktywnosc zegara przed Hold resetuje obserwacje fali idle. W Hold: impuls
+// BREAK_HOLD_US (Mictronics 3 ms); jesli master zacznie takt po
+// BREAK_MIN_VISIBLE_US — puszczamy DATA natychmiast (Request Poll).
 void requestSlaveBreak();
 void serviceSlaveBreak();
 bool slaveBreakPending();
 void cancelSlaveBreak();
+// Ile udanych impulsow break od ostatniego odczytu — diagnostyka:
+// armed bez completed = abort przed wykryciem; completed bez poll15 =
+// Hold korumowal odpowiedz mastera (naprawione wczesnym release).
+uint16_t takeBreakCompleted();
+// true przez BREAK_RECOVERY_MS po udanym Hold — nie uzbrajac ponownie.
+bool breakRecoveryActive(unsigned long nowMs);
 
 } // namespace UnilinkBus
 

@@ -46,6 +46,15 @@ uint32_t audioGetDurationSec();
 // [0, czas_trwania). Zwraca true jesli skok sie powiodl.
 bool audioSeekRelative(int deltaSec);
 
+// Ustaw absolutna pozycje odtwarzania (sekundy od poczatku utworu).
+// Wewnetrznie liczy delte wzgledem audioGetCurrentTimeSec() i zleca seek
+// asynchronicznie. Zwraca true jesli zlecono skok.
+bool audioSeekToSec(uint32_t targetSec);
+
+// Wycisz lawine audio_info (decode error / syncword) — wlaczac na czas
+// skanowania FF/REW, gdy setTimeOffset generuje setki komunikatow/s.
+void audioSetInfoSquelch(bool squelch);
+
 // Ile tracków ma dany dysk (1..10). 0 = dysk pusty/brak folderu.
 uint8_t audioGetTrackCount(uint8_t disc);
 

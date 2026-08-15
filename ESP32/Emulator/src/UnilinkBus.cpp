@@ -259,17 +259,18 @@ int readFrame(uint8_t* out, int maxLen) {
 
     // --- ZABEZPIECZENIE AWARYJNE: resynchronizacja po ciszy (R3.5) ---
     // Gdy po READ_SILENCE_US w buforze tkwi niekompletny zlepek (count < 3 albo
-    // count < expected) lub nieznana ramka, oprozniamy bufor (jak dotychczas),
-    // by uniknac zakleszczenia. Wartosci czasowe pozostaja nietkniete.
+    // count < expected), ODRZUCAMY go bez dostarczania do handlePacket.
+    // Wczesniej zwracalismy smieci (np. `10 01 15 3C` zamiast `18 10 01 15 3E 00`)
+    // — len<6 i tak je odrzucal, ale DEBUG_FRAMES logowal je jako RX, a czesc
+    // bajtow mogla byc poczatkiem prawdziwej ramki ucietej przez kolizje.
     bool idle = (micros() - lastClockTime > READ_SILENCE_US);
     if (idle && count > 0) {
-        int n = count;
-        if (n > maxLen) n = maxLen;
-        for (int i = 0; i < n; i++) out[i] = rxBuffer[i];
         rxIndex = 0;
         rxBitIndex = 0;
+        rxIncomingByte = 0;
         interrupts();
-        return n;
+        Diagnostics::recordNote("RXFLUSH");
+        return 0;
     }
 
     interrupts();
@@ -316,6 +317,8 @@ BreakState    s_breakState   = BreakState::Idle;
 unsigned long s_breakMark    = 0;   // micros() poczatku biezacej fazy
 unsigned long s_breakArmedAt = 0;   // micros() uzbrojenia (bezpiecznik)
 unsigned long s_breakClockRef = 0;  // lastClockTime w chwili wejscia w faze
+volatile uint16_t s_breakCompleted = 0;  // ile Hold ukonczono (wykrywalny break)
+unsigned long s_breakDoneMs = 0;    // millis() ostatniego udanego Hold
 
 // Czy od `ref` nie bylo zadnego zbocza zegara (magistrala nadal bezczynna)?
 inline bool busStillQuiet(unsigned long ref) {
@@ -323,6 +326,27 @@ inline bool busStillQuiet(unsigned long ref) {
     unsigned long lc = lastClockTime;
     interrupts();
     return lc == ref;
+}
+
+// Zakoncz Hold: pusc DATA (Hi-Z), wyczysc faze RX, zalicz sukces + cooldown.
+inline void finishHoldSuccess() {
+    pinMode(PIN_DATA, INPUT);
+    s_breakState = BreakState::Idle;
+    s_breakCompleted++;
+    s_breakDoneMs = millis();
+    noInterrupts();
+    rxBitIndex = 0;
+    rxIncomingByte = 0;
+    interrupts();
+}
+
+inline void finishHoldAbort() {
+    pinMode(PIN_DATA, INPUT);
+    s_breakState = BreakState::Idle;
+    noInterrupts();
+    rxBitIndex = 0;
+    rxIncomingByte = 0;
+    interrupts();
 }
 
 } // namespace
@@ -348,6 +372,19 @@ void cancelSlaveBreak() {
     s_breakState = BreakState::Idle;
 }
 
+uint16_t takeBreakCompleted() {
+    noInterrupts();
+    uint16_t n = s_breakCompleted;
+    s_breakCompleted = 0;
+    interrupts();
+    return n;
+}
+
+bool breakRecoveryActive(unsigned long nowMs) {
+    if (s_breakDoneMs == 0) return false;
+    return (nowMs - s_breakDoneMs) < BREAK_RECOVERY_MS;
+}
+
 void serviceSlaveBreak() {
     if (s_breakState == BreakState::Idle) return;
 
@@ -360,15 +397,30 @@ void serviceSlaveBreak() {
         return;
     }
 
-    // Jakakolwiek aktywnosc zegara (poza faza Hold, gdzie i tak przerywamy
-    // natychmiast) oznacza, ze magistrala nie jest juz bezczynna — zaczynamy
-    // obserwacje fali od nowa, zeby nie wejsc w srodek transmisji.
-    if (!busStillQuiet(s_breakClockRef)) {
-        if (s_breakState == BreakState::Hold) {
-            pinMode(PIN_DATA, INPUT);   // radio ruszylo — natychmiast puszczamy
-            s_breakState = BreakState::Idle;
-            return;
+    // Hold — Mictronics: 3 ms DATA LOW w fazie HIGH idle, potem pusc (reszta
+    // HIGH zostaje Hi-Z). Krytyczne: gdy master WYKRYJE break i zacznie takt
+    // Request Poll (`01 15`), NIE wolno dalej trzymac DATA LOW — korumujemy
+    // bity mastera i radio porzuca arbitraz na stale (log 154053: break=N/N,
+    // poll15=0 mimo ukonczenia Hold). Wczesniejszy abort na pierwszym zboczu
+    // (<1 ms) byl za krotki do wykrycia; kompromis: pelne 3 ms w ciszy LUB
+    // wczesny release po BREAK_MIN_VISIBLE_US gdy pojawi sie zegar.
+    if (s_breakState == BreakState::Hold) {
+        const unsigned long held = now - s_breakMark;
+        const bool clocked = !busStillQuiet(s_breakClockRef);
+        if (held >= BREAK_HOLD_US) {
+            finishHoldSuccess();
+        } else if (clocked && held >= BREAK_MIN_VISIBLE_US) {
+            finishHoldSuccess();
+        } else if (clocked) {
+            // Zegar przed minimalnym impulsem — kolizja / zla faza, nie sukces.
+            finishHoldAbort();
         }
+        return;
+    }
+
+    // Jakakolwiek aktywnosc zegara poza Hold oznacza, ze magistrala nie jest
+    // juz bezczynna — zaczynamy obserwacje fali od nowa.
+    if (!busStillQuiet(s_breakClockRef)) {
         noInterrupts();
         s_breakClockRef = lastClockTime;
         interrupts();
@@ -416,17 +468,6 @@ void serviceSlaveBreak() {
             break;
 
         case BreakState::Hold:
-            if (now - s_breakMark >= BREAK_HOLD_US) {
-                pinMode(PIN_DATA, INPUT);
-                s_breakState = BreakState::Idle;
-                // Ogon breaka nie moze zostac wziety za bit danych.
-                noInterrupts();
-                rxBitIndex = 0;
-                rxIncomingByte = 0;
-                interrupts();
-            }
-            break;
-
         case BreakState::Idle:
         default:
             break;

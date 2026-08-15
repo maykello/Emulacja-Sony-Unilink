@@ -5,6 +5,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
+#include <string.h>
 
 // --- Obiekt audio (globalny singleton z biblioteki ESP32-audioI2S) ---
 Audio audio;
@@ -53,6 +54,9 @@ static volatile int  seekRequestDelta   = 0;   // akumulowany skok (+/- s)
 static volatile bool stopRequestPending = false;
 static volatile bool volRequestPending  = false;
 static volatile uint8_t volRequestValue = AUDIO_VOLUME;
+// Gdy true — audio_info pomija wysokoczęstotliwosciowe komunikaty dekodera.
+// Ustawiane z CdChanger na czas skanowania FF/REW (patrz audioSetInfoSquelch).
+static volatile bool infoSquelch = false;
 
 
 // ============================================================
@@ -379,6 +383,18 @@ bool audioSeekRelative(int deltaSec) {
     return true;
 }
 
+bool audioSeekToSec(uint32_t targetSec) {
+    if (!audioIsPlaying()) return false;
+    int audioNow = (int)audioGetCurrentTimeSec();
+    int delta = (int)targetSec - audioNow;
+    if (delta == 0) return true;
+    return audioSeekRelative(delta);
+}
+
+void audioSetInfoSquelch(bool squelch) {
+    infoSquelch = squelch;
+}
+
 uint8_t audioGetTrackCount(uint8_t disc) {
     if (disc < 1 || disc > MAX_DISCS) return 0;
     return trackCount[disc];
@@ -541,11 +557,25 @@ void audioSetVolume(uint8_t vol) {
 #endif
 
 void audio_info(const char *info) {
+    if (!info) return;
+    // Lawina tych komunikatow przy setTimeOffset (seek MP3) blokuje wspoldzielony
+    // UART — Core 1 gubi okno odpowiedzi na `01 15` i radio zamraza ekran.
+    // Filtrujemy zawsze; przy infoSquelch (skan FF/REW) milczymy calkiem.
+    if (infoSquelch) return;
+    if (strstr(info, "decode error") ||
+        strstr(info, "INVALID_") ||
+        strstr(info, "syncword") ||
+        strstr(info, "stream ready")) {
+        return;
+    }
     Serial.printf("[Audio-info] %s\n", info);
 }
 
 void audio_id3data(const char *info) {
-    Serial.printf("[Audio-id3] %s\n", info);
+    // Lawina ID3 przy kazdym otwarciu MP3 (Album/Artist/Title/…) blokuje
+    // wspoldzielony UART z Core 1 — gubimy odpowiedzi na `01 15` i radio
+    // porzuca Request Polling. Tagow nie potrzebujemy na magistrali.
+    (void)info;
 }
 
 void audio_eof_mp3(const char *info) {

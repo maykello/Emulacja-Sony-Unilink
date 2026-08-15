@@ -47,10 +47,18 @@ constexpr int SEEK_STEP_SEC = 5;
 // logiem [SEEKDBG]: jedna ramka, len=6, brak powtorzen przy przytrzymaniu i brak
 // sygnalu zwolnienia). Nie da sie wiec wykryc "trzymania". Zamiast tego stosujemy
 // SKANOWANIE ZATRZASKOWE: nacisniecie FF/REW startuje skanowanie (co SEEK_REPEAT_MS
-// skok o SEEK_STEP_SEC, slyszalny podglad), ponowne nacisniecie tego samego
+// skok o SEEK_STEP_SEC na WYSWIETLACZU), ponowne nacisniecie tego samego
 // kierunku je zatrzymuje, a przeciwny — odwraca. Bezpiecznik SEEK_SCAN_MAX_MS
 // konczy skan, gdyby uzytkownik zapomnial go zatrzymac.
+//
+// SEEK_AUDIO_MS: jak czesto robimy rzeczywisty setTimeOffset w dekoderze MP3.
+// Kazdy skok USB+MP3 generuje lawine audio_info (INVALID_FRAMEHEADER) na Core 0;
+// Serial jest wspoldzielony z Core 1 i przy SEEK_REPEAT_MS=400 blokowal petle
+// na tyle, ze gubilismy odpowiedzi na `01 15` — radio porzucalo arbitraz ekranu
+// (poll15=0, zamrozony czas). Ekran aktualizujemy co SEEK_REPEAT_MS; audio co
+// SEEK_AUDIO_MS (+ finalny sync przy stopie).
 constexpr unsigned long SEEK_REPEAT_MS   = 400;
+constexpr unsigned long SEEK_AUDIO_MS    = 1200;
 constexpr unsigned long SEEK_SCAN_MAX_MS = 30000;
 
 // --- ADRESY UNILINK ---
@@ -73,12 +81,23 @@ constexpr unsigned long SEEK_DURATION_MS = 50;   // 0x20 -> 0x00 (krotki, by uni
 // grant `01 13` (UnilinkProtocol::claimMask). Break zostaje na wypadek, gdyby
 // master calkiem przestal prowadzic arbitraz.
 // DISPLAY_STARVED_MS: po tylu ms bez grantu uznajemy, ze master o nas zapomnial.
-constexpr unsigned long DISPLAY_STARVED_MS = 3000;
-// DISPLAY_REFRESH_MS: jak czesto zglaszamy sie po ekran, gdy NIC sie nie zmienilo.
-// Sniff CDX-M670 podczas grania: kolejne ramki 70 31 90 / 70 31 C0 padaja co ~1 s.
+// Sniff prawdziwej zmieniarki: naturalne przerwy Request Polling 2-9 s, potem
+// Slave Break wznawia `01 15`. 1.5 s bylo za agresywne — break w srodku naturalnej
+// pauzy, przy Hold trzymanym przez takt mastera, korumowal pierwsze `01 15` i
+// zamrazal ekran na stale (log: break=N/N, poll15=0).
+constexpr unsigned long DISPLAY_STARVED_MS = 2000;
+// DISPLAY_REFRESH_MS: historycznie sterowalo czestotliwoscia claim w `01 15`.
+// Prawdziwa zmieniarka zglasza sie na KAZDY poll — claim jest zawsze wlaczony
+// (patrz wantsBus). Stala zostaje jako dokumentacja oczekiwanego tempa tikow
+// 0x90 (~1 s w sniffe spokojnego grania; przy aktywnym Request Polling granty
+// leca ~10 Hz i sendFreshDisplay i tak buduje lekki 0x90).
 constexpr unsigned long DISPLAY_REFRESH_MS = 1000;
 // BREAK_RETRY_MS: minimalny odstep miedzy kolejnymi probami breaka.
-constexpr unsigned long BREAK_RETRY_MS     = 1000;
+constexpr unsigned long BREAK_RETRY_MS     = 800;
+// BREAK_RECOVERY_MS: po udanym Hold nie uzbrajaj ponownie — daj masterowi czas
+// na start Request Polling (`01 15`). Hammering co 800 ms w logu 154053
+// (break=2/2, 3/3, poll15=0) uniemozliwial wznowienie arbitrazu.
+constexpr unsigned long BREAK_RECOVERY_MS  = 3000;
 // READ_SILENCE_US sluzy juz TYLKO jako awaryjna resynchronizacja bufora RX.
 // Normalne ciecie strumienia na ramki robi UnilinkBus::readFrame po dlugosci
 // wynikajacej z CMD1, wiec ta wartosc nie wplywa juz na czas odpowiedzi.
@@ -94,20 +113,27 @@ constexpr unsigned long READ_SILENCE_US   = 5000;
 // mniej niz najkrotsza przerwa miedzyramkowa.
 constexpr unsigned long BYTE_RESYNC_GAP_US = 1000;
 
-// --- SLAVE BREAK: SYNCHRONIZACJA Z FALA IDLE (§2.2) ---
+// --- SLAVE BREAK: SYNCHRONIZACJA Z FALA IDLE (§2.2 / Mictronics) ---
 // Przy bezczynnej magistrali master utrzymuje na DATA fale ~8 ms LOW / ~8 ms
-// HIGH. Break jest wazny WYLACZNIE w fazie HIGH, ~2 ms po zboczu w gore.
+// HIGH. Break jest wazny WYLACZNIE w fazie HIGH, ~2 ms po zboczu w gore:
+//   1) potwierdz ~8 ms LOW (idle),
+//   2) czekaj 2 ms w HIGH,
+//   3) sciagnij DATA LOW na ~3 ms,
+//   4) pusc — reszta fazy HIGH.
 // BREAK_IDLE_LOW_US: ile musi trwac obserwowana faza LOW, bysmy uznali ja za
-// faze fali idle (a nie za zwykla serie zer w danych).
-constexpr unsigned long BREAK_IDLE_LOW_US = 6000;
-// BREAK_SETTLE_US: odstep od zbocza w gore do sciagniecia linii.
+// faze fali idle (Mictronics: pelne 8 ms LOW przed faza HIGH).
+constexpr unsigned long BREAK_IDLE_LOW_US = 8000;
+// BREAK_SETTLE_US: odstep od zbocza w gore do sciagniecia linii (Mictronics: 2 ms).
 constexpr unsigned long BREAK_SETTLE_US   = 2000;
-// BREAK_HOLD_US: jak dlugo trzymamy DATA LOW (na tyle, by master wykryl break,
-// ale krocej niz polowa fazy HIGH).
-constexpr unsigned long BREAK_HOLD_US     = 2500;
-// BREAK_ARM_TIMEOUT_US: bezpiecznik — po tylu mikrosekundach bez zlapania
-// odpowiedniej fazy porzucamy proboe (magistrala jest po prostu zajeta).
-constexpr unsigned long BREAK_ARM_TIMEOUT_US = 300000;
+// BREAK_HOLD_US: nominalny impuls DATA LOW w fazie HIGH (Mictronics: 3 ms).
+constexpr unsigned long BREAK_HOLD_US     = 3000;
+// BREAK_MIN_VISIBLE_US: minimalny impuls, po ktorym wolno puscic linie gdy master
+// juz zaczyna takt (wykrył break → Request Poll). Trzymanie dalej korumuje `01 15`.
+constexpr unsigned long BREAK_MIN_VISIBLE_US = 2000;
+// BREAK_ARM_TIMEOUT_US: jak dlugo czekamy na czysta fale idle po uzbrojeniu.
+// Time Poll CDX-M670 ~600 ms — 300 ms bylo za krotkie (log: break=N/0, Hold
+// nigdy nie startowal). 2.5 s obejmuje kilka cykli keepalive.
+constexpr unsigned long BREAK_ARM_TIMEOUT_US = 2500000;
 
 // --- OCHRONA PRZED KOLIZJA Z URZADZENIAMI WEWNETRZNYMI RADIA ---
 // Radio odpytuje swoje urzadzenia (0x3B = CD radia, 0x71 = kontroler), ktore
@@ -148,7 +174,9 @@ constexpr bool DEBUG_VERBOSE = false;
 // Lzejsze niz DEBUG_VERBOSE: loguje tylko ramki (jedna krotka linia na ramke),
 // breaki i odpowiedzi na grant 0x13. Pozwala zobaczyc kadencje odpytywania
 // radia i korelacje break->grant (diagnoza "czemu zegar odswieza sie co 4s").
-// Wlaczone do diagnozy; wylacz po zakonczeniu, by nie obciazac petli.
-constexpr bool DEBUG_FRAMES = true;
+// WYLACZONE domyslnie: przy ~23 pollach/s Serial.printf w petli glownej
+// konkuruje z taskiem audio o UART i w trakcie seeku powodowal gubienie
+// odpowiedzi `01 15` (zamrozony ekran). Wlacz tylko na krotka diagnoze.
+constexpr bool DEBUG_FRAMES = false;
 
 #endif // CONFIG_H

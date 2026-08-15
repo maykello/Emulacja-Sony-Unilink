@@ -45,7 +45,7 @@ static unsigned long lastPingTime = 0;
 constexpr uint8_t CLAIM_MASK_DEFAULT = 0x04;   // jak zmieniarka na 0x31
 static uint8_t claimMask = CLAIM_MASK_DEFAULT;
 
-// Czy mamy cokolwiek do nadania? Tylko wtedy zglaszamy sie w arbitrazu.
+// Czy mamy cokolwiek do nadania? (historyczne — patrz wantsBus: zawsze claim)
 static bool wantsBus();
 
 // Projekcja lokalnych zmiennych <-> AddressManager::State (jedno zrodlo prawdy
@@ -80,8 +80,7 @@ static unsigned long lastBreakTime      = 0;
 // Czas ostatniego pobrania naszego ekranu przez radio (01 13). Keepalive-break
 // budzi radio, gdy ta wartosc sie zestarzeje.
 static unsigned long lastDisplayServedMs = 0;
-// Czas ostatniej ODDANEJ ramki ekranu. Steruje sekundowym tikiem w wantsBus():
-// dopoki nic sie nie zmienilo, zglaszamy sie do arbitrazu raz na sekunde.
+// Czas ostatniej ODDANEJ ramki ekranu (lustrzane lastDisplayServedMs).
 static unsigned long lastDisplaySentMs = 0;
 
 // --- HARMONOGRAM RAMKI POZYCJI 0x90 (1 Hz) ---
@@ -104,7 +103,8 @@ static uint16_t statDisp13Us = 0; // 31 10 01 13 — radio prosi NAS o ekran
 static uint16_t statDisp13_3B = 0;// 3B 10 01 13 — radio prosi 3B (wewn. CD) o ekran
 static uint16_t statPing12Us = 0; // 01 12 do nas — zapytanie o status
 static uint16_t statBtn = 0;      // komendy panelu (tad 0x11)
-static uint16_t statBreak = 0;    // ile breakow wystawilismy
+static uint16_t statBreak = 0;    // ile breakow UZBROJONO
+static uint16_t statBreakOk = 0;  // ile Hold ukonczono (wykrywalny break)
 static uint16_t statText = 0;     // 0x84 — zadanie tekstu (nazwy) do nas
 static uint16_t statSeek = 0;     // 0x24/0x25 — FF/REW do nas
 
@@ -135,16 +135,20 @@ void enqueue(uint8_t priority, const uint8_t* bytes, int len) {
 void serviceStats(unsigned long now) {
     if (now - lastStatMs < 2000) return;
     lastStatMs = now;
+    statBreakOk += UnilinkBus::takeBreakCompleted();
     // Wypisuj tylko gdy cos sie dzieje (nie zasmiecaj gdy magistrala cicha).
-    if (statPoll15 || statDisp13Us || statDisp13_3B || statPing12Us || statBtn || statBreak) {
-        Serial.printf("[STAT] poll15=%u disp13(my)=%u disp13(3B)=%u ping12(my)=%u btn=%u break=%u txt=%u seek=%u | alloc=%d state=0x%02X CD%d TR%d %02d:%02d\n",
-                      statPoll15, statDisp13Us, statDisp13_3B, statPing12Us, statBtn, statBreak,
+    if (statPoll15 || statDisp13Us || statDisp13_3B || statPing12Us || statBtn ||
+        statBreak || statBreakOk) {
+        Serial.printf("[STAT] poll15=%u disp13(my)=%u disp13(3B)=%u ping12(my)=%u btn=%u break=%u/%u txt=%u seek=%u | alloc=%d state=0x%02X CD%d TR%d %02d:%02d\n",
+                      statPoll15, statDisp13Us, statDisp13_3B, statPing12Us, statBtn,
+                      statBreak, statBreakOk,
                       statText, statSeek,
                       deviceAllocated ? 1 : 0, statusByteFromState(CdChanger::mechState()),
                       CdChanger::disk(), CdChanger::track(),
                       CdChanger::minutes(), CdChanger::seconds());
     }
-    statPoll15 = statDisp13Us = statDisp13_3B = statPing12Us = statBtn = statBreak = 0;
+    statPoll15 = statDisp13Us = statDisp13_3B = statPing12Us = statBtn = 0;
+    statBreak = statBreakOk = 0;
     statText = statSeek = 0;
 }
 
@@ -176,18 +180,15 @@ bool serviceTimeout(unsigned long now) {
     return true;
 }
 
-// Czy chcemy dostac grant `01 13`?
+// Czy zglaszamy sie w arbitrazu `01 15`?
 //
-// Na kazde odpytanie `01 15` odpowiadamy ramka zgloszenia (maska albo 0x00).
-// Milczenie zamiast odpowiedzi zamyka serie arbitrazu i ekran w ogole sie nie
-// pojawia — tak bylo w logach po 22:01. Ta wersja wraca do zachowania, przy
-// ktorym ekran dzialal (czas sie aktualizowal), nawet jesli po kilkunastu
-// sekundach master czasem przestawal odpytywac.
+// Sniff prawdziwej zmieniarki CDX-M670: na KAZDE `18 10 01 15` odpowiada
+// `10 18 82 <claimMask>` (0 zgloszen z maska 0x00 na 103 pollach). Master
+// utrzymuje Request Polling tylko gdy slave sie zglasza — odpowiedzi `82 00`
+// (~95% przy DISPLAY_REFRESH_MS) po ~10-15 s koncza petle `01 15` i ekran
+// zamraza sie mimo zywego Time Poll (`01 12`) i dzialajacych przyciskow.
 static bool wantsBus() {
-    if (!deviceAllocated) return false;
-    if (!txQueue.isEmpty()) return true;             // czeka konkretna ramka
-    if (CdChanger::isDisplayDirty()) return true;    // zmienil sie utwor/plyta/stan
-    return (millis() - lastDisplaySentMs) >= DISPLAY_REFRESH_MS;
+    return deviceAllocated;
 }
 
 void serviceSlaveBreak(bool busPowered) {
@@ -209,6 +210,8 @@ void serviceSlaveBreak(bool busPowered) {
     if (UnilinkBus::slaveBreakPending()) return;
 
     const unsigned long nowMs = millis();
+    // Po udanym Hold master potrzebuje chwili na start `01 15` — nie hammeruj.
+    if (UnilinkBus::breakRecoveryActive(nowMs)) return;
     if (nowMs < suppressBreakUntil) return;
     if (nowMs - lastBreakTime < BREAK_RETRY_MS) return;
 
@@ -225,9 +228,8 @@ void serviceSlaveBreak(bool busPowered) {
     UnilinkBus::requestSlaveBreak();
     lastBreakTime = nowMs;
     statBreak++;
-    if (DEBUG_FRAMES) {
-        Serial.printf("   BREAK (brak grantu od %lums)\n", nowMs - lastDisplayServedMs);
-    }
+    // Zawsze loguj — break jest rzadki i krytyczny dla odzyskania ekranu.
+    Serial.printf("   BREAK armed (brak grantu od %lums)\n", nowMs - lastDisplayServedMs);
 }
 
 // ------------------------------------------------------------
@@ -838,8 +840,8 @@ void handlePacket(const uint8_t* buf, int len) {
         // Dopoki nie mamy adresu, nie mamy tez przydzielonego bitu — milczymy,
         // dokladnie tak jak prawdziwa zmieniarka przed appointem.
         if (!deviceAllocated) return;
-        // Zglaszamy WYLACZNIE swoj bit (claimMask). Zero => "nie chce magistrali";
-        // w wired-OR nie psuje to zgloszen innych urzadzen (ich bity sie dosumuja).
+        // Zawsze zglaszamy swoj bit (jak prawdziwa zmieniarka). Zero maski
+        // pozwala masterowi wyjsc z Request Polling — patrz wantsBus().
         const uint8_t mask = wantsBus() ? claimMask : 0x00;
         UnilinkBus::sendMedium(0x10, 0x18, 0x82, mask, 0x00, 0x00, 0x00, 0x00);
         if (DEBUG_VERBOSE) {
@@ -1220,15 +1222,15 @@ static void buildLightTick0x90(uint8_t* frame) {
 // odswiezyc pelny status (z numerem plyty) zamiast samego tiku 0x90.
 static uint8_t s_lastShownDisc  = 0;
 static uint8_t s_lastShownTrack = 0;
-static uint8_t s_tickCounter    = 0;
+static uint8_t s_lastC0Min      = 0xFF;
+static uint8_t s_lastC0Sec      = 0xFF;
 
-// Wybierz i NADAJ swiezy ekran na grant 0x13 przy pustej kolejce:
-//   - poza Playing (ladowanie/zmiana/seek) -> pelny 0xC0 (numer plyty, "LOAD"),
-//   - przy zmianie plyty/utworu -> raz pelny 0xC0 (odswiezenie numeru plyty),
-//   - w ustalonym Playing -> przewaznie lekki tik 0x90 (gladki licznik, radio
-//     interpoluje), a co kilka grantow pelny 0xC0. Prawdziwa zmieniarka tez
-//     przeplata 0x90/0xC0 — to dodatkowo zabezpiecza aktualizacje czasu, gdyby
-//     dane radio nie doliczalo sekund z samego 0x90.
+// Wybierz i NADAJ swiezy ekran na grant 0x13 przy pustej kolejce.
+// CDX-M670: czas na ekranie bierze z ramki 0xC0 (D7/D8). Podczas LOAD/ChangedCd
+// prawdziwa zmieniarka wysyla 0xFF (= "--.--"); po wejsciu w Playing MUSI
+// dojsc 0xC0 z prawdziwym czasem — sam 0x90 nie zdejmuje "--.--" (potwierdzone
+// logiem 15:34). Cadencja jak w sniffe: 0xC0 ~1 Hz (gdy zmienia sie sekunda),
+// miedzy nimi lekki 0x90 (interpolacja).
 // Ekran BEZCZYNNEJ zmieniarki: ramka 0x8E. W sniffie CDX-M670, gdy zmieniarka
 // stoi z wybrana plyta i nie gra, na kazdy grant leci dokladnie:
 //   70 31 8E C0 | EF | 00 00 00 80 | 6F | 00       (CD8)
@@ -1254,40 +1256,49 @@ static void sendIdleScreen0x8E() {
 static void sendFreshDisplay() {
     uint8_t disc  = CdChanger::disk();
     uint8_t track = CdChanger::track();
+    uint8_t min   = CdChanger::minutes();
+    uint8_t sec   = CdChanger::seconds();
     CdChanger::MechState ms = CdChanger::mechState();
     bool playing  = (ms == CdChanger::MechState::Playing);
+    bool seeking  = (ms == CdChanger::MechState::Seeking);
 
     // Mechanizm stoi (Init/Idle/Ejecting) — nie ma czasu do pokazania.
     if (ms == CdChanger::MechState::Idle || ms == CdChanger::MechState::Init) {
         sendIdleScreen0x8E();
+        s_lastC0Min = s_lastC0Sec = 0xFF;
         if (DEBUG_FRAMES) Serial.printf("   TX 0x8E (idle) CD%d\n", disc);
         return;
     }
 
     bool changed = (disc != s_lastShownDisc || track != s_lastShownTrack);
-    if (!playing || changed) {
+    // Pelny 0xC0: zmiana plyty/utworu, stany przejsciowe, Seeking, ALBO nowa
+    // sekunda w Playing (to wlasnie ustawia widoczny czas po "--.--" z LOAD).
+    bool needFullC0 = !playing || changed || seeking ||
+                      (min != s_lastC0Min) || (sec != s_lastC0Sec);
+
+    if (needFullC0) {
         s_lastShownDisc  = disc;
         s_lastShownTrack = track;
-        s_tickCounter    = 0;
-        sendFreshStatusC0();           // pelny status z numerem plyty
+        if (playing || seeking) {
+            s_lastC0Min = min;
+            s_lastC0Sec = sec;
+        } else {
+            // LOAD/ChangedCd: w ramce idzie FF — zapomnij ostatni czas, zeby
+            // pierwsze Playing wymusilo swiezy 0xC0 z 00:00.
+            s_lastC0Min = s_lastC0Sec = 0xFF;
+        }
+        sendFreshStatusC0();
         if (DEBUG_FRAMES) Serial.printf("   TX 0xC0 CD%d TR%d %02d:%02d\n",
-                                        disc, track, CdChanger::minutes(), CdChanger::seconds());
+                                        disc, track, min, sec);
         return;
     }
 
-    // Ustalone Playing: co 4. grant pelny 0xC0, w pozostalych lekki tik 0x90.
-    if (++s_tickCounter >= 4) {
-        s_tickCounter = 0;
-        sendFreshStatusC0();
-        if (DEBUG_FRAMES) Serial.printf("   TX 0xC0 CD%d TR%d %02d:%02d\n",
-                                        disc, track, CdChanger::minutes(), CdChanger::seconds());
-    } else {
-        uint8_t frame[11];
-        buildLightTick0x90(frame);     // gladki tik czasu
-        UnilinkBus::sendRaw(frame, sizeof(frame));
-        if (DEBUG_FRAMES) Serial.printf("   TX 0x90 CD%d TR%d %02d:%02d\n",
-                                        disc, track, CdChanger::minutes(), CdChanger::seconds());
-    }
+    // Ta sama sekunda — lekki tik 0x90 (wypelniacz grantu, interpolacja).
+    uint8_t frame[11];
+    buildLightTick0x90(frame);
+    UnilinkBus::sendRaw(frame, sizeof(frame));
+    if (DEBUG_FRAMES) Serial.printf("   TX 0x90 CD%d TR%d %02d:%02d\n",
+                                    disc, track, min, sec);
 }
 
 // Natychmiastowy push pelnego statusu (najwyzszy priorytet) — przy zmianie

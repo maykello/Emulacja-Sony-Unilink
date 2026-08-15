@@ -55,6 +55,7 @@ static PlayModes playModesState = { RepeatMode::Off, false, false };
 static int           seekScanDir   = 0;
 static unsigned long seekScanStart = 0;
 static unsigned long lastSeekStep  = 0;
+static unsigned long lastAudioSeek = 0;  // ostatni setTimeOffset podczas skanu
 
 // --- PAMIEC NIEULOTNA (NVS) ---
 // Zapamietuje ostatnio odtwarzany utwor, by po wylaczeniu radia (BUS=0) wznowic
@@ -167,7 +168,8 @@ void update(unsigned long now, bool radioEngaged) {
     // dryftu/przeskokow niezaleznie od jitteru petli.
     //
     // Zmiana sekundy NIE ustawia needDisplayUpdate. Plynne odswiezanie ekranu
-    // idzie przez arbitraz `01 15` (wantsBus raz na DISPLAY_REFRESH_MS).
+    // idzie przez stale zglaszanie sie w arbitrazu `01 15` (jak prawdziwa
+    // zmieniarka) i lekki tik 0x90 na kazdy grant.
     if (cdState == MechState::Playing) {
         uint32_t elapsed = (now - playBaseMs) / 1000;
         uint8_t newMin = (uint8_t)((elapsed / 60) % 100);
@@ -327,16 +329,31 @@ void prevDisc() {
 }
 
 // Pojedynczy skok przewijania o `deltaSec` w obrebie biezacego utworu.
-// Aktualizuje NASZ licznik czasu (po wzglednym seeku dekoder moze chwilowo
-// raportowac stary czas) i przesuwa audio asynchronicznie (nieblokujaco).
+// Aktualizuje TYLKO nasz licznik czasu / ekran. Dekoder MP3 synchronizujemy
+// osobno (rzadziej) przez syncAudioToDisplayClock — patrz SEEK_AUDIO_MS.
 static void doSeekStep(int deltaSec) {
-    if (!audioSeekRelative(deltaSec)) return;
     long t = (long)playMinutes * 60 + playSeconds + deltaSec;
     if (t < 0) t = 0;
     playMinutes = (uint8_t)((t / 60) % 100);
     playSeconds = (uint8_t)(t % 60);
     playBaseMs = millis() - (unsigned long)t * 1000;
     needDisplayUpdate = true;
+}
+
+// Dopchnij dekoder do aktualnej pozycji wyswietlacza (jeden setTimeOffset).
+static void syncAudioToDisplayClock() {
+    uint32_t target = (uint32_t)playMinutes * 60u + (uint32_t)playSeconds;
+    audioSeekToSec(target);
+    lastAudioSeek = millis();
+}
+
+static void endSeekScan() {
+    seekScanDir = 0;
+    needDisplayUpdate = true;
+    // Finalny sync: ekran pokazuje pozycje po skanie, audio moze byc w tyle
+    // (aktualizowane tylko co SEEK_AUDIO_MS).
+    syncAudioToDisplayClock();
+    audioSetInfoSquelch(false);
 }
 
 void seek(int deltaSec) {
@@ -350,21 +367,24 @@ void seek(int deltaSec) {
     if (seekScanDir == 0 || seekScanDir == -dir) {
         enterState(MechState::Seeking);
         needDisplayUpdate = true;
+        audioSetInfoSquelch(true);
     }
 
     if (seekScanDir == dir) {
         // Ponowne nacisniecie tego samego kierunku => STOP skanowania.
-        seekScanDir = 0;
         Serial.printf(">> SCAN stop: CD%d TR%d %02d:%02d\n",
                       currentDisk, currentTrack, playMinutes, playSeconds);
+        endSeekScan();
         return;
     }
 
-    // Start skanowania lub odwrocenie kierunku — natychmiastowy pierwszy skok.
+    // Start skanowania lub odwrocenie kierunku — natychmiastowy pierwszy skok
+    // ekranu + jeden skok audio (slyszalny podglad startu).
     seekScanDir   = dir;
     seekScanStart = now;
     doSeekStep(dir * SEEK_STEP_SEC);
     lastSeekStep = now;
+    syncAudioToDisplayClock();
     Serial.printf(">> SCAN %s: CD%d TR%d %02d:%02d\n",
                   dir > 0 ? "FF" : "REW", currentDisk, currentTrack,
                   playMinutes, playSeconds);
@@ -377,7 +397,7 @@ void serviceSeekRepeat(unsigned long now) {
     // Wstanie Seeking (przewijanie FF/REW) kontynuujemy skanowanie.
     // W innych stanach (LoadingTrack, ChangedCd itp.) automatycznie konczymy.
     if (cdState != MechState::Playing && cdState != MechState::Seeking) {
-        seekScanDir = 0;
+        endSeekScan();
         return;
     }
 
@@ -386,13 +406,17 @@ void serviceSeekRepeat(unsigned long now) {
         Serial.printf(">> SCAN auto-stop (limit %lus): CD%d TR%d %02d:%02d\n",
                       SEEK_SCAN_MAX_MS / 1000, currentDisk, currentTrack,
                       playMinutes, playSeconds);
-        seekScanDir = 0;
+        endSeekScan();
         return;
     }
 
     if (now - lastSeekStep >= SEEK_REPEAT_MS) {
         lastSeekStep = now;
         doSeekStep(seekScanDir * SEEK_STEP_SEC);
+        // Rzadki podglad audio — nie co kazdy krok ekranu (patrz SEEK_AUDIO_MS).
+        if (now - lastAudioSeek >= SEEK_AUDIO_MS) {
+            syncAudioToDisplayClock();
+        }
     }
 }
 
@@ -404,11 +428,9 @@ void serviceSeekRepeat(unsigned long now) {
 void stopSeekScan() {
     if (seekScanDir != 0) {
         int oldDir = seekScanDir;
-        seekScanDir = 0;
-        // Stan zmieni sie w update() po wykryciu seekScanDir == 0.
-        needDisplayUpdate = true;
         Serial.printf(">> SCAN stop (0x08 0x00): CD%d TR%d %02d:%02d dir=%d -> Waiting for Playing\n",
                       currentDisk, currentTrack, playMinutes, playSeconds, oldDir);
+        endSeekScan();
     }
 }
 
@@ -469,6 +491,8 @@ void notePolled() {
 void sleep() {
     // Radio uspione/wylaczone — zatrzymaj dzwiek i zapamietaj ostatni utwor.
     // Magistrala jest juz wylaczona, wiec blokujacy zapis NVS nikomu nie szkodzi.
+    seekScanDir = 0;
+    audioSetInfoSquelch(false);
     doPersist();
     audioStop();
     enterState(MechState::Init);

@@ -65,8 +65,8 @@ void serviceAutoAdvance();
 void serviceMediaMount();
 
 // Skanowanie przewijaniem (FF/REW). Wywolywac w kazdej iteracji loop().
-// Po nacisnieciu FF/REW wykonuje kolejne skoki co SEEK_REPEAT_MS (slyszalny
-// podglad), az do ponownego nacisniecia (stop/odwrocenie) lub limitu czasu.
+// Po nacisnieciu FF/REW aktualizuje ekran co SEEK_REPEAT_MS i dekoder MP3
+// co SEEK_AUDIO_MS (podglad), az do ponownego nacisniecia / 0x08 / limitu.
 void serviceSeekRepeat(unsigned long now);
 
 // Zatrzymaj skanowanie przewijania (wywolywane przy odbiorze broadcastu 0x08).
