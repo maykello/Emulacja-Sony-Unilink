@@ -1,0 +1,106 @@
+[22:36:58.969] Obsluga: MEX-BT3800u + CDX-M670 + PCM5102A DAC + USB
+[22:36:58.969] Oczekuje na radio (Stan C0 - Init)...
+[22:36:58.969] [NVS] Wczytano ostatni utwor: CD5 TR1
+[22:36:58.973] [Audio] Inicjalizacja...
+[22:36:58.974] [UsbDrive] Inicjalizacja USB Host...
+[22:36:58.977] [UsbDrive] USB Host gotowy. Podłącz pendrive'a do portu USB-OTG...
+[22:36:58.978] [UsbDrive] Nowe urządzenie USB (addr=1)
+[22:36:58.978] [UsbDrive] Konfiguruję urządzenie MSC (addr=1)...
+[22:36:58.981] [UsbDrive] VID=0x0951 PID=0x1653
+[22:36:58.983] [UsbDrive] Znaleziono interfejs MSC #0
+[22:36:58.984] [UsbDrive] Bulk IN:  0x81 (MPS=64)
+[22:36:58.984] [UsbDrive] Bulk OUT: 0x02 (MPS=64)
+[22:36:58.987] [UsbDrive] Czekam na gotowość urządzenia...
+[22:36:58.987] [UsbDrive] Pendrive: Kingston DT 100 G2
+[22:36:58.990] [UsbDrive] Dysk: 15644912 sektorów × 512 B = 7639 MB
+[22:36:58.993] [UsbDrive] Sektor 0 to GPT Protective MBR — parsowanie GPT...
+[22:36:58.994] [UsbDrive] GPT: wpisy od LBA 2, 128 wpisów × 128 B
+[22:36:58.998] [UsbDrive]   GPT wpis 0: start=2048 end=15644671 (Microsoft Basic Data)
+[22:36:58.998] [UsbDrive] ✓ Używam partycji GPT na sektorze 2048
+[22:36:59.000] [UsbDrive] ✓ System plików zamontowany pod /usb
+[22:36:59.003] [Audio] setPinout(BCK=7, LRCK=15, DIN=13) = OK
+[22:36:59.003] [Audio] Task dekodowania uruchomiony na rdzeniu 0
+[22:36:59.003] [Audio] CD01: 1 track(ów)
+[22:36:59.003] [Audio]   TR01: 01- Hasta Manana.mp3
+[22:36:59.007] [Audio] CD02: 2 track(ów)
+[22:36:59.007] [Audio]   TR01: 01. Waterloo.mp3
+[22:36:59.007] [Audio]   TR02: 02. Head Over Heels.mp3
+[22:36:59.010] [Audio] CD03: 3 track(ów)
+[22:36:59.013] [Audio]   TR01: 02. Mamma Mia.mp3
+[22:36:59.013] [Audio]   TR02: 03. Gimme! Gimme! Gimme! (A Man After Midnight).mp3
+[22:36:59.016] [Audio]   TR03: 03. I Do, I Do, I Do, I Do, I Do.mp3
+[22:36:59.018] [Audio] CD04: 4 track(ów)
+[22:36:59.018] [Audio]   TR01: 04. Dancing Queen.mp3
+[22:36:59.021] [Audio]   TR02: 04. Honey, Honey.mp3
+[22:36:59.022] [Audio]   TR03: 05. Take A Chance On Me.mp3
+[22:36:59.024] [Audio]   TR04: 06. Knowing Me, Knowing You.mp3
+[22:36:59.026] [Audio] CD05: 5 track(ów)
+[22:36:59.026] [Audio]   TR01: 06. Ring Ring.mp3
+[22:36:59.030] [Audio]   TR02: 07 Wrap Your Arms Around Me.mp3
+[22:36:59.030] [Audio]   TR03: 07. Eagle.mp3
+[22:36:59.033] [Audio]   TR04: 07. The Winner Takes It All.mp3
+[22:36:59.033] [Audio]   TR05: 08- Nina, pretty balerina.mp3
+[22:36:59.035] [Audio] CD06: 1 track(ów)
+[22:36:59.037] [Audio]   TR01: 03. I Do, I Do, I Do, I Do, I Do.mp3
+[22:36:59.038] [Audio] CD07: 1 track(ów)
+[22:36:59.040] [Audio]   TR01: 07 Wrap Your Arms Around Me.mp3
+[22:36:59.040] [Audio] CD08: 1 track(ów)
+[22:36:59.043] [Audio]   TR01: 07. Eagle.mp3
+[22:36:59.043] [Audio] CD09: 1 track(ów)
+[22:36:59.043] [Audio]   TR01: 07. The Winner Takes It All.mp3
+[22:36:59.046] [Audio] CD10: 1 track(ów)
+[22:36:59.047] [Audio]   TR01: 08- Nina, pretty balerina.mp3
+[22:36:59.049] [Audio] Inicjalizacja zakończona — pendrive gotowy.
+[22:36:59.049] [Audio] Gotowy do odtwarzania.
+[22:36:59.053] >>> Wykryto USB. Wznawiam zapamietana plyte: CD5 TR1
+[22:37:05.494] === BUS_ON = 1 ===
+[22:37:05.496] [Audio] Głośność: 18/21 (zlecone)
+[22:37:05.496] === BUS_ON = 0 ===
+[22:37:05.496] === SEN: magistrala wylaczona — zatrzymuje audio ===
+[22:37:05.500] [Audio] ⏹ Zatrzymano (zlecone).
+[22:37:05.804] === BUS_ON = 1 ===
+[22:37:05.804] [Audio] Głośność: 18/21 (zlecone)
+[22:37:06.203] === BUS_ON = 0 ===
+[22:37:06.208] === SEN: magistrala wylaczona — zatrzymuje audio ===
+[22:37:06.210] [Audio] ⏹ Zatrzymano (zlecone).
+[22:37:06.407] === BUS_ON = 1 ===
+[22:37:06.407] [Audio] Głośność: 18/21 (zlecone)
+[22:37:06.978] ===== CZARNA SKRZYNKA (RADIO SYSTEM RESET 18 10 01 00) — ostatnie 1 zdarzen =====
+[22:37:06.978] [-    0ms] RX    18 10 01 00 29 00
+[22:37:06.984] ======================================================
+[22:37:06.986] >> Radio system reset (#1) (juz bylem nieprzydzielony)
+[22:37:07.043] == Wykryto CDX-M670 (widziano 3B 10 02 11) ==
+[22:37:07.113] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 49ms po DB)
+[22:37:07.248] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 179ms po DB)
+[22:37:07.300] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#3, 228ms po DB)
+[22:37:07.348] >> Odpowiadam na ANYONE? device info 0x8C
+[22:37:07.372] >> Adres przydzielony: 0x31 (op2=0x14)! deviceAllocated=true
+[22:37:08.255] >> [Audio Bus] Radio sygnalizuje audio ON (87 2B) — tylko log
+[22:37:08.273] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B) — tylko log
+[22:37:08.955] [STAT] poll15=9 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x80 CD5 TR1 00:00
+[22:37:10.947] >>> C0 -> 80 (Idle)
+[22:37:10.955] [STAT] poll15=44 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x80 CD5 TR1 00:00
+[22:37:12.953] [STAT] poll15=33 disp13(my)=0 disp13(3B)=0 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x80 CD5 TR1 00:00
+[22:37:13.223] >> PLAY command received!
+[22:37:13.318] [Audio] Async connecttoFS("/CD05/06. Ring Ring.mp3") = OK
+[22:37:13.318] [Audio] ▶ Odtwarzam: /CD05/06. Ring Ring.mp3 (rozpoczęto dekodowanie)
+[22:37:13.718] >>> 40 -> 20 (ChangedCd)
+[22:37:13.823] >>> 20 -> 00 (Playing!)
+[22:37:14.952] [STAT] poll15=19 disp13(my)=17 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:01
+[22:37:16.953] [STAT] poll15=19 disp13(my)=18 disp13(3B)=1 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:03
+[22:37:18.952] [STAT] poll15=25 disp13(my)=22 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:05
+[22:37:20.952] [STAT] poll15=23 disp13(my)=24 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:07
+[22:37:22.953] [STAT] poll15=22 disp13(my)=20 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:09
+[22:37:24.953] [STAT] poll15=27 disp13(my)=27 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:11
+[22:37:26.956] [STAT] poll15=21 disp13(my)=18 disp13(3B)=2 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:13
+[22:37:28.955] [STAT] poll15=26 disp13(my)=26 disp13(3B)=0 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:15
+[22:37:30.857] BREAK armed (grant 1973ms ago, poll15 2000ms ago)
+[22:37:30.955] [STAT] poll15=0 disp13(my)=0 disp13(3B)=1 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:17
+[22:37:32.370] BREAK armed (grant 3486ms ago, poll15 3513ms ago)
+[22:37:32.955] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:19
+[22:37:33.884] BREAK armed (grant 5001ms ago, poll15 5028ms ago)
+[22:37:34.955] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=2 btn=0 break=1/1 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:21
+[22:37:35.414] BREAK armed (grant 6530ms ago, poll15 6557ms ago)
+[22:37:36.933] BREAK armed (grant 8051ms ago, poll15 8078ms ago)
+[22:37:36.953] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:23
+[22:37:38.448] BREAK armed (grant 9564ms ago, poll15 9591ms ago)

@@ -277,6 +277,12 @@ void serviceSlaveBreak(bool busPowered) {
     if (nowMs - lastBreakTime < breakBackoffMs) return;
     if (!wantsBus()) return;
 
+    static unsigned long lastDumpMs = 0;
+    if (nowMs - lastDumpMs > 10000) { // dump max once per 10s
+        Diagnostics::dump("POLLING STOPPED - BEFORE BREAK");
+        lastDumpMs = nowMs;
+    }
+
     UnilinkBus::requestSlaveBreak();
     lastBreakTime = nowMs;
     statBreak++;
@@ -759,6 +765,19 @@ void handlePacket(const uint8_t* buf, int len) {
     uint8_t op1 = buf[2];
     uint8_t op2 = buf[3];
 
+    // ===== FILTR ECHA (zabezpieczenie magistrali wired-OR) =====
+    // Ramka, w ktorej TAD == myAddr, to NASZA odpowiedz odczytana z powrotem
+    // z magistrali wired-OR. Prawdziwa ramka OD mastera DO nas ma zawsze
+    // RAD == myAddr (adresowana do nas), a TAD == 0x10/0x14 (master/display).
+    // Nasze odpowiedzi maja TAD == myAddr (my nadajemy). Jesli taka ramka
+    // przejdzie flush ISR (Fix 1) i walidacje parity, to jest echem — odrzucamy.
+    // Bez tego echa zaburzaja dyspozytor: lastPingTime jest falszywie
+    // odswiezany, a widmowe ramki konsumuja sloty w buforze RX.
+    if (deviceAllocated && tad == myAddr) {
+        Diagnostics::recordNote("ECHO");
+        return;
+    }
+
     // ===== Diagnostyka: zliczanie kluczowych ramek =====
     if (rad == ADDR_BROADCAST && op1 == 0x01 && op2 == 0x15) {
         statPoll15++;
@@ -780,6 +799,26 @@ void handlePacket(const uint8_t* buf, int len) {
     // odpowie. Wstrzymujemy Slave Break, by nie zderzyc sie z ta odpowiedzia.
     if (tad == ADDR_MASTER && rad != myAddr && rad != ADDR_BROADCAST) {
         suppressBreakUntil = millis() + FOREIGN_POLL_GUARD_MS;
+    }
+
+    // ===== PING NATYCHMIASTOWY (01 12) — BEZWARUNKOWY handler =====
+    // Time Poll 01 12 od mastera (0x10) lub procesora ekranu (0x14) wymaga
+    // NATYCHMIASTOWEJ odpowiedzi. Brak odpowiedzi = radio uznaje zmieniarke
+    // za nieosiagalna i robi SYSTEM RESET / usuwa z sesji.
+    // KLUCZOWE: CDX-M670 odpytuje status ROWNIEZ z procesora ekranu
+    // (tad=0x14): "31 14 01 12". Brak odpowiedzi na nie powodowal SYSTEM RESET.
+    // Handler jest BEZWARUNKOWY (if, nie else-if), przed calym lancuchem
+    // else-if, aby NIGDY nie byl blokowany przez inne galezie dyspozytora.
+    if (rad == myAddr && (tad == ADDR_MASTER || tad == ADDR_DISPLAY) &&
+        op1 == 0x01 && op2 == 0x12) {
+        if (tad == ADDR_MASTER) CdChanger::noteFirstPing();
+        CdChanger::notePolled();
+        UnilinkBus::sendShort(tad, myAddr, 0x00, statusByteFromState(CdChanger::mechState()));
+        if (DEBUG_VERBOSE) {
+            Serial.printf(">> PING odpowiedz (do 0x%02X): status=0x%02X\n",
+                          tad, statusByteFromState(CdChanger::mechState()));
+        }
+        return;  // obsluzono — nie wchodzi w lancuch else-if
     }
 
     // ===== Detekcja CDX-M670 + okno preliminary =====
@@ -850,10 +889,28 @@ void handlePacket(const uint8_t* buf, int len) {
     // RESET w srodku discovery, czyli dokladnie te petle resetow, ktora mielismy
     // naprawiac.
     else if (rad == ADDR_BROADCAST && tad == ADDR_MASTER && op1 == 0x01 && op2 == 0x11) {
+        // [FIX 4 - AUTO-RECOVERY] Jesli radio pyta "jest tu nieprzydzielona
+        // zmieniarka?" (01 11), a my od dawna nie widzielismy Request Polling
+        // (01 15), to znaczy ze radio nas wyrzucilo z sesji (np. po nieudanym
+        // Time Poll 01 12). Resetujemy stan i odpowiadamy magic, zeby radio
+        // zainicjowalo nowe discovery i ponownie nas przydzielilo.
+        if (deviceAllocated && (millis() - lastPoll15Ms) > POLL15_ALIVE_MS) {
+            Serial.println(">> 01 11 a poll15 nie wraca — reset sesji, ponowne discovery");
+            Diagnostics::dump("AUTO-RECOVERY: 01 11 + dead poll15");
+            setAddrState(AddressManager::apply(addrState(), AddressManager::Event::Start, 0));
+            claimMask = CLAIM_MASK_DEFAULT;
+            CdChanger::resetToInit();
+            CdChanger::clearDisplayDirty();
+            txQueue.clear();  // wyczysc stara kolejke — nowa sesja
+            suppressBreakUntil = 0;
+            lastBreakTime = 0;
+            breakBackoffMs = BREAK_RETRY_MS;
+            breakOkAwaitingPollMs = 0;
+        }
         if (!deviceAllocated) {
             const uint8_t magic[] = {0x10, 0x18, 0x04, 0x00, 0x2C, 0x00};
             UnilinkBus::sendRaw(magic, sizeof(magic));
-            Serial.println(">> Odpowiadam na 01 11 (nieprzydzielona zmieniarka): magic 10 18 04 00");
+            Serial.println(">> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery");
         }
     }
 
@@ -926,24 +983,9 @@ void handlePacket(const uint8_t* buf, int len) {
         }
     }
 
-    // ===== 4. PING — status query (01 12) od mastera (0x10) LUB procesora ekranu (0x14) =====
-    // KLUCZOWE: CDX-M670 okresowo odpytuje status RÓWNIEŻ z procesora ekranu
-    // (tad=0x14): "31 14 01 12". Brak odpowiedzi na nie powodowal, ze radio
-    // uznawalo zmieniarke za niesprawna i robilo SYSTEM RESET — potwierdzone w
-    // DWOCH niezaleznych zrzutach czarnej skrzynki ('31 14 01 12' tuz przed
-    // kazdym resetem). Odpowiadamy temu, kto pyta (odbiorca odpowiedzi = tad).
-    else if (rad == myAddr && (tad == ADDR_MASTER || tad == ADDR_DISPLAY) &&
-             op1 == 0x01 && op2 == 0x12) {
-        if (tad == ADDR_MASTER) CdChanger::noteFirstPing();
-        CdChanger::notePolled();   // radio zobaczylo biezacy stan mechanizmu
-        // Odpowiedz: <pytajacy> <addr> 00 <statusByte> <parity> 00
-        // [DEVIATION §7.1] Init->0x80 (Idle) zamiast starych 0xC0 (Ejecting).
-        // Mapowanie zyje w UnilinkFrame::statusByte, tu wykorzystujemy helper.
-        UnilinkBus::sendShort(tad, myAddr, 0x00, statusByteFromState(CdChanger::mechState()));
-        if (DEBUG_VERBOSE) {
-            Serial.printf(">> PING odpowiedz (do 0x%02X): status=0x%02X\n", tad, statusByteFromState(CdChanger::mechState()));
-        }
-    }
+    // ===== 4. PING (01 12) — OBSLUZONY BEZWARUNKOWO NA SZCZYCIE DYSPOZYTORA =====
+    // Handler przeniesiony przed lancuch else-if, aby NIGDY nie byl blokowany
+    // przez inne galezie. Patrz sekcja "PING NATYCHMIASTOWY" powyzej.
 
     // ===== 5. UPDATE DISPLAY (3X 10 01 13) =====
     // TYLKO gdy tad == 0x10 (pytanie do nas). NIE odpowiadamy na 31 14 01 13 —

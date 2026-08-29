@@ -64,9 +64,15 @@ static void IRAM_ATTR onClockEvent() {
                 if (txIndex >= txLength) {
                     isAnswering = false;
                     pinMode(PIN_DATA, INPUT);
-                    // Wracamy do odbioru na granicy bajtu — wyzeruj czesciowo
-                    // zlozony bajt, zeby pierwszy bajt po naszej transmisji nie
-                    // odziedziczyl bitow sprzed niej.
+                    // --- FLUSH ECHA TX ---
+                    // Podczas nadawania master taktuje, a my ustawiamy DATA na
+                    // magistrali wired-OR. ISR rownoczesnie ODBIERA te same bity
+                    // do rxBuffer — to echo naszej wlasnej transmisji. Bez
+                    // flushowania rxIndex te bajty tworza "widmowe ramki" (np.
+                    // `10 18 82 01 AB ...` odczytane jako odpowiedz obcego
+                    // urzadzenia), ktore zaburzaja dalsze parsowanie i powoduja
+                    // utrate kolejnych ramek (w tym krytycznego Time Poll 01 12).
+                    rxIndex = 0;
                     rxBitIndex = 0;
                     rxIncomingByte = 0;
                 }
@@ -431,40 +437,48 @@ void serviceSlaveBreak() {
 
     switch (s_breakState) {
         case BreakState::WaitLow:
-            if (!readDataLogic()) {
+            // Czekamy na poczatek fazy LOW (0V na magistrali).
+            // readDataLogic() zwraca true dla 0V.
+            if (readDataLogic()) {
                 s_breakState = BreakState::ConfirmLow;
                 s_breakMark  = now;
             }
             break;
 
         case BreakState::ConfirmLow:
-            if (readDataLogic()) {
-                // Spozniona probka na HIGH po wystarczajaco dlugim LOW = OK.
+            if (!readDataLogic()) {
+                // Linia wrocila do HIGH (5V). Sprawdzamy czy faza LOW trwala wystarczajaco dlugo.
                 if (now - s_breakMark >= BREAK_IDLE_LOW_MIN_US) {
+                    // LOW trwalo >= 6ms i wlasnie przeszlo w HIGH. Od razu przechodzimy do Settle!
                     s_breakState = BreakState::Settle;
                     s_breakMark  = now;
                 } else {
+                    // Za krotki LOW (zaklocenie), szukamy od nowa.
                     s_breakState = BreakState::WaitLow;
                     s_breakMark  = now;
                 }
             } else if (now - s_breakMark >= BREAK_IDLE_LOW_US) {
+                // Linia jest LOW juz pelne 8ms. Czekamy az przejdzie w HIGH.
                 s_breakState = BreakState::WaitHigh;
                 s_breakMark  = now;
             }
             break;
 
         case BreakState::WaitHigh:
-            if (readDataLogic()) {
+            if (!readDataLogic()) {
+                // Przejscie z LOW do HIGH (zbocze narastajace). Odliczamy 2ms.
                 s_breakState = BreakState::Settle;
                 s_breakMark  = now;
             }
             break;
 
         case BreakState::Settle:
-            if (!readDataLogic()) {
+            if (readDataLogic()) {
+                // Linia wrocila do LOW zanim minelo 2ms! To nie jest fala idle.
                 s_breakState = BreakState::WaitLow;
                 s_breakMark  = now;
             } else if (now - s_breakMark >= BREAK_SETTLE_US) {
+                // Linia jest HIGH przez 2ms. Czas na HOLD (wysterowanie 0V na 3ms).
                 enterHold(now);
             }
             break;

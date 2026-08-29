@@ -90,7 +90,8 @@ constexpr unsigned long DISPLAY_REFRESH_MS = 1000;
 // Break gdy sesja chce nadac, a brak `01 15` / grantu tak dlugo:
 constexpr unsigned long DISPLAY_STARVED_MS = 500;
 // `01 15` w tym oknie = Request Polling zywy → NIGDY Break.
-constexpr unsigned long POLL15_ALIVE_MS    = 400;
+// (Ustawione na 2000ms, bo radio potrafi zrobic przerwe ~500-1500ms w odpytywaniu)
+constexpr unsigned long POLL15_ALIVE_MS    = 2000;
 constexpr unsigned long BREAK_RETRY_MS     = 1000;
 constexpr unsigned long BREAK_RECOVERY_MS  = 1500;
 constexpr unsigned long BREAK_BACKOFF_MAX_MS = 3000;

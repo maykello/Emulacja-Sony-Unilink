@@ -5,7 +5,7 @@
 
 namespace Diagnostics {
 
-constexpr int RING_SIZE     = 48;   // ile ostatnich zdarzen pamietamy
+constexpr int RING_SIZE     = 128;   // ile ostatnich zdarzen pamietamy
 constexpr int MAX_FRAME_LEN = 16;   // najdluzsza ramka UniLink
 
 struct Entry {
