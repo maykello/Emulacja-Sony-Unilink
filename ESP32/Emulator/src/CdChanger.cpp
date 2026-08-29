@@ -167,9 +167,10 @@ void update(unsigned long now, bool radioEngaged) {
     // Czas odtwarzania liczony z bazowego znacznika — monotonicznie i bez
     // dryftu/przeskokow niezaleznie od jitteru petli.
     //
-    // Zmiana sekundy NIE ustawia needDisplayUpdate. Plynne odswiezanie ekranu
-    // idzie przez stale zglaszanie sie w arbitrazu `01 15` (jak prawdziwa
-    // zmieniarka) i lekki tik 0x90 na kazdy grant.
+    // [NAPRAWA ZASTYGANIA] Zmiana sekundy USTAWIA needDisplayUpdate. Dzieki
+    // temu isDisplayDirty() jest true co sekunde w Playing, co gwarantuje ze
+    // wantsBus() zwraca true i emulator ZAWSZE sie zglasza w arbitrazu 01 15.
+    // Prawdziwa zmieniarka co sekunde raportuje nowy czas — nasz emulator tez.
     if (cdState == MechState::Playing) {
         uint32_t elapsed = (now - playBaseMs) / 1000;
         uint8_t newMin = (uint8_t)((elapsed / 60) % 100);
@@ -177,6 +178,7 @@ void update(unsigned long now, bool radioEngaged) {
         if (newSec != playSeconds || newMin != playMinutes) {
             playSeconds = newSec;
             playMinutes = newMin;
+            needDisplayUpdate = true;  // co sekunde — nowy czas do nadania
         }
     }
 }

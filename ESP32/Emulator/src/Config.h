@@ -88,12 +88,12 @@ constexpr unsigned long SEEK_DURATION_MS = 50;   // 0x20 -> 0x00 (krotki, by uni
 //
 constexpr unsigned long DISPLAY_REFRESH_MS = 1000;
 // Break gdy sesja chce nadac, a brak `01 15` / grantu tak dlugo:
-constexpr unsigned long DISPLAY_STARVED_MS = 800;
+constexpr unsigned long DISPLAY_STARVED_MS = 500;
 // `01 15` w tym oknie = Request Polling zywy → NIGDY Break.
 constexpr unsigned long POLL15_ALIVE_MS    = 400;
 constexpr unsigned long BREAK_RETRY_MS     = 1000;
 constexpr unsigned long BREAK_RECOVERY_MS  = 1500;
-constexpr unsigned long BREAK_BACKOFF_MAX_MS = 8000;
+constexpr unsigned long BREAK_BACKOFF_MAX_MS = 3000;
 // READ_SILENCE_US sluzy juz TYLKO jako awaryjna resynchronizacja bufora RX.
 // Normalne ciecie strumienia na ramki robi UnilinkBus::readFrame po dlugosci
 // wynikajacej z CMD1, wiec ta wartosc nie wplywa juz na czas odpowiedzi.

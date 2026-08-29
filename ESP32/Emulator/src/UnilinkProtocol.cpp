@@ -190,10 +190,23 @@ bool serviceTimeout(unsigned long now) {
 
 // Czy zglaszamy sie w arbitrazu `01 15`?
 //
-// Sniff CDX-M670: w BURSCOE zawsze `82 04`; serie krotkie (1–4), potem przerwa.
-// Always-claim non-stop ~16 s → master konczy sesje; Break nie wznawial poll15.
+// [NAPRAWA ZASTYGANIA] Prawdziwa zmieniarka Sony ZAWSZE zglasza sie maska w
+// odpowiedzi na `01 15` dopoki jest aktywna (Playing / Seeking). Nigdy nie
+// odpowiada `82 00` w trakcie odtwarzania — to by oznaczalo "nie mam nic do
+// nadania", a radio by przestalo dawac granty (= zamrozony ekran).
+// Stary model "burst OE" (sesja zamykana po 1 grancie, `82 00`, potem Slave
+// Break zeby wznowic) byl bledem: powodowal utrate pollingu i zastygniecie.
 static bool wantsBus() {
     if (!deviceAllocated) return false;
+    // W stanach aktywnych ZAWSZE sie zglaszamy — jak prawdziwa zmieniarka.
+    CdChanger::MechState ms = CdChanger::mechState();
+    if (ms == CdChanger::MechState::Playing ||
+        ms == CdChanger::MechState::Seeking ||
+        ms == CdChanger::MechState::LoadingTrack ||
+        ms == CdChanger::MechState::ChangedCd) {
+        return true;
+    }
+    // W stanach nieaktywnych: zglaszamy sie tylko gdy mamy cos do nadania.
     if (!txQueue.isEmpty() || CdChanger::isDisplayDirty()) return true;
     return requestSessionActive;
 }
@@ -204,6 +217,14 @@ static void openRequestSession() {
 }
 
 static void maybeCloseRequestSession() {
+    // [NAPRAWA ZASTYGANIA] W stanach aktywnych NIE zamykamy sesji — zawsze claim.
+    CdChanger::MechState ms = CdChanger::mechState();
+    if (ms == CdChanger::MechState::Playing ||
+        ms == CdChanger::MechState::Seeking ||
+        ms == CdChanger::MechState::LoadingTrack ||
+        ms == CdChanger::MechState::ChangedCd) {
+        return;  // nigdy nie zamykaj — prawdziwa zmieniarka tez tego nie robi
+    }
     if (sessionGrants >= 1 && txQueue.isEmpty() && !CdChanger::isDisplayDirty()) {
         requestSessionActive = false;
     }
@@ -229,44 +250,38 @@ void serviceSlaveBreak(bool busPowered) {
 
     if (UnilinkBus::slaveBreakPending()) return;
 
-    // Tik ~1 Hz lub zdarzenie — otworz sesje (claim / Break).
-    if (!txQueue.isEmpty() || CdChanger::isDisplayDirty() ||
-        (nowMs - lastDisplaySentMs) >= DISPLAY_REFRESH_MS) {
-        if (!requestSessionActive) openRequestSession();
-    }
+    // [NAPRAWA ZASTYGANIA] W stanach aktywnych wantsBus() zawsze true — nie
+    // potrzebujemy Slave Break do regularnej pracy, tylko do wznowienia
+    // pollingu po jego utracie. Dlatego Break uzbrajamy TYLKO gdy polling
+    // faktycznie zginal (brak `01 15` dluzej niz POLL15_ALIVE_MS).
 
+    // Polling zywy — nie potrzebujemy Break.
     if ((nowMs - lastPoll15Ms) < POLL15_ALIVE_MS) {
         breakBackoffMs = BREAK_RETRY_MS;
         breakOkAwaitingPollMs = 0;
         return;
     }
 
-    // Poprzedni Hold nie wzbudzil Request Polling — zwieksz odstęp.
+    // [NAPRAWA ZASTYGANIA] Plaski retry zamiast eksponencjalnego backoffu.
+    // Stary model podwajal odstep (1s -> 2s -> 4s -> 8s), co powodowalo
+    // dluzsze zamrozenie ekranu po kazdej nieudanej probie. Teraz staly
+    // odstep BREAK_RETRY_MS miedzy kolejnymi probami.
     if (breakOkAwaitingPollMs != 0 &&
         (nowMs - breakOkAwaitingPollMs) >= BREAK_RECOVERY_MS) {
-        if (breakBackoffMs < BREAK_BACKOFF_MAX_MS) {
-            unsigned long next = breakBackoffMs * 2;
-            if (next < BREAK_RETRY_MS) next = BREAK_RETRY_MS;
-            if (next > BREAK_BACKOFF_MAX_MS) next = BREAK_BACKOFF_MAX_MS;
-            breakBackoffMs = next;
-        }
         breakOkAwaitingPollMs = 0;
+        // NIE zwiekszamy breakBackoffMs — plaski retry
     }
 
     if (UnilinkBus::breakRecoveryActive(nowMs)) return;
     if (nowMs < suppressBreakUntil) return;
     if (nowMs - lastBreakTime < breakBackoffMs) return;
     if (!wantsBus()) return;
-    if ((nowMs - lastDisplayServedMs) <= DISPLAY_STARVED_MS &&
-        !CdChanger::isDisplayDirty() && txQueue.isEmpty()) {
-        return;
-    }
 
     UnilinkBus::requestSlaveBreak();
     lastBreakTime = nowMs;
     statBreak++;
-    Serial.printf("   BREAK armed (grant %lums ago, poll15 %lums ago, backoff %lums)\n",
-                  nowMs - lastDisplayServedMs, nowMs - lastPoll15Ms, breakBackoffMs);
+    Serial.printf("   BREAK armed (grant %lums ago, poll15 %lums ago)\n",
+                  nowMs - lastDisplayServedMs, nowMs - lastPoll15Ms);
 }
 
 // ------------------------------------------------------------
@@ -596,6 +611,8 @@ static inline void enqueueModeIcons() {
 // Deklaracja wyprzedzajaca — definicja nizej (sekcja ramki 0xC0). Uzywana przez
 // servicePositionFrame1Hz (odswiezanie 1 Hz) oraz enqueueFullStatusFrame.
 static void enqueueStatusC0(uint8_t prio);
+// Buduje lekki tik 0x90 (definicja nizej). Uzywana przez servicePositionFrame1Hz.
+static void buildLightTick0x90(uint8_t* frame);
 // Buduje i NADAJE natychmiast swieza ramke 0xC0 (uzywane na grant 0x13 gdy
 // kolejka pusta). Definicja nizej (sekcja ramki 0xC0).
 static void sendFreshStatusC0();
@@ -690,16 +707,29 @@ void enqueuePositionFrameFull() {
     enqueue(Tx::PRIO_TIME, frame, sizeof(frame));
 }
 
-// Harmonogram 1Hz — ZACHOWANY dla zgodnosci API, ale CELOWO NIE pre-kolejkuje
-// juz ramek czasu. Ekran budujemy SWIEZO na grant 0x13 (patrz sekcja 5
-// handlePacket), wiec radio zawsze dostaje aktualny czas/utwor/plyte.
-// Pre-kolejkowanie co sekunde powodowalo zaleganie nieaktualnych ramek przy
-// wolniejszym odpytywaniu (miganie plyty CD01->CD02->CD01, opoznione reakcje).
-// Plynny licznik utrzymuje CdChanger::update() (z playBaseMs); radio dolicza
-// sekundy lokalnie miedzy odpytaniami (UNILINK_PROTOKOL.md §7).
+// [NAPRAWA ZASTYGANIA] Harmonogram 1Hz — kolejkuje ramke czasu co sekunde w
+// stanie Playing. Prawdziwa zmieniarka ZAWSZE ma cos do oddania na grant
+// `01 13`. Gdy kolejka jest pusta i nie kolejkujemy ramek czasu, wantsBus()
+// w stanach nieaktywnych zwraca false -> emulator milczy -> ekran zastyga.
+// Nawet w nowym modelu "always claim" kolejka z ramka czasu gwarantuje, ze na
+// grant 0x13 mamy SWIEZA ramke z aktualnym czasem (zamiast polegac wylacznie
+// na sendFreshDisplay, ktory buduje ramke w ostatniej chwili).
+//
+// Zabezpieczenie przed zaleganiem: kolejkujemy MAX JEDNA ramke czasu naraz
+// (sprawdzamy czy kolejka ma wolne miejsce i czy minela co najmniej sekunda).
 void servicePositionFrame1Hz(unsigned long now) {
-    (void)now;
-    // celowo puste — patrz komentarz wyzej
+    if (CdChanger::mechState() != CdChanger::MechState::Playing) {
+        lastPositionUpdateMs = now;  // reset, zeby nie kolejkowac zaleglosci
+        return;
+    }
+    if ((now - lastPositionUpdateMs) < 1000) return;
+    lastPositionUpdateMs = now;
+
+    // Kolejkujemy lekki tik 0x90 — radio uzywa go do interpolacji sekund.
+    // Ramka budowana ze swiezych danych CdChanger (track/min/sec/disc).
+    uint8_t frame[11];
+    buildLightTick0x90(frame);
+    enqueue(Tx::PRIO_TIME, frame, sizeof(frame));
 }
 
 // ============================================================
@@ -1349,13 +1379,20 @@ void enqueueFullStatusFrame() {
     enqueueStatusC0(Tx::PRIO_STATUS);
 }
 
-// Harmonogram ramki 0xC0 — ZACHOWANY dla zgodnosci API, ale CELOWO PUSTY.
-// Pelny status jest budowany SWIEZO na grant 0x13 (sekcja 5 handlePacket),
-// wiec nie ma potrzeby (ani sensu) pre-kolejkowac go okresowo — patrz komentarz
-// przy servicePositionFrame1Hz (zaleganie ramek / sztorm Slave Break).
+// [NAPRAWA ZASTYGANIA] Harmonogram ramki 0xC0 — co ~5s w stanie Playing
+// kolejkujemy pelny status. To uzupelnia lekki tik 0x90 i gwarantuje, ze
+// radio okresowo dostaje kompletna informacje (numer plyty, utworu, czas).
+// 5s to kompromis: nie zasmiecamy kolejki (jak przy 1s), a radio nie czeka
+// zbyt dlugo na pelna aktualizacje.
+static unsigned long lastFullStatusMs = 0;
 void serviceFullStatusFrame(unsigned long now) {
-    (void)now;
-    // celowo puste
+    if (CdChanger::mechState() != CdChanger::MechState::Playing) {
+        lastFullStatusMs = now;
+        return;
+    }
+    if ((now - lastFullStatusMs) < 5000) return;
+    lastFullStatusMs = now;
+    enqueueStatusC0(Tx::PRIO_TIME);  // niski priorytet — nie wypycha wazniejszych ramek
 }
 
 // Natychmiastowe wysłanie pełnego statusu (poprawna ramka 0xC0 z markerem 0x30).
