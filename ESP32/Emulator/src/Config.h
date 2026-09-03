@@ -90,11 +90,34 @@ constexpr unsigned long DISPLAY_REFRESH_MS = 1000;
 // Break gdy sesja chce nadac, a brak `01 15` / grantu tak dlugo:
 constexpr unsigned long DISPLAY_STARVED_MS = 500;
 // `01 15` w tym oknie = Request Polling zywy → NIGDY Break.
-// (Ustawione na 2000ms, bo radio potrafi zrobic przerwe ~500-1500ms w odpytywaniu)
-constexpr unsigned long POLL15_ALIVE_MS    = 2000;
+// Ustawione na 3000ms: po SYSTEM RESET radio potrzebuje ~2s na discovery +
+// preliminary, w tym czasie NATURALNIE nie ma `01 15`. Przy 1000ms emulator
+// wyzwalal auto-recovery zanim radio zdazylo zakonczyc discovery = petla resetow.
+constexpr unsigned long POLL15_ALIVE_MS    = 3000;
+// Prog uzbrojenia Slave Break. Request Polling NIE jest ciagly: master prowadzi
+// go tylko wtedy, gdy ktorys slave o to poprosil, po czym wraca do fali idle
+// (Mictronics/Mathias Adam: "Sendet der Slave keine Slave Breaks, schaltet das
+// Radio den Wechslerbetrieb ab"). CDX-M670 konczy `01 15` po ~20 s odtwarzania,
+// mimo ze dalej pinguje nas Time Pollem `01 12` co ~600 ms. Brak `01 15` przez
+// to okno oznacza wiec NORMALNY stan spoczynku, a nie awarie — jesli mamy co
+// nadac, budzimy mastera Slave Breakiem. POLL15_ALIVE_MS (3 s) zostaje dla
+// decyzji "sesja umarla" (auto-recovery), tu potrzeba znacznie krotszego progu,
+// bo ekran odswiezamy ~1 Hz.
+constexpr unsigned long POLL15_QUIET_BREAK_MS = 250;
 constexpr unsigned long BREAK_RETRY_MS     = 1000;
 constexpr unsigned long BREAK_RECOVERY_MS  = 1500;
 constexpr unsigned long BREAK_BACKOFF_MAX_MS = 3000;
+
+// Po SYSTEM RESET radio robi discovery (preliminary + ANYONE? + appoint). Caly
+// cykl trwa ~2-3s. W tym czasie NIE WOLNO wyzwalac auto-recovery (`01 11`)
+// ani Slave Break — radio jest W TRAKCIE normalnej procedury, nie potrzebuje
+// naszej "pomocy". Grace period = 5s daje pewny zapas.
+constexpr unsigned long POST_RESET_GRACE_MS = 5000;
+
+// Model burstowy odpowiedzi: prawdziwa zmieniarka odpowiada burstami 1-4 grantow
+// z przerwami 0.5-9.5s. Emulator zamyka sesje (claim `82 00`) po oddaniu tylu
+// grantow i czeka na nastepna okazje (servicePositionFrame1Hz otwiera co 1s).
+constexpr unsigned int MAX_BURST_GRANTS = 2;
 // READ_SILENCE_US sluzy juz TYLKO jako awaryjna resynchronizacja bufora RX.
 // Normalne ciecie strumienia na ramki robi UnilinkBus::readFrame po dlugosci
 // wynikajacej z CMD1, wiec ta wartosc nie wplywa juz na czas odpowiedzi.

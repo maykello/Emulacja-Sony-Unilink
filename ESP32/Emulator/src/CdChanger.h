@@ -100,6 +100,10 @@ bool selectNextTrackAuto();
 
 // --- ZARZADZANIE STANEM SESJI (wywolywane przez protokol) ---
 void resetToInit();         // ustaw stan INIT (po appoint/reset radia)
+// Lekki reset po SYSTEM RESET gdy audio nadal gra: zachowaj stan Playing
+// i zsynchronizuj czas z aktualna pozycja audio (zamiast resetowac do Init).
+// Uzywane zamiast resetToInit() w handlerze 01 00 i auto-recovery 01 11.
+void resetToAllocated();
 void noteFirstPing();       // pierwszy PING w stanie INIT startuje licznik 0xC0->0x80
 // Radio wlasnie odpytalo nas o status (`01 12`) albo pobralo ekran (`01 13`).
 // Maszyna stanow mechanizmu opuszcza stan przejsciowy dopiero, gdy radio zdazylo

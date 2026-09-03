@@ -334,11 +334,24 @@ inline bool busStillQuiet(unsigned long ref) {
     return lc == ref;
 }
 
-// Wejscie w Hold: sciagnij DATA (logicznie LOW) — Mictronics 3 ms w fazie HIGH.
+// Wejscie w Hold: wystaw na DATA poziom DOMINUJACY — Mictronics 3 ms w fazie
+// HIGH fali idle.
+//
+// Poziomem dominujacym jest LOGICZNA JEDYNKA. Dwa niezalezne dowody z tego
+// samego strumienia, ktory poprawnie dekodujemy:
+//   * maski arbitrazu sumuja sie bitowo (`82 01` od 0x3B i `82 04` od nas daja
+//     `82 05`) — tak zachowuje sie tylko poziom dominujacy = 1,
+//   * pusty slot bajtu, ktory master taktuje po kazdej ramce, czyta sie jako
+//     0x00 — czyli stan RECESYWNY (nikt nie nadaje) to logiczne 0.
+//
+// Wczesniej bylo tu setTxData(false), czyli poziom RECESYWNY — dokladnie ten,
+// ktory linia ma juz w fazie HIGH fali idle. Break nie zmienial wiec NICZEGO na
+// magistrali: maszyna stanow raportowala Hold "OK", master nigdy go nie widzial
+// i Request Polling (`01 15`) nie wracal.
 inline void enterHold(unsigned long now) {
-    Diagnostics::recordNote("BREAK");
     pinMode(PIN_DATA, OUTPUT);
-    digitalWrite(PIN_DATA, INVERT_DATA ? HIGH : LOW);   // DATA logicznie LOW
+    setTxData(true);
+    Diagnostics::recordNote("BREAK");
     noInterrupts();
     s_breakClockRef = lastClockTime;
     interrupts();
@@ -436,9 +449,13 @@ void serviceSlaveBreak() {
     }
 
     switch (s_breakState) {
+        // Ponizej "faza LOW/HIGH" opisuje fale idle tak, jak widzi ja MASTER na
+        // linii DATA. W naszej reprezentacji logicznej (readDataLogic):
+        //   faza LOW  = poziom dominujacy = logiczna 1 = readDataLogic() true,
+        //   faza HIGH = poziom recesywny  = logiczne 0 = readDataLogic() false.
+        // Break wstrzeliwujemy w faze HIGH — tam i tylko tam wystawienie poziomu
+        // dominujacego (enterHold) jest dla mastera widoczna zmiana stanu.
         case BreakState::WaitLow:
-            // Czekamy na poczatek fazy LOW (0V na magistrali).
-            // readDataLogic() zwraca true dla 0V.
             if (readDataLogic()) {
                 s_breakState = BreakState::ConfirmLow;
                 s_breakMark  = now;
@@ -447,7 +464,7 @@ void serviceSlaveBreak() {
 
         case BreakState::ConfirmLow:
             if (!readDataLogic()) {
-                // Linia wrocila do HIGH (5V). Sprawdzamy czy faza LOW trwala wystarczajaco dlugo.
+                // Linia wrocila do HIGH. Sprawdzamy czy faza LOW trwala wystarczajaco dlugo.
                 if (now - s_breakMark >= BREAK_IDLE_LOW_MIN_US) {
                     // LOW trwalo >= 6ms i wlasnie przeszlo w HIGH. Od razu przechodzimy do Settle!
                     s_breakState = BreakState::Settle;
@@ -466,7 +483,7 @@ void serviceSlaveBreak() {
 
         case BreakState::WaitHigh:
             if (!readDataLogic()) {
-                // Przejscie z LOW do HIGH (zbocze narastajace). Odliczamy 2ms.
+                // Przejscie LOW -> HIGH. Odliczamy 2ms.
                 s_breakState = BreakState::Settle;
                 s_breakMark  = now;
             }
@@ -478,7 +495,7 @@ void serviceSlaveBreak() {
                 s_breakState = BreakState::WaitLow;
                 s_breakMark  = now;
             } else if (now - s_breakMark >= BREAK_SETTLE_US) {
-                // Linia jest HIGH przez 2ms. Czas na HOLD (wysterowanie 0V na 3ms).
+                // Linia jest HIGH przez 2ms. Czas na HOLD (3ms poziomu dominujacego).
                 enterHold(now);
             }
             break;

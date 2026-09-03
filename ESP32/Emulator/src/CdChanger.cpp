@@ -449,6 +449,30 @@ void resetToInit() {
     initWaitTime = 0;
 }
 
+void resetToAllocated() {
+    // Lekki reset po SYSTEM RESET radia: zachowaj stan odtwarzania jezeli audio
+    // nadal gra. Prawdziwe radio podczas SYSTEM RESET nie zatrzymuje zmieniarki
+    // — po re-discovery zmieniarka wraca z zachowanym stanem (sniff potwierdza:
+    // po resecie zmieniarka odpowiada aktualnym czasem, nie zerowym).
+    if (audioIsPlaying()) {
+        // Audio gra — zachowaj stan Playing i zsynchronizuj czas z pozycja dekodera.
+        uint32_t t = audioGetCurrentTimeSec();
+        playMinutes = (uint8_t)((t / 60) % 100);
+        playSeconds = (uint8_t)(t % 60);
+        playBaseMs = millis() - (unsigned long)t * 1000;
+        // Upewnij sie ze jestesmy w stanie Playing (moze byc Init/Idle po starym resecie)
+        if (cdState != MechState::Playing) {
+            enterState(MechState::Playing);
+        }
+        needDisplayUpdate = true;
+        Serial.printf(">> resetToAllocated: audio gra, zachowuje Playing %02d:%02d\n",
+                      playMinutes, playSeconds);
+    } else {
+        // Audio nie gra — normalny reset do Init.
+        resetToInit();
+    }
+}
+
 // --- TRYBY REPEAT / SHUFFLE / INTRO (Wymaganie 8) ---
 // Zmiana trybu oznacza zakolejkowanie ramki 0x94.
 // Te metody sa wywolywane przez UnilinkProtocol (handlePacket) przy

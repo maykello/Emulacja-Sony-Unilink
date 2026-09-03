@@ -25,6 +25,11 @@ namespace UnilinkProtocol {
 static uint8_t myAddr          = AddressManager::ADDR_GROUP_CD;  // = ADDR_DEFAULT (0x30)
 static bool    deviceAllocated = false;
 static unsigned long lastPingTime = 0;
+// Czas ostatniego `01 12` bezposrednio do NAS (nie broadcast). Uzywane do
+// rozroznienia "radio w housekeeping" (pinguje nas, ale nie robi 01 15) od
+// "radio nas wyrzucilo" (brak jakiegokolwiek kontaktu). W fazie housekeeping
+// radio przerywa Request Polling na ~2-3s, ale nadal pinguje urzadzenia.
+static unsigned long lastPing12Ms = 0;
 
 // --- MASKA ZGLOSZENIA DO ARBITRAZU (odpowiedz na `18 10 01 15`) ---
 // Master odpytuje wszystkie urzadzenia jednoczesnie ramka `18 10 01 15`, a one
@@ -73,6 +78,7 @@ static bool          isCdxM670         = false;
 static unsigned long lastPreliminaryTime = 0;
 static int           anyoneIgnoredCount  = 0;   // tylko do logowania
 static int           resetLoopCount      = 0;   // licznik resetow w petli
+static unsigned long lastSystemResetMs   = 0;   // millis() ostatniego SYSTEM RESET (grace period)
 
 // --- SLAVE BREAK / OCHRONA KOLIZJI ---
 static unsigned long suppressBreakUntil = 0;
@@ -190,23 +196,19 @@ bool serviceTimeout(unsigned long now) {
 
 // Czy zglaszamy sie w arbitrazu `01 15`?
 //
-// [NAPRAWA ZASTYGANIA] Prawdziwa zmieniarka Sony ZAWSZE zglasza sie maska w
-// odpowiedzi na `01 15` dopoki jest aktywna (Playing / Seeking). Nigdy nie
-// odpowiada `82 00` w trakcie odtwarzania — to by oznaczalo "nie mam nic do
-// nadania", a radio by przestalo dawac granty (= zamrozony ekran).
-// Stary model "burst OE" (sesja zamykana po 1 grancie, `82 00`, potem Slave
-// Break zeby wznowic) byl bledem: powodowal utrate pollingu i zastygniecie.
+// [MODEL BURSTOWY] Zmieniarka zglasza sie tylko wtedy, gdy faktycznie ma co
+// nadac, a po oproznieniu kolejki oddaje magistrale (`82 00`). Master konczy
+// wtedy Request Polling i wraca do fali idle — to normalny cykl, potwierdzony
+// sniffem prawdziwej zmieniarki (bursty 1-4 polli, przerwy 0.5-9.5 s) i opisem
+// protokolu ("Request Polling: when slaves want to send data they make a
+// request"). Nowy burst otwiera servicePositionFrame1Hz co sekunde, a jesli
+// master zdazyl zamilknac — budzi go Slave Break (serviceSlaveBreak).
+//
+// Wariant "always-claim" (zglaszaj sie non stop w stanach aktywnych) probowal
+// utrzymac Request Polling w nieskonczonosc. CDX-M670 i tak konczyl go po
+// ~20 s, a poniewaz Slave Break byl wtedy nieskuteczny, polling juz nie wracal.
 static bool wantsBus() {
     if (!deviceAllocated) return false;
-    // W stanach aktywnych ZAWSZE sie zglaszamy — jak prawdziwa zmieniarka.
-    CdChanger::MechState ms = CdChanger::mechState();
-    if (ms == CdChanger::MechState::Playing ||
-        ms == CdChanger::MechState::Seeking ||
-        ms == CdChanger::MechState::LoadingTrack ||
-        ms == CdChanger::MechState::ChangedCd) {
-        return true;
-    }
-    // W stanach nieaktywnych: zglaszamy sie tylko gdy mamy cos do nadania.
     if (!txQueue.isEmpty() || CdChanger::isDisplayDirty()) return true;
     return requestSessionActive;
 }
@@ -217,14 +219,6 @@ static void openRequestSession() {
 }
 
 static void maybeCloseRequestSession() {
-    // [NAPRAWA ZASTYGANIA] W stanach aktywnych NIE zamykamy sesji — zawsze claim.
-    CdChanger::MechState ms = CdChanger::mechState();
-    if (ms == CdChanger::MechState::Playing ||
-        ms == CdChanger::MechState::Seeking ||
-        ms == CdChanger::MechState::LoadingTrack ||
-        ms == CdChanger::MechState::ChangedCd) {
-        return;  // nigdy nie zamykaj — prawdziwa zmieniarka tez tego nie robi
-    }
     if (sessionGrants >= 1 && txQueue.isEmpty() && !CdChanger::isDisplayDirty()) {
         requestSessionActive = false;
     }
@@ -250,26 +244,30 @@ void serviceSlaveBreak(bool busPowered) {
 
     if (UnilinkBus::slaveBreakPending()) return;
 
-    // [NAPRAWA ZASTYGANIA] W stanach aktywnych wantsBus() zawsze true — nie
-    // potrzebujemy Slave Break do regularnej pracy, tylko do wznowienia
-    // pollingu po jego utracie. Dlatego Break uzbrajamy TYLKO gdy polling
-    // faktycznie zginal (brak `01 15` dluzej niz POLL15_ALIVE_MS).
+    // Break uzbrajamy, gdy mamy co nadac, a Request Polling stoi. To jedyny
+    // przewidziany przez protokol sposob, w jaki slave prosi o magistrale.
+
+    // [GRACE PERIOD] Tuz po SYSTEM RESET radio robi discovery — w tym czasie
+    // naturalnie nie ma `01 15`. Nie uzbrajaj Break, bo wyzwoli kolizje.
+    if ((nowMs - lastSystemResetMs) < POST_RESET_GRACE_MS) return;
 
     // Polling zywy — nie potrzebujemy Break.
-    if ((nowMs - lastPoll15Ms) < POLL15_ALIVE_MS) {
+    //
+    // Nie ma tu juz warunku na Time Poll (`01 12`). Radio pinguje nim co ~600 ms
+    // NIEZALEZNIE od Request Pollingu, wiec warunek "nie rob Break, dopoki radio
+    // nas pinguje" blokowal Break na zawsze: po zamknieciu `01 15` emulator
+    // milczal, a ekran zastygal na stale (log 20:31: poll15=0, break=0/0,
+    // ping12=1 co 2 s, czas na ekranie stoi mimo dzialajacego licznika).
+    if ((nowMs - lastPoll15Ms) < POLL15_QUIET_BREAK_MS) {
         breakBackoffMs = BREAK_RETRY_MS;
         breakOkAwaitingPollMs = 0;
         return;
     }
 
-    // [NAPRAWA ZASTYGANIA] Plaski retry zamiast eksponencjalnego backoffu.
-    // Stary model podwajal odstep (1s -> 2s -> 4s -> 8s), co powodowalo
-    // dluzsze zamrozenie ekranu po kazdej nieudanej probie. Teraz staly
-    // odstep BREAK_RETRY_MS miedzy kolejnymi probami.
+    // Plaski retry zamiast eksponencjalnego backoffu.
     if (breakOkAwaitingPollMs != 0 &&
         (nowMs - breakOkAwaitingPollMs) >= BREAK_RECOVERY_MS) {
         breakOkAwaitingPollMs = 0;
-        // NIE zwiekszamy breakBackoffMs — plaski retry
     }
 
     if (UnilinkBus::breakRecoveryActive(nowMs)) return;
@@ -277,17 +275,17 @@ void serviceSlaveBreak(bool busPowered) {
     if (nowMs - lastBreakTime < breakBackoffMs) return;
     if (!wantsBus()) return;
 
-    static unsigned long lastDumpMs = 0;
-    if (nowMs - lastDumpMs > 10000) { // dump max once per 10s
-        Diagnostics::dump("POLLING STOPPED - BEFORE BREAK");
-        lastDumpMs = nowMs;
-    }
-
+    // Uzbrojenie Breaka jest teraz RUTYNA (raz na ~sekunde, gdy master spi), a
+    // nie objawem awarii — stad brak zrzutu czarnej skrzynki i logu na kazde
+    // wystapienie. Zrzut 128 ramek co 10 s blokowal petle na tyle, ze sam
+    // wywolywal kolizje. Licznik `break=N/M` widac w [STAT].
     UnilinkBus::requestSlaveBreak();
     lastBreakTime = nowMs;
     statBreak++;
-    Serial.printf("   BREAK armed (grant %lums ago, poll15 %lums ago)\n",
-                  nowMs - lastDisplayServedMs, nowMs - lastPoll15Ms);
+    if (DEBUG_FRAMES) {
+        Serial.printf("   BREAK armed (grant %lums ago, poll15 %lums ago)\n",
+                      nowMs - lastDisplayServedMs, nowMs - lastPoll15Ms);
+    }
 }
 
 // ------------------------------------------------------------
@@ -731,11 +729,14 @@ void servicePositionFrame1Hz(unsigned long now) {
     if ((now - lastPositionUpdateMs) < 1000) return;
     lastPositionUpdateMs = now;
 
-    // Kolejkujemy lekki tik 0x90 — radio uzywa go do interpolacji sekund.
-    // Ramka budowana ze swiezych danych CdChanger (track/min/sec/disc).
-    uint8_t frame[11];
-    buildLightTick0x90(frame);
-    enqueue(Tx::PRIO_TIME, frame, sizeof(frame));
+    // [MODEL BURSTOWY] Co sekunde otwieramy nowa sesje claim — to jedyny
+    // mechanizm wyzwalajacy burst. Bez tego emulator milczalby po zamknieciu
+    // sesji (claim `82 00`) i radio nie dostaloby aktualizacji czasu.
+    //
+    // Samej ramki czasu tu NIE kolejkujemy: burst potrafi ruszyc dopiero po
+    // Slave Breaku, wiec pre-kolejkowany tik dojechalby do radia z nieaktualna
+    // sekunda. Ramke buduje sendFreshDisplay dokladnie w chwili grantu `01 13`.
+    openRequestSession();
 }
 
 // ============================================================
@@ -813,6 +814,7 @@ void handlePacket(const uint8_t* buf, int len) {
         op1 == 0x01 && op2 == 0x12) {
         if (tad == ADDR_MASTER) CdChanger::noteFirstPing();
         CdChanger::notePolled();
+        lastPing12Ms = millis();  // radio nadal nas widzi — nie robimy auto-recovery
         UnilinkBus::sendShort(tad, myAddr, 0x00, statusByteFromState(CdChanger::mechState()));
         if (DEBUG_VERBOSE) {
             Serial.printf(">> PING odpowiedz (do 0x%02X): status=0x%02X\n",
@@ -894,12 +896,24 @@ void handlePacket(const uint8_t* buf, int len) {
         // (01 15), to znaczy ze radio nas wyrzucilo z sesji (np. po nieudanym
         // Time Poll 01 12). Resetujemy stan i odpowiadamy magic, zeby radio
         // zainicjowalo nowe discovery i ponownie nas przydzielilo.
-        if (deviceAllocated && (millis() - lastPoll15Ms) > POLL15_ALIVE_MS) {
+        //
+        // [GRACE PERIOD] Po SYSTEM RESET radio robi discovery, w ktorym
+        // naturalnie NIE MA `01 15`. Bez grace period emulator interpretowal
+        // to jako "poll15 martwy" i wyzwalal auto-recovery = kolejny reset.
+        const unsigned long nowAR = millis();
+        const bool graceExpired = (nowAR - lastSystemResetMs) > POST_RESET_GRACE_MS;
+        // [HOUSEKEEPING] Radio w fazie housekeeping pinguje nas 01 12, ale NIE
+        // robi 01 15. To NORMALNY cykl (~2-3s co ~15s). Nie robimy auto-recovery
+        // dopoki radio nas widzi (odpytuje 01 12). Auto-recovery TYLKO gdy radio
+        // naprawde przestalo sie z nami komunikowac.
+        const bool radioStillPingsUs = (nowAR - lastPing12Ms) < RADIO_TIMEOUT_MS;
+        if (deviceAllocated && graceExpired && !radioStillPingsUs &&
+            (nowAR - lastPoll15Ms) > POLL15_ALIVE_MS) {
             Serial.println(">> 01 11 a poll15 nie wraca — reset sesji, ponowne discovery");
             Diagnostics::dump("AUTO-RECOVERY: 01 11 + dead poll15");
             setAddrState(AddressManager::apply(addrState(), AddressManager::Event::Start, 0));
             claimMask = CLAIM_MASK_DEFAULT;
-            CdChanger::resetToInit();
+            CdChanger::resetToAllocated();   // zachowaj audio jesli gra
             CdChanger::clearDisplayDirty();
             txQueue.clear();  // wyczysc stara kolejke — nowa sesja
             suppressBreakUntil = 0;
@@ -921,9 +935,13 @@ void handlePacket(const uint8_t* buf, int len) {
         // doprowadzily do resetu radia.
         Diagnostics::dump("RADIO SYSTEM RESET 18 10 01 00");
         resetLoopCount++;
+        lastSystemResetMs = millis();  // grace period dla auto-recovery i Slave Break
         if (deviceAllocated) {
             Serial.printf(">> Radio system reset (#%d)! Reset deviceAllocated.\n", resetLoopCount);
-            CdChanger::resetToInit();
+            // [NAPRAWA CZASU] Uzywamy resetToAllocated() zamiast resetToInit():
+            // jezeli audio nadal gra, zachowujemy stan Playing i czas. Prawdziwa
+            // zmieniarka po SYSTEM RESET wraca z zachowanym stanem odtwarzania.
+            CdChanger::resetToAllocated();
             CdChanger::clearDisplayDirty();
         } else {
             Serial.printf(">> Radio system reset (#%d) (juz bylem nieprzydzielony)\n", resetLoopCount);
@@ -932,6 +950,7 @@ void handlePacket(const uint8_t* buf, int len) {
         setAddrState(AddressManager::apply(addrState(), AddressManager::Event::BusReset, rad));
         lastPreliminaryTime = 0;
         anyoneIgnoredCount = 0;
+        txQueue.clear();  // stara kolejka nieaktualna po resecie sesji
     }
 
     // ===== 2. ADDRESS APPOINT (3X 10 02 XX) =====
@@ -951,6 +970,7 @@ void handlePacket(const uint8_t* buf, int len) {
         lastDisplayServedMs = millis();
         lastDisplaySentMs   = lastDisplayServedMs;
         lastPoll15Ms        = lastDisplayServedMs;
+        lastPing12Ms        = lastDisplayServedMs;  // nie wyzwalaj auto-recovery tuz po appoint
         openRequestSession();
         breakBackoffMs = BREAK_RETRY_MS;
         CdChanger::resetToInit();
@@ -974,7 +994,10 @@ void handlePacket(const uint8_t* buf, int len) {
         // Dopoki nie mamy adresu, nie mamy tez przydzielonego bitu — milczymy,
         // dokladnie tak jak prawdziwa zmieniarka przed appointem.
         if (!deviceAllocated) return;
-        // W bursocie OE: `82 <mask>`; po zamknieciu sesji: `82 00` (koniec burstu).
+        // [HEARTBEAT] Radio WYMAGA widziec odpowiedz na 01 15 od urzadzen
+        // na magistrali. Bez niej (nawet gdy 82 00) radio przestaje pollowac
+        // i ekran zmieniarki nie wyswietla sie. Dlatego ZAWSZE nadajemy:
+        // `82 <claimMask>` gdy chcemy bus, `82 00` gdy nie.
         const uint8_t mask = wantsBus() ? claimMask : 0x00;
         UnilinkBus::sendMedium(0x10, 0x18, 0x82, mask, 0x00, 0x00, 0x00, 0x00);
         if (DEBUG_VERBOSE) {
@@ -1004,8 +1027,12 @@ void handlePacket(const uint8_t* buf, int len) {
             UnilinkBus::sendRaw(item.bytes, item.len);
         } else {
             sendFreshDisplay();
-            CdChanger::clearDisplayDirty();
         }
+        // Ekran oddany — kasujemy flage w OBU sciezkach. Gdyby kasowal ja tylko
+        // sendFreshDisplay, kazdy grant obsluzony z kolejki zostawialby dirty=1,
+        // sesja claim nigdy by sie nie zamknela i model burstowy zamienilby sie
+        // z powrotem w always-claim.
+        CdChanger::clearDisplayDirty();
         // Zamknij burst — kolejne `01 15` dostana `82 00` (krotkie serie OE).
         maybeCloseRequestSession();
     }
@@ -1373,8 +1400,6 @@ static void sendFreshDisplay() {
     uint8_t min   = CdChanger::minutes();
     uint8_t sec   = CdChanger::seconds();
     CdChanger::MechState ms = CdChanger::mechState();
-    bool playing  = (ms == CdChanger::MechState::Playing);
-    bool seeking  = (ms == CdChanger::MechState::Seeking);
 
     // Mechanizm stoi (Init/Idle/Ejecting) — nie ma czasu do pokazania.
     if (ms == CdChanger::MechState::Idle || ms == CdChanger::MechState::Init) {
@@ -1385,20 +1410,21 @@ static void sendFreshDisplay() {
     }
 
     bool changed = (disc != s_lastShownDisc || track != s_lastShownTrack);
-    // Pelny 0xC0: zmiana plyty/utworu, stany przejsciowe, Seeking, ALBO nowa
-    // sekunda w Playing (to wlasnie ustawia widoczny czas po "--.--" z LOAD).
-    bool needFullC0 = !playing || changed || seeking ||
-                      (min != s_lastC0Min) || (sec != s_lastC0Sec);
-
-    if (needFullC0) {
+    // [NAPRAWA SYSTEM RESET] Pelny 0xC0 (16 bajtow) TYLKO przy zmianie plyty/
+    // utworu lub w stanach przejsciowych. W normalnym Playing wysylamy lekki
+    // 0x90 tick (11 bajtow) — to wystarczy do interpolacji czasu na radiu.
+    // Pelny 0xC0 co sekunde (stary kod) generowal ciezkie 16-bajtowe TX,
+    // ktore powodowaly wiecej RESYNCow i SYSTEM RESETow.
+    // Okresowy 0xC0 idzie z serviceFullStatusFrame (co 5s z kolejki).
+    if (changed || ms == CdChanger::MechState::Seeking ||
+        ms == CdChanger::MechState::LoadingTrack ||
+        ms == CdChanger::MechState::ChangedCd) {
         s_lastShownDisc  = disc;
         s_lastShownTrack = track;
-        if (playing || seeking) {
+        if (ms == CdChanger::MechState::Playing || ms == CdChanger::MechState::Seeking) {
             s_lastC0Min = min;
             s_lastC0Sec = sec;
         } else {
-            // LOAD/ChangedCd: w ramce idzie FF — zapomnij ostatni czas, zeby
-            // pierwsze Playing wymusilo swiezy 0xC0 z 00:00.
             s_lastC0Min = s_lastC0Sec = 0xFF;
         }
         sendFreshStatusC0();
@@ -1407,7 +1433,7 @@ static void sendFreshDisplay() {
         return;
     }
 
-    // Ta sama sekunda — lekki tik 0x90 (wypelniacz grantu, interpolacja).
+    // Playing, ta sama plyta/utwor — lekki tik 0x90 (interpolacja czasu).
     uint8_t frame[11];
     buildLightTick0x90(frame);
     UnilinkBus::sendRaw(frame, sizeof(frame));
