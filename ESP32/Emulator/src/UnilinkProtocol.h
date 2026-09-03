@@ -93,6 +93,14 @@ void servicePositionFrame1Hz(unsigned long now);
 // Harmonogram Slave Break — wywolywac w kazdej iteracji loop() (gdy BUS=1).
 void serviceSlaveBreak(bool busPowered);
 
+// Wypycha CD-TEXT (nazwa utworu 0xD2 + nazwa plyty 0xDA) po kazdej zmianie
+// utworu/plyty, bez czekania na zadanie radia — tak robi prawdziwa zmieniarka.
+// Wywolywac w loop() przy BUS=1.
+void serviceCdText(unsigned long now);
+
+// Zapomnij, ktore nazwy juz wyslano (nowa sesja: BUS off / appoint / reset).
+void resetCdTextCache();
+
 // Harmonogram ramki 0xC0 (pełny status) — wywoływać w loop() przy BUS=1.
 // W stanie Playing co OKRES_WYSYLANIA zakolekcja 0xC0 (long, pełny status).
 // Wstrzymuje wysyłanie w non-playing states.

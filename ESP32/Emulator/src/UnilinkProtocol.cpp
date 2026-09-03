@@ -188,6 +188,7 @@ void onBusOff() {
     lastPreliminaryTime = 0;
     anyoneIgnoredCount = 0;
     resetLoopCount = 0;
+    resetCdTextCache();   // nowa sesja => nazwy trzeba wyslac od nowa
 }
 
 bool serviceTimeout(unsigned long now) {
@@ -776,6 +777,41 @@ void servicePositionFrame1Hz(unsigned long now) {
 }
 
 // ============================================================
+// CD-TEXT NADAWANY SAM Z SIEBIE (bez zadania radia)
+// ============================================================
+// Zrzut prawdziwej zmieniarki na CDX-M670 zawiera ~43 ramki nazw (0xD2 utwor /
+// 0xDA plyta), a tylko 2 zadania `84 D7`. Zmieniarka NIE czeka wiec, az radio
+// poprosi — po kazdej zmianie utworu sama wypycha komplet nazw na najblizszych
+// grantach. Nasz emulator odpowiadal wylacznie na zadania, a CDX-M670 ich nie
+// wysylal (licznik `txt=0` w kazdym [STAT]) — stad pusty CD-TEXT.
+static uint8_t s_textSentDisc  = 0;
+static uint8_t s_textSentTrack = 0;
+
+void resetCdTextCache() {
+    s_textSentDisc  = 0;
+    s_textSentTrack = 0;
+}
+
+void serviceCdText(unsigned long) {
+    if (!deviceAllocated) return;
+    const CdChanger::MechState ms = CdChanger::mechState();
+    if (ms == CdChanger::MechState::Init || ms == CdChanger::MechState::Idle) return;
+
+    const uint8_t disc  = CdChanger::disk();
+    const uint8_t track = CdChanger::track();
+    if (disc == s_textSentDisc && track == s_textSentTrack) return;
+
+    // Nazwy sa najmniej pilne ze wszystkiego — wchodza dopiero, gdy kolejka jest
+    // pusta, zeby nie opozniac statusu i pozycji. Znacznik aktualizujemy DOPIERO
+    // po zakolejkowaniu, wiec przy zajetej kolejce sprobujemy w kolejnej iteracji.
+    if (!txQueue.isEmpty()) return;
+
+    enqueueCdTextD2Track();
+    s_textSentDisc  = disc;
+    s_textSentTrack = track;
+}
+
+// ============================================================
 // Glowny dyspozytor ramek
 // ============================================================
 void handlePacket(const uint8_t* buf, int len) {
@@ -987,6 +1023,7 @@ void handlePacket(const uint8_t* buf, int len) {
         lastPreliminaryTime = 0;
         anyoneIgnoredCount = 0;
         txQueue.clear();  // stara kolejka nieaktualna po resecie sesji
+        resetCdTextCache();
     }
 
     // ===== 2. ADDRESS APPOINT (3X 10 02 XX) =====
@@ -1009,6 +1046,7 @@ void handlePacket(const uint8_t* buf, int len) {
         lastPing12Ms        = lastDisplayServedMs;  // nie wyzwalaj auto-recovery tuz po appoint
         openRequestSession();
         breakBackoffMs = BREAK_RETRY_MS;
+        resetCdTextCache();   // radio zaczyna od pustego ekranu — nazwy lecą ponownie
         CdChanger::resetToInit();
         // POTWIERDZENIE device info 0x8C, TAD = myAddr (R4.3). Atrybuty zgodne z
         // prawdziwa zmieniarka (sniff, adres 0x31):
@@ -1204,16 +1242,23 @@ void handlePacket(const uint8_t* buf, int len) {
     // Poza zakresem zignoruj bez zmiany stanu.
     else if (rad == myAddr && op1 == 0xB0) {
         // 0xB0 lezy w 0x80..0xBF => ramka MIDDLE (11B): D1 to buf[5], a NIE
-        // buf[4] (buf[4] to Parity1!). Numer plyty siedzi w dolnym nibblu CMD2,
-        // a numer utworu jest zakodowany w BCD — wczesniej czytalismy bajt
-        // parzystosci jako numer utworu i interpretowalismy go binarnie, przez
-        // co bezposredni wybor plyty praktycznie nigdy nie trafial w cel.
+        // buf[4] (buf[4] to Parity1!). Numer plyty siedzi w dolnym nibblu CMD2.
         uint8_t disc  = (uint8_t)(op2 & 0x0F);
         uint8_t track = 1;
         if (len >= 11) {
             const uint8_t raw = buf[5];
-            track = ((raw & 0xF0) == 0xF0) ? (uint8_t)(raw & 0x0F)
-                                           : UnilinkFrame::decodeBcd(raw);
+            // 0xFF = UTWOR NIEOKRESLONY. Radio wysyla je, gdy z listy wybrano
+            // sama PLYTE — wtedy zmieniarka gra ja od poczatku. Ta sama
+            // konwencja co czas "nieznany" (0xFF) w ramce 0xC0. Wczesniej
+            // wpadalo to w galaz F-padded BCD i dawalo utwor 15, ktory nie
+            // istnieje — stad "CD10 TR15 (poza zakresem, ignoruje)".
+            if (raw == 0xFF || raw == 0x00) {
+                track = 1;
+            } else if ((raw & 0xF0) == 0xF0) {
+                track = (uint8_t)(raw & 0x0F);
+            } else {
+                track = UnilinkFrame::decodeBcd(raw);
+            }
             if (track == 0) track = 1;
         }
 
@@ -1230,7 +1275,14 @@ void handlePacket(const uint8_t* buf, int len) {
             onDiscChanged(disc);
             Serial.printf(">> 0xB0: CD%d TR%d (zakres OK)\n", disc, track);
         } else {
-            Serial.printf(">> 0xB0: CD%d TR%d (poza zakresem, ignoruje)\n", disc, track);
+            // Zdarzenie rzadkie, wiec logujemy CALA ramke — bez niej nie da sie
+            // odtworzyc, jak radio zakodowalo zadanie.
+            Serial.printf(">> 0xB0 ODRZUCONE: CD%d TR%d (plyta %s, utwor %s, max=%d) raw:",
+                          disc, track,
+                          discValid ? "ok" : "BRAK",
+                          trackValid ? "ok" : "POZA ZAKRESEM", maxTrack);
+            for (int i = 0; i < len; i++) Serial.printf(" %02X", buf[i]);
+            Serial.println();
         }
     }
 
@@ -1329,7 +1381,15 @@ static void buildStatusC0(uint8_t* frame) {
     frame[6]  = 0x00;                      // D2 = rezerwa
     frame[7]  = 0x00;                      // D3 = rezerwa
     frame[8]  = 0x00;                      // D4 = rezerwa
-    frame[9]  = 0x00;                      // D5 = rezerwa (w sniffie 0x00)
+    // D5 = 0x30 gdy w slocie FAKTYCZNIE jest plyta, 0x00 gdy slot pusty.
+    // Zrzut prawdziwej zmieniarki (jedna plyta, CD8) — te same RAD/TAD/CMD1/CMD2,
+    // rozni sie tylko D5 i numer plyty w D9:
+    //   70 31 C0 40 A1 00 00 00 00 30 F1 F0 00 88 3A 00   (CD8 — plyta w slocie)
+    //   70 31 C0 40 A1 00 00 00 00 00 F1 F0 00 11 93 00   (CD1 — slot pusty)
+    // Emulator wysylal tu na sztywno 0x00, czyli melodowal radiu "slot pusty"
+    // przy KAZDEJ plycie — stad brak nazw na liscie i brak zapytan o CD-TEXT.
+    const bool discPresent = audioGetTrackCount(disc) > 0;
+    frame[9]  = discPresent ? 0x30 : 0x00; // D5 = obecnosc plyty
     frame[10] = trkB;                      // D6 = numer utworu (F-padded BCD)
     frame[11] = minB;                      // D7 = minuty (F-padded BCD / 0xFF)
     frame[12] = secB;                      // D8 = sekundy (BCD / 0xFF)

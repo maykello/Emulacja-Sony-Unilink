@@ -142,6 +142,9 @@ void loop() {
     // ===== Harmonogram ramki pelnego statusu 0xC0 (co ~30s w stanie Playing) =====
     UnilinkProtocol::serviceFullStatusFrame(now);
 
+    // ===== CD-TEXT wypychany po zmianie utworu/plyty (bez zadania radia) =====
+    UnilinkProtocol::serviceCdText(now);
+
     // ===== Auto-next po koncu utworu =====
     CdChanger::serviceAutoAdvance();
 
