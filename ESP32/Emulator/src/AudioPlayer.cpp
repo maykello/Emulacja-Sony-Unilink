@@ -18,6 +18,13 @@ Audio audio;
 #define MAX_TRACKS_STORED  MAX_TRACKS   // max 99 tracków na dysk
 static String trackFiles[MAX_DISCS + 1][MAX_TRACKS_STORED]; // [disc 1..10][0..98]
 static uint8_t trackCount[MAX_DISCS + 1]; // indeks 1..10, [0] nieużywany
+
+// Katalog płyty na nośniku i etykieta pokazywana w radiu.
+// Konwencja nazw folderów: "CDnn" albo "CDnn.Nazwa" (np. "CD01.ABBA").
+// Numer slotu zostaje w nazwie katalogu (zmieniarka wie, który folder to która
+// płyta), a na ekran radia idzie wyłącznie część po kropce ("ABBA").
+static String discDirName[MAX_DISCS + 1];  // np. "CD01.ABBA"
+static String discLabel[MAX_DISCS + 1];    // np. "ABBA"
 static volatile bool songFinishedFlag = false;
 static bool isPlaying = false;
 static bool wasUsbMounted = false;   // do wykrywania hot-plug/unplug
@@ -96,7 +103,40 @@ static void sortStrings(String arr[], int count) {
 }
 
 // ============================================================
-// Skanowanie folderów CD01..CD10 na pendrivie
+// Rozpoznanie katalogu płyty: "CDnn" albo "CDnn.Nazwa"
+// Zwraca numer płyty 1..MAX_DISCS, albo 0 gdy nazwa nie pasuje.
+// `label` dostaje część po kropce, a gdy jej nie ma — samo "CDnn".
+// ============================================================
+static uint8_t parseDiscDir(const String &dirName, String &label) {
+    if (dirName.length() < 4) return 0;
+
+    const char c0 = dirName[0];
+    const char c1 = dirName[1];
+    if ((c0 != 'C' && c0 != 'c') || (c1 != 'D' && c1 != 'd')) return 0;
+    if (dirName[2] < '0' || dirName[2] > '9') return 0;
+    if (dirName[3] < '0' || dirName[3] > '9') return 0;
+
+    const int num = (dirName[2] - '0') * 10 + (dirName[3] - '0');
+    if (num < 1 || num > MAX_DISCS) return 0;
+
+    // Sam numer, bez sufiksu — etykietą zostaje nazwa folderu.
+    if (dirName.length() == 4) {
+        label = dirName;
+        return (uint8_t)num;
+    }
+
+    // Po numerze dopuszczamy WYŁĄCZNIE kropkę, żeby np. "CD01backup" nie
+    // przechwycił slotu 1 przypadkiem.
+    if (dirName[4] != '.') return 0;
+
+    String rest = dirName.substring(5);
+    rest.trim();
+    label = (rest.length() > 0) ? rest : dirName.substring(0, 4);
+    return (uint8_t)num;
+}
+
+// ============================================================
+// Skanowanie folderów płyt na pendrivie
 // Zbiera WSZYSTKIE pliki audio (dowolna nazwa), sortuje
 // alfabetycznie i przypisuje numery tracków 1, 2, 3...
 // ============================================================
@@ -105,20 +145,48 @@ static void scanDiscs() {
         Serial.println("[Audio] Pendrive nie zamontowany — nie mogę skanować.");
         return;
     }
-    
+
     fs::FS &fs = usbDriveGetFS();
-    
+
     for (int d = 1; d <= MAX_DISCS; d++) {
-        trackCount[d] = 0;
+        trackCount[d]  = 0;
+        discDirName[d] = "";
+        discLabel[d]   = "";
         // Wyczyść stare wpisy
         for (int t = 0; t < MAX_TRACKS_STORED; t++) {
             trackFiles[d][t] = "";
         }
-        
-        char dirPath[16];
-        snprintf(dirPath, sizeof(dirPath), "/CD%02d", d);
-        
-        File dir = fs.open(dirPath);
+    }
+
+    // --- Krok 1: przypisz katalogi z nośnika do slotów płyt ---
+    // Katalogu nie da się już otworzyć "po numerze", bo nazwa może mieć dowolny
+    // sufiks po kropce — trzeba przejrzeć katalog główny.
+    File root = fs.open("/");
+    if (root && root.isDirectory()) {
+        File entry;
+        while ((entry = root.openNextFile())) {
+            if (entry.isDirectory()) {
+                const String name = getBasename(String(entry.name()));
+                String label;
+                const uint8_t d = parseDiscDir(name, label);
+                // Przy dwóch folderach na ten sam numer wygrywa pierwszy.
+                if (d != 0 && discDirName[d].length() == 0) {
+                    discDirName[d] = name;
+                    discLabel[d]   = label;
+                }
+            }
+            entry.close();
+        }
+    }
+    if (root) root.close();
+
+    // --- Krok 2: zbierz pliki audio z każdego znalezionego katalogu ---
+    for (int d = 1; d <= MAX_DISCS; d++) {
+        if (discDirName[d].length() == 0) continue;
+
+        const String dirPath = String("/") + discDirName[d];
+
+        File dir = fs.open(dirPath.c_str());
         if (!dir || !dir.isDirectory()) {
             if (dir) dir.close();
             continue;
@@ -151,7 +219,8 @@ static void scanDiscs() {
         sortStrings(trackFiles[d], count);
         trackCount[d] = count;
         
-        Serial.printf("[Audio] CD%02d: %d track(ów)\n", d, count);
+        Serial.printf("[Audio] CD%02d [%s] nazwa=\"%s\": %d track(ów)\n",
+                      d, discDirName[d].c_str(), discLabel[d].c_str(), count);
         for (int t = 0; t < count; t++) {
             Serial.printf("[Audio]   TR%02d: %s\n", t + 1, trackFiles[d][t].c_str());
         }
@@ -170,8 +239,9 @@ static bool findTrackPath(uint8_t disc, uint8_t track, char* outPath, size_t pat
     // track jest 1-based, tablica jest 0-based
     const String &filename = trackFiles[disc][track - 1];
     if (filename.length() == 0) return false;
-    
-    snprintf(outPath, pathLen, "/CD%02d/%s", disc, filename.c_str());
+    if (discDirName[disc].length() == 0) return false;
+
+    snprintf(outPath, pathLen, "/%s/%s", discDirName[disc].c_str(), filename.c_str());
     return true;
 }
 
@@ -440,10 +510,17 @@ size_t audioGetDiscName(uint8_t disc, char* out, size_t maxLen) {
     if (out && maxLen > 0) out[0] = '\0';
     if (disc < 1 || disc > MAX_DISCS) return 0;
 
-    // Źródło nazwy płyty to nazwa katalogu na pendrivie (foldery CD01..CD10).
-    char dirName[8];
-    snprintf(dirName, sizeof(dirName), "CD%02d", disc);
-    return copyBounded(dirName, out, maxLen);
+    // Nazwa płyty pochodzi z katalogu na pendrivie, ale pokazujemy tylko część
+    // po kropce: folder "CD01.ABBA" daje na ekranie "ABBA". Gdy folder nie ma
+    // sufiksu (samo "CD01") albo nośnik nie jest zamontowany — zostaje "CDnn",
+    // bo puste pole radio pokazuje jako brak nazwy płyty.
+    if (discLabel[disc].length() > 0) {
+        return copyBounded(discLabel[disc].c_str(), out, maxLen);
+    }
+
+    char fallback[8];
+    snprintf(fallback, sizeof(fallback), "CD%02d", disc);
+    return copyBounded(fallback, out, maxLen);
 }
 
 uint8_t audioFindNextNonEmptyDisc(uint8_t disc) {
@@ -486,7 +563,9 @@ void audioLoop() {
         isPlaying = false;
         songFinishedFlag = false;
         for (int i = 1; i <= MAX_DISCS; i++) {
-            trackCount[i] = 0;
+            trackCount[i]  = 0;
+            discDirName[i] = "";
+            discLabel[i]   = "";
             for (int t = 0; t < MAX_TRACKS_STORED; t++) {
                 trackFiles[i][t] = "";
             }

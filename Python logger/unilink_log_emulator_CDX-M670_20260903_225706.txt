@@ -1,0 +1,447 @@
+[22:57:08.938] Obsluga: MEX-BT3800u + CDX-M670 + PCM5102A DAC + USB
+[22:57:08.947] Oczekuje na radio (Stan C0 - Init)...
+[22:57:08.947] [NVS] Wczytano ostatni utwor: CD5 TR4
+[22:57:08.947] [Audio] Inicjalizacja...
+[22:57:08.953] [UsbDrive] Inicjalizacja USB Host...
+[22:57:08.954] [UsbDrive] USB Host gotowy. Podłącz pendrive'a do portu USB-OTG...
+[22:57:08.954] [UsbDrive] Nowe urządzenie USB (addr=1)
+[22:57:08.954] [UsbDrive] Konfiguruję urządzenie MSC (addr=1)...
+[22:57:08.954] [UsbDrive] VID=0x0951 PID=0x1653
+[22:57:08.964] [UsbDrive] Znaleziono interfejs MSC #0
+[22:57:08.964] [UsbDrive] Bulk IN:  0x81 (MPS=64)
+[22:57:08.964] [UsbDrive] Bulk OUT: 0x02 (MPS=64)
+[22:57:08.970] [UsbDrive] Czekam na gotowość urządzenia...
+[22:57:08.970] [UsbDrive] Pendrive: Kingston DT 100 G2
+[22:57:08.970] [UsbDrive] Dysk: 15644912 sektorów × 512 B = 7639 MB
+[22:57:08.981] [UsbDrive] Sektor 0 to GPT Protective MBR — parsowanie GPT...
+[22:57:08.981] [UsbDrive] GPT: wpisy od LBA 2, 128 wpisów × 128 B
+[22:57:08.989] [UsbDrive]   GPT wpis 0: start=2048 end=15644671 (Microsoft Basic Data)
+[22:57:08.992] [UsbDrive] ✓ Używam partycji GPT na sektorze 2048
+[22:57:08.995] [UsbDrive] ✓ System plików zamontowany pod /usb
+[22:57:08.997] [Audio] setPinout(BCK=7, LRCK=15, DIN=13) = OK
+[22:57:09.000] [Audio] Task dekodowania uruchomiony na rdzeniu 0
+[22:57:09.002] [Audio] CD01 [CD01] nazwa="CD01": 1 track(ów)
+[22:57:09.004] [Audio]   TR01: 01- Hasta Manana.mp3
+[22:57:09.004] [Audio] CD02 [CD02] nazwa="CD02": 2 track(ów)
+[22:57:09.008] [Audio]   TR01: 01. Waterloo.mp3
+[22:57:09.008] [Audio]   TR02: 02. Head Over Heels.mp3
+[22:57:09.014] [Audio] CD03 [CD03] nazwa="CD03": 3 track(ów)
+[22:57:09.014] [Audio]   TR01: 02. Mamma Mia.mp3
+[22:57:09.018] [Audio]   TR02: 03. Gimme! Gimme! Gimme! (A Man After Midnight).mp3
+[22:57:09.022] [Audio]   TR03: 03. I Do, I Do, I Do, I Do, I Do.mp3
+[22:57:09.022] [Audio] CD04 [CD04] nazwa="CD04": 4 track(ów)
+[22:57:09.022] [Audio]   TR01: 04. Dancing Queen.mp3
+[22:57:09.022] [Audio]   TR02: 04. Honey, Honey.mp3
+[22:57:09.030] [Audio]   TR03: 05. Take A Chance On Me.mp3
+[22:57:09.033] [Audio]   TR04: 06. Knowing Me, Knowing You.mp3
+[22:57:09.036] [Audio] CD05 [CD05] nazwa="CD05": 5 track(ów)
+[22:57:09.038] [Audio]   TR01: 06. Ring Ring.mp3
+[22:57:09.038] [Audio]   TR02: 07 Wrap Your Arms Around Me.mp3
+[22:57:09.038] [Audio]   TR03: 07. Eagle.mp3
+[22:57:09.038] [Audio]   TR04: 07. The Winner Takes It All.mp3
+[22:57:09.047] [Audio]   TR05: 08- Nina, pretty balerina.mp3
+[22:57:09.051] [Audio] CD06 [CD06] nazwa="CD06": 1 track(ów)
+[22:57:09.054] [Audio]   TR01: 03. I Do, I Do, I Do, I Do, I Do.mp3
+[22:57:09.055] [Audio] CD07 [CD07] nazwa="CD07": 1 track(ów)
+[22:57:09.055] [Audio]   TR01: 07 Wrap Your Arms Around Me.mp3
+[22:57:09.055] [Audio] CD08 [CD08] nazwa="CD08": 1 track(ów)
+[22:57:09.065] [Audio]   TR01: 07. Eagle.mp3
+[22:57:09.066] [Audio] CD09 [CD09] nazwa="CD09": 1 track(ów)
+[22:57:09.066] [Audio]   TR01: 07. The Winner Takes It All.mp3
+[22:57:09.066] [Audio] CD10 [CD10] nazwa="CD10": 1 track(ów)
+[22:57:09.066] [Audio]   TR01: 08- Nina, pretty balerina.mp3
+[22:57:09.075] [Audio] Inicjalizacja zakończona — pendrive gotowy.
+[22:57:09.075] [Audio] Gotowy do odtwarzania.
+[22:57:09.080] === BUS_ON = 1 ===
+[22:57:09.080] [Audio] Głośność: 18/21 (zlecone)
+[22:57:09.085] >>> Wykryto USB. Wznawiam zapamietana plyte: CD5 TR4
+[22:57:09.085] ===== CZARNA SKRZYNKA (RADIO SYSTEM RESET 18 10 01 00) — ostatnie 2 zdarzen =====
+[22:57:09.085] [-   67ms] RX    31 10 01 12 54 00
+[22:57:09.093] [-    0ms] RX    18 10 01 00 29 00
+[22:57:09.095] ======================================================
+[22:57:09.098] >> Radio system reset (#1) (juz bylem nieprzydzielony)
+[22:57:09.102] == Wykryto CDX-M670 (widziano 3B 10 02 11) ==
+[22:57:09.102] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 49ms po DB)
+[22:57:09.109] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 179ms po DB)
+[22:57:09.113] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#3, 228ms po DB)
+[22:57:09.113] >> Odpowiadam na ANYONE? device info 0x8C
+[22:57:09.116] >> Adres przydzielony: 0x31 (op2=0x14)! deviceAllocated=true
+[22:57:09.573] >> [Audio Bus] Radio sygnalizuje audio ON (87 2B) — tylko log
+[22:57:09.618] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B) — tylko log
+[22:57:10.908] [STAT] poll15=3 disp13(my)=1 disp13(3B)=2 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD5 TR4 00:00
+[22:57:12.072] >> PLAY command received!
+[22:57:12.074] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:12.159] [Audio] Async connecttoFS("/CD05/07. The Winner Takes It All.mp3") = OK
+[22:57:12.168] [Audio] ▶ Odtwarzam: /CD05/07. The Winner Takes It All.mp3 (rozpoczęto dekodowanie)
+[22:57:12.907] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x40 CD5 TR4 00:00
+[22:57:13.346] >>> 40 -> 00 (Playing!)
+[22:57:14.062] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:14.903] [STAT] poll15=8 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=8/8 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 00:01
+[22:57:15.478] >> ZADANIE 0x84: 31 71 84 D7 FD 70 00 00 00 6D 00
+[22:57:16.187] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:16.905] [STAT] poll15=10 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=10/10 txt=1 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD5 TR4 00:03
+[22:57:18.191] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:18.907] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 00:05
+[22:57:20.191] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:20.906] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 00:07
+[22:57:22.193] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:22.905] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 00:09
+[22:57:24.191] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:24.893] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 00:11
+[22:57:26.188] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:26.899] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 00:13
+[22:57:28.190] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:28.900] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 00:15
+[22:57:30.189] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:30.900] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 00:17
+[22:57:32.186] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:32.901] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 00:19
+[22:57:34.187] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:34.904] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 00:21
+[22:57:36.190] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:36.906] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD5 TR4 00:23
+[22:57:38.193] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:38.905] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 00:25
+[22:57:39.507] >> ZADANIE 0x84: 31 71 84 D2 F8 70 02 00 01 6B 00
+[22:57:40.191] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:40.905] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=8/8 txt=1 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 00:27
+[22:57:42.187] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:42.902] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 00:29
+[22:57:44.183] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:44.906] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 00:31
+[22:57:46.189] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:46.902] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 00:33
+[22:57:48.187] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:48.905] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 00:35
+[22:57:50.187] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:50.906] [STAT] poll15=5 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD5 TR4 00:37
+[22:57:52.186] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:52.904] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 00:39
+[22:57:54.186] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:54.905] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 00:41
+[22:57:56.188] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:56.902] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 00:43
+[22:57:58.186] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:57:58.901] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 00:45
+[22:58:00.183] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:00.899] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 00:47
+[22:58:02.187] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:02.897] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 00:49
+[22:58:04.190] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:04.899] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 00:51
+[22:58:06.182] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:06.904] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 00:53
+[22:58:08.179] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:08.902] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 00:55
+[22:58:10.185] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:10.906] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 00:57
+[22:58:12.181] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:12.905] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 00:59
+[22:58:14.191] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:14.903] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 01:01
+[22:58:16.187] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:16.896] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 01:03
+[22:58:17.211] [SEEKDBG] t=70319 FF  tad=0x11 op2=0x00 len=6
+[22:58:17.221] >> SCAN FF start: CD5 TR4 01:03
+[22:58:18.191] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:18.900] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=1 break=5/5 txt=0 seek=1 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 01:11
+[22:58:20.187] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:20.899] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 01:35
+[22:58:21.187] >> SCAN stop (0x08 0x00): CD5 TR4 01:38
+[22:58:21.187] >>> 21 -> 00 (Seeking -> Playing!) pozycja 01:38
+[22:58:22.189] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:22.902] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 01:39
+[22:58:24.188] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:24.904] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 01:41
+[22:58:26.189] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:26.902] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD5 TR4 01:43
+[22:58:28.177] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:28.906] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 01:45
+[22:58:30.180] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:30.906] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD5 TR4 01:47
+[22:58:32.187] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:32.894] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 01:49
+[22:58:34.187] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:34.906] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 01:51
+[22:58:36.190] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:36.904] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 01:53
+[22:58:38.191] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:38.901] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 01:55
+[22:58:40.191] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:40.902] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 01:57
+[22:58:42.189] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:42.903] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 01:59
+[22:58:44.191] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:44.902] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/2 | alloc=1 state=0x00 CD5 TR4 02:01
+[22:58:46.190] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:46.903] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 02:03
+[22:58:48.181] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:48.903] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 02:05
+[22:58:50.191] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:50.903] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 02:07
+[22:58:52.184] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:52.901] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 02:09
+[22:58:54.186] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:54.903] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 02:11
+[22:58:56.188] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:56.897] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 02:13
+[22:58:58.189] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:58:58.902] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 02:15
+[22:59:00.190] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:00.897] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD5 TR4 02:17
+[22:59:02.190] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:02.903] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 02:19
+[22:59:04.190] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:04.904] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 02:21
+[22:59:06.190] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:06.904] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=2/1 | alloc=1 state=0x00 CD5 TR4 02:23
+[22:59:08.190] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:08.904] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 02:25
+[22:59:10.183] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:10.900] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 02:27
+[22:59:12.185] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:12.901] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 02:29
+[22:59:14.187] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:14.903] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 02:31
+[22:59:16.184] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:16.904] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=1/2 | alloc=1 state=0x00 CD5 TR4 02:33
+[22:59:18.188] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:18.904] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 02:35
+[22:59:20.189] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:20.904] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 02:37
+[22:59:21.359] >> ZADANIE 0x84: 31 71 84 D2 F8 70 02 00 01 6B 00
+[22:59:22.181] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:22.896] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=1 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 02:39
+[22:59:24.186] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:24.897] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 02:41
+[22:59:26.186] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:26.897] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 02:43
+[22:59:28.190] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:28.899] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 02:45
+[22:59:30.189] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:30.904] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 02:47
+[22:59:32.188] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:32.899] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 02:49
+[22:59:34.177] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:34.902] [STAT] poll15=5 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=3/3 | alloc=1 state=0x00 CD5 TR4 02:51
+[22:59:36.186] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:36.902] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 02:53
+[22:59:38.186] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:38.897] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 02:55
+[22:59:40.186] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:40.894] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 02:57
+[22:59:42.189] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:42.903] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 02:59
+[22:59:44.179] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:44.892] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 03:01
+[22:59:46.183] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:46.896] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 03:03
+[22:59:48.181] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:48.900] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 03:05
+[22:59:50.185] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:50.906] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 03:07
+[22:59:52.177] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:52.894] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 03:09
+[22:59:54.187] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:54.896] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 03:11
+[22:59:56.183] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:56.898] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 03:13
+[22:59:58.185] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[22:59:58.900] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 03:15
+[23:00:00.178] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:00.905] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 03:17
+[23:00:01.523] >> ZADANIE 0x84: 31 71 84 D2 F8 70 02 00 01 6B 00
+[23:00:02.189] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:02.893] [STAT] poll15=8 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=1 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 03:19
+[23:00:04.182] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:04.896] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 03:21
+[23:00:06.186] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:06.902] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 03:23
+[23:00:08.189] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:08.895] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 03:25
+[23:00:10.185] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:10.895] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 03:27
+[23:00:12.185] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:12.897] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 03:29
+[23:00:14.188] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:14.898] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 03:31
+[23:00:16.176] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:16.899] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 03:33
+[23:00:18.185] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:18.903] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 03:35
+[23:00:20.178] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:20.901] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/4 txt=0 seek=0 rxerr=11/1 | alloc=1 state=0x00 CD5 TR4 03:37
+[23:00:22.183] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:22.541] >> ZADANIE 0x84: 31 71 84 D2 F8 70 02 00 01 6B 00
+[23:00:22.903] [STAT] poll15=8 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/4 txt=1 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 03:39
+[23:00:24.177] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:24.901] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 03:41
+[23:00:26.180] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:26.901] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 03:43
+[23:00:28.188] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:28.903] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 03:45
+[23:00:30.189] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:30.900] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 03:47
+[23:00:32.186] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:32.894] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 03:49
+[23:00:34.185] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:34.902] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 03:51
+[23:00:36.189] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:36.901] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 03:53
+[23:00:38.179] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:38.899] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 03:55
+[23:00:40.179] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:40.900] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR4 03:57
+[23:00:42.183] >> CD-TEXT wyslany: CD5 TR4 "07. The Winner Takes It All"
+[23:00:42.899] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR4 03:59
+[23:00:43.462] >> PREV TRACK (Restart utworu): CD5 TR4
+[23:00:43.479] [Audio-info] Closing audio file
+[23:00:43.543] >>> 40 -> 00 (Playing!)
+[23:00:43.695] [Audio] Async connecttoFS("/CD05/07. The Winner Takes It All.mp3") = OK
+[23:00:43.699] [Audio] ▶ Odtwarzam: /CD05/07. The Winner Takes It All.mp3 (rozpoczęto dekodowanie)
+[23:00:43.824] >> PREV TRACK: CD5 TR3
+[23:00:43.828] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:00:43.828] [Audio-info] Closing audio file
+[23:00:43.878] >>> 40 -> 00 (Playing!)
+[23:00:43.903] [Audio] Async connecttoFS("/CD05/07. Eagle.mp3") = OK
+[23:00:43.911] [Audio] ▶ Odtwarzam: /CD05/07. Eagle.mp3 (rozpoczęto dekodowanie)
+[23:00:44.899] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=2 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:01
+[23:00:45.827] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:00:46.901] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=5/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:03
+[23:00:47.828] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:00:48.895] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:05
+[23:00:49.822] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:00:50.899] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:07
+[23:00:51.827] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:00:52.903] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:09
+[23:00:53.827] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:00:54.900] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:11
+[23:00:55.824] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:00:56.900] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:13
+[23:00:57.828] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:00:58.897] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD5 TR3 00:15
+[23:00:59.824] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:00.902] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:17
+[23:01:01.825] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:02.901] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:19
+[23:01:03.814] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:04.901] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:21
+[23:01:05.825] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:06.901] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=6/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:23
+[23:01:07.817] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:08.902] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:25
+[23:01:09.821] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:10.900] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD5 TR3 00:27
+[23:01:11.824] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:12.902] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:29
+[23:01:13.827] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:14.900] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:31
+[23:01:15.825] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:16.898] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:33
+[23:01:17.816] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:18.901] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:35
+[23:01:19.818] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:20.902] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:37
+[23:01:21.815] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:22.895] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:39
+[23:01:23.823] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:24.896] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:41
+[23:01:25.826] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:26.901] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:43
+[23:01:27.826] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:28.899] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:45
+[23:01:29.827] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:30.898] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:47
+[23:01:31.823] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:32.891] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:49
+[23:01:33.823] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:34.894] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:51
+[23:01:35.824] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:36.894] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=6/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:53
+[23:01:37.825] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:38.893] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:55
+[23:01:39.822] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:40.895] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:57
+[23:01:41.825] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:42.899] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:59
+[23:01:43.822] >> CD-TEXT wyslany: CD5 TR3 "07. Eagle"
+[23:01:44.003] >> 0xB0: CD5 TR1 (zakres OK)
+[23:01:44.013] [Audio-info] Closing audio file
+[23:01:44.053] >>> 40 -> 00 (Playing!)
+[23:01:44.215] [Audio] Async connecttoFS("/CD05/06. Ring Ring.mp3") = OK
+[23:01:44.217] [Audio] ▶ Odtwarzam: /CD05/06. Ring Ring.mp3 (rozpoczęto dekodowanie)
+[23:01:44.577] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[23:01:44.893] [STAT] poll15=9 disp13(my)=8 disp13(3B)=0 ping12(my)=0 btn=1 break=9/8 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 00:00
+[23:01:46.576] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[23:01:46.900] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 00:02
+[23:01:48.578] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[23:01:48.895] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD5 TR1 00:04
+[23:01:50.576] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[23:01:50.890] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 00:06
+[23:01:51.222] >> 0xB0: CD5 TR1 (zakres OK)
+[23:01:51.238] [Audio-info] Closing audio file
+[23:01:51.285] >>> 40 -> 00 (Playing!)
+[23:01:51.443] [Audio] Async connecttoFS("/CD05/06. Ring Ring.mp3") = OK
+[23:01:51.443] [Audio] ▶ Odtwarzam: /CD05/06. Ring Ring.mp3 (rozpoczęto dekodowanie)
+[23:01:52.576] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[23:01:52.891] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=1 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 00:01
+[23:01:54.579] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[23:01:54.902] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/6 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD5 TR1 00:03
+[23:01:56.572] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[23:01:56.859] >> 0xB0: CD5 TR1 (zakres OK)
+[23:01:56.875] [Audio-info] Closing audio file
+[23:01:56.899] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=1 break=5/3 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x40 CD5 TR1 00:00
+[23:01:56.940] >>> 40 -> 00 (Playing!)
+[23:01:57.084] [Audio] Async connecttoFS("/CD05/06. Ring Ring.mp3") = OK
+[23:01:57.088] [Audio] ▶ Odtwarzam: /CD05/06. Ring Ring.mp3 (rozpoczęto dekodowanie)
+[23:01:58.580] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[23:01:58.899] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=6/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 00:01
+[23:02:00.578] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[23:02:00.896] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=1/2 | alloc=1 state=0x00 CD5 TR1 00:03
+[23:02:01.160] >> 0xB0: CD5 TR1 (zakres OK)
+[23:02:01.177] [Audio-info] Closing audio file
+[23:02:01.210] >>> 40 -> 00 (Playing!)
+[23:02:01.381] [Audio] Async connecttoFS("/CD05/06. Ring Ring.mp3") = OK
+[23:02:01.381] [Audio] ▶ Odtwarzam: /CD05/06. Ring Ring.mp3 (rozpoczęto dekodowanie)
+[23:02:02.578] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[23:02:02.896] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=1 break=8/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 00:01
+[23:02:03.269] >> NEXT DISC: CD6
+[23:02:03.269] >> CD-TEXT wyslany: CD6 TR1 "03. I Do, I Do, I Do, I Do, I Do"
+[23:02:03.285] [Audio-info] Closing audio file
+[23:02:03.326] >>> 40 -> 20 (ChangedCd)
+[23:02:03.459] >>> 20 -> 00 (Playing!)
+[23:02:03.492] [Audio] Async connecttoFS("/CD06/03. I Do, I Do, I Do, I Do, I Do.mp3") = OK
+[23:02:03.498] [Audio] ▶ Odtwarzam: /CD06/03. I Do, I Do, I Do, I Do, I Do.mp3 (rozpoczęto dekodowanie)
+[23:02:04.875] >> ZADANIE 0x84: 31 71 84 D7 FD 70 00 00 00 6D 00
+[23:02:04.896] [STAT] poll15=10 disp13(my)=8 disp13(3B)=0 ping12(my)=0 btn=1 break=8/9 txt=1 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR1 00:01
+[23:02:05.568] >> CD-TEXT wyslany: CD6 TR1 "03. I Do, I Do, I Do, I Do, I Do"
+[23:02:06.718] >> PREV DISC: CD5
+[23:02:06.721] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[23:02:06.741] [Audio-info] Closing audio file
+[23:02:06.773] >>> 40 -> 20 (ChangedCd)
+[23:02:06.897] [STAT] poll15=12 disp13(my)=9 disp13(3B)=0 ping12(my)=1 btn=1 break=11/11 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x20 CD5 TR1 00:00
+[23:02:06.908] >>> 20 -> 00 (Playing!)
+[23:02:06.948] [Audio] Async connecttoFS("/CD05/06. Ring Ring.mp3") = OK
+[23:02:06.948] [Audio] ▶ Odtwarzam: /CD05/06. Ring Ring.mp3 (rozpoczęto dekodowanie)
+[23:02:08.349] >> ZADANIE 0x84: 31 71 84 D7 FD 70 00 00 00 6D 00
+[23:02:08.894] [STAT] poll15=11 disp13(my)=9 disp13(3B)=0 ping12(my)=1 btn=0 break=10/10 txt=1 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 00:01
+[23:02:08.894] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[23:02:10.902] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 00:03
+[23:02:10.906] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[23:02:12.894] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 00:05
+[23:02:12.903] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[23:02:14.896] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 00:07
+[23:02:14.896] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[23:02:15.861] >> NEXT DISC: CD6
+[23:02:15.868] >> CD-TEXT wyslany: CD6 TR1 "03. I Do, I Do, I Do, I Do, I Do"
+[23:02:15.870] [Audio-info] Closing audio file
+[23:02:15.924] >>> 40 -> 20 (ChangedCd)
+[23:02:16.070] >>> 20 -> 00 (Playing!)
+[23:02:16.083] [Audio] Async connecttoFS("/CD06/03. I Do, I Do, I Do, I Do, I Do.mp3") = OK
+[23:02:16.083] [Audio] ▶ Odtwarzam: /CD06/03. I Do, I Do, I Do, I Do, I Do.mp3 (rozpoczęto dekodowanie)
+[23:02:16.900] [STAT] poll15=9 disp13(my)=9 disp13(3B)=0 ping12(my)=1 btn=1 break=9/9 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 00:00
+[23:02:17.388] >> ZADANIE 0x84: 31 71 84 D7 FD 70 00 00 00 6D 00
+[23:02:18.094] >> CD-TEXT wyslany: CD6 TR1 "03. I Do, I Do, I Do, I Do, I Do"
+[23:02:18.890] [STAT] poll15=9 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=9/9 txt=1 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR1 00:02
+[23:02:20.089] >> CD-TEXT wyslany: CD6 TR1 "03. I Do, I Do, I Do, I Do, I Do"
+[23:02:20.891] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 00:04

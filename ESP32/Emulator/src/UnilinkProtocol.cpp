@@ -318,6 +318,14 @@ void serviceSlaveBreak(bool busPowered) {
     // naturalnie nie ma `01 15`. Nie uzbrajaj Break, bo wyzwoli kolizje.
     if ((nowMs - lastSystemResetMs) < POST_RESET_GRACE_MS) return;
 
+    // W kolejce zalegaja jeszcze ramki bloku (CD-TEXT to 3-4 ramki, a na jeden
+    // grant idzie dokladnie jedna). Prawdziwej zmieniarce master sam prowadzi
+    // wtedy burst Request Pollingu z odstepem ~22 ms i caly blok schodzi w
+    // ~170 ms; nam nie prowadzi, wiec kazda ramka czekala pelne okno ciszy plus
+    // BREAK_RETRY_MS (~325 ms/ramke w logu). Podczas oprozniania kolejki
+    // czekamy na wlasny poll mastera krocej i szybciej ponawiamy Break.
+    const bool draining = !txQueue.isEmpty();
+
     // Polling zywy — nie potrzebujemy Break.
     //
     // Nie ma tu juz warunku na Time Poll (`01 12`). Radio pinguje nim co ~600 ms
@@ -325,7 +333,8 @@ void serviceSlaveBreak(bool busPowered) {
     // nas pinguje" blokowal Break na zawsze: po zamknieciu `01 15` emulator
     // milczal, a ekran zastygal na stale (log 20:31: poll15=0, break=0/0,
     // ping12=1 co 2 s, czas na ekranie stoi mimo dzialajacego licznika).
-    if ((nowMs - lastPoll15Ms) < POLL15_QUIET_BREAK_MS) {
+    if ((nowMs - lastPoll15Ms) <
+        (draining ? POLL15_QUIET_DRAIN_MS : POLL15_QUIET_BREAK_MS)) {
         breakBackoffMs = BREAK_RETRY_MS;
         breakOkAwaitingPollMs = 0;
         return;
@@ -342,9 +351,12 @@ void serviceSlaveBreak(bool busPowered) {
     // Okno kolizyjne po odpytaniu obcego urzadzenia (suppressBreakUntil)
     // zostaje — ono chroni cudza odpowiedz, nie nasz rytm.
     const bool urgent = displayStale();
-    if (!urgent && UnilinkBus::breakRecoveryActive(nowMs)) return;
+    if (!urgent && !draining && UnilinkBus::breakRecoveryActive(nowMs)) return;
     if (nowMs < suppressBreakUntil) return;
-    if (nowMs - lastBreakTime < (urgent ? BREAK_URGENT_MIN_MS : breakBackoffMs)) return;
+    const unsigned long minBreakGap = urgent   ? BREAK_URGENT_MIN_MS
+                                    : draining ? BREAK_QUEUE_MIN_MS
+                                               : breakBackoffMs;
+    if (nowMs - lastBreakTime < minBreakGap) return;
     if (!wantsBus()) return;
 
     // Uzbrojenie Breaka jest teraz RUTYNA (raz na ~sekunde, gdy master spi), a
@@ -551,6 +563,22 @@ static void enqueueTextName(uint8_t cmd1, const char* rawName, uint8_t d8) {
     }
 }
 
+// Numer plyty z pola D1 zadania `0x84 ...`. Radio koduje go albo jako F|nr
+// (0xF1..0xFA), albo surowo. Brak pola, 0x00 albo wartosc poza zakresem znaczy
+// "chodzi o biezaca plyte" — tak trafiaja tu zadania nazw utworu, ktore w D1
+// nosza adres wyswietlacza (0x70), a nie numer plyty.
+static uint8_t discFromRequest(const uint8_t* buf, int len) {
+    uint8_t disc = CdChanger::disk();
+    if (len >= 11 && buf[5] != 0x00) {
+        const uint8_t d1 = buf[5];
+        const uint8_t cand = ((d1 & 0xF0) == 0xF0)
+                                 ? UnilinkFrame::discNibbleToNumber(d1)
+                                 : d1;
+        if (cand >= 1 && cand <= MAX_DISC) disc = cand;
+    }
+    return disc;
+}
+
 // Nazwa PLYTY w formacie 0xDA. `disc` pozwala odpowiedziec takze o plyte inna
 // niz biezaca — tego potrzebuje lista plyt w radiu.
 static void enqueueCdTextDiscName(uint8_t disc) {
@@ -561,12 +589,17 @@ static void enqueueCdTextDiscName(uint8_t disc) {
 
 // Odpowiedz na `84 D7`: nazwa biezacego utworu (0xD2), a po niej nazwa plyty
 // (0xDA) — dokladnie taka sekwencje wysyla prawdziwa zmieniarka.
-static void enqueueCdTextD2Track(bool withEndMarker) {
+// Zwraca true, jesli blok faktycznie wszedl do kolejki.
+static bool enqueueCdTextD2Track(bool withEndMarker) {
     const uint8_t disc  = CdChanger::disk();
     const uint8_t track = CdChanger::track();
 
     // Nie duplikuj nazw, gdy poprzedni komplet jeszcze nie zszedl z kolejki.
-    if (!txQueue.isEmpty()) return;
+    // Warunek dotyczy WYLACZNIE ramek nazw. Dawne `!txQueue.isEmpty()` gubilo
+    // zadanie radia, gdy w kolejce stala akurat ramka statusu albo czasu — a
+    // przy jednej ramce na grant zdarzalo sie to nagminnie i zadanie przepadalo
+    // bez ponowienia (radio dopytywalo `84 D2` co ~15-30 s i milczelismy).
+    if (txQueue.countPriority(Tx::PRIO_CD_TEXT) > 0) return false;
 
     char raw[64];
     audioGetTrackName(disc, track, raw, sizeof(raw));
@@ -577,6 +610,7 @@ static void enqueueCdTextD2Track(bool withEndMarker) {
     // Blok wysylany SAM Z SIEBIE prawdziwa zmieniarka konczy na nazwie plyty;
     // ramke 0xD7 doklada tylko jako odpowiedz na zadanie `84 D7`.
     if (withEndMarker) enqueueTextEnd();
+    return true;
 }
 
 // ------------------------------------------------------------
@@ -872,21 +906,27 @@ void serviceCdText(unsigned long now) {
     if (changed && s_textFlagState != 0) s_textFlagState = 0;
 
     // Odswiezenie okresowe: prawdziwa zmieniarka wysyla komplet nazw po niemal
-    // kazdej ramce statusu. My jestesmy skromniejsi (jedna ramka na grant, wiec
-    // caly blok schodzi kilka sekund), ale powtarzamy go co CD_TEXT_REPEAT_MS,
-    // zeby radio mialo nazwy takze po przelaczeniu zrodla albo utracie sesji.
+    // kazdej ramce statusu, co ~1-2 s przez cale odtwarzanie. Powtarzamy go z
+    // tym samym rytmem — dzieki temu radio ma nazwy takze po przelaczeniu
+    // zrodla, utracie sesji i po wejsciu w liste plyt.
     if (!changed && (now - s_textSentMs) < CD_TEXT_REPEAT_MS) return;
 
-    // Nazwy sa najmniej pilne ze wszystkiego — wchodza dopiero, gdy kolejka jest
-    // pusta, zeby nie opozniac statusu i pozycji. Znaczniki aktualizujemy DOPIERO
-    // po zakolejkowaniu, wiec przy zajetej kolejce sprobujemy w kolejnej iteracji.
-    if (!txQueue.isEmpty()) return;
-
-    enqueueCdTextD2Track(/*withEndMarker=*/false);
+    // Znaczniki aktualizujemy DOPIERO gdy blok naprawde wszedl do kolejki — gdy
+    // poprzedni komplet nazw jeszcze z niej nie zszedl, sprobujemy w nastepnej
+    // iteracji petli. Nie ma tu warunku na CALA kolejke: nazwy musza wchodzic
+    // takze obok ramki statusu, inaczej przy jednej ramce na grant nigdy nie
+    // trafialyby w okno "kolejka pusta".
+    if (!enqueueCdTextD2Track(/*withEndMarker=*/false)) return;
     s_textSentDisc  = disc;
     s_textSentTrack = track;
     s_textSentMs    = now;
-    s_textFlagState = 1;   // nibbel flag: 0xB (tekst dostepny + swiezo zmieniony)
+
+    // Nibbel 0xB ("tekst dostepny + swiezo zmieniony") podnosimy tylko przy
+    // realnej zmianie plyty/utworu albo gdy radio jeszcze nie wie, ze mamy
+    // nazwy. Samo odswiezenie okresowe zostawia 0xA ("tekst dostepny") — przy
+    // powtorce co CD_TEXT_REPEAT_MS klamalibysmy inaczej o zmianie i co 2 s
+    // restartowali radiu przewijanie nazwy w polowie cyklu.
+    if (changed || s_textFlagState == 0) s_textFlagState = 1;
 
     char name[64];
     audioGetTrackName(disc, track, name, sizeof(name));
@@ -1307,6 +1347,25 @@ void handlePacket(const uint8_t* buf, int len) {
         enqueueCdTextD2Track(/*withEndMarker=*/true);
     }
 
+    // ===== 8c. Zadanie CD-TEXT — radio nazywa ZADANA ODPOWIEDZ (84 D2 / 84 DA) =====
+    // Po pierwszym `84 D7` CDX-M670 przechodzi na `84 D2` i dopytuje nim co
+    // ~15-30 s. W logu 20260903_222727 zadania z 22:28:10, 22:28:24, 22:29:10,
+    // 22:29:27, 22:30:59 i 22:32:45 zostaly BEZ odpowiedzi, bo lancuch konczyl
+    // sie na 0xD7/0xD9/0xDD — stad tekst pojawiajacy sie z opoznieniem i
+    // "wybiorczo". Konwencja zadan 0x84 jest konsekwentna: w CMD2 radio wpisuje
+    // CMD1, ktore chce dostac w odpowiedzi (`84 D7` -> blok konczony 0xD7,
+    // `84 D9` -> pola 0xD9, `84 DD` -> pola 0xDD), wiec `84 D2` znaczy
+    // "przyslij ramki nazwy utworu 0xD2", a `84 DA` — "przyslij nazwe plyty".
+    //
+    // Ramke zamykajaca 0xD7 doklada TYLKO sciezka `84 D7`: prawdziwa zmieniarka
+    // we wszystkich pozostalych przypadkach konczy blok na nazwie plyty.
+    else if (rad == myAddr && op1 == 0x84 && op2 == 0xD2) {
+        enqueueCdTextD2Track(/*withEndMarker=*/false);
+    }
+    else if (rad == myAddr && op1 == 0x84 && op2 == 0xDA) {
+        enqueueCdTextDiscName(discFromRequest(buf, len));
+    }
+
     // ===== 9. Zadanie CD-TEXT — nazwa plyty (3X .. 84 DD) =====
     // Odpowiadamy w formacie 0xDA, bo to jego CDX-M670 realnie akceptuje (na
     // nim dziala juz nazwa utworu w 0xD2). Numer plyty bierzemy z D1, gdy radio
@@ -1314,15 +1373,7 @@ void handlePacket(const uint8_t* buf, int len) {
     // Wariant §10.2 (0xCD/0xDD, 8 znakow na pole) zostaje dla radii, ktore
     // podaja numer pola, a nie numer plyty.
     else if (rad == myAddr && op1 == 0x84 && op2 == 0xDD) {
-        uint8_t disc = CdChanger::disk();
-        if (len >= 11 && buf[5] != 0x00) {
-            const uint8_t d1 = buf[5];
-            const uint8_t cand = ((d1 & 0xF0) == 0xF0)
-                                     ? UnilinkFrame::discNibbleToNumber(d1)
-                                     : d1;
-            if (cand >= 1 && cand <= MAX_DISC) disc = cand;
-        }
-        enqueueCdTextDiscName(disc);
+        enqueueCdTextDiscName(discFromRequest(buf, len));
     }
 
     // ===== 10. Zadanie mapy magazynka (3X .. 84 95) =====

@@ -112,6 +112,12 @@ constexpr unsigned long POLL15_ALIVE_MS    = 3000;
 // decyzji "sesja umarla" (auto-recovery), tu potrzeba znacznie krotszego progu,
 // bo ekran odswiezamy ~1 Hz.
 constexpr unsigned long POLL15_QUIET_BREAK_MS = 250;
+// To samo okno, ale gdy oprozniamy kolejke TX (patrz BREAK_QUEUE_MIN_MS).
+// Prawdziwej zmieniarce master odpowiada kolejnym `01 15` juz po ~22 ms od jej
+// ramki, wiec brak pollu przez 80 ms znaczy, ze burstu nie bedzie i trzeba go
+// obudzic samemu. Przy pelnych 250 ms kazda ramka bloku nazw czekala tyle
+// niepotrzebnie, zanim w ogole rozwazylismy Break.
+constexpr unsigned long POLL15_QUIET_DRAIN_MS = 80;
 // Odstep miedzy kolejnymi Breakami. Kompromis miedzy plynnoscia ekranu a
 // ryzykiem kolizji: przy 1000 ms (i BREAK_RECOVERY_MS 1500) ekran odswiezal sie
 // z czestotliwoscia 0.3-0.5 Hz, przy 250/400 ms wskaznik [STAT] pokazywal juz
@@ -127,6 +133,15 @@ constexpr unsigned long BREAK_BACKOFF_MAX_MS = 3000;
 // odstep i okno BREAK_RECOVERY_MS sa pomijane, bo kilkusekundowe opoznienie
 // numeru plyty czy licznika czasu jest natychmiast widoczne na wyswietlaczu.
 constexpr unsigned long BREAK_URGENT_MIN_MS = 60;
+// Odstep dla Breaka, gdy w kolejce TX ZALEGAJA jeszcze ramki (blok CD-TEXT to
+// 3-4 ramki, a na jeden grant idzie dokladnie jedna). Przy BREAK_RETRY_MS caly
+// blok schodzil ~2 s (log: `poll15=4 break=4/4` w okienku 2 s po zmianie
+// utworu), podczas gdy prawdziwa zmieniarka oddaje go w ~170 ms, bo master
+// prowadzi jej burst Request Pollingu z odstepem ~22 ms.
+// Nie schodzimy do BREAK_URGENT_MIN_MS: dawny sztorm Breakow bral sie z ramek
+// czasu kolejkowanych OKRESOWO (kolejka byla niepusta zawsze). Teraz kolejka
+// zapelnia sie tylko burstami, wiec skrocenie odstepu jest ograniczone w czasie.
+constexpr unsigned long BREAK_QUEUE_MIN_MS = 150;
 
 // Po SYSTEM RESET radio robi discovery (preliminary + ANYONE? + appoint). Caly
 // cykl trwa ~2-3s. W tym czasie NIE WOLNO wyzwalac auto-recovery (`01 11`)
@@ -197,16 +212,14 @@ constexpr unsigned long RADIO_TIMEOUT_MS = 5000;   // brak PINGa => radio znikne
 constexpr unsigned long PERSIST_FLUSH_IDLE_US = 1500000;  // 1.5 s ciszy
 
 // --- CD-TEXT ---
-// Prawdziwa zmieniarka wysyla komplet nazw (utwor 0xD2 + plyta 0xDA) sama z
-// siebie po niemal kazdej ramce statusu — w zrzucie 42 ramki nazw wobec dwoch
-// zapytan `84 D7`. My oddajemy jedna ramke na grant, wiec caly blok schodzi
-// kilka sekund; powtarzamy go z tym okresem, zeby radio mialo nazwy takze po
-// przelaczeniu zrodla lub odtworzeniu sesji.
-// Radio samo dopytuje o nazwy ramka `84 D7`, wiec wypychanie ich z wlasnej
-// inicjatywy jest tylko siatka bezpieczenstwa (po zmianie zrodla, po resecie
-// sesji). Przy 10 s blok nazw — trzy ramki po jednej na grant — zauwazalnie
-// obciazal magistrale, stad rzadziej.
-constexpr unsigned long CD_TEXT_REPEAT_MS = 30000;
+// Jak czesto powtarzamy komplet nazw (utwor 0xD2 + plyta 0xDA) z wlasnej
+// inicjatywy. Zrzut prawdziwej zmieniarki pokazuje, ze robi to PRAKTYCZNIE BEZ
+// PRZERWY — komplet nazw leci co ~1-2 s przez cale odtwarzanie:
+//   16:58:32.0, :34.1, :35.1, :37.2, :39.3, :51.2, :53.1, :54.7, :56.6, :57.5
+// CDX-M670 restartuje przewijanie marquee dopiero na kompletnym bloku nazw,
+// wiec przy dawnych 30 s tekst przewijal sie raz i zamieral (a po zmianie
+// zrodla albo utracie sesji ekran zostawal pusty do nastepnego okresu).
+constexpr unsigned long CD_TEXT_REPEAT_MS = 2000;
 
 // --- PAMIEC NIEULOTNA (NVS) ---
 constexpr const char* PREFS_NAMESPACE = "unilink";

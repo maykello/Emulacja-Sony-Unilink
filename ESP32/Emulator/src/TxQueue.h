@@ -82,6 +82,18 @@ public:
 
     bool   isEmpty() const { return count_ == 0; }
     bool   isFull()  const { return count_ == TX_QUEUE_CAPACITY; }
+
+    // Ile ramek o DANYM priorytecie czeka w kolejce. Pozwala zapytac "czy blok
+    // nazw juz zszedl" bez mylenia go z ramka statusu czy czasu — samo
+    // isEmpty() do tego nie wystarcza i prowadzilo do gubienia zadan CD-TEXT.
+    size_t countPriority(uint8_t priority) const {
+        size_t n = 0;
+        for (size_t i = 0; i < TX_QUEUE_CAPACITY; ++i) {
+            if (slots_[i].used && slots_[i].item.priority == priority) n++;
+        }
+        return n;
+    }
+
     size_t size()    const { return count_; }
     size_t capacity() const { return TX_QUEUE_CAPACITY; }
 
