@@ -15,7 +15,12 @@ uint8_t statusByte(MechState s) {
     switch (s) {
         case MechState::Playing:      return 0x00;  // §7.1 Playing
         case MechState::ChangedCd:    return 0x20;  // §7.1 Changed CD
-        case MechState::Seeking:      return 0x21;  // §7.1 Seeking (FF/REW)
+        // [DEVIATION §7.1] Seeking ma w §7.1 wlasny kod 0x21, ale CDX-M670 na
+        // ten status GASI licznik na wyswietlaczu ("--:--"). Podczas cue/review
+        // uzytkownik musi widziec, DO KTOREGO miejsca przewija, wiec raportujemy
+        // 0x00 (Playing) i po prostu szybko przesuwamy czas w ramkach pozycji.
+        // Merytorycznie jest to prawda: mechanizm gra, tylko szybciej.
+        case MechState::Seeking:      return 0x00;  // [DEVIATION §7.1]
         case MechState::Changing:     return 0x40;  // §7.1 Changing CD
         case MechState::LoadingTrack: return 0x40;  // §7.1 Changing CD (ladowanie utworu)
         case MechState::Idle:         return 0x80;  // §7.1 Idle

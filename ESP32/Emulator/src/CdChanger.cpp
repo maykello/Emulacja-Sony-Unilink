@@ -98,7 +98,14 @@ static void loadLast() {
 // ============================================================
 // Wejscie w faze ladowania/szukania + start odtwarzania pliku
 // ============================================================
-static void enterSeek() {
+// `discChanged` = wjezdzamy na INNA plyte. Tylko wtedy mechanizm przechodzi
+// przez stan ChangedCd (0x20) — realna zmiana plyty, ktora radio pokazuje.
+// Przy zmianie samego utworu ten etap jest zbedny i tylko opoznial start
+// licznika o kolejny cykl odpytania (~150-400 ms).
+static bool loadDiscChanged = false;
+
+static void enterSeek(bool discChanged = false) {
+    loadDiscChanged = discChanged;
     enterState(MechState::LoadingTrack);
     seekStartTime = millis();
     playSeconds = 0;
@@ -122,6 +129,18 @@ void begin() {
     loadLast();
 }
 
+// Wejscie w Playing po fazie ladowania. Licznik ustawiamy na RZECZYWISTA pozycje
+// dekodera, a nie na 00:00: audio ruszylo juz w enterSeek, wiec twarde zerowanie
+// rozjezdzaloby wyswietlacz z dzwiekiem o caly czas trwania fazy LOAD.
+static void enterPlaying(unsigned long now) {
+    enterState(MechState::Playing);
+    uint32_t t = audioIsPlaying() ? audioGetCurrentTimeSec() : 0;
+    playMinutes = (uint8_t)((t / 60) % 100);
+    playSeconds = (uint8_t)(t % 60);
+    playBaseMs  = now - (unsigned long)t * 1000;
+    needDisplayUpdate = true;
+}
+
 void update(unsigned long now, bool radioEngaged) {
     // C0 -> 80 (po INIT_DURATION_MS od pierwszego PINGa, gdy sesja aktywna)
     if (cdState == MechState::Init && radioEngaged && initWaitTime != 0 &&
@@ -130,22 +149,24 @@ void update(unsigned long now, bool radioEngaged) {
         Serial.println(">>> C0 -> 80 (Idle)");
     }
 
-    // 0x40 -> 0x20 -> 0x00 (LoadingTrack -> ChangedCd -> Playing).
+    // 0x40 -> [0x20] -> 0x00 (LoadingTrack -> [ChangedCd] -> Playing).
     // Warunek `pollsInState` gwarantuje, ze radio zobaczylo stan posredni —
-    // patrz komentarz przy deklaracji pollsInState.
+    // patrz komentarz przy deklaracji pollsInState. Stan ChangedCd (0x20)
+    // przechodzimy TYLKO przy faktycznej zmianie plyty.
     if (cdState == MechState::LoadingTrack &&
         (now - seekStartTime > LOAD_DURATION_MS) && pollsInState > 0) {
-        enterState(MechState::ChangedCd);
-        seekStartTime = millis();
-        needDisplayUpdate = true;
-        Serial.println(">>> 40 -> 20 (ChangedCd)");
+        if (loadDiscChanged) {
+            enterState(MechState::ChangedCd);
+            seekStartTime = millis();
+            needDisplayUpdate = true;
+            Serial.println(">>> 40 -> 20 (ChangedCd)");
+        } else {
+            enterPlaying(now);
+            Serial.println(">>> 40 -> 00 (Playing!)");
+        }
     } else if (cdState == MechState::ChangedCd &&
                (now - seekStartTime > SEEK_DURATION_MS) && pollsInState > 0) {
-        enterState(MechState::Playing);
-        needDisplayUpdate = true;
-        playBaseMs = now;       // 00:00 biezacego utworu = teraz
-        playSeconds = 0;
-        playMinutes = 0;
+        enterPlaying(now);
         Serial.println(">>> 20 -> 00 (Playing!)");
     }
 
@@ -212,7 +233,7 @@ void serviceAutoAdvance() {
         needDisplayUpdate = true;
         Serial.println(">> AUTO-NEXT: koniec (Repeat Off, ostatni utwor) — STOP");
     } else {
-        enterSeek();
+        enterSeek(/*discChanged=*/currentDisk != prevDisk);
         Serial.printf(">> AUTO-NEXT: CD%d TR%d (repeat=%d, moved=%d)\n",
                       currentDisk, currentTrack, (int)playModesState.repeat, moved ? 1 : 0);
     }
@@ -312,7 +333,7 @@ void nextDisc() {
         if (currentDisk > MAX_DISC) currentDisk = 1;
     }
     currentTrack = 1;
-    enterSeek();
+    enterSeek(/*discChanged=*/true);
     Serial.printf(">> NEXT DISC: CD%d\n", currentDisk);
 }
 
@@ -326,7 +347,7 @@ void prevDisc() {
         currentDisk--;
     }
     currentTrack = 1;
-    enterSeek();
+    enterSeek(/*discChanged=*/true);
     Serial.printf(">> PREV DISC: CD%d\n", currentDisk);
 }
 
@@ -457,9 +478,10 @@ void stopSeekScan() {
 
 // --- BEZPOŚREDNI WYBÓR PŁYTY/UTWORU (0xB0) ---
 void selectDiscTrack(uint8_t disc, uint8_t track) {
+    const bool discChanged = (disc != currentDisk);
     currentDisk  = disc;
     currentTrack = track;
-    enterSeek();
+    enterSeek(discChanged);
     needDisplayUpdate = true;
 }
 

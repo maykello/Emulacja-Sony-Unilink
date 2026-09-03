@@ -228,14 +228,28 @@ int readFrame(uint8_t* out, int maxLen) {
     // KAZDY CMD1 ma przypisana dlugosc, wiec sama dlugosc nie wykryje przesuniecia
     // bajtowego. Robi to Parity1: jest liczona z pierwszych czterech bajtow i
     // musi sie zgadzac z piatym. Gdy sie nie zgadza, prawie na pewno zaczelismy
-    // skladac ramke od zlego bajtu — zrzucamy jeden bajt i probujemy od nastepnego,
-    // zamiast konsumowac (i psuc) caly nastepny pakiet.
+    // skladac ramke od zlego bajtu.
+    //
+    // Szukamy NAJBLIZSZEGO offsetu, na ktorym Parity1 sie zgadza (i pierwszy bajt
+    // wyglada na adres, czyli >= 0x10), i odrzucamy wszystko przed nim JEDNYM
+    // ruchem. Wczesniej gubilismy po jednym bajcie na wywolanie: pojedyncza porcja
+    // smieci kosztowala kilkanascie iteracji petli (log 21:29: 11 RESYNCow po
+    // 1 ms), a przez ten czas nie parsowalismy ramek — wystarczylo, by zgubic
+    // Time Poll `01 12` i sprowokowac SYSTEM RESET radia.
     if (count >= 5) {
         const uint8_t p1 = UnilinkFrame::parity1(rxBuffer[0], rxBuffer[1],
                                                  rxBuffer[2], rxBuffer[3]);
         if (rxBuffer[4] != p1) {
-            for (int i = 0; i + 1 < count; i++) rxBuffer[i] = rxBuffer[i + 1];
-            rxIndex = count - 1;
+            int drop = count - 4;   // brak kandydata: zostaw ogon, moze to poczatek ramki
+            for (int k = 1; k + 4 < count; ++k) {
+                if (rxBuffer[k] < 0x10) continue;   // RAD ma zawsze niezerowy gorny nibbel
+                const uint8_t pk = UnilinkFrame::parity1(rxBuffer[k], rxBuffer[k + 1],
+                                                         rxBuffer[k + 2], rxBuffer[k + 3]);
+                if (rxBuffer[k + 4] == pk) { drop = k; break; }
+            }
+            const int remaining = count - drop;
+            for (int i = 0; i < remaining; i++) rxBuffer[i] = rxBuffer[drop + i];
+            rxIndex = remaining;
             interrupts();
             Diagnostics::recordNote("RESYNC");
             return 0;
