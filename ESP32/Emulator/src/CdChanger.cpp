@@ -46,15 +46,15 @@ static bool needDisplayUpdate = false;
 // Domyslnie wszystko wylaczone (Off/false/false), tak jak po wlozeniu plyty.
 static PlayModes playModesState = { RepeatMode::Off, false, false };
 
-// --- PRZEWIJANIE — SKANOWANIE ZATRZASKOWE (FF/REW) ---
+// --- PRZEWIJANIE — CIAGLE SKANOWANIE CUE/REVIEW (FF/REW) ---
 // scanDir: 0 = brak skanowania, +1 = do przodu (FF), -1 = do tylu (REW).
-// Radio wysyla jedna ramke na nacisniecie (brak info o trzymaniu), wiec
-// nacisniecie ZATRZASKUJE skanowanie: kolejne skoki dorzuca serviceSeekRepeat
-// co SEEK_REPEAT_MS, dzieki czemu slychac kolejne fragmenty utworu. Ponowne
-// nacisniecie tego samego kierunku zatrzymuje, przeciwne — odwraca.
+// Nacisniecie klawisza (0x24/0x25) startuje skan, puszczenie (broadcast
+// `08 00`) go konczy. Pozycje liczymy CIAGLE z czasu trzymania — patrz
+// scanDistanceSec — wiec licznik plynie plynnie i przyspiesza, zamiast skakac
+// po rownych porcjach.
 static int           seekScanDir   = 0;
 static unsigned long seekScanStart = 0;
-static unsigned long lastSeekStep  = 0;
+static uint32_t      seekAnchorSec = 0;  // pozycja w chwili nacisniecia klawisza
 static unsigned long lastAudioSeek = 0;  // ostatni setTimeOffset podczas skanu
 
 // --- PAMIEC NIEULOTNA (NVS) ---
@@ -330,16 +330,40 @@ void prevDisc() {
     Serial.printf(">> PREV DISC: CD%d\n", currentDisk);
 }
 
-// Pojedynczy skok przewijania o `deltaSec` w obrebie biezacego utworu.
-// Aktualizuje TYLKO nasz licznik czasu / ekran. Dekoder MP3 synchronizujemy
-// osobno (rzadziej) przez syncAudioToDisplayClock — patrz SEEK_AUDIO_MS.
-static void doSeekStep(int deltaSec) {
-    long t = (long)playMinutes * 60 + playSeconds + deltaSec;
-    if (t < 0) t = 0;
-    playMinutes = (uint8_t)((t / 60) % 100);
-    playSeconds = (uint8_t)(t % 60);
-    playBaseMs = millis() - (unsigned long)t * 1000;
-    needDisplayUpdate = true;
+// Ustaw pozycje odtwarzania (sekundy od poczatku utworu) na naszym liczniku.
+// Ekran oznaczamy jako brudny tylko przy ZMIANIE wyswietlanej sekundy — inaczej
+// przy skanowaniu wolalibysmy o magistrale w kazdej iteracji petli.
+static void setPlayPosition(uint32_t sec) {
+    uint8_t m = (uint8_t)((sec / 60) % 100);
+    uint8_t s = (uint8_t)(sec % 60);
+    playBaseMs = millis() - (unsigned long)sec * 1000;
+    if (m != playMinutes || s != playSeconds) {
+        playMinutes = m;
+        playSeconds = s;
+        needDisplayUpdate = true;
+    }
+}
+
+// Ile sekund materialu przeskanowano po `elapsedMs` trzymania klawisza FF/REW.
+// Trzy etapy predkosci (Config.h): najpierw wolno — da sie trafic w konkretne
+// miejsce — potem coraz szybciej, jak w oryginalnej zmieniarce.
+static uint32_t scanDistanceSec(unsigned long elapsedMs) {
+    unsigned long t = elapsedMs;
+    uint32_t dist = 0;
+
+    unsigned long seg = (t < SCAN_PHASE1_MS) ? t : SCAN_PHASE1_MS;
+    dist += (uint32_t)(seg * SCAN_RATE1 / 1000);
+    t -= seg;
+
+    if (t > 0) {
+        seg = (t < SCAN_PHASE2_MS) ? t : SCAN_PHASE2_MS;
+        dist += (uint32_t)(seg * SCAN_RATE2 / 1000);
+        t -= seg;
+    }
+    if (t > 0) {
+        dist += (uint32_t)(t * SCAN_RATE3 / 1000);
+    }
+    return dist;
 }
 
 // Dopchnij dekoder do aktualnej pozycji wyswietlacza (jeden setTimeOffset).
@@ -359,35 +383,29 @@ static void endSeekScan() {
 }
 
 void seek(int deltaSec) {
-    // Komenda FF/REW od radia (0x24/0x25). Skanowanie zatrzaskowe — patrz opis
-    // przy zmiennych seekScanDir. Radio daje jedna ramke na nacisniecie.
-    if (cdState != MechState::Playing) return;
-    int dir = (deltaSec >= 0) ? +1 : -1;
-    unsigned long now = millis();
+    // Komenda FF/REW od radia (0x24/0x25) = WCISNIECIE klawisza. Puszczenie
+    // przychodzi jako broadcast `08 00` i trafia do stopSeekScan().
+    if (cdState != MechState::Playing && cdState != MechState::Seeking) return;
+    const int dir = (deltaSec >= 0) ? +1 : -1;
+    const unsigned long now = millis();
 
-    // Start skanowania (lub odwrocenie kierunku) — ustaw stan Seeking.
-    if (seekScanDir == 0 || seekScanDir == -dir) {
-        enterState(MechState::Seeking);
-        needDisplayUpdate = true;
-        audioSetInfoSquelch(true);
-    }
+    // Ten sam kierunek w trakcie skanu = powtorzona ramka od radia. Skan trwa
+    // dalej; NIE restartujemy kotwicy, bo zgubiloby to przyspieszenie.
+    if (seekScanDir == dir) return;
 
-    if (seekScanDir == dir) {
-        // Ponowne nacisniecie tego samego kierunku => STOP skanowania.
-        Serial.printf(">> SCAN stop: CD%d TR%d %02d:%02d\n",
-                      currentDisk, currentTrack, playMinutes, playSeconds);
-        endSeekScan();
-        return;
-    }
-
-    // Start skanowania lub odwrocenie kierunku — natychmiastowy pierwszy skok
-    // ekranu + jeden skok audio (slyszalny podglad startu).
+    // Start skanu (albo zmiana kierunku): kotwica = biezaca pozycja, od niej
+    // liczymy przebyty dystans jako funkcje czasu trzymania klawisza.
+    seekAnchorSec = (uint32_t)playMinutes * 60 + playSeconds;
     seekScanDir   = dir;
     seekScanStart = now;
-    doSeekStep(dir * SEEK_STEP_SEC);
-    lastSeekStep = now;
-    syncAudioToDisplayClock();
-    Serial.printf(">> SCAN %s: CD%d TR%d %02d:%02d\n",
+    lastAudioSeek = now;   // pierwszy podglad audio dopiero po SEEK_AUDIO_MS
+
+    if (cdState != MechState::Seeking) {
+        enterState(MechState::Seeking);
+        audioSetInfoSquelch(true);
+    }
+    needDisplayUpdate = true;
+    Serial.printf(">> SCAN %s start: CD%d TR%d %02d:%02d\n",
                   dir > 0 ? "FF" : "REW", currentDisk, currentTrack,
                   playMinutes, playSeconds);
 }
@@ -395,15 +413,14 @@ void seek(int deltaSec) {
 void serviceSeekRepeat(unsigned long now) {
     if (seekScanDir == 0) return;
 
-    // Skanowanie tylko w stanach Playing lub Seeking.
-    // Wstanie Seeking (przewijanie FF/REW) kontynuujemy skanowanie.
-    // W innych stanach (LoadingTrack, ChangedCd itp.) automatycznie konczymy.
+    // Skanowanie tylko w stanach Playing lub Seeking. W innych (LoadingTrack,
+    // ChangedCd itp.) automatycznie konczymy.
     if (cdState != MechState::Playing && cdState != MechState::Seeking) {
         endSeekScan();
         return;
     }
 
-    // Bezpiecznik: nie skanuj w nieskonczonosc, gdyby nikt nie zatrzymal.
+    // Bezpiecznik: gdyby radio nie przyslalo `08 00` konczacego przewijanie.
     if (now - seekScanStart > SEEK_SCAN_MAX_MS) {
         Serial.printf(">> SCAN auto-stop (limit %lus): CD%d TR%d %02d:%02d\n",
                       SEEK_SCAN_MAX_MS / 1000, currentDisk, currentTrack,
@@ -412,26 +429,28 @@ void serviceSeekRepeat(unsigned long now) {
         return;
     }
 
-    if (now - lastSeekStep >= SEEK_REPEAT_MS) {
-        lastSeekStep = now;
-        doSeekStep(seekScanDir * SEEK_STEP_SEC);
-        // Rzadki podglad audio — nie co kazdy krok ekranu (patrz SEEK_AUDIO_MS).
-        if (now - lastAudioSeek >= SEEK_AUDIO_MS) {
-            syncAudioToDisplayClock();
-        }
+    // Pozycja liczona CIAGLE z czasu trzymania klawisza — licznik plynie gladko
+    // i przyspiesza, zamiast skakac co stala porcje sekund.
+    long target = (long)seekAnchorSec +
+                  (long)seekScanDir * (long)scanDistanceSec(now - seekScanStart);
+    if (target < 0) target = 0;
+    const uint32_t dur = audioGetDurationSec();
+    if (dur > 1 && target > (long)(dur - 1)) target = (long)(dur - 1);
+    setPlayPosition((uint32_t)target);
+
+    // Slyszalne cue: co SEEK_AUDIO_MS dekoder wskakuje w biezaca pozycje.
+    if (now - lastAudioSeek >= SEEK_AUDIO_MS) {
+        syncAudioToDisplayClock();
     }
 }
 
-// --- ZATRZYMANIE SKANOWANIA (wywolywane przy broadcastu 0x08) ---
-// [DEVIATION §9] Fallback do modelu podstawowego: gdy radio nie wysyla
-// broadcastu 0x08 konczacego przewijanie, skanowanie zatrzaskowe (seekScanDir)
-// jest jedynym sposobem zatrzymania. Ta funkcja jest wywolywana przy odbiorze
-// 0x08 0x00 i ustawia seekScanDir=0, konczac skanowanie.
+// --- ZATRZYMANIE SKANOWANIA: PUSZCZENIE KLAWISZA (broadcast `18 10 08 00`) ---
+// Potwierdzone logami: `08 00` przychodzi dokladnie tyle po ramce 0x24/0x25, ile
+// trwalo przytrzymanie klawisza (np. FF 21:07:00.3 -> `08 00` 21:07:03.6).
 void stopSeekScan() {
     if (seekScanDir != 0) {
-        int oldDir = seekScanDir;
-        Serial.printf(">> SCAN stop (0x08 0x00): CD%d TR%d %02d:%02d dir=%d -> Waiting for Playing\n",
-                      currentDisk, currentTrack, playMinutes, playSeconds, oldDir);
+        Serial.printf(">> SCAN stop (0x08 0x00): CD%d TR%d %02d:%02d\n",
+                      currentDisk, currentTrack, playMinutes, playSeconds);
         endSeekScan();
     }
 }

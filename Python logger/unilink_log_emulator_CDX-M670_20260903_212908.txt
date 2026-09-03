@@ -1,0 +1,367 @@
+[21:29:10.889] Obsluga: MEX-BT3800u + CDX-M670 + PCM5102A DAC + USB
+[21:29:10.891] Oczekuje na radio (Stan C0 - Init)...
+[21:29:10.893] [NVS] Wczytano ostatni utwor: CD4 TR4
+[21:29:10.895] [Audio] Inicjalizacja...
+[21:29:10.897] [UsbDrive] Inicjalizacja USB Host...
+[21:29:10.901] [UsbDrive] USB Host gotowy. Podłącz pendrive'a do portu USB-OTG...
+[21:29:10.904] [UsbDrive] Nowe urządzenie USB (addr=1)
+[21:29:10.907] [UsbDrive] Konfiguruję urządzenie MSC (addr=1)...
+[21:29:10.909] [UsbDrive] VID=0x0951 PID=0x1653
+[21:29:10.911] [UsbDrive] Znaleziono interfejs MSC #0
+[21:29:10.914] [UsbDrive] Bulk IN:  0x81 (MPS=64)
+[21:29:10.916] [UsbDrive] Bulk OUT: 0x02 (MPS=64)
+[21:29:10.919] [UsbDrive] Czekam na gotowość urządzenia...
+[21:29:10.922] [UsbDrive] Pendrive: Kingston DT 100 G2
+[21:29:10.925] [UsbDrive] Dysk: 15644912 sektorów × 512 B = 7639 MB
+[21:29:10.929] [UsbDrive] Sektor 0 to GPT Protective MBR — parsowanie GPT...
+[21:29:10.934] [UsbDrive] GPT: wpisy od LBA 2, 128 wpisów × 128 B
+[21:29:10.937] [UsbDrive]   GPT wpis 0: start=2048 end=15644671 (Microsoft Basic Data)
+[21:29:10.940] [UsbDrive] ✓ Używam partycji GPT na sektorze 2048
+[21:29:10.942] [UsbDrive] ✓ System plików zamontowany pod /usb
+[21:29:10.946] [Audio] setPinout(BCK=7, LRCK=15, DIN=13) = OK
+[21:29:10.949] [Audio] Task dekodowania uruchomiony na rdzeniu 0
+[21:29:10.951] [Audio] CD01: 1 track(ów)
+[21:29:10.952] [Audio]   TR01: 01- Hasta Manana.mp3
+[21:29:10.955] [Audio] CD02: 2 track(ów)
+[21:29:10.956] [Audio]   TR01: 01. Waterloo.mp3
+[21:29:10.958] [Audio]   TR02: 02. Head Over Heels.mp3
+[21:29:10.961] [Audio] CD03: 3 track(ów)
+[21:29:10.962] [Audio]   TR01: 02. Mamma Mia.mp3
+[21:29:10.966] [Audio]   TR02: 03. Gimme! Gimme! Gimme! (A Man After Midnight).mp3
+[21:29:10.968] [Audio]   TR03: 03. I Do, I Do, I Do, I Do, I Do.mp3
+[21:29:10.970] [Audio] CD04: 4 track(ów)
+[21:29:10.972] [Audio]   TR01: 04. Dancing Queen.mp3
+[21:29:10.974] [Audio]   TR02: 04. Honey, Honey.mp3
+[21:29:10.976] [Audio]   TR03: 05. Take A Chance On Me.mp3
+[21:29:10.979] [Audio]   TR04: 06. Knowing Me, Knowing You.mp3
+[21:29:10.981] [Audio] CD05: 5 track(ów)
+[21:29:10.982] [Audio]   TR01: 06. Ring Ring.mp3
+[21:29:10.985] [Audio]   TR02: 07 Wrap Your Arms Around Me.mp3
+[21:29:10.987] [Audio]   TR03: 07. Eagle.mp3
+[21:29:10.990] [Audio]   TR04: 07. The Winner Takes It All.mp3
+[21:29:10.993] [Audio]   TR05: 08- Nina, pretty balerina.mp3
+[21:29:10.996] [Audio] CD06: 1 track(ów)
+[21:29:10.998] [Audio]   TR01: 03. I Do, I Do, I Do, I Do, I Do.mp3
+[21:29:11.000] [Audio] CD07: 1 track(ów)
+[21:29:11.002] [Audio]   TR01: 07 Wrap Your Arms Around Me.mp3
+[21:29:11.004] [Audio] CD08: 1 track(ów)
+[21:29:11.006] [Audio]   TR01: 07. Eagle.mp3
+[21:29:11.008] [Audio] CD09: 1 track(ów)
+[21:29:11.010] [Audio]   TR01: 07. The Winner Takes It All.mp3
+[21:29:11.012] [Audio] CD10: 1 track(ów)
+[21:29:11.015] [Audio]   TR01: 08- Nina, pretty balerina.mp3
+[21:29:11.017] [Audio] Inicjalizacja zakończona — pendrive gotowy.
+[21:29:11.019] [Audio] Gotowy do odtwarzania.
+[21:29:11.022] >>> Wykryto USB. Wznawiam zapamietana plyte: CD4 TR4
+[21:29:11.024] === BUS_ON = 1 ===
+[21:29:11.026] [Audio] Głośność: 18/21 (zlecone)
+[21:29:11.026] === BUS_ON = 0 ===
+[21:29:11.029] === SEN: magistrala wylaczona — zatrzymuje audio ===
+[21:29:11.031] [Audio] ⏹ Zatrzymano (zlecone).
+[21:29:11.032] === BUS_ON = 1 ===
+[21:29:11.035] [Audio] Głośność: 18/21 (zlecone)
+[21:29:11.206] === BUS_ON = 0 ===
+[21:29:11.209] === SEN: magistrala wylaczona — zatrzymuje audio ===
+[21:29:11.212] [Audio] ⏹ Zatrzymano (zlecone).
+[21:29:11.404] === BUS_ON = 1 ===
+[21:29:11.407] [Audio] Głośność: 18/21 (zlecone)
+[21:29:11.981] ===== CZARNA SKRZYNKA (RADIO SYSTEM RESET 18 10 01 00) — ostatnie 1 zdarzen =====
+[21:29:11.982] [-    0ms] RX    18 10 01 00 29 00
+[21:29:11.987] ======================================================
+[21:29:11.990] >> Radio system reset (#1) (juz bylem nieprzydzielony)
+[21:29:12.044] == Wykryto CDX-M670 (widziano 3B 10 02 11) ==
+[21:29:12.121] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 49ms po DB)
+[21:29:12.250] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 178ms po DB)
+[21:29:12.299] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#3, 227ms po DB)
+[21:29:12.346] >> Odpowiadam na ANYONE? device info 0x8C
+[21:29:12.374] >> Adres przydzielony: 0x31 (op2=0x14)! deviceAllocated=true
+[21:29:13.256] >> [Audio Bus] Radio sygnalizuje audio ON (87 2B) — tylko log
+[21:29:13.279] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B) — tylko log
+[21:29:14.852] [STAT] poll15=29 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x80 CD4 TR4 00:00
+[21:29:15.957] >>> C0 -> 80 (Idle)
+[21:29:16.852] [STAT] poll15=45 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x80 CD4 TR4 00:00
+[21:29:18.162] >> PLAY command received!
+[21:29:18.255] [Audio] Async connecttoFS("/CD04/06. Knowing Me, Knowing You.mp3") = OK
+[21:29:18.260] [Audio] ▶ Odtwarzam: /CD04/06. Knowing Me, Knowing You.mp3 (rozpoczęto dekodowanie)
+[21:29:18.561] >>> 40 -> 20 (ChangedCd)
+[21:29:18.725] >>> 20 -> 00 (Playing!)
+[21:29:18.853] [STAT] poll15=18 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=2/1 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR4 00:00
+[21:29:20.852] [STAT] poll15=32 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR4 00:02
+[21:29:21.092] ===== CZARNA SKRZYNKA (RADIO SYSTEM RESET 18 10 01 00) — ostatnie 128 zdarzen =====
+[21:29:21.097] [- 2709ms] RX    70 51 92 02 55 00 00 00 00 55 00
+[21:29:21.100] [- 2687ms] RX    70 91 95 30 C6 00 00 00 00 C6 00
+[21:29:21.103] [- 2660ms] RX    70 91 DA C0 9B 07 20 38 50 68 80 98 B0 00 7A 00
+[21:29:21.108] [- 2633ms] RX    70 91 DB C0 9C 01 0A 07 04 04 04 05 06 00 C5 00
+[21:29:21.112] [- 2606ms] RX    70 91 D0 10 E1 C0 20 00 07 0A 0A 15 00 12 03 00
+[21:29:21.114] [- 2590ms] RX    18 10 01 11 3A 00
+[21:29:21.115] [- 2571ms] BREAK
+[21:29:21.117] [- 2557ms] RX    18 10 01 15 3E 00
+[21:29:21.122] [- 2557ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[21:29:21.124] [- 2530ms] RX    31 10 01 13 55 00
+[21:29:21.127] [- 2530ms] TX    70 31 C0 40 A1 00 00 00 00 00 F4 FF FF 41 D4 00
+[21:29:21.131] [- 2471ms] RX    70 10 C0 00 40 00 00 00 00 00 00 00 00 00 40 00
+[21:29:21.132] [- 2454ms] RX    18 10 01 15 3E 00
+[21:29:21.137] [- 2454ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[21:29:21.138] [- 2427ms] RESYNC
+[21:29:21.139] [- 2422ms] RXFLUSH
+[21:29:21.141] [- 2393ms] RX    18 10 01 15 3E 00
+[21:29:21.144] [- 2393ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[21:29:21.146] [- 2366ms] RX    31 10 01 13 55 00
+[21:29:21.149] [- 2366ms] TX    70 31 C0 20 81 00 00 00 00 00 F4 FF FF 41 B4 00
+[21:29:21.152] [- 2318ms] RX    18 10 01 15 3E 00
+[21:29:21.154] [- 2318ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[21:29:21.156] [- 2291ms] RX    31 10 01 13 55 00
+[21:29:21.159] [- 2291ms] TX    70 31 90 30 61 F4 F0 00 48 8D 00
+[21:29:21.161] [- 2248ms] RX    18 10 01 15 3E 00
+[21:29:21.163] [- 2248ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.167] [- 2205ms] RX    18 10 01 15 3E 00
+[21:29:21.170] [- 2205ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.171] [- 2162ms] RX    18 10 01 15 3E 00
+[21:29:21.174] [- 2162ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.177] [- 2119ms] RX    18 10 01 15 3E 00
+[21:29:21.179] [- 2119ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.181] [- 2076ms] RX    18 10 01 15 3E 00
+[21:29:21.184] [- 2076ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.186] [- 2033ms] RX    18 10 01 15 3E 00
+[21:29:21.189] [- 2033ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.191] [- 1991ms] RX    18 10 01 15 3E 00
+[21:29:21.193] [- 1990ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.195] [- 1964ms] RX    3B 10 01 12 5E 00
+[21:29:21.198] [- 1953ms] RX    10 3B 00 C0 0B 00
+[21:29:21.200] [- 1926ms] RX    18 10 01 15 3E 00
+[21:29:21.202] [- 1926ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.206] [- 1883ms] RX    18 10 01 15 3E 00
+[21:29:21.208] [- 1883ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.210] [- 1840ms] RX    18 10 01 15 3E 00
+[21:29:21.212] [- 1840ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.216] [- 1797ms] RX    18 10 01 15 3E 00
+[21:29:21.219] [- 1797ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.221] [- 1754ms] RX    18 10 01 15 3E 00
+[21:29:21.222] [- 1754ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.226] [- 1711ms] RX    18 10 01 15 3E 00
+[21:29:21.229] [- 1711ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.230] [- 1668ms] RX    18 10 01 15 3E 00
+[21:29:21.234] [- 1668ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.236] [- 1625ms] RX    18 10 01 15 3E 00
+[21:29:21.238] [- 1625ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.241] [- 1582ms] RX    18 10 01 15 3E 00
+[21:29:21.244] [- 1582ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.246] [- 1539ms] RX    18 10 01 15 3E 00
+[21:29:21.249] [- 1539ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.251] [- 1496ms] RX    18 10 01 15 3E 00
+[21:29:21.254] [- 1496ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.255] [- 1454ms] RX    18 10 01 15 3E 00
+[21:29:21.259] [- 1453ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.262] [- 1411ms] RX    18 10 01 15 3E 00
+[21:29:21.264] [- 1411ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.266] [- 1368ms] RX    18 10 01 15 3E 00
+[21:29:21.269] [- 1368ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.271] [- 1341ms] RX    71 10 01 12 94 00
+[21:29:21.274] [- 1330ms] RX    10 71 00 00 81 00
+[21:29:21.276] [- 1303ms] RX    18 10 01 15 3E 00
+[21:29:21.279] [- 1303ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[21:29:21.281] [- 1276ms] RX    31 10 01 13 55 00
+[21:29:21.284] [- 1276ms] TX    70 31 90 30 61 F4 F0 01 48 8E 00
+[21:29:21.287] [- 1232ms] RX    18 10 01 15 3E 00
+[21:29:21.289] [- 1232ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.290] [-  854ms] RESYNC
+[21:29:21.292] [-  853ms] RESYNC
+[21:29:21.293] [-  852ms] RESYNC
+[21:29:21.294] [-  851ms] RESYNC
+[21:29:21.296] [-  850ms] RESYNC
+[21:29:21.297] [-  849ms] RESYNC
+[21:29:21.298] [-  848ms] RESYNC
+[21:29:21.300] [-  847ms] RESYNC
+[21:29:21.301] [-  846ms] RESYNC
+[21:29:21.301] [-  845ms] RESYNC
+[21:29:21.303] [-  844ms] RESYNC
+[21:29:21.304] [-  839ms] RXFLUSH
+[21:29:21.307] [-  817ms] RX    70 51 C0 02 83 00 00 00 04 11 F8 75 00 F2 F7 00
+[21:29:21.311] [-  790ms] RX    70 51 C1 2D AF 2D 2D 2D 2D 2D 2D 2D 00 02 EC 00
+[21:29:21.315] [-  768ms] RX    70 51 92 02 55 00 00 00 00 55 00
+[21:29:21.318] [-  735ms] RX    18 10 01 15 3E 00
+[21:29:21.320] [-  735ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.322] [-  708ms] RX    31 10 01 12 54 00
+[21:29:21.325] [-  708ms] TX    10 31 00 00 41 00
+[21:29:21.326] [-  686ms] RESYNC
+[21:29:21.328] [-  681ms] RXFLUSH
+[21:29:21.331] [-  653ms] RX    18 10 01 15 3E 00
+[21:29:21.334] [-  653ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.336] [-  610ms] RX    18 10 01 15 3E 00
+[21:29:21.339] [-  610ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.342] [-  567ms] RX    18 10 01 15 3E 00
+[21:29:21.345] [-  567ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.348] [-  524ms] RX    18 10 01 15 3E 00
+[21:29:21.350] [-  524ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.352] [-  481ms] RX    18 10 01 15 3E 00
+[21:29:21.356] [-  481ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.358] [-  438ms] RX    18 10 01 15 3E 00
+[21:29:21.360] [-  438ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.362] [-  395ms] RX    18 10 01 15 3E 00
+[21:29:21.367] [-  395ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.370] [-  352ms] RX    18 10 01 15 3E 00
+[21:29:21.372] [-  352ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[21:29:21.375] [-  325ms] RX    31 10 01 13 55 00
+[21:29:21.378] [-  325ms] TX    70 31 90 30 61 F4 F0 02 48 8F 00
+[21:29:21.379] [-  282ms] RX    18 10 01 15 3E 00
+[21:29:21.383] [-  281ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.385] [-  239ms] RX    18 10 01 15 3E 00
+[21:29:21.388] [-  239ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.390] [-  196ms] RX    18 10 01 15 3E 00
+[21:29:21.392] [-  196ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.394] [-  153ms] RX    18 10 01 15 3E 00
+[21:29:21.397] [-  153ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.399] [-  110ms] RX    18 10 01 15 3E 00
+[21:29:21.402] [-  110ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[21:29:21.402] [-   67ms] RESYNC
+[21:29:21.405] [-   62ms] RXFLUSH
+[21:29:21.407] [-    0ms] RX    18 10 01 00 29 00
+[21:29:21.410] ======================================================
+[21:29:21.413] >> Radio system reset (#2)! Reset deviceAllocated.
+[21:29:21.416] >> resetToAllocated: audio gra, zachowuje Playing 00:02
+[21:29:21.420] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 49ms po DB)
+[21:29:21.424] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 179ms po DB)
+[21:29:21.427] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#3, 227ms po DB)
+[21:29:21.459] >> Odpowiadam na ANYONE? device info 0x8C
+[21:29:21.488] >> Adres przydzielony: 0x31 (op2=0x14)! deviceAllocated=true
+[21:29:22.370] >> [Audio Bus] Radio sygnalizuje audio ON (87 AB) — tylko log
+[21:29:22.414] >> [Audio Bus] Radio sygnalizuje audio ON (87 EB) — tylko log
+[21:29:22.528] >> PLAY (wznowienie bez restartu, np. po resecie radia: 00:03)
+[21:29:22.852] [STAT] poll15=4 disp13(my)=0 disp13(3B)=0 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR4 00:03
+[21:29:24.852] [STAT] poll15=34 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR4 00:05
+[21:29:26.851] [STAT] poll15=37 disp13(my)=2 disp13(3B)=2 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR4 00:07
+[21:29:28.851] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR4 00:09
+[21:29:30.852] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR4 00:11
+[21:29:32.852] [STAT] poll15=2 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR4 00:13
+[21:29:34.852] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR4 00:15
+[21:29:35.782] >> PREV TRACK (Restart utworu): CD4 TR4
+[21:29:35.786] [Audio-info] Closing audio file
+[21:29:35.859] >>> 40 -> 20 (ChangedCd)
+[21:29:35.992] [Audio] Async connecttoFS("/CD04/06. Knowing Me, Knowing You.mp3") = OK
+[21:29:35.998] [Audio] ▶ Odtwarzam: /CD04/06. Knowing Me, Knowing You.mp3 (rozpoczęto dekodowanie)
+[21:29:36.426] >>> 20 -> 00 (Playing!)
+[21:29:36.851] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=1 break=5/5 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR4 00:00
+[21:29:38.851] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR4 00:02
+[21:29:38.875] >> PREV TRACK: CD4 TR3
+[21:29:38.890] [Audio-info] Closing audio file
+[21:29:38.952] >>> 40 -> 20 (ChangedCd)
+[21:29:39.098] [Audio] Async connecttoFS("/CD04/05. Take A Chance On Me.mp3") = OK
+[21:29:39.104] [Audio] ▶ Odtwarzam: /CD04/05. Take A Chance On Me.mp3 (rozpoczęto dekodowanie)
+[21:29:39.234] >>> 20 -> 00 (Playing!)
+[21:29:40.841] >> PREV TRACK: CD4 TR2
+[21:29:40.844] [Audio-info] Closing audio file
+[21:29:40.851] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=2 break=5/4 txt=0 seek=0 | alloc=1 state=0x40 CD4 TR2 00:00
+[21:29:40.918] >>> 40 -> 20 (ChangedCd)
+[21:29:41.046] [Audio] Async connecttoFS("/CD04/04. Honey, Honey.mp3") = OK
+[21:29:41.051] [Audio] ▶ Odtwarzam: /CD04/04. Honey, Honey.mp3 (rozpoczęto dekodowanie)
+[21:29:41.200] >>> 20 -> 00 (Playing!)
+[21:29:42.279] >> PREV TRACK: CD4 TR1
+[21:29:42.284] [Audio-info] Closing audio file
+[21:29:42.493] [Audio] Async connecttoFS("/CD04/04. Dancing Queen.mp3") = OK
+[21:29:42.498] [Audio] ▶ Odtwarzam: /CD04/04. Dancing Queen.mp3 (rozpoczęto dekodowanie)
+[21:29:42.548] >>> 40 -> 20 (ChangedCd)
+[21:29:42.831] >>> 20 -> 00 (Playing!)
+[21:29:42.852] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=1 break=5/6 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR1 00:00
+[21:29:44.714] >> NEXT DISC: CD5
+[21:29:44.720] [Audio-info] Closing audio file
+[21:29:44.774] >>> 40 -> 20 (ChangedCd)
+[21:29:44.851] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=1 break=3/3 txt=0 seek=0 | alloc=1 state=0x20 CD5 TR1 00:00
+[21:29:44.928] [Audio] Async connecttoFS("/CD05/06. Ring Ring.mp3") = OK
+[21:29:44.932] [Audio] ▶ Odtwarzam: /CD05/06. Ring Ring.mp3 (rozpoczęto dekodowanie)
+[21:29:45.064] >>> 20 -> 00 (Playing!)
+[21:29:46.610] >> PREV DISC: CD4
+[21:29:46.616] [Audio-info] Closing audio file
+[21:29:46.671] >>> 40 -> 20 (ChangedCd)
+[21:29:46.818] [Audio] Async connecttoFS("/CD04/04. Dancing Queen.mp3") = OK
+[21:29:46.823] [Audio] ▶ Odtwarzam: /CD04/04. Dancing Queen.mp3 (rozpoczęto dekodowanie)
+[21:29:46.838] >>> 20 -> 00 (Playing!)
+[21:29:46.850] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=1 break=4/4 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR1 00:00
+[21:29:48.039] >> PREV DISC: CD3
+[21:29:48.059] [Audio-info] Closing audio file
+[21:29:48.187] >>> 40 -> 20 (ChangedCd)
+[21:29:48.263] [Audio] Async connecttoFS("/CD03/02. Mamma Mia.mp3") = OK
+[21:29:48.267] [Audio] ▶ Odtwarzam: /CD03/02. Mamma Mia.mp3 (rozpoczęto dekodowanie)
+[21:29:48.460] >>> 20 -> 00 (Playing!)
+[21:29:48.851] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=1 break=8/8 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR1 00:00
+[21:29:50.851] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR1 00:02
+[21:29:52.097] >> NEXT TRACK: CD3 TR2 (max=3)
+[21:29:52.121] [Audio-info] Closing audio file
+[21:29:52.174] >>> 40 -> 20 (ChangedCd)
+[21:29:52.326] [Audio] Async connecttoFS("/CD03/03. Gimme! Gimme! Gimme! (A Man After Midnight).mp3") = OK
+[21:29:52.332] [Audio] ▶ Odtwarzam: /CD03/03. Gimme! Gimme! Gimme! (A Man After Midnight).mp3 (rozpoczęto dekodowanie)
+[21:29:52.456] >>> 20 -> 00 (Playing!)
+[21:29:52.851] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=1 break=4/4 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR2 00:00
+[21:29:54.851] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR2 00:02
+[21:29:56.852] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR2 00:04
+[21:29:58.851] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR2 00:06
+[21:30:00.851] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR2 00:08
+[21:30:02.851] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR2 00:10
+[21:30:04.852] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR2 00:12
+[21:30:06.850] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR2 00:14
+[21:30:08.850] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR2 00:16
+[21:30:10.850] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR2 00:18
+[21:30:12.851] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR2 00:20
+[21:30:14.851] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=3/3 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR2 00:22
+[21:30:16.852] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR2 00:24
+[21:30:18.851] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR2 00:26
+[21:30:20.851] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR2 00:28
+[21:30:22.850] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR2 00:30
+[21:30:24.851] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR2 00:32
+[21:30:26.850] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR2 00:34
+[21:30:27.711] >> NEXT TRACK: CD3 TR3 (max=3)
+[21:30:27.729] [Audio-info] Closing audio file
+[21:30:27.802] >>> 40 -> 20 (ChangedCd)
+[21:30:27.932] [Audio] Async connecttoFS("/CD03/03. I Do, I Do, I Do, I Do, I Do.mp3") = OK
+[21:30:27.938] [Audio] ▶ Odtwarzam: /CD03/03. I Do, I Do, I Do, I Do, I Do.mp3 (rozpoczęto dekodowanie)
+[21:30:28.087] >>> 20 -> 00 (Playing!)
+[21:30:28.850] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=1 break=4/4 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR3 00:00
+[21:30:30.850] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR3 00:02
+[21:30:32.850] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR3 00:04
+[21:30:34.851] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR3 00:06
+[21:30:35.433] >> NEXT TRACK zablokowany: to ostatni utwor na plycie.
+[21:30:36.850] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=1 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR3 00:08
+[21:30:38.851] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 | alloc=1 state=0x00 CD3 TR3 00:10
+[21:30:39.500] [SEEKDBG] t=90653 FF  tad=0x11 op2=0x00 len=6
+[21:30:39.503] >> SCAN FF start: CD3 TR3 00:11
+[21:30:40.849] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=1 break=5/5 txt=0 seek=1 | alloc=1 state=0x21 CD3 TR3 00:16
+[21:30:42.850] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 | alloc=1 state=0x21 CD3 TR3 00:39
+[21:30:44.851] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 | alloc=1 state=0x21 CD3 TR3 01:18
+[21:30:46.850] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 | alloc=1 state=0x21 CD3 TR3 02:18
+[21:30:48.850] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 | alloc=1 state=0x21 CD3 TR3 03:11
+[21:30:49.676] >> SCAN stop (0x08 0x00): CD3 TR3 03:11
+[21:30:49.679] >>> 21 -> 00 (Seeking -> Playing!) pozycja 03:11
+[21:30:49.883] [Audio-info] Closing audio file
+[21:30:49.888] [Audio-info] End of file "03. I Do, I Do, I Do, I Do, I Do.mp3"
+[21:30:49.891] [Audio-eof] Koniec utworu: 03. I Do, I Do, I Do, I Do, I Do.mp3
+[21:30:49.893] >> AUTO-NEXT: CD4 TR1 (repeat=0, moved=1)
+[21:30:50.011] >>> 40 -> 20 (ChangedCd)
+[21:30:50.077] [Audio] Async connecttoFS("/CD04/04. Dancing Queen.mp3") = OK
+[21:30:50.082] [Audio] ▶ Odtwarzam: /CD04/04. Dancing Queen.mp3 (rozpoczęto dekodowanie)
+[21:30:50.295] >>> 20 -> 00 (Playing!)
+[21:30:50.851] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR1 00:00
+[21:30:52.851] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR1 00:02
+[21:30:54.850] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR1 00:04
+[21:30:56.850] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR1 00:06
+[21:30:58.629] [SEEKDBG] t=109783 FF  tad=0x11 op2=0x00 len=6
+[21:30:58.631] >> SCAN FF start: CD4 TR1 00:08
+[21:30:58.851] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=1 break=3/3 txt=0 seek=1 | alloc=1 state=0x21 CD4 TR1 00:08
+[21:31:00.851] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 | alloc=1 state=0x21 CD4 TR1 00:22
+[21:31:02.847] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 | alloc=1 state=0x21 CD4 TR1 00:46
+[21:31:03.511] >> SCAN stop (0x08 0x00): CD4 TR1 01:01
+[21:31:03.515] >>> 21 -> 00 (Seeking -> Playing!) pozycja 01:01
+[21:31:04.850] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR1 01:02
+[21:31:06.848] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR1 01:04
+[21:31:08.849] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR1 01:06
+[21:31:10.850] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR1 01:08
+[21:31:12.850] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR1 01:10
+[21:31:14.848] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR1 01:12
+[21:31:14.997] >> NEXT TRACK: CD4 TR2 (max=4)
+[21:31:15.007] [Audio-info] Closing audio file
+[21:31:15.073] >>> 40 -> 20 (ChangedCd)
+[21:31:15.214] [Audio] Async connecttoFS("/CD04/04. Honey, Honey.mp3") = OK
+[21:31:15.218] [Audio] ▶ Odtwarzam: /CD04/04. Honey, Honey.mp3 (rozpoczęto dekodowanie)
+[21:31:15.355] >>> 20 -> 00 (Playing!)
+[21:31:16.850] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=1 break=4/4 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR2 00:01
+[21:31:18.850] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR2 00:03
+[21:31:20.850] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR2 00:05
+[21:31:22.849] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD4 TR2 00:07

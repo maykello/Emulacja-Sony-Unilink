@@ -98,6 +98,17 @@ static unsigned long breakBackoffMs = BREAK_RETRY_MS;
 // Po udanym Hold czekamy na `01 15`; brak = zwieksz backoff przy kolejnym arm.
 static unsigned long breakOkAwaitingPollMs = 0;
 
+// --- CO RADIO MA TERAZ NA EKRANIE ---
+// Plyta / utwor / bajt statusu z OSTATNIEJ ramki, ktora faktycznie oddalismy na
+// grant `01 13`. Sluzy do dwoch rzeczy: wyboru miedzy pelnym 0xC0 a lekkim tikiem
+// 0x90 (sendFreshDisplay) oraz do wykrycia, ze ekran radia jest nieaktualny i
+// trzeba pilnie poprosic o magistrale (displayStale).
+static uint8_t s_lastShownDisc  = 0;
+static uint8_t s_lastShownTrack = 0;
+static uint8_t s_lastShownState = 0xFF;
+static uint8_t s_lastC0Min      = 0xFF;
+static uint8_t s_lastC0Sec      = 0xFF;
+
 // --- HARMONOGRAM RAMKI POZYCJI 0x90 (1 Hz) ---
 // Znacznik millis() ostatniej aktualizacji pozycji (0x90). Co sekundę,
 // w stanie Playing, zwiększamy licznik i enqueue'ujemy nową ramkę 0x90.
@@ -207,9 +218,24 @@ bool serviceTimeout(unsigned long now) {
 // Wariant "always-claim" (zglaszaj sie non stop w stanach aktywnych) probowal
 // utrzymac Request Polling w nieskonczonosc. CDX-M670 i tak konczyl go po
 // ~20 s, a poniewaz Slave Break byl wtedy nieskuteczny, polling juz nie wracal.
+// Czy radio ma na ekranie NIEAKTUALNA plyte / utwor / stan mechanizmu?
+//
+// Tak jest zawsze zaraz po komendzie uzytkownika (track +/-, disc +/-, wybor
+// 0xB0, start i koniec przewijania) oraz przy przejsciach LOAD -> Playing.
+// Uzytkownik patrzy wtedy na wyswietlacz i czeka, wiec magistrali nie oddajemy
+// i prosimy o nia od razu, zamiast czekac na zwykly rytm ~1 Hz. Bez tego numer
+// plyty i licznik pojawialy sie z kilkusekundowym poslizgiem (audio ruszalo
+// natychmiast, ekran dlugo pokazywal poprzednia plyte, a czas startowal od
+// 00:05 zamiast 00:00).
+static bool displayStale() {
+    return CdChanger::disk()  != s_lastShownDisc  ||
+           CdChanger::track() != s_lastShownTrack ||
+           statusByteFromState(CdChanger::mechState()) != s_lastShownState;
+}
+
 static bool wantsBus() {
     if (!deviceAllocated) return false;
-    if (!txQueue.isEmpty() || CdChanger::isDisplayDirty()) return true;
+    if (!txQueue.isEmpty() || CdChanger::isDisplayDirty() || displayStale()) return true;
     return requestSessionActive;
 }
 
@@ -219,7 +245,12 @@ static void openRequestSession() {
 }
 
 static void maybeCloseRequestSession() {
-    if (sessionGrants >= 1 && txQueue.isEmpty() && !CdChanger::isDisplayDirty()) {
+    // Sesji nie zamykamy, dopoki radio nie dostalo ramki EKRANU z biezacym
+    // stanem. Sama kolejka nie wystarczy: grant obsluzony ramka 0x9C/0xD5
+    // (zmiana plyty) nie odswieza wyswietlacza, wiec bez warunku displayStale
+    // nowy numer plyty czekalby na kolejny tik 1 Hz.
+    if (sessionGrants >= 1 && txQueue.isEmpty() &&
+        !CdChanger::isDisplayDirty() && !displayStale()) {
         requestSessionActive = false;
     }
 }
@@ -270,9 +301,14 @@ void serviceSlaveBreak(bool busPowered) {
         breakOkAwaitingPollMs = 0;
     }
 
-    if (UnilinkBus::breakRecoveryActive(nowMs)) return;
+    // Ekran radia rozjechany ze stanem zmieniarki => prosba PILNA: pomijamy
+    // okno po poprzednim Breaku i skracamy odstep do BREAK_URGENT_MIN_MS.
+    // Okno kolizyjne po odpytaniu obcego urzadzenia (suppressBreakUntil)
+    // zostaje — ono chroni cudza odpowiedz, nie nasz rytm.
+    const bool urgent = displayStale();
+    if (!urgent && UnilinkBus::breakRecoveryActive(nowMs)) return;
     if (nowMs < suppressBreakUntil) return;
-    if (nowMs - lastBreakTime < breakBackoffMs) return;
+    if (nowMs - lastBreakTime < (urgent ? BREAK_URGENT_MIN_MS : breakBackoffMs)) return;
     if (!wantsBus()) return;
 
     // Uzbrojenie Breaka jest teraz RUTYNA (raz na ~sekunde, gdy master spi), a
@@ -1056,16 +1092,12 @@ void handlePacket(const uint8_t* buf, int len) {
         CdChanger::seek(-SEEK_STEP_SEC);
     }
 
-    // ===== 6a-alt. STOP SCAN (18 10 08 00) — broadcast Key Off =====
-    // Model podstawowy zgodny z Kompendium §9: broadcast 0x08 0x00 (RAD=0x18)
-    // konczy przewijanie, zwraca do Playing (0x00) i enqueue nowej pozycji.
-    // Fallback: skanowanie zatrzaskowe (seekScanDir/serviceSeekRepeat) pozostaje
-    // jako [DEVIATION §9] — gdy radio nie wysyla 0x08. Fallback wykorzystuje
-    // SEEK_REPEAT_MS (400ms) i SEEK_SCAN_MAX_MS (30000ms) z Config.h.
-    // [HIGH-RISK] SEEK_REPEAT_MS i SEEK_SCAN_MAX_MS: zmiana tych stalych
-    // wpływa na zachowanie FF/REW. Aby przywrocic wczesniejsze strojenie:
-    // zwieksz SEEK_REPEAT_MS dla wolniejszego skoku, zmnisz SEEK_SCAN_MAX_MS
-    // dla szybszego zatrzymania skanu.
+    // ===== 6a-alt. KEY OFF (18 10 08 00) — PUSZCZENIE klawisza =====
+    // Kompendium §9. Dla FF/REW to koniec przewijania: razem z ramka 0x24/0x25
+    // (wcisniecie) wyznacza czas trzymania klawisza, z ktorego CdChanger liczy
+    // przebyty dystans (SCAN_RATE* w Config.h). Po zatrzymaniu skanu mechanizm
+    // wraca do Playing z osiagnieta pozycja.
+    // Bezpiecznik na wypadek zgubionego `08 00`: SEEK_SCAN_MAX_MS.
     else if (rad == ADDR_BROADCAST && tad == ADDR_MASTER && op1 == 0x08 && op2 == 0x00) {
         // Zatrzymaj skanowanie zatrzaskowe (jezeli aktywne). To ustawia dirty,
         // wiec po powrocie do Playing radio dostanie swiezy 0xC0 (budowany na grant).
@@ -1359,13 +1391,6 @@ static void buildLightTick0x90(uint8_t* frame) {
     frame[10] = 0x00;                                 // END
 }
 
-// Ostatnio nadana w pelnym statusie (0xC0) plyta/utwor — by wykryc zmiane i
-// odswiezyc pelny status (z numerem plyty) zamiast samego tiku 0x90.
-static uint8_t s_lastShownDisc  = 0;
-static uint8_t s_lastShownTrack = 0;
-static uint8_t s_lastC0Min      = 0xFF;
-static uint8_t s_lastC0Sec      = 0xFF;
-
 // Wybierz i NADAJ swiezy ekran na grant 0x13 przy pustej kolejce.
 // CDX-M670: czas na ekranie bierze z ramki 0xC0 (D7/D8). Podczas LOAD/ChangedCd
 // prawdziwa zmieniarka wysyla 0xFF (= "--.--"); po wejsciu w Playing MUSI
@@ -1401,6 +1426,19 @@ static void sendFreshDisplay() {
     uint8_t sec   = CdChanger::seconds();
     CdChanger::MechState ms = CdChanger::mechState();
 
+    // Czy od ostatniej oddanej ramki zmienila sie plyta albo utwor? Musimy to
+    // policzyc PRZED aktualizacja s_lastShown*, bo od tego zalezy wybor miedzy
+    // pelnym 0xC0 a lekkim tikiem 0x90.
+    const bool changed = (disc != s_lastShownDisc || track != s_lastShownTrack);
+
+    // Cokolwiek zaraz nadamy, radio bedzie mialo na ekranie TEN stan. Zapis musi
+    // objac KAZDA sciezke (takze 0x8E i lekki 0x90), bo na tych trzech polach
+    // opiera sie wykrywanie "ekran nieaktualny" (displayStale) — inaczej pilny
+    // Break powtarzalby sie w kolko po kazdej zmianie plyty.
+    s_lastShownDisc  = disc;
+    s_lastShownTrack = track;
+    s_lastShownState = statusByteFromState(ms);
+
     // Mechanizm stoi (Init/Idle/Ejecting) — nie ma czasu do pokazania.
     if (ms == CdChanger::MechState::Idle || ms == CdChanger::MechState::Init) {
         sendIdleScreen0x8E();
@@ -1409,7 +1447,6 @@ static void sendFreshDisplay() {
         return;
     }
 
-    bool changed = (disc != s_lastShownDisc || track != s_lastShownTrack);
     // [NAPRAWA SYSTEM RESET] Pelny 0xC0 (16 bajtow) TYLKO przy zmianie plyty/
     // utworu lub w stanach przejsciowych. W normalnym Playing wysylamy lekki
     // 0x90 tick (11 bajtow) — to wystarczy do interpolacji czasu na radiu.
@@ -1419,8 +1456,6 @@ static void sendFreshDisplay() {
     if (changed || ms == CdChanger::MechState::Seeking ||
         ms == CdChanger::MechState::LoadingTrack ||
         ms == CdChanger::MechState::ChangedCd) {
-        s_lastShownDisc  = disc;
-        s_lastShownTrack = track;
         if (ms == CdChanger::MechState::Playing || ms == CdChanger::MechState::Seeking) {
             s_lastC0Min = min;
             s_lastC0Sec = sec;

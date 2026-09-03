@@ -31,8 +31,9 @@ constexpr int TX_BUFFER_SIZE = 64;
 constexpr uint8_t MAX_TRACK_PER_DISC = 99;
 constexpr uint8_t MAX_DISC           = 10;
 
-// Krok przewijania (FF/REW) na pojedyncza komende 0x24/0x25 od radia.
-constexpr int SEEK_STEP_SEC = 5;
+// Kierunek przewijania przekazywany do CdChanger::seek (znak, nie dlugosc skoku
+// — od dlugosci jest teraz czas trzymania klawisza, patrz SCAN_RATE* nizej).
+constexpr int SEEK_STEP_SEC = 1;
 
 // --- STROJENIE CZASOW (kompatybilne z protokolem §1) ---
 // Okres bitu: ~20 µs (zgodnie z Kompendium §1). Zmiana TIMINGU BITU w przerwaniu
@@ -42,23 +43,30 @@ constexpr int SEEK_STEP_SEC = 5;
 // Slave Break musi trafic w faze HIGH fali idle (patrz sekcja BREAK_* nizej).
 // Zmiana tych wartosci wymaga ponownego strojenia pod konkretny radio.
 
-// --- SKANOWANIE PRZEWIJANIEM (FF/REW) ---
-// CDX-M670 wysyla DOKLADNIE JEDNA ramke 0x24/0x25 na nacisniecie (potwierdzone
-// logiem [SEEKDBG]: jedna ramka, len=6, brak powtorzen przy przytrzymaniu i brak
-// sygnalu zwolnienia). Nie da sie wiec wykryc "trzymania". Zamiast tego stosujemy
-// SKANOWANIE ZATRZASKOWE: nacisniecie FF/REW startuje skanowanie (co SEEK_REPEAT_MS
-// skok o SEEK_STEP_SEC na WYSWIETLACZU), ponowne nacisniecie tego samego
-// kierunku je zatrzymuje, a przeciwny — odwraca. Bezpiecznik SEEK_SCAN_MAX_MS
-// konczy skan, gdyby uzytkownik zapomnial go zatrzymac.
+// --- SKANOWANIE PRZEWIJANIEM (FF/REW) — CUE/REVIEW JAK W ORYGINALE ---
+// CDX-M670 wysyla JEDNA ramke 0x24/0x25 w chwili WCISNIECIA klawisza, a przy
+// jego PUSZCZENIU broadcast `18 10 08 00`. Czas trzymania odczytujemy wiec jako
+// roznice tych dwoch zdarzen (logi: FF o 21:07:00.3, `08 00` o 21:07:03.6 —
+// dokladnie tyle, ile trwalo przytrzymanie).
+//
+// Prawdziwa zmieniarka nie skacze po rownych porcjach — przewija PLYNNIE i
+// PRZYSPIESZA im dluzej trzymasz klawisz, dzieki czemu krotkie tapniecie pozwala
+// dojechac precyzyjnie, a dluzsze przytrzymanie szybko przelatuje utwor.
+// Modelujemy to trzema etapami predkosci (mnozniki czasu rzeczywistego):
+constexpr unsigned long SCAN_PHASE1_MS = 1500;   // etap 1: precyzyjny
+constexpr unsigned long SCAN_PHASE2_MS = 3000;   // etap 2: sredni (po etapie 1)
+constexpr uint32_t      SCAN_RATE1     = 4;      // x4  materialu na sekunde
+constexpr uint32_t      SCAN_RATE2     = 12;     // x12
+constexpr uint32_t      SCAN_RATE3     = 30;     // x30 (po SCAN_PHASE1+PHASE2)
 //
 // SEEK_AUDIO_MS: jak czesto robimy rzeczywisty setTimeOffset w dekoderze MP3.
+// To wlasnie daje slyszalne "cue": co tyle ms wskakujemy w nowe miejsce utworu.
 // Kazdy skok USB+MP3 generuje lawine audio_info (INVALID_FRAMEHEADER) na Core 0;
-// Serial jest wspoldzielony z Core 1 i przy SEEK_REPEAT_MS=400 blokowal petle
-// na tyle, ze gubilismy odpowiedzi na `01 15` — radio porzucalo arbitraz ekranu
-// (poll15=0, zamrozony czas). Ekran aktualizujemy co SEEK_REPEAT_MS; audio co
-// SEEK_AUDIO_MS (+ finalny sync przy stopie).
-constexpr unsigned long SEEK_REPEAT_MS   = 400;
+// Serial jest wspoldzielony z Core 1, wiec zbyt czeste skoki blokowaly petle na
+// tyle, ze gubilismy odpowiedzi na `01 15`. Ekran aktualizujemy plynnie (kazda
+// iteracja petli), audio co SEEK_AUDIO_MS (+ finalny sync przy stopie).
 constexpr unsigned long SEEK_AUDIO_MS    = 1200;
+// Bezpiecznik: gdyby `08 00` nie doszlo, konczymy skan sami.
 constexpr unsigned long SEEK_SCAN_MAX_MS = 30000;
 
 // --- ADRESY UNILINK ---
@@ -104,9 +112,17 @@ constexpr unsigned long POLL15_ALIVE_MS    = 3000;
 // decyzji "sesja umarla" (auto-recovery), tu potrzeba znacznie krotszego progu,
 // bo ekran odswiezamy ~1 Hz.
 constexpr unsigned long POLL15_QUIET_BREAK_MS = 250;
-constexpr unsigned long BREAK_RETRY_MS     = 1000;
-constexpr unsigned long BREAK_RECOVERY_MS  = 1500;
+// Odstep miedzy kolejnymi Breakami. Musi byc WYRAZNIE krotszy niz sekunda:
+// przy 1000 ms (i BREAK_RECOVERY_MS 1500) prosba o magistrale trafiala raz na
+// 1.5-3 s i ekran odswiezal sie z czestotliwoscia 0.3-0.5 Hz zamiast 1 Hz.
+constexpr unsigned long BREAK_RETRY_MS     = 250;
+constexpr unsigned long BREAK_RECOVERY_MS  = 400;
 constexpr unsigned long BREAK_BACKOFF_MAX_MS = 3000;
+// Odstep dla Breaka PILNEGO — gdy ekran radia pokazuje nieaktualna plyte/utwor/
+// stan (uzytkownik wlasnie nacisnal klawisz i czeka na reakcje). Wtedy zwykly
+// odstep i okno BREAK_RECOVERY_MS sa pomijane, bo kilkusekundowe opoznienie
+// numeru plyty czy licznika czasu jest natychmiast widoczne na wyswietlaczu.
+constexpr unsigned long BREAK_URGENT_MIN_MS = 60;
 
 // Po SYSTEM RESET radio robi discovery (preliminary + ANYONE? + appoint). Caly
 // cykl trwa ~2-3s. W tym czasie NIE WOLNO wyzwalac auto-recovery (`01 11`)
