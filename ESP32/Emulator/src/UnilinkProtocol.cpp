@@ -555,12 +555,32 @@ static void enqueueTextName(uint8_t cmd1, const char* rawName, uint8_t d8) {
         return;
     }
 
+    // Nazwa ZAWSZE schodzi jako co najmniej DWA segmenty: nieostatni (do 6
+    // znakow, slot6 = 0x02 "ciag dalszy") i ostatni (do 7 znakow, slot7 = 0x01
+    // "koniec nazwy"). Tak wygladaja WSZYSTKIE nazwy w zrzucie prawdziwej
+    // zmieniarki — "Kapita"+"nskie t", "Mary A"+"nn", "Staruszek"+" Swi" —
+    // wariantu jednoramkowego nie ma tam ani razu.
+    //
+    // Dawna petla ustawiala `last` juz na pierwszym segmencie, gdy nazwa miala
+    // do 7 znakow. Nazwa utworu (obcinana do 13 znakow) zawsze schodzila wiec
+    // poprawnie w dwoch ramkach i dzialala, a krotka nazwa PLYTY ("CD05",
+    // "ABBA") szla w JEDNEJ ramce od razu oznaczonej jako ostatnia — i radio
+    // jej nie skladalo, pokazujac puste pole "DISC".
     int offset = 0;
-    while (offset < total) {
-        const bool last = (total - offset) <= 7;
-        offset += buildTextSegment(sane, offset, last, slots);
+    offset += buildTextSegment(sane, offset, /*last=*/false, slots);
+    enqueueTextFrame(cmd1, slots, d8);
+
+    // Segmenty srodkowe — dopoki po tym segmencie zostanie wiecej, niz zmiesci
+    // sie w ramce ostatniej (7 znakow).
+    while ((total - offset) > 7) {
+        offset += buildTextSegment(sane, offset, /*last=*/false, slots);
         enqueueTextFrame(cmd1, slots, d8);
     }
+
+    // Segment ostatni. Dla nazw do 6 znakow jest pusty i pelni role czystego
+    // terminatora — dokladnie tak, jak ramka konczaca blok 0xD7.
+    buildTextSegment(sane, offset, /*last=*/true, slots);
+    enqueueTextFrame(cmd1, slots, d8);
 }
 
 // Numer plyty z pola D1 zadania `0x84 ...`. Radio koduje go albo jako F|nr
@@ -589,8 +609,9 @@ static void enqueueCdTextDiscName(uint8_t disc) {
 
 // Odpowiedz na `84 D7`: nazwa biezacego utworu (0xD2), a po niej nazwa plyty
 // (0xDA) — dokladnie taka sekwencje wysyla prawdziwa zmieniarka.
+// `force` = zadanie radia (musi dostac odpowiedz), false = odswiezenie wlasne.
 // Zwraca true, jesli blok faktycznie wszedl do kolejki.
-static bool enqueueCdTextD2Track(bool withEndMarker) {
+static bool enqueueCdTextD2Track(bool withEndMarker, bool force) {
     const uint8_t disc  = CdChanger::disk();
     const uint8_t track = CdChanger::track();
 
@@ -599,7 +620,15 @@ static bool enqueueCdTextD2Track(bool withEndMarker) {
     // zadanie radia, gdy w kolejce stala akurat ramka statusu albo czasu — a
     // przy jednej ramce na grant zdarzalo sie to nagminnie i zadanie przepadalo
     // bez ponowienia (radio dopytywalo `84 D2` co ~15-30 s i milczelismy).
-    if (txQueue.countPriority(Tx::PRIO_CD_TEXT) > 0) return false;
+    if (txQueue.countPriority(Tx::PRIO_CD_TEXT) > 0) {
+        // Odswiezenie okresowe moze poczekac na kolejna iteracje petli.
+        if (!force) return false;
+        // Zadania radia odrzucic NIE WOLNO. Po skroceniu CD_TEXT_REPEAT_MS do
+        // 2 s w kolejce niemal zawsze stoi jakis blok nazw, a ten z odswiezenia
+        // NIE MA ramki koncowej 0xD7 — czyli dokladnie tego, na co radio czeka,
+        // gdy przyslalo `84 D7`. Zastepujemy go swiezym, poprawnie zakonczonym.
+        txQueue.dropPriority(Tx::PRIO_CD_TEXT);
+    }
 
     char raw[64];
     audioGetTrackName(disc, track, raw, sizeof(raw));
@@ -916,7 +945,7 @@ void serviceCdText(unsigned long now) {
     // iteracji petli. Nie ma tu warunku na CALA kolejke: nazwy musza wchodzic
     // takze obok ramki statusu, inaczej przy jednej ramce na grant nigdy nie
     // trafialyby w okno "kolejka pusta".
-    if (!enqueueCdTextD2Track(/*withEndMarker=*/false)) return;
+    if (!enqueueCdTextD2Track(/*withEndMarker=*/false, /*force=*/false)) return;
     s_textSentDisc  = disc;
     s_textSentTrack = track;
     s_textSentMs    = now;
@@ -929,8 +958,11 @@ void serviceCdText(unsigned long now) {
     if (changed || s_textFlagState == 0) s_textFlagState = 1;
 
     char name[64];
+    char discName[64];
     audioGetTrackName(disc, track, name, sizeof(name));
-    Serial.printf(">> CD-TEXT wyslany: CD%d TR%d \"%s\"\n", disc, track, name);
+    audioGetDiscName(disc, discName, sizeof(discName));
+    Serial.printf(">> CD-TEXT wyslany: CD%d TR%d plyta=\"%s\" utwor=\"%s\"\n",
+                  disc, track, discName, name);
 }
 
 // ============================================================
@@ -1344,7 +1376,7 @@ void handlePacket(const uint8_t* buf, int len) {
     // [WARIANT_PROTOKOLU §10.3] Wczesniej obslugiwalismy tylko 0xD9/0xDD, przez co
     // CDX-M670 nie dostawal odpowiedzi i CD-TEXT sie nie pokazywal.
     else if (rad == myAddr && op1 == 0x84 && op2 == 0xD7) {
-        enqueueCdTextD2Track(/*withEndMarker=*/true);
+        enqueueCdTextD2Track(/*withEndMarker=*/true, /*force=*/true);
     }
 
     // ===== 8c. Zadanie CD-TEXT — radio nazywa ZADANA ODPOWIEDZ (84 D2 / 84 DA) =====
@@ -1360,7 +1392,7 @@ void handlePacket(const uint8_t* buf, int len) {
     // Ramke zamykajaca 0xD7 doklada TYLKO sciezka `84 D7`: prawdziwa zmieniarka
     // we wszystkich pozostalych przypadkach konczy blok na nazwie plyty.
     else if (rad == myAddr && op1 == 0x84 && op2 == 0xD2) {
-        enqueueCdTextD2Track(/*withEndMarker=*/false);
+        enqueueCdTextD2Track(/*withEndMarker=*/false, /*force=*/true);
     }
     else if (rad == myAddr && op1 == 0x84 && op2 == 0xDA) {
         enqueueCdTextDiscName(discFromRequest(buf, len));

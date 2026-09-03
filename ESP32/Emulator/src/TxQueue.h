@@ -94,6 +94,22 @@ public:
         return n;
     }
 
+    // Usun z kolejki wszystkie ramki o DANYM priorytecie. Potrzebne, gdy radio
+    // jawnie prosi o blok nazw: zalegly blok niesie te same nazwy, ale moze nie
+    // miec ramki koncowej, ktorej radio wlasnie czeka — lepiej zastapic go
+    // swiezym kompletem, niz odrzucic zadanie. Zwraca liczbe usunietych ramek.
+    size_t dropPriority(uint8_t priority) {
+        size_t n = 0;
+        for (size_t i = 0; i < TX_QUEUE_CAPACITY; ++i) {
+            if (slots_[i].used && slots_[i].item.priority == priority) {
+                slots_[i].used = false;
+                count_--;
+                n++;
+            }
+        }
+        return n;
+    }
+
     size_t size()    const { return count_; }
     size_t capacity() const { return TX_QUEUE_CAPACITY; }
 
