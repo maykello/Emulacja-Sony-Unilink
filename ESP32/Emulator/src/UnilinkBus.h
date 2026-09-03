@@ -64,6 +64,11 @@ int readFrame(uint8_t* out, int maxLen);
 // Wyzeruj bufor odbiorczy (np. gdy BUS=0 — bajty z tej fazy sa "obce").
 void resetRx();
 
+// Pobierz i wyzeruj liczniki bledow odbioru (RESYNC / RXFLUSH). Kazdy z nich to
+// chwila slepoty na magistrale; zgubiony w niej Time Poll `01 12` konczy sie
+// SYSTEM RESETem radia, wiec raportujemy je w [STAT].
+void takeRxErrorCounts(uint16_t& resync, uint16_t& flush);
+
 // --- SLAVE BREAK ---
 // Sciagniecie linii DATA w dol, by zasygnalizowac masterowi chec nadawania poza
 // kolejnoscia. Musi trafic w faze HIGH fali idle (8 ms LOW / 8 ms HIGH), ktora

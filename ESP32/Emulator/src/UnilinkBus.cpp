@@ -25,6 +25,14 @@ static volatile int           rxBitIndex     = 0;
 static volatile int           rxIndex        = 0;
 static volatile unsigned long lastClockTime  = 0;
 
+// --- LICZNIKI BLEDOW ODBIORU (diagnostyka w [STAT]) ---
+// RESYNC = ramka nie zgodzila sie na Parity1 i szukamy poczatku od nowa.
+// RXFLUSH = po ciszy w buforze zostal niekompletny zlepek. Oba znacza, ze
+// przez chwile bylismy sllepi na magistrale — a zgubiony Time Poll `01 12`
+// konczy sie SYSTEM RESETem radia, wiec warto miec je na oku.
+static uint16_t rxResyncCount = 0;
+static uint16_t rxFlushCount  = 0;
+
 // --- STAN NADAWANIA (TX) ---
 static volatile bool    isAnswering = false;
 static volatile uint8_t txBuffer[TX_BUFFER_SIZE];
@@ -94,6 +102,26 @@ static void IRAM_ATTR onClockEvent() {
         if (gapUs > BYTE_RESYNC_GAP_US) {
             rxBitIndex = 0;
             rxIncomingByte = 0;
+
+            // Zaczyna sie NOWA ramka. Cokolwiek zostalo w buforze, a nie tworzy
+            // kompletnej ramki, jest smieciem: albo ogonem po kolizji, albo
+            // bajtami zebranymi z fali idle (master taktuje ja miedzy ramkami).
+            // Bez tego pierwsza ramka po dluzszej ciszy rozjezdzala sie na
+            // parzystosci — a to wlasnie ona ginela przed kazdym SYSTEM RESET
+            // (czarna skrzynka: cisza ~200-500 ms, RESYNC, RXFLUSH, reset).
+            // Kompletnej ramki NIE ruszamy: petla glowna moze jej jeszcze nie
+            // zdazyc odczytac. Dlugosc liczymy tu recznie (proste porownania),
+            // bo ISR nie powinien wolac kodu spoza IRAM.
+            if (rxIndex > 0) {
+                int expected = 0;
+                if (rxIndex >= 3) {
+                    const uint8_t cmd1 = rxBuffer[2];
+                    expected = (cmd1 < 0x80) ? 6 : ((cmd1 < 0xC0) ? 11 : 16);
+                }
+                if (rxIndex < expected || expected == 0) {
+                    rxIndex = 0;
+                }
+            }
         }
 
         bool bitVal = digitalRead(PIN_DATA);
@@ -116,7 +144,10 @@ static void IRAM_ATTR onClockEvent() {
             // Pierwszym bajtem ramki jest RAD, ktory ZAWSZE ma niezerowy gorny
             // nibbel (0x10 master, 0x18 broadcast, 0x3X zmieniarki, 0x70 ekran,
             // 0x9X...). Bajt < 0x10 na pozycji 0 to wiec wypelniacz — gubimy go.
-            const bool plausibleAddress = (rxIncomingByte >= 0x10);
+            // 0xFF odrzucamy z tego samego powodu: taki bajt powstaje, gdy
+            // przerwanie probkuje FALE IDLE w fazie poziomu dominujacego (osiem
+            // jedynek pod rzad). Zaden RAD w protokole nie ma tej wartosci.
+            const bool plausibleAddress = (rxIncomingByte >= 0x10 && rxIncomingByte != 0xFF);
             if (rxIndex != 0 || plausibleAddress) {
                 if (rxIndex < RX_BUFFER_SIZE) {
                     rxBuffer[rxIndex++] = rxIncomingByte;
@@ -251,6 +282,7 @@ int readFrame(uint8_t* out, int maxLen) {
             for (int i = 0; i < remaining; i++) rxBuffer[i] = rxBuffer[drop + i];
             rxIndex = remaining;
             interrupts();
+            rxResyncCount++;
             Diagnostics::recordNote("RESYNC");
             return 0;
         }
@@ -289,12 +321,20 @@ int readFrame(uint8_t* out, int maxLen) {
         rxBitIndex = 0;
         rxIncomingByte = 0;
         interrupts();
+        rxFlushCount++;
         Diagnostics::recordNote("RXFLUSH");
         return 0;
     }
 
     interrupts();
     return 0;
+}
+
+void takeRxErrorCounts(uint16_t& resync, uint16_t& flush) {
+    resync = rxResyncCount;
+    flush  = rxFlushCount;
+    rxResyncCount = 0;
+    rxFlushCount  = 0;
 }
 
 void resetRx() {
@@ -373,24 +413,32 @@ inline void enterHold(unsigned long now) {
     s_breakMark  = now;
 }
 
-inline void finishHoldSuccess() {
-    pinMode(PIN_DATA, INPUT);
-    s_breakState = BreakState::Idle;
-    s_breakCompleted++;
-    s_breakDoneMs = millis();
+// Po zwolnieniu linii czyscimy CALY bufor RX, nie tylko licznik bitow. Przez
+// czas Holdu sami trzymalismy DATA na poziomie dominujacym, a przerwanie zegara
+// probkowalo ja jak zwykle — kazde zbocze, ktore master zdazyl wystawic, wpadlo
+// do rxBuffer jako nasz wlasny szum. Zostawiony tam ogon rozjezdzal parsowanie
+// nastepnej ramki (RESYNC + RXFLUSH), a w najgorszym razie zjadal Time Poll
+// `01 12` — czyli dokladnie to, po czym radio robi SYSTEM RESET.
+inline void resetRxAfterBreak() {
     noInterrupts();
+    rxIndex = 0;
     rxBitIndex = 0;
     rxIncomingByte = 0;
     interrupts();
 }
 
+inline void finishHoldSuccess() {
+    pinMode(PIN_DATA, INPUT);
+    s_breakState = BreakState::Idle;
+    s_breakCompleted++;
+    s_breakDoneMs = millis();
+    resetRxAfterBreak();
+}
+
 inline void finishHoldAbort() {
     pinMode(PIN_DATA, INPUT);
     s_breakState = BreakState::Idle;
-    noInterrupts();
-    rxBitIndex = 0;
-    rxIncomingByte = 0;
-    interrupts();
+    resetRxAfterBreak();
 }
 
 } // namespace
@@ -412,6 +460,7 @@ bool slaveBreakPending() {
 void cancelSlaveBreak() {
     if (s_breakState == BreakState::Hold) {
         pinMode(PIN_DATA, INPUT);
+        resetRxAfterBreak();
     }
     s_breakState = BreakState::Idle;
 }

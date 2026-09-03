@@ -1,0 +1,414 @@
+[22:01:44.416] Obsluga: MEX-BT3800u + CDX-M670 + PCM5102A DAC + USB
+[22:01:44.418] Oczekuje na radio (Stan C0 - Init)...
+[22:01:44.420] [NVS] Wczytano ostatni utwor: CD5 TR1
+[22:01:44.422] [Audio] Inicjalizacja...
+[22:01:44.425] [UsbDrive] Inicjalizacja USB Host...
+[22:01:44.428] [UsbDrive] USB Host gotowy. Podłącz pendrive'a do portu USB-OTG...
+[22:01:44.432] [UsbDrive] Nowe urządzenie USB (addr=1)
+[22:01:44.434] [UsbDrive] Konfiguruję urządzenie MSC (addr=1)...
+[22:01:44.436] [UsbDrive] VID=0x0951 PID=0x1653
+[22:01:44.438] [UsbDrive] Znaleziono interfejs MSC #0
+[22:01:44.440] [UsbDrive] Bulk IN:  0x81 (MPS=64)
+[22:01:44.443] [UsbDrive] Bulk OUT: 0x02 (MPS=64)
+[22:01:44.445] [UsbDrive] Czekam na gotowość urządzenia...
+[22:01:44.448] [UsbDrive] Pendrive: Kingston DT 100 G2
+[22:01:44.450] [UsbDrive] Dysk: 15644912 sektorów × 512 B = 7639 MB
+[22:01:44.453] [UsbDrive] Sektor 0 to GPT Protective MBR — parsowanie GPT...
+[22:01:44.457] [UsbDrive] GPT: wpisy od LBA 2, 128 wpisów × 128 B
+[22:01:44.461] [UsbDrive]   GPT wpis 0: start=2048 end=15644671 (Microsoft Basic Data)
+[22:01:44.464] [UsbDrive] ✓ Używam partycji GPT na sektorze 2048
+[22:01:44.468] [UsbDrive] ✓ System plików zamontowany pod /usb
+[22:01:44.470] [Audio] setPinout(BCK=7, LRCK=15, DIN=13) = OK
+[22:01:44.472] [Audio] Task dekodowania uruchomiony na rdzeniu 0
+[22:01:44.474] [Audio] CD01: 1 track(ów)
+[22:01:44.477] [Audio]   TR01: 01- Hasta Manana.mp3
+[22:01:44.478] [Audio] CD02: 2 track(ów)
+[22:01:44.480] [Audio]   TR01: 01. Waterloo.mp3
+[22:01:44.481] [Audio]   TR02: 02. Head Over Heels.mp3
+[22:01:44.483] [Audio] CD03: 3 track(ów)
+[22:01:44.485] [Audio]   TR01: 02. Mamma Mia.mp3
+[22:01:44.489] [Audio]   TR02: 03. Gimme! Gimme! Gimme! (A Man After Midnight).mp3
+[22:01:44.492] [Audio]   TR03: 03. I Do, I Do, I Do, I Do, I Do.mp3
+[22:01:44.493] [Audio] CD04: 4 track(ów)
+[22:01:44.496] [Audio]   TR01: 04. Dancing Queen.mp3
+[22:01:44.498] [Audio]   TR02: 04. Honey, Honey.mp3
+[22:01:44.500] [Audio]   TR03: 05. Take A Chance On Me.mp3
+[22:01:44.502] [Audio]   TR04: 06. Knowing Me, Knowing You.mp3
+[22:01:44.504] [Audio] CD05: 5 track(ów)
+[22:01:44.506] [Audio]   TR01: 06. Ring Ring.mp3
+[22:01:44.508] [Audio]   TR02: 07 Wrap Your Arms Around Me.mp3
+[22:01:44.511] [Audio]   TR03: 07. Eagle.mp3
+[22:01:44.513] [Audio]   TR04: 07. The Winner Takes It All.mp3
+[22:01:44.515] [Audio]   TR05: 08- Nina, pretty balerina.mp3
+[22:01:44.517] [Audio] CD06: 1 track(ów)
+[22:01:44.520] [Audio]   TR01: 03. I Do, I Do, I Do, I Do, I Do.mp3
+[22:01:44.522] [Audio] CD07: 1 track(ów)
+[22:01:44.524] [Audio]   TR01: 07 Wrap Your Arms Around Me.mp3
+[22:01:44.525] [Audio] CD08: 1 track(ów)
+[22:01:44.527] [Audio]   TR01: 07. Eagle.mp3
+[22:01:44.529] [Audio] CD09: 1 track(ów)
+[22:01:44.531] [Audio]   TR01: 07. The Winner Takes It All.mp3
+[22:01:44.532] [Audio] CD10: 1 track(ów)
+[22:01:44.536] [Audio]   TR01: 08- Nina, pretty balerina.mp3
+[22:01:44.540] [Audio] Inicjalizacja zakończona — pendrive gotowy.
+[22:01:44.541] [Audio] Gotowy do odtwarzania.
+[22:01:44.544] >>> Wykryto USB. Wznawiam zapamietana plyte: CD5 TR1
+[22:01:44.545] === BUS_ON = 1 ===
+[22:01:44.548] [Audio] Głośność: 18/21 (zlecone)
+[22:01:44.549] === BUS_ON = 0 ===
+[22:01:44.552] === SEN: magistrala wylaczona — zatrzymuje audio ===
+[22:01:44.553] [Audio] ⏹ Zatrzymano (zlecone).
+[22:01:44.555] === BUS_ON = 1 ===
+[22:01:44.557] [Audio] Głośność: 18/21 (zlecone)
+[22:01:44.638] === BUS_ON = 0 ===
+[22:01:44.641] === SEN: magistrala wylaczona — zatrzymuje audio ===
+[22:01:44.643] [Audio] ⏹ Zatrzymano (zlecone).
+[22:01:44.837] === BUS_ON = 1 ===
+[22:01:44.840] [Audio] Głośność: 18/21 (zlecone)
+[22:01:45.412] ===== CZARNA SKRZYNKA (RADIO SYSTEM RESET 18 10 01 00) — ostatnie 1 zdarzen =====
+[22:01:45.415] [-    0ms] RX    18 10 01 00 29 00
+[22:01:45.418] ======================================================
+[22:01:45.420] >> Radio system reset (#1) (juz bylem nieprzydzielony)
+[22:01:45.476] == Wykryto CDX-M670 (widziano 3B 10 02 11) ==
+[22:01:45.553] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 48ms po DB)
+[22:01:45.684] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 178ms po DB)
+[22:01:45.732] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#3, 227ms po DB)
+[22:01:45.778] >> Odpowiadam na ANYONE? device info 0x8C
+[22:01:45.807] >> Adres przydzielony: 0x31 (op2=0x14)! deviceAllocated=true
+[22:01:46.689] >> [Audio Bus] Radio sygnalizuje audio ON (87 2B) — tylko log
+[22:01:46.711] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B) — tylko log
+[22:01:48.377] [STAT] poll15=31 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x80 CD5 TR1 00:00
+[22:01:49.375] >>> C0 -> 80 (Idle)
+[22:01:50.378] [STAT] poll15=37 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x80 CD5 TR1 00:00
+[22:01:51.135] >> PLAY command received!
+[22:01:51.137] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[22:01:51.229] [Audio] Async connecttoFS("/CD05/06. Ring Ring.mp3") = OK
+[22:01:51.234] [Audio] ▶ Odtwarzam: /CD05/06. Ring Ring.mp3 (rozpoczęto dekodowanie)
+[22:01:51.474] >>> 40 -> 00 (Playing!)
+[22:01:52.378] [STAT] poll15=24 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=2/1 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:00
+[22:01:54.377] [STAT] poll15=30 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:02
+[22:01:56.377] [STAT] poll15=23 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:04
+[22:01:58.378] [STAT] poll15=39 disp13(my)=3 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=1 seek=0 | alloc=1 state=0x00 CD5 TR1 00:06
+[22:02:00.376] [STAT] poll15=38 disp13(my)=6 disp13(3B)=1 ping12(my)=1 btn=0 break=0/0 txt=1 seek=0 | alloc=1 state=0x00 CD5 TR1 00:08
+[22:02:01.135] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[22:02:02.378] [STAT] poll15=21 disp13(my)=8 disp13(3B)=2 ping12(my)=1 btn=0 break=0/0 txt=2 seek=0 | alloc=1 state=0x00 CD5 TR1 00:10
+[22:02:04.378] [STAT] poll15=44 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:12
+[22:02:06.377] [STAT] poll15=40 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:14
+[22:02:08.377] [STAT] poll15=33 disp13(my)=2 disp13(3B)=1 ping12(my)=1 btn=0 break=1/1 txt=1 seek=0 | alloc=1 state=0x00 CD5 TR1 00:16
+[22:02:10.377] [STAT] poll15=40 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=1 seek=0 | alloc=1 state=0x00 CD5 TR1 00:18
+[22:02:11.135] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[22:02:12.377] [STAT] poll15=36 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:20
+[22:02:14.234] ===== CZARNA SKRZYNKA (RADIO SYSTEM RESET 18 10 01 00) — ostatnie 128 zdarzen =====
+[22:02:14.235] [- 3226ms] RXFLUSH
+[22:02:14.238] [- 3220ms] RX    10 71 00 00 81 00
+[22:02:14.241] [- 3193ms] RX    18 10 01 15 3E 00
+[22:02:14.244] [- 3193ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.246] [- 3150ms] RX    18 10 01 15 3E 00
+[22:02:14.249] [- 3150ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.251] [- 3107ms] RX    18 10 01 15 3E 00
+[22:02:14.253] [- 3107ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.255] [- 3064ms] RX    18 10 01 15 3E 00
+[22:02:14.258] [- 3064ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[22:02:14.261] [- 3037ms] RX    31 10 01 13 55 00
+[22:02:14.264] [- 3037ms] TX    70 31 D2 30 A3 36 2E 20 52 69 02 00 F1 10 E5 00
+[22:02:14.265] [- 2989ms] RX    18 10 01 15 3E 00
+[22:02:14.269] [- 2989ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[22:02:14.270] [- 2962ms] RX    31 10 01 13 55 00
+[22:02:14.275] [- 2962ms] TX    70 31 D2 6E E1 67 20 52 69 6E 67 01 F1 10 FA 00
+[22:02:14.276] [- 2914ms] RX    18 10 01 15 3E 00
+[22:02:14.279] [- 2914ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[22:02:14.281] [- 2887ms] RX    31 10 01 13 55 00
+[22:02:14.285] [- 2887ms] TX    70 31 DA 43 BE 44 30 35 00 00 00 01 05 10 7D 00
+[22:02:14.288] [- 2839ms] RX    18 10 01 15 3E 00
+[22:02:14.290] [- 2839ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.292] [- 2796ms] RX    18 10 01 15 3E 00
+[22:02:14.295] [- 2796ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.297] [- 2754ms] RX    18 10 01 15 3E 00
+[22:02:14.300] [- 2754ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[22:02:14.302] [- 2727ms] RX    31 10 01 13 55 00
+[22:02:14.305] [- 2727ms] TX    70 31 C0 00 61 00 00 00 00 30 F1 F0 20 5B ED 00
+[22:02:14.307] [- 2679ms] RX    18 10 01 15 3E 00
+[22:02:14.310] [- 2679ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.313] [- 2636ms] RX    18 10 01 15 3E 00
+[22:02:14.315] [- 2636ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.317] [- 2609ms] RX    31 10 01 12 54 00
+[22:02:14.320] [- 2609ms] TX    10 31 00 00 41 00
+[22:02:14.321] [- 2571ms] RX    18 10 01 15 3E 00
+[22:02:14.324] [- 2571ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.327] [- 2528ms] RX    18 10 01 15 3E 00
+[22:02:14.330] [- 2528ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.332] [- 2485ms] RX    18 10 01 15 3E 00
+[22:02:14.334] [- 2485ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.337] [- 2442ms] RX    18 10 01 15 3E 00
+[22:02:14.340] [- 2442ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.342] [- 2399ms] RX    18 10 01 15 3E 00
+[22:02:14.344] [- 2399ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.347] [- 2356ms] RX    18 10 01 15 3E 00
+[22:02:14.350] [- 2356ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.352] [- 2313ms] RX    18 10 01 15 3E 00
+[22:02:14.354] [- 2313ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.356] [- 2270ms] RX    18 10 01 15 3E 00
+[22:02:14.359] [- 2270ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.360] [- 2227ms] RX    18 10 01 15 3E 00
+[22:02:14.363] [- 2227ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.366] [- 2185ms] RX    18 10 01 15 3E 00
+[22:02:14.369] [- 2184ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.370] [- 1982ms] RESYNC
+[22:02:14.370] [- 1977ms] RXFLUSH
+[22:02:14.373] [- 1949ms] RX    18 10 01 15 3E 00
+[22:02:14.376] [- 1949ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.378] [- 1906ms] RX    18 10 01 15 3E 00
+[22:02:14.381] [- 1906ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.383] [- 1863ms] RX    18 10 01 15 3E 00
+[22:02:14.385] [- 1863ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.387] [- 1820ms] RX    18 10 01 15 3E 00
+[22:02:14.389] [- 1820ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.391] [- 1777ms] RX    18 10 01 15 3E 00
+[22:02:14.395] [- 1777ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.396] [- 1734ms] RX    18 10 01 15 3E 00
+[22:02:14.400] [- 1734ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[22:02:14.402] [- 1707ms] RX    31 10 01 13 55 00
+[22:02:14.404] [- 1707ms] TX    70 31 90 30 61 F1 F0 21 5B BE 00
+[22:02:14.406] [- 1664ms] RX    18 10 01 15 3E 00
+[22:02:14.409] [- 1664ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.411] [- 1622ms] RX    18 10 01 15 3E 00
+[22:02:14.414] [- 1621ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.417] [- 1579ms] RX    18 10 01 15 3E 00
+[22:02:14.420] [- 1579ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.421] [- 1536ms] RX    18 10 01 15 3E 00
+[22:02:14.425] [- 1536ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.427] [- 1493ms] RX    18 10 01 15 3E 00
+[22:02:14.430] [- 1493ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.432] [- 1450ms] RX    18 10 01 15 3E 00
+[22:02:14.435] [- 1450ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.437] [- 1407ms] RX    18 10 01 15 3E 00
+[22:02:14.439] [- 1407ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.442] [- 1364ms] RX    18 10 01 15 3E 00
+[22:02:14.445] [- 1364ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.447] [- 1337ms] RX    3B 10 01 12 5E 00
+[22:02:14.449] [- 1326ms] RX    10 3B 00 C0 0B 00
+[22:02:14.450] [- 1299ms] RX    18 10 01 15 3E 00
+[22:02:14.453] [- 1299ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.455] [- 1256ms] RX    18 10 01 15 3E 00
+[22:02:14.458] [- 1256ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.460] [- 1213ms] RX    18 10 01 15 3E 00
+[22:02:14.463] [- 1213ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.465] [- 1170ms] RX    18 10 01 15 3E 00
+[22:02:14.468] [- 1170ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.470] [- 1127ms] RX    18 10 01 15 3E 00
+[22:02:14.473] [- 1127ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.475] [- 1084ms] RX    18 10 01 15 3E 00
+[22:02:14.477] [- 1084ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.479] [- 1042ms] RX    18 10 01 15 3E 00
+[22:02:14.483] [- 1041ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.484] [-  999ms] RX    18 10 01 15 3E 00
+[22:02:14.488] [-  999ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.490] [-  956ms] RX    18 10 01 15 3E 00
+[22:02:14.493] [-  956ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.494] [-  721ms] RESYNC
+[22:02:14.495] [-  716ms] RXFLUSH
+[22:02:14.497] [-  704ms] RX    71 14 01 12 98 00
+[22:02:14.498] [-  685ms] BREAK
+[22:02:14.500] [-  671ms] RX    18 10 01 15 3E 00
+[22:02:14.504] [-  671ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[22:02:14.505] [-  644ms] RX    31 10 01 13 55 00
+[22:02:14.509] [-  644ms] TX    70 31 90 30 61 F1 F0 22 5A BE 00
+[22:02:14.511] [-  601ms] RX    18 10 01 15 3E 00
+[22:02:14.515] [-  601ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.516] [-  558ms] RX    18 10 01 15 3E 00
+[22:02:14.520] [-  558ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.522] [-  515ms] RX    18 10 01 15 3E 00
+[22:02:14.524] [-  515ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.526] [-  473ms] RX    18 10 01 15 3E 00
+[22:02:14.529] [-  472ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.531] [-  430ms] RX    18 10 01 15 3E 00
+[22:02:14.533] [-  430ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:14.535] [-   83ms] RESYNC
+[22:02:14.536] [-   78ms] RXFLUSH
+[22:02:14.538] [-   66ms] RX    71 14 01 12 98 00
+[22:02:14.541] [-    0ms] RX    18 10 01 00 29 00
+[22:02:14.543] ======================================================
+[22:02:14.547] >> Radio system reset (#2)! Reset deviceAllocated.
+[22:02:14.549] >> resetToAllocated: audio gra, zachowuje Playing 00:22
+[22:02:14.553] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 48ms po DB)
+[22:02:14.559] [STAT] poll15=26 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=1/1 txt=0 seek=0 | alloc=0 state=0x00 CD5 TR1 00:22
+[22:02:14.563] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 178ms po DB)
+[22:02:14.567] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#3, 227ms po DB)
+[22:02:14.600] >> Odpowiadam na ANYONE? device info 0x8C
+[22:02:14.628] >> Adres przydzielony: 0x31 (op2=0x14)! deviceAllocated=true
+[22:02:15.510] >> [Audio Bus] Radio sygnalizuje audio ON (87 AB) — tylko log
+[22:02:15.553] >> [Audio Bus] Radio sygnalizuje audio ON (87 EB) — tylko log
+[22:02:15.668] >> PLAY (wznowienie bez restartu, np. po resecie radia: 00:24)
+[22:02:15.671] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[22:02:16.376] [STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:24
+[22:02:18.377] [STAT] poll15=39 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:26
+[22:02:20.376] [STAT] poll15=44 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:28
+[22:02:22.376] [STAT] poll15=44 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:30
+[22:02:24.376] [STAT] poll15=38 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:32
+[22:02:25.844] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[22:02:26.377] [STAT] poll15=27 disp13(my)=8 disp13(3B)=1 ping12(my)=1 btn=0 break=1/1 txt=1 seek=0 | alloc=1 state=0x00 CD5 TR1 00:34
+[22:02:28.375] [STAT] poll15=39 disp13(my)=4 disp13(3B)=1 ping12(my)=1 btn=0 break=0/0 txt=1 seek=0 | alloc=1 state=0x00 CD5 TR1 00:36
+[22:02:30.377] [STAT] poll15=29 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=2 seek=0 | alloc=1 state=0x00 CD5 TR1 00:38
+[22:02:32.376] [STAT] poll15=4 disp13(my)=3 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:40
+[22:02:34.376] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:42
+[22:02:35.842] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[22:02:36.376] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:44
+[22:02:38.377] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:46
+[22:02:40.377] [STAT] poll15=32 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:48
+[22:02:42.378] [STAT] poll15=25 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:50
+[22:02:42.779] ===== CZARNA SKRZYNKA (RADIO SYSTEM RESET 18 10 01 00) — ostatnie 128 zdarzen =====
+[22:02:42.781] [- 3310ms] RX    18 10 01 15 3E 00
+[22:02:42.785] [- 3310ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.787] [- 3267ms] RX    18 10 01 15 3E 00
+[22:02:42.789] [- 3267ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.791] [- 3240ms] RX    71 10 01 12 94 00
+[22:02:42.793] [- 3229ms] RX    10 71 00 00 81 00
+[22:02:42.795] [- 3202ms] RX    18 10 01 15 3E 00
+[22:02:42.798] [- 3202ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.800] [- 3159ms] RX    18 10 01 15 3E 00
+[22:02:42.803] [- 3159ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.805] [- 3116ms] RX    18 10 01 15 3E 00
+[22:02:42.808] [- 3116ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.810] [- 3069ms] RX    18 11 80 19 C2 0A 00 00 00 CC 00
+[22:02:42.814] [- 3047ms] RX    18 10 81 00 A9 00 00 01 01 AB 00
+[22:02:42.815] [- 3030ms] RX    18 10 08 00 30 00
+[22:02:42.817] [- 3013ms] RX    18 10 01 15 3E 00
+[22:02:42.821] [- 3013ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[22:02:42.823] [- 2986ms] RX    31 10 01 13 55 00
+[22:02:42.825] [- 2986ms] TX    70 31 90 30 61 F1 F0 48 5A E4 00
+[22:02:42.827] [- 2959ms] RESYNC
+[22:02:42.828] [- 2954ms] RXFLUSH
+[22:02:42.832] [- 2932ms] RX    77 51 C0 02 8A 00 00 00 04 11 F8 75 00 F2 FE 00
+[22:02:42.835] [- 2905ms] RX    70 51 C1 2D AF 2D 2D 2D 2D 2D 2D 2D 00 02 EC 00
+[22:02:42.839] [- 2883ms] RX    70 51 92 02 55 00 00 00 00 55 00
+[22:02:42.840] [- 2850ms] RX    18 10 01 15 3E 00
+[22:02:42.843] [- 2850ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.845] [- 2807ms] RX    18 10 01 15 3E 00
+[22:02:42.848] [- 2807ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.850] [- 2764ms] RX    18 10 01 15 3E 00
+[22:02:42.853] [- 2764ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.855] [- 2721ms] RX    18 10 01 15 3E 00
+[22:02:42.857] [- 2721ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.859] [- 2678ms] RX    18 10 01 15 3E 00
+[22:02:42.863] [- 2678ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.866] [- 2635ms] RX    18 10 01 15 3E 00
+[22:02:42.868] [- 2635ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.870] [- 2608ms] RX    31 10 01 12 54 00
+[22:02:42.873] [- 2608ms] TX    10 31 00 00 41 00
+[22:02:42.875] [- 2570ms] RX    18 10 01 15 3E 00
+[22:02:42.877] [- 2570ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.879] [- 2527ms] RX    18 10 01 15 3E 00
+[22:02:42.882] [- 2527ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.885] [- 2485ms] RX    18 10 01 15 3E 00
+[22:02:42.888] [- 2484ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.890] [- 2442ms] RX    18 10 01 15 3E 00
+[22:02:42.893] [- 2442ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.895] [- 2399ms] RX    18 10 01 15 3E 00
+[22:02:42.899] [- 2399ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.900] [- 2356ms] RX    18 10 01 15 3E 00
+[22:02:42.903] [- 2356ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.905] [- 1994ms] RESYNC
+[22:02:42.906] [- 1988ms] RXFLUSH
+[22:02:42.907] [- 1975ms] BREAK
+[22:02:42.910] [- 1960ms] RX    18 10 01 15 3E 00
+[22:02:42.913] [- 1960ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[22:02:42.914] [- 1933ms] RX    31 10 01 13 55 00
+[22:02:42.919] [- 1933ms] TX    70 31 C0 00 61 00 00 00 00 30 F1 F0 49 5A 15 00
+[22:02:42.922] [- 1892ms] RX    70 10 C0 00 40 00 00 00 00 00 00 00 00 00 40 00
+[22:02:42.924] [- 1859ms] RX    18 10 01 15 3E 00
+[22:02:42.927] [- 1859ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.930] [- 1816ms] RX    18 10 01 15 3E 00
+[22:02:42.932] [- 1816ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.935] [- 1773ms] RX    18 10 01 15 3E 00
+[22:02:42.938] [- 1773ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.940] [- 1730ms] RX    18 10 01 15 3E 00
+[22:02:42.942] [- 1730ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.945] [- 1687ms] RX    18 10 01 15 3E 00
+[22:02:42.948] [- 1687ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.950] [- 1644ms] RX    18 10 01 15 3E 00
+[22:02:42.953] [- 1644ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.955] [- 1601ms] RX    18 10 01 15 3E 00
+[22:02:42.958] [- 1601ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.960] [- 1558ms] RX    18 10 01 15 3E 00
+[22:02:42.963] [- 1558ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.964] [- 1515ms] RX    18 10 01 15 3E 00
+[22:02:42.967] [- 1515ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.969] [- 1472ms] RX    18 10 01 15 3E 00
+[22:02:42.972] [- 1472ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.973] [- 1429ms] RX    18 10 01 15 3E 00
+[22:02:42.977] [- 1429ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.979] [- 1386ms] RX    18 10 01 15 3E 00
+[22:02:42.982] [- 1386ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.983] [- 1359ms] RX    3B 10 01 12 5E 00
+[22:02:42.986] [- 1348ms] RX    10 3B 00 C0 0B 00
+[22:02:42.989] [- 1322ms] RX    18 10 01 15 3E 00
+[22:02:42.991] [- 1321ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.992] [- 1279ms] RX    18 10 01 15 3E 00
+[22:02:42.995] [- 1279ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:42.997] [- 1236ms] RX    18 10 01 15 3E 00
+[22:02:43.000] [- 1236ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:43.001] [-  746ms] RESYNC
+[22:02:43.003] [-  741ms] RXFLUSH
+[22:02:43.005] [-  729ms] RX    71 14 01 12 98 00
+[22:02:43.006] [-  710ms] BREAK
+[22:02:43.008] [-  696ms] RX    18 10 01 15 3E 00
+[22:02:43.010] [-  696ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[22:02:43.012] [-  669ms] RX    31 10 01 13 55 00
+[22:02:43.015] [-  669ms] TX    70 31 90 30 61 F1 F0 50 5A EC 00
+[22:02:43.017] [-  626ms] RX    18 10 01 15 3E 00
+[22:02:43.020] [-  626ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:43.022] [-  583ms] RX    18 10 01 15 3E 00
+[22:02:43.025] [-  583ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:43.027] [-  540ms] RX    18 10 01 15 3E 00
+[22:02:43.030] [-  540ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:43.032] [-  497ms] RX    18 10 01 15 3E 00
+[22:02:43.035] [-  497ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:43.036] [-  454ms] RX    18 10 01 15 3E 00
+[22:02:43.039] [-  454ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:43.041] [-  411ms] RX    18 10 01 15 3E 00
+[22:02:43.043] [-  411ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:43.046] [-  368ms] RX    18 10 01 15 3E 00
+[22:02:43.049] [-  368ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:43.052] [-  325ms] RX    18 10 01 15 3E 00
+[22:02:43.054] [-  325ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:43.056] [-  282ms] RX    18 10 01 15 3E 00
+[22:02:43.058] [-  282ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:43.061] [-  239ms] RX    18 10 01 15 3E 00
+[22:02:43.062] [-  239ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:43.065] [-  197ms] RX    18 10 01 15 3E 00
+[22:02:43.068] [-  196ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:43.071] [-  154ms] RX    18 10 01 15 3E 00
+[22:02:43.073] [-  154ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:43.075] [-  111ms] RX    18 10 01 15 3E 00
+[22:02:43.078] [-  111ms] TX    10 18 82 00 AA 00 00 00 00 AA 00
+[22:02:43.079] [-   84ms] RESYNC
+[22:02:43.081] [-   79ms] RXFLUSH
+[22:02:43.082] [-   67ms] RX    71 14 01 12 98 00
+[22:02:43.084] [-    0ms] RX    18 10 01 00 29 00
+[22:02:43.088] ======================================================
+[22:02:43.090] >> Radio system reset (#3)! Reset deviceAllocated.
+[22:02:43.093] >> resetToAllocated: audio gra, zachowuje Playing 00:51
+[22:02:43.097] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 49ms po DB)
+[22:02:43.101] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 179ms po DB)
+[22:02:43.104] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#3, 228ms po DB)
+[22:02:43.145] >> Odpowiadam na ANYONE? device info 0x8C
+[22:02:43.173] >> Adres przydzielony: 0x31 (op2=0x14)! deviceAllocated=true
+[22:02:44.054] >> [Audio Bus] Radio sygnalizuje audio ON (87 AB) — tylko log
+[22:02:44.099] >> [Audio Bus] Radio sygnalizuje audio ON (87 EB) — tylko log
+[22:02:44.214] >> PLAY (wznowienie bez restartu, np. po resecie radia: 00:52)
+[22:02:44.217] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[22:02:44.376] [STAT] poll15=7 disp13(my)=0 disp13(3B)=0 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:52
+[22:02:46.376] [STAT] poll15=17 disp13(my)=5 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:54
+[22:02:48.376] [STAT] poll15=42 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:56
+[22:02:50.376] [STAT] poll15=31 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 00:58
+[22:02:52.376] [STAT] poll15=43 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 01:00
+[22:02:54.376] [STAT] poll15=38 disp13(my)=3 disp13(3B)=1 ping12(my)=1 btn=0 break=0/0 txt=2 seek=0 | alloc=1 state=0x00 CD5 TR1 01:02
+[22:02:54.546] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[22:02:56.375] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 01:04
+[22:02:58.376] [STAT] poll15=2 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 01:06
+[22:03:00.376] [STAT] poll15=22 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=1 seek=0 | alloc=1 state=0x00 CD5 TR1 01:08
+[22:03:02.375] [STAT] poll15=34 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=0/0 txt=1 seek=0 | alloc=1 state=0x00 CD5 TR1 01:10
+[22:03:04.374] [STAT] poll15=6 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=1 seek=0 | alloc=1 state=0x00 CD5 TR1 01:12
+[22:03:04.546] >> CD-TEXT wyslany: CD5 TR1 "06. Ring Ring"
+[22:03:06.375] [STAT] poll15=36 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 | alloc=1 state=0x00 CD5 TR1 01:14
+[22:03:08.375] [STAT] poll15=32 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=0/0 txt=1 seek=0 | alloc=1 state=0x00 CD5 TR1 01:16

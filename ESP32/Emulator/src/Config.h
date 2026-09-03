@@ -112,11 +112,15 @@ constexpr unsigned long POLL15_ALIVE_MS    = 3000;
 // decyzji "sesja umarla" (auto-recovery), tu potrzeba znacznie krotszego progu,
 // bo ekran odswiezamy ~1 Hz.
 constexpr unsigned long POLL15_QUIET_BREAK_MS = 250;
-// Odstep miedzy kolejnymi Breakami. Musi byc WYRAZNIE krotszy niz sekunda:
-// przy 1000 ms (i BREAK_RECOVERY_MS 1500) prosba o magistrale trafiala raz na
-// 1.5-3 s i ekran odswiezal sie z czestotliwoscia 0.3-0.5 Hz zamiast 1 Hz.
-constexpr unsigned long BREAK_RETRY_MS     = 250;
-constexpr unsigned long BREAK_RECOVERY_MS  = 400;
+// Odstep miedzy kolejnymi Breakami. Kompromis miedzy plynnoscia ekranu a
+// ryzykiem kolizji: przy 1000 ms (i BREAK_RECOVERY_MS 1500) ekran odswiezal sie
+// z czestotliwoscia 0.3-0.5 Hz, przy 250/400 ms wskaznik [STAT] pokazywal juz
+// 4-5 Breakow na 2 s i wrocily SYSTEM RESETy — kazdy Break to 3 ms trzymania
+// magistrali, wiec im ich wiecej, tym wieksza szansa wejscia w cudza ramke.
+// 500 ms wystarcza na sekundnik (potrzebny jeden Break na sekunde) i schodzi
+// najwyzej do dwoch Breakow na sekunde przy oproznianiu kolejki CD-TEXT.
+constexpr unsigned long BREAK_RETRY_MS     = 500;
+constexpr unsigned long BREAK_RECOVERY_MS  = 600;
 constexpr unsigned long BREAK_BACKOFF_MAX_MS = 3000;
 // Odstep dla Breaka PILNEGO — gdy ekran radia pokazuje nieaktualna plyte/utwor/
 // stan (uzytkownik wlasnie nacisnal klawisz i czeka na reakcje). Wtedy zwykly
@@ -191,6 +195,18 @@ constexpr unsigned long RADIO_TIMEOUT_MS = 5000;   // brak PINGa => radio znikne
 // jest bezczynna dluzej niz ten prog (radio nie pollu­je) — nigdy w trakcie
 // aktywnej wymiany, by nie opoznic odpowiedzi na radio.
 constexpr unsigned long PERSIST_FLUSH_IDLE_US = 1500000;  // 1.5 s ciszy
+
+// --- CD-TEXT ---
+// Prawdziwa zmieniarka wysyla komplet nazw (utwor 0xD2 + plyta 0xDA) sama z
+// siebie po niemal kazdej ramce statusu — w zrzucie 42 ramki nazw wobec dwoch
+// zapytan `84 D7`. My oddajemy jedna ramke na grant, wiec caly blok schodzi
+// kilka sekund; powtarzamy go z tym okresem, zeby radio mialo nazwy takze po
+// przelaczeniu zrodla lub odtworzeniu sesji.
+// Radio samo dopytuje o nazwy ramka `84 D7`, wiec wypychanie ich z wlasnej
+// inicjatywy jest tylko siatka bezpieczenstwa (po zmianie zrodla, po resecie
+// sesji). Przy 10 s blok nazw — trzy ramki po jednej na grant — zauwazalnie
+// obciazal magistrale, stad rzadziej.
+constexpr unsigned long CD_TEXT_REPEAT_MS = 30000;
 
 // --- PAMIEC NIEULOTNA (NVS) ---
 constexpr const char* PREFS_NAMESPACE = "unilink";
