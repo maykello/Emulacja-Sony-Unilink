@@ -15,7 +15,7 @@
 // Nie potrzebne dodatkowe piny — USB OTG jest wbudowane w ESP32-S3
 
 // --- STAŁE ---
-#define MAX_DISCS       10
+#define MAX_DISCS       14
 #define MAX_TRACKS      99
 #define AUDIO_VOLUME    18   // 0..21 (biblioteka ESP32-audioI2S)
 

@@ -698,7 +698,7 @@ static bool enqueueCdTextD2Track(bool withEndMarker, bool force) {
     } else {
         audioGetTrackName(disc, track, raw, sizeof(raw));
     }
-    enqueueTextName(0xD2, raw, UnilinkFrame::encodeDiscNibble(track));
+    enqueueTextName(0xD2, raw, UnilinkFrame::encodeBcdFpad(track));
 
     enqueueCdTextDiscName(disc);
 

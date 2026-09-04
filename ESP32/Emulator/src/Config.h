@@ -29,7 +29,7 @@ constexpr int TX_BUFFER_SIZE = 64;
 
 // --- LIMITY WIRTUALNEJ ZMIENIARKI (fallback gdy nosnik nie zamontowany) ---
 constexpr uint8_t MAX_TRACK_PER_DISC = 99;
-constexpr uint8_t MAX_DISC           = 10;
+constexpr uint8_t MAX_DISC           = 14;
 
 // Kierunek przewijania przekazywany do CdChanger::seek (znak, nie dlugosc skoku
 // — od dlugosci jest teraz czas trzymania klawisza, patrz SCAN_RATE* nizej).

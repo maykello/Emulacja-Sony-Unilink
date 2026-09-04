@@ -85,6 +85,10 @@ inline uint8_t magazineD1FromMap(uint16_t map) {
     uint8_t d1 = 0;
     if (map & (1u << 8)) d1 |= 0x10;     // CD9
     if (map & (1u << 9)) d1 |= 0x20;     // CD10
+    if (map & (1u << 10)) d1 |= 0x40;    // CD11
+    if (map & (1u << 11)) d1 |= 0x80;    // CD12
+    if (map & (1u << 12)) d1 |= 0x01;    // CD13
+    if (map & (1u << 13)) d1 |= 0x02;    // CD14
     return d1;
 }
 
