@@ -114,6 +114,7 @@ void wake();                // BUS=1: przywroc docelowa glosnosc
 
 // --- DOSTEP DO STANU (dla protokolu) ---
 MechState mechState();      // wewnetrzny stan mechanizmu (zrodlo prawdy)
+bool isSeeking();           // true gdy mechanizm jest w stanie Seeking (aktywny FF/REW)
 uint8_t statusByte();       // bajt statusu 7.1 = UnilinkFrame::statusByte(mechState())
 uint8_t disk();
 uint8_t track();

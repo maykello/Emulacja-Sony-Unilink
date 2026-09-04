@@ -128,6 +128,12 @@ static uint8_t s_textFlagState = 0;   // 0 = nazwy niewyslane, 1 = swiezo wyslan
 
 static uint8_t discFlagsNibble() {
     if (audioGetTrackCount(CdChanger::disk()) == 0) return 0x00;   // pusty slot
+    // Podczas seeking (FF/REW) kasujemy flage CD-TEXT — radio przełącza się na
+    // widok zwykły z timerem, bez nazw. Prawdziwa zmieniarka robi to samo:
+    // w sniffie CDX-M670 podczas cue/review nibbel spada do 0x8 (brak flagi
+    // 0x02/0x01), a po powrocie do Playing wraca na 0xA/0xB. Dzieki temu radio
+    // wie, ze w tej chwili tekst jest niedostepny i pokazuje timer zamiast nazwy.
+    if (CdChanger::isSeeking()) return 0x08;    // plyta obecna, tekst niedostepny
     uint8_t flags = 0x08;                       // plyta obecna
     if (s_textFlagState >= 1) flags |= 0x02;    // CD-TEXT dostepny
     if (s_textFlagState == 1) flags |= 0x01;    // tekst wlasnie sie zmienil
@@ -920,10 +926,29 @@ void resetCdTextCache() {
     s_textFlagState = 0;
 }
 
+// Sledzenie stanu Seeking — po zakonczeniu seeking resetujemy cache CD-TEXT,
+// zeby nazwy zostaly ponownie wyslane i radio wrocilo do widoku tekstowego.
+static bool s_wasSeekingLastCdText = false;
+
 void serviceCdText(unsigned long now) {
     if (!deviceAllocated) return;
     const CdChanger::MechState ms = CdChanger::mechState();
     if (ms == CdChanger::MechState::Init || ms == CdChanger::MechState::Idle) return;
+
+    // Podczas seeking nie wysylamy nazw CD-TEXT — radio jest w widoku timera.
+    // Prawdziwa zmieniarka tez milczy z nazwami podczas cue/review.
+    if (ms == CdChanger::MechState::Seeking) {
+        s_wasSeekingLastCdText = true;
+        return;
+    }
+
+    // Po zakonczeniu seeking (powrot do Playing): reset cache, zeby nazwy
+    // zostaly ponownie wyslane. Radio zobaczy nibbel 0xB ("tekst swiezo
+    // zmieniony") i wroci do widoku CD-TEXT.
+    if (s_wasSeekingLastCdText) {
+        s_wasSeekingLastCdText = false;
+        resetCdTextCache();
+    }
 
     const uint8_t disc  = CdChanger::disk();
     const uint8_t track = CdChanger::track();

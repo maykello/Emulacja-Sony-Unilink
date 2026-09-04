@@ -597,6 +597,7 @@ void enqueueModeIcons() {
 }
 
 MechState mechState() { return cdState; }
+bool isSeeking() { return cdState == MechState::Seeking; }
 
 // Bajt statusu §7.1 wysylany w PONG i ramkach statusu. Mapowanie realizuje
 // czysta funkcja UnilinkFrame::statusByte (jedno zrodlo prawdy, testowalne na

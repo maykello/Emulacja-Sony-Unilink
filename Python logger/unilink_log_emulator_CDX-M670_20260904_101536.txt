@@ -1,0 +1,189 @@
+[10:15:39.267] === BUS_ON = 1 ===
+[10:15:39.269] [Audio] Głośność: 18/21 (zlecone)
+[10:15:39.796] >> [Audio Bus] Radio sygnalizuje audio OFF (87 2A) — tylko log
+[10:15:41.123] >> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+[10:15:41.195] ===== CZARNA SKRZYNKA (RADIO SYSTEM RESET 18 10 01 00) — ostatnie 12 zdarzen =====
+[10:15:41.196] [-38633ms] RX    71 10 01 12 94 00
+[10:15:41.198] [-38622ms] RX    10 71 00 00 81 00
+[10:15:41.199] [-38207ms] RX    18 10 87 22 D1 02 00 00 00 D3 00
+[10:15:41.201] [- 1400ms] RX    18 10 87 2A D9 02 00 00 00 DB 00
+[10:15:41.203] [- 1378ms] RX    70 C1 91 F1 B3 17 21 11 C0 BC 00
+[10:15:41.204] [- 1313ms] RX    3B 10 01 12 5E 00
+[10:15:41.206] [- 1302ms] RX    10 3B 00 80 CB 00
+[10:15:41.207] [-  700ms] RX    71 10 01 12 94 00
+[10:15:41.209] [-  689ms] RX    10 71 00 00 81 00
+[10:15:41.210] [-   71ms] RX    18 10 01 11 3A 00
+[10:15:41.211] [-   71ms] TX    10 18 04 00 2C 00
+[10:15:41.212] [-    0ms] RX    18 10 01 00 29 00
+[10:15:41.213] ======================================================
+[10:15:41.216] >> Radio system reset (#1) (juz bylem nieprzydzielony)
+[10:15:41.259] == Wykryto CDX-M670 (widziano 3B 10 02 11) ==
+[10:15:41.336] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 49ms po DB)
+[10:15:41.465] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 179ms po DB)
+[10:15:41.514] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#3, 227ms po DB)
+[10:15:41.562] >> Odpowiadam na ANYONE? device info 0x8C
+[10:15:41.589] >> Adres przydzielony: 0x31 (op2=0x14)! deviceAllocated=true
+[10:15:42.471] >> [Audio Bus] Radio sygnalizuje audio OFF (87 2A) — tylko log
+[10:15:42.515] >> [Audio Bus] Radio sygnalizuje audio OFF (87 2A) — tylko log
+[10:15:42.938] >> [Audio Bus] Radio sygnalizuje audio ON (87 EB) — tylko log
+[10:15:43.095] [STAT] poll15=2 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:15:45.095] [STAT] poll15=6 disp13(my)=0 disp13(3B)=7 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:15:45.526] >>> C0 -> 80 (Idle)
+[10:15:47.094] [STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:15:49.094] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:15:51.095] [STAT] poll15=2 disp13(my)=0 disp13(3B)=2 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:15:53.094] [STAT] poll15=4 disp13(my)=0 disp13(3B)=4 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:15:55.094] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:15:59.092] [STAT] poll15=4 disp13(my)=0 disp13(3B)=4 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:16:01.094] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:16:03.083] [STAT] poll15=4 disp13(my)=0 disp13(3B)=4 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:16:05.089] [STAT] poll15=6 disp13(my)=0 disp13(3B)=6 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:16:07.093] [STAT] poll15=6 disp13(my)=0 disp13(3B)=6 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:16:09.093] [STAT] poll15=6 disp13(my)=0 disp13(3B)=5 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:16:11.095] [STAT] poll15=2 disp13(my)=0 disp13(3B)=3 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:16:13.094] [STAT] poll15=2 disp13(my)=0 disp13(3B)=2 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:16:15.093] [STAT] poll15=2 disp13(my)=0 disp13(3B)=2 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:16:17.093] [STAT] poll15=2 disp13(my)=0 disp13(3B)=2 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:16:19.094] [STAT] poll15=2 disp13(my)=0 disp13(3B)=2 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:16:21.085] [STAT] poll15=2 disp13(my)=0 disp13(3B)=2 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:16:23.083] [STAT] poll15=6 disp13(my)=0 disp13(3B)=6 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:16:25.080] [STAT] poll15=13 disp13(my)=0 disp13(3B)=13 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:16:27.092] [STAT] poll15=6 disp13(my)=0 disp13(3B)=6 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:00
+[10:16:28.025] >> PLAY command received!
+[10:16:28.025] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:16:28.106] [Audio] Async connecttoFS("/CD01/01- Hasta Manana.mp3") = OK
+[10:16:28.106] [Audio] ▶ Odtwarzam: /CD01/01- Hasta Manana.mp3 (rozpoczęto dekodowanie)
+[10:16:28.432] >>> 40 -> 00 (Playing!)
+[10:16:29.093] [STAT] poll15=10 disp13(my)=5 disp13(3B)=5 ping12(my)=0 btn=0 break=6/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 00:00
+[10:16:30.023] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:16:31.083] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 00:02
+[10:16:32.030] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:16:33.093] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 00:04
+[10:16:34.030] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:16:35.094] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 00:06
+[10:16:36.030] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:16:37.091] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD1 TR1 00:08
+[10:16:38.030] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:16:39.094] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 00:10
+[10:16:40.027] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:16:41.091] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 00:12
+[10:16:42.030] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:16:43.093] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD1 TR1 00:14
+[10:16:44.028] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:16:44.902] [SEEKDBG] t=103814 FF  tad=0x11 op2=0x00 len=6
+[10:16:44.906] >> SCAN FF start: CD1 TR1 00:16
+[10:16:45.092] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=1 break=5/5 txt=0 seek=1 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 00:16
+[10:16:46.028] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:16:47.092] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 00:30
+[10:16:48.026] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:16:49.090] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD1 TR1 00:54
+[10:16:49.204] >> SCAN stop (0x08 0x00): CD1 TR1 00:55
+[10:16:49.208] >>> 21 -> 00 (Seeking -> Playing!) pozycja 00:55
+[10:16:50.029] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:16:51.093] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD1 TR1 00:56
+[10:16:52.029] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:16:53.094] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 00:58
+[10:16:54.029] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:16:55.093] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:00
+[10:16:56.028] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:16:57.092] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:02
+[10:16:58.030] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:16:59.090] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:04
+[10:17:00.027] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:01.091] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:06
+[10:17:02.024] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:03.089] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:08
+[10:17:04.024] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:05.092] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:10
+[10:17:06.025] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:07.086] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:12
+[10:17:08.023] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:09.093] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD1 TR1 01:14
+[10:17:10.021] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:11.094] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:16
+[10:17:12.029] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:13.093] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:18
+[10:17:14.021] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:15.091] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:20
+[10:17:16.023] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:17.085] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD1 TR1 01:22
+[10:17:18.027] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:19.090] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:24
+[10:17:20.025] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:21.089] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD1 TR1 01:26
+[10:17:22.028] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:23.090] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:28
+[10:17:24.027] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:25.093] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:30
+[10:17:26.027] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:27.088] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:32
+[10:17:28.024] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:29.085] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:34
+[10:17:30.026] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:31.089] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:36
+[10:17:32.028] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:33.093] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:38
+[10:17:34.027] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:34.941] >> ZADANIE 0x84: 31 71 84 D7 FD 70 00 00 01 6E 00
+[10:17:35.089] [STAT] poll15=8 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=8/8 txt=1 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD1 TR1 01:40
+[10:17:36.020] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:37.091] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=8/8 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:42
+[10:17:38.028] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:39.091] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:44
+[10:17:40.028] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:41.093] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:46
+[10:17:42.023] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:43.092] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:48
+[10:17:44.021] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:45.091] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:50
+[10:17:46.024] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:47.091] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:52
+[10:17:48.027] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:49.091] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD1 TR1 01:54
+[10:17:50.028] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:50.402] >> ZADANIE 0x84: 31 71 84 D2 F8 70 02 00 01 6B 00
+[10:17:51.088] [STAT] poll15=10 disp13(my)=9 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=1 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD1 TR1 01:56
+[10:17:52.028] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:53.087] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 01:58
+[10:17:54.025] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:55.084] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 02:00
+[10:17:56.017] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:57.081] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 02:02
+[10:17:58.018] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:17:59.081] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD1 TR1 02:04
+[10:18:00.018] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:18:01.080] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD1 TR1 02:06
+[10:18:02.018] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:18:03.084] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD1 TR1 02:08
+[10:18:04.013] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:18:05.092] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 02:10
+[10:18:06.028] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:18:07.092] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 02:12
+[10:18:08.024] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:18:09.084] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 02:14
+[10:18:10.017] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:18:11.083] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 02:16
+[10:18:12.028] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:18:13.087] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 02:18
+[10:18:14.024] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:18:15.092] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD1 TR1 02:20
+[10:18:16.022] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:18:17.083] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD1 TR1 02:22
+[10:18:18.022] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:18:19.078] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=1/2 | alloc=1 state=0x00 CD1 TR1 02:24
+[10:18:20.024] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:18:21.080] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 02:26
+[10:18:22.025] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:18:23.080] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 02:28
+[10:18:24.026] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:18:25.091] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 02:30
+[10:18:26.028] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:18:27.089] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 02:32
+[10:18:28.026] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:18:29.091] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 02:34
+[10:18:30.025] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:18:31.089] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 02:36
+[10:18:32.024] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:18:33.493] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=2 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD1 TR1 02:38
+[10:18:34.018] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[10:18:35.089] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 02:40
