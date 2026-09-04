@@ -1,0 +1,438 @@
+[11:16:23.343] Obsluga: MEX-BT3800u + CDX-M670 + PCM5102A DAC + USB
+[11:16:23.343] Oczekuje na radio (Stan C0 - Init)...
+[11:16:23.343] [NVS] Wczytano ostatni utwor: CD5 TR3
+[11:16:23.343] [Audio] Inicjalizacja...
+[11:16:23.343] [UsbDrive] Inicjalizacja USB Host...
+[11:16:23.343] [UsbDrive] USB Host gotowy. Podłącz pendrive'a do portu USB-OTG...
+[11:16:23.343] [UsbDrive] Nowe urządzenie USB (addr=1)
+[11:16:23.359] [UsbDrive] Konfiguruję urządzenie MSC (addr=1)...
+[11:16:23.361] [UsbDrive] VID=0x0951 PID=0x1653
+[11:16:23.361] [UsbDrive] Znaleziono interfejs MSC #0
+[11:16:23.361] [UsbDrive] Bulk IN:  0x81 (MPS=64)
+[11:16:23.361] [UsbDrive] Bulk OUT: 0x02 (MPS=64)
+[11:16:23.361] [UsbDrive] Czekam na gotowość urządzenia...
+[11:16:23.361] [UsbDrive] Pendrive: Kingston DT 100 G2
+[11:16:23.368] [UsbDrive] Dysk: 15644912 sektorów × 512 B = 7639 MB
+[11:16:23.368] [UsbDrive] Sektor 0 to GPT Protective MBR — parsowanie GPT...
+[11:16:23.368] [UsbDrive] GPT: wpisy od LBA 2, 128 wpisów × 128 B
+[11:16:23.375] [UsbDrive]   GPT wpis 0: start=2048 end=15644671 (Microsoft Basic Data)
+[11:16:23.375] [UsbDrive] ✓ Używam partycji GPT na sektorze 2048
+[11:16:23.375] [UsbDrive] ✓ System plików zamontowany pod /usb
+[11:16:23.375] [Audio] setPinout(BCK=7, LRCK=15, DIN=13) = OK
+[11:16:23.375] [Audio] Task dekodowania uruchomiony na rdzeniu 0
+[11:16:23.375] [Audio] CD01 [CD01] nazwa="CD01": 1 track(ów)
+[11:16:23.375] [Audio]   TR01: 01- Hasta Manana.mp3
+[11:16:23.375] [Audio] CD02 [CD02] nazwa="CD02": 2 track(ów)
+[11:16:23.375] [Audio]   TR01: 01. Waterloo.mp3
+[11:16:23.375] [Audio]   TR02: 02. Head Over Heels.mp3
+[11:16:23.389] [Audio] CD03 [CD03] nazwa="CD03": 3 track(ów)
+[11:16:23.391] [Audio]   TR01: 02. Mamma Mia.mp3
+[11:16:23.394] [Audio]   TR02: 03. Gimme! Gimme! Gimme! (A Man After Midnight).mp3
+[11:16:23.394] [Audio]   TR03: 03. I Do, I Do, I Do, I Do, I Do.mp3
+[11:16:23.394] [Audio] CD04 [CD04] nazwa="CD04": 4 track(ów)
+[11:16:23.398] [Audio]   TR01: 04. Dancing Queen.mp3
+[11:16:23.398] [Audio]   TR02: 04. Honey, Honey.mp3
+[11:16:23.398] [Audio]   TR03: 05. Take A Chance On Me.mp3
+[11:16:23.398] [Audio]   TR04: 06. Knowing Me, Knowing You.mp3
+[11:16:23.398] [Audio] CD05 [CD05] nazwa="CD05": 5 track(ów)
+[11:16:23.407] [Audio]   TR01: 06. Ring Ring.mp3
+[11:16:23.407] [Audio]   TR02: 07 Wrap Your Arms Around Me.mp3
+[11:16:23.407] [Audio]   TR03: 07. Eagle.mp3
+[11:16:23.407] [Audio]   TR04: 07. The Winner Takes It All.mp3
+[11:16:23.407] [Audio]   TR05: 08- Nina, pretty balerina.mp3
+[11:16:23.407] [Audio] CD06 [CD06] nazwa="CD06": 1 track(ów)
+[11:16:23.407] [Audio]   TR01: 03. I Do, I Do, I Do, I Do, I Do.mp3
+[11:16:23.407] [Audio] CD07 [CD07] nazwa="CD07": 1 track(ów)
+[11:16:23.407] [Audio]   TR01: 07 Wrap Your Arms Around Me.mp3
+[11:16:23.421] [Audio] CD08 [CD08] nazwa="CD08": 1 track(ów)
+[11:16:23.421] [Audio]   TR01: 07. Eagle.mp3
+[11:16:23.423] [Audio] CD09 [CD09] nazwa="CD09": 1 track(ów)
+[11:16:23.423] [Audio]   TR01: 07. The Winner Takes It All.mp3
+[11:16:23.426] [Audio] CD10 [CD10] nazwa="CD10": 1 track(ów)
+[11:16:23.426] [Audio]   TR01: 08- Nina, pretty balerina.mp3
+[11:16:23.426] [Audio] Inicjalizacja zakończona — pendrive gotowy.
+[11:16:23.431] [Audio] Gotowy do odtwarzania.
+[11:16:23.431] >>> Wykryto USB. Wznawiam zapamietana plyte: CD5 TR3
+[11:16:23.434] === BUS_ON = 1 ===
+[11:16:23.434] [Audio] Głośność: 18/21 (zlecone)
+[11:16:23.434] === BUS_ON = 0 ===
+[11:16:23.434] === SEN: magistrala wylaczona — zatrzymuje audio ===
+[11:16:23.439] [Audio] ⏹ Zatrzymano (zlecone).
+[11:16:23.676] === BUS_ON = 1 ===
+[11:16:23.676] [Audio] Głośność: 18/21 (zlecone)
+[11:16:24.080] === BUS_ON = 0 ===
+[11:16:24.080] === SEN: magistrala wylaczona — zatrzymuje audio ===
+[11:16:24.080] [Audio] ⏹ Zatrzymano (zlecone).
+[11:16:24.271] === BUS_ON = 1 ===
+[11:16:24.271] [Audio] Głośność: 18/21 (zlecone)
+[11:16:24.846] ===== CZARNA SKRZYNKA (RADIO SYSTEM RESET 18 10 01 00) — ostatnie 1 zdarzen =====
+[11:16:24.846] [-    0ms] RX    18 10 01 00 29 00
+[11:16:24.857] ======================================================
+[11:16:24.857] >> Radio system reset (#1) (juz bylem nieprzydzielony)
+[11:16:24.909] == Wykryto CDX-M670 (widziano 3B 10 02 11) ==
+[11:16:24.993] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 49ms po DB)
+[11:16:25.124] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 178ms po DB)
+[11:16:25.167] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#3, 227ms po DB)
+[11:16:25.221] >> Odpowiadam na ANYONE? device info 0x8C
+[11:16:25.240] >> Adres przydzielony: 0x31 (op2=0x14)! deviceAllocated=true
+[11:16:26.128] >> [Audio Bus] Radio sygnalizuje audio ON (87 2B) — tylko log
+[11:16:26.144] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B) — tylko log
+[11:16:27.343] [STAT] poll15=6 disp13(my)=1 disp13(3B)=5 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD5 TR3 00:00
+[11:16:28.787] >>> C0 -> 80 (Idle)
+[11:16:29.337] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD5 TR3 00:00
+[11:16:30.730] >> PLAY command received!
+[11:16:30.745] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:16:30.830] [Audio] Async connecttoFS("/CD05/07. Eagle.mp3") = OK
+[11:16:30.830] [Audio] ▶ Odtwarzam: /CD05/07. Eagle.mp3 (rozpoczęto dekodowanie)
+[11:16:31.196] >>> 40 -> 00 (Playing!)
+[11:16:31.330] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:00
+[11:16:32.534] >> ZADANIE 0x84: 31 71 84 D7 FD 70 00 00 00 6D 00
+[11:16:33.232] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:16:33.343] [STAT] poll15=10 disp13(my)=9 disp13(3B)=0 ping12(my)=1 btn=0 break=10/9 txt=1 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:02
+[11:16:35.234] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:16:35.344] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=0 btn=0 break=5/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:04
+[11:16:36.522] >> TOGGLE REPEAT -> 1
+[11:16:36.522] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2500 mBar"
+[11:16:37.343] [STAT] poll15=10 disp13(my)=10 disp13(3B)=0 ping12(my)=1 btn=1 break=10/10 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:06
+[11:16:38.523] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2500 mBar"
+[11:16:39.342] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD5 TR3 00:08
+[11:16:40.524] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2500 mBar"
+[11:16:41.339] [STAT] poll15=8 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=8/8 txt=0 seek=0 rxerr=3/3 | alloc=1 state=0x00 CD5 TR3 00:10
+[11:16:42.514] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2500 mBar"
+[11:16:43.342] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:12
+[11:16:44.521] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2500 mBar"
+[11:16:45.345] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:14
+[11:16:46.524] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2500 mBar"
+[11:16:47.338] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:16
+[11:16:48.525] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2500 mBar"
+[11:16:49.333] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:18
+[11:16:50.524] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2500 mBar"
+[11:16:51.344] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:20
+[11:16:52.518] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2500 mBar"
+[11:16:53.344] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:22
+[11:16:54.514] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2500 mBar"
+[11:16:55.340] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:24
+[11:16:56.524] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2500 mBar"
+[11:16:57.341] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/2 | alloc=1 state=0x00 CD5 TR3 00:26
+[11:16:58.517] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2500 mBar"
+[11:16:59.345] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:28
+[11:17:00.524] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2500 mBar"
+[11:17:01.345] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:30
+[11:17:02.519] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2500 mBar"
+[11:17:03.342] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:32
+[11:17:04.008] >> TOGGLE REPEAT -> 2
+[11:17:04.011] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2500 mBar"
+[11:17:05.343] [STAT] poll15=8 disp13(my)=7 disp13(3B)=0 ping12(my)=0 btn=1 break=8/8 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:34
+[11:17:06.010] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2500 mBar"
+[11:17:07.344] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD5 TR3 00:36
+[11:17:08.009] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2500 mBar"
+[11:17:09.343] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=1/2 | alloc=1 state=0x00 CD5 TR3 00:38
+[11:17:09.998] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2500 mBar"
+[11:17:10.747] >> TOGGLE REPEAT -> 0
+[11:17:11.344] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=1 break=9/9 txt=0 seek=0 rxerr=1/2 | alloc=1 state=0x00 CD5 TR3 00:40
+[11:17:13.342] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:42
+[11:17:14.747] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:17:15.342] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:44
+[11:17:16.740] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:17:17.338] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:46
+[11:17:18.748] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:17:19.340] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:48
+[11:17:20.749] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:17:21.343] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:50
+[11:17:22.736] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:17:23.334] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:52
+[11:17:25.343] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:54
+[11:17:27.104] >> PREV TRACK (Restart utworu): CD5 TR3
+[11:17:27.104] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:17:27.120] [Audio-info] Closing audio file
+[11:17:27.190] >>> 40 -> 00 (Playing!)
+[11:17:27.231] >> PREV TRACK: CD5 TR2
+[11:17:27.310] >>> 40 -> 00 (Playing!)
+[11:17:27.342] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=2 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:00
+[11:17:27.342] [Audio] Async connecttoFS("/CD05/07 Wrap Your Arms Around Me.mp3") = OK
+[11:17:27.349] [Audio] ▶ Odtwarzam: /CD05/07 Wrap Your Arms Around Me.mp3 (rozpoczęto dekodowanie)
+[11:17:27.349] [Audio-info] Closing audio file
+[11:17:27.517] [Audio] Async connecttoFS("/CD05/07 Wrap Your Arms Around Me.mp3") = OK
+[11:17:27.517] [Audio] ▶ Odtwarzam: /CD05/07 Wrap Your Arms Around Me.mp3 (rozpoczęto dekodowanie)
+[11:17:27.882] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:17:29.331] [STAT] poll15=11 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=11/10 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:02
+[11:17:29.880] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:17:31.015] >> PREV TRACK (Restart utworu): CD5 TR2
+[11:17:31.042] [Audio-info] Closing audio file
+[11:17:31.110] >>> 40 -> 00 (Playing!)
+[11:17:31.250] [Audio] Async connecttoFS("/CD05/07 Wrap Your Arms Around Me.mp3") = OK
+[11:17:31.255] [Audio] ▶ Odtwarzam: /CD05/07 Wrap Your Arms Around Me.mp3 (rozpoczęto dekodowanie)
+[11:17:31.343] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=1 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:00
+[11:17:31.881] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:17:33.343] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:02
+[11:17:33.883] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:17:35.338] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR2 00:04
+[11:17:35.877] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:17:37.343] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:06
+[11:17:37.882] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:17:39.338] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD5 TR2 00:08
+[11:17:39.883] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:17:41.343] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR2 00:10
+[11:17:42.940] >> PREV TRACK (Restart utworu): CD5 TR2
+[11:17:42.943] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:17:42.943] [Audio-info] Closing audio file
+[11:17:43.013] >>> 40 -> 00 (Playing!)
+[11:17:43.150] [Audio] Async connecttoFS("/CD05/07 Wrap Your Arms Around Me.mp3") = OK
+[11:17:43.150] [Audio] ▶ Odtwarzam: /CD05/07 Wrap Your Arms Around Me.mp3 (rozpoczęto dekodowanie)
+[11:17:43.331] [STAT] poll15=4 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=1 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:00
+[11:17:44.078] >> PREV TRACK: CD5 TR1
+[11:17:44.086] >> CD-TEXT wyslany: CD5 TR1 plyta="CD05" utwor="06. Ring Ring"
+[11:17:44.092] [Audio-info] Closing audio file
+[11:17:44.170] >>> 40 -> 00 (Playing!)
+[11:17:44.306] [Audio] Async connecttoFS("/CD05/06. Ring Ring.mp3") = OK
+[11:17:44.306] [Audio] ▶ Odtwarzam: /CD05/06. Ring Ring.mp3 (rozpoczęto dekodowanie)
+[11:17:45.342] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=0 btn=1 break=8/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 00:01
+[11:17:46.086] >> CD-TEXT wyslany: CD5 TR1 plyta="CD05" utwor="06. Ring Ring"
+[11:17:47.332] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 00:03
+[11:17:48.077] >> CD-TEXT wyslany: CD5 TR1 plyta="CD05" utwor="06. Ring Ring"
+[11:17:49.343] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 00:05
+[11:17:50.074] >> CD-TEXT wyslany: CD5 TR1 plyta="CD05" utwor="06. Ring Ring"
+[11:17:51.334] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 00:07
+[11:17:52.077] >> CD-TEXT wyslany: CD5 TR1 plyta="CD05" utwor="06. Ring Ring"
+[11:17:53.331] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 00:09
+[11:17:54.083] >> CD-TEXT wyslany: CD5 TR1 plyta="CD05" utwor="06. Ring Ring"
+[11:17:54.295] >> TOGGLE REPEAT -> 1
+[11:17:54.903] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:17:55.342] [STAT] poll15=9 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=1 break=9/9 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 00:11
+[11:17:56.907] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:17:57.334] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=0 btn=0 break=7/7 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 00:13
+[11:17:58.906] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:17:59.341] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 00:15
+[11:18:00.908] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:01.334] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=8/8 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 00:17
+[11:18:02.909] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:03.341] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=2/1 | alloc=1 state=0x00 CD5 TR1 00:19
+[11:18:04.909] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:05.333] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 00:21
+[11:18:06.899] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:07.343] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD5 TR1 00:23
+[11:18:08.894] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:09.337] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 00:25
+[11:18:10.907] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:11.339] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 00:27
+[11:18:12.901] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:13.330] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=3/2 | alloc=1 state=0x00 CD5 TR1 00:29
+[11:18:14.909] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:15.343] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=7/2 | alloc=1 state=0x00 CD5 TR1 00:31
+[11:18:16.418] >> TOGGLE REPEAT -> 2
+[11:18:16.418] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:17.343] [STAT] poll15=8 disp13(my)=7 disp13(3B)=0 ping12(my)=0 btn=1 break=9/8 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 00:33
+[11:18:18.418] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:19.327] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=6/7 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 00:35
+[11:18:20.404] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:21.342] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 00:37
+[11:18:22.416] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:23.337] >> TOGGLE REPEAT -> 0
+[11:18:23.339] >> CD-TEXT wyslany: CD5 TR1 plyta="CD05" utwor="06. Ring Ring"
+[11:18:23.339] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=1 break=7/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 00:39
+[11:18:25.332] >> CD-TEXT wyslany: CD5 TR1 plyta="CD05" utwor="06. Ring Ring"
+[11:18:25.343] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=8/7 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 00:41
+[11:18:27.338] >> CD-TEXT wyslany: CD5 TR1 plyta="CD05" utwor="06. Ring Ring"
+[11:18:27.338] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 00:43
+[11:18:29.338] >> CD-TEXT wyslany: CD5 TR1 plyta="CD05" utwor="06. Ring Ring"
+[11:18:29.342] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=8/7 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 00:45
+[11:18:30.851] >> TOGGLE REPEAT -> 1
+[11:18:30.867] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:31.339] [STAT] poll15=9 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=1 break=9/10 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 00:47
+[11:18:32.861] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:33.342] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 00:49
+[11:18:34.857] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:35.342] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 00:51
+[11:18:36.866] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:37.343] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=8/8 txt=0 seek=0 rxerr=11/2 | alloc=1 state=0x00 CD5 TR1 00:53
+[11:18:38.860] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:39.337] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/6 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD5 TR1 00:55
+[11:18:40.865] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:41.342] [STAT] poll15=8 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=9/8 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 00:57
+[11:18:42.865] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:43.342] [STAT] poll15=6 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/6 txt=0 seek=0 rxerr=1/2 | alloc=1 state=0x00 CD5 TR1 00:59
+[11:18:44.858] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:45.340] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 01:01
+[11:18:46.866] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:47.337] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=5/6 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD5 TR1 01:03
+[11:18:48.861] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:49.336] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 01:05
+[11:18:50.864] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:51.338] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 01:07
+[11:18:52.865] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:53.340] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 01:09
+[11:18:54.863] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:55.335] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 01:11
+[11:18:56.864] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:57.332] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 01:13
+[11:18:58.864] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:18:59.329] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 01:15
+[11:19:00.866] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:01.341] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 01:17
+[11:19:02.863] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:03.339] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 01:19
+[11:19:04.860] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:05.337] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 01:21
+[11:19:06.860] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:07.342] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 01:23
+[11:19:08.853] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:09.341] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD5 TR1 01:25
+[11:19:10.850] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:11.340] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=8/7 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 01:27
+[11:19:12.857] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:13.341] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 01:29
+[11:19:14.861] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:15.341] [STAT] poll15=3 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/4 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD5 TR1 01:31
+[11:19:16.865] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:17.340] [STAT] poll15=8 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=7/8 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 01:33
+[11:19:18.855] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:19.331] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 01:35
+[11:19:20.864] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:21.341] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 01:37
+[11:19:22.858] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:23.332] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 01:39
+[11:19:24.852] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:25.328] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 01:41
+[11:19:26.862] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:27.341] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=6/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 01:43
+[11:19:28.858] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:29.335] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 01:45
+[11:19:30.864] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:31.331] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 01:47
+[11:19:32.865] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:33.327] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 01:49
+[11:19:34.865] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:35.327] [STAT] poll15=6 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=5/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 01:51
+[11:19:36.864] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:37.339] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 01:53
+[11:19:38.860] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:39.339] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 01:55
+[11:19:40.856] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:41.331] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 01:57
+[11:19:42.852] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:43.326] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 01:59
+[11:19:44.859] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:45.334] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 02:01
+[11:19:46.864] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:47.340] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 02:03
+[11:19:48.864] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:49.339] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 02:05
+[11:19:50.860] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:51.333] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 02:07
+[11:19:52.857] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:53.332] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 02:09
+[11:19:54.850] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:55.341] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 02:11
+[11:19:56.865] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:57.329] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=2 btn=0 break=5/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 02:13
+[11:19:58.860] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:19:59.339] [STAT] poll15=6 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 02:15
+[11:20:00.856] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:20:01.341] [STAT] poll15=9 disp13(my)=8 disp13(3B)=0 ping12(my)=0 btn=0 break=9/9 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 02:17
+[11:20:02.864] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:20:03.339] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 02:19
+[11:20:04.863] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:20:05.340] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 02:21
+[11:20:06.865] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:20:07.337] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 02:23
+[11:20:08.853] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:20:09.334] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 02:25
+[11:20:10.856] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:20:11.336] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 02:27
+[11:20:12.863] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:20:13.337] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 02:29
+[11:20:14.864] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:20:15.339] [STAT] poll15=7 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 02:31
+[11:20:16.863] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:20:17.340] [STAT] poll15=3 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/4 txt=0 seek=0 rxerr=7/2 | alloc=1 state=0x00 CD5 TR1 02:33
+[11:20:18.864] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:20:19.339] [STAT] poll15=6 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 02:35
+[11:20:20.864] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:20:21.313] >> TOGGLE REPEAT -> 2
+[11:20:21.340] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=1 break=6/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 02:37
+[11:20:21.658] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:20:23.326] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=7/8 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 02:39
+[11:20:23.659] >> CD-TEXT wyslany: CD5 TR1 plyta="OBD" utwor="2500 mBar"
+[11:20:25.078] >> TOGGLE REPEAT -> 0
+[11:20:25.332] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=1 break=8/8 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD5 TR1 02:41
+[11:20:27.338] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR1 02:43
+[11:20:29.086] >> CD-TEXT wyslany: CD5 TR1 plyta="CD05" utwor="06. Ring Ring"
+[11:20:29.335] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 02:45
+[11:20:31.084] >> CD-TEXT wyslany: CD5 TR1 plyta="CD05" utwor="06. Ring Ring"
+[11:20:31.331] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 02:47
+[11:20:33.082] >> CD-TEXT wyslany: CD5 TR1 plyta="CD05" utwor="06. Ring Ring"
+[11:20:33.334] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 02:49
+[11:20:35.085] >> CD-TEXT wyslany: CD5 TR1 plyta="CD05" utwor="06. Ring Ring"
+[11:20:35.338] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 02:51
+[11:20:37.086] >> CD-TEXT wyslany: CD5 TR1 plyta="CD05" utwor="06. Ring Ring"
+[11:20:37.340] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD5 TR1 02:53
+[11:20:39.340] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 02:55
+[11:20:41.337] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=1/2 | alloc=1 state=0x00 CD5 TR1 02:57
+[11:20:43.087] >> CD-TEXT wyslany: CD5 TR1 plyta="CD05" utwor="06. Ring Ring"
+[11:20:43.338] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 02:59
+[11:20:45.081] >> CD-TEXT wyslany: CD5 TR1 plyta="CD05" utwor="06. Ring Ring"
+[11:20:45.327] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 03:01
+[11:20:47.087] >> CD-TEXT wyslany: CD5 TR1 plyta="CD05" utwor="06. Ring Ring"
+[11:20:47.324] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 03:03
+[11:20:49.087] >> CD-TEXT wyslany: CD5 TR1 plyta="CD05" utwor="06. Ring Ring"
+[11:20:49.326] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 03:05
+[11:20:51.087] >> CD-TEXT wyslany: CD5 TR1 plyta="CD05" utwor="06. Ring Ring"
+[11:20:51.334] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 03:07
+[11:20:53.340] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR1 03:09
+[11:20:53.899] [Audio-info] Closing audio file
+[11:20:53.899] [Audio-info] End of file "06. Ring Ring.mp3"
+[11:20:53.915] [Audio-eof] Koniec utworu: 06. Ring Ring.mp3
+[11:20:53.915] >> AUTO-NEXT: CD5 TR2 (repeat=0, moved=1)
+[11:20:53.915] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:20:53.964] >>> 40 -> 00 (Playing!)
+[11:20:54.122] [Audio] Async connecttoFS("/CD05/07 Wrap Your Arms Around Me.mp3") = OK
+[11:20:54.122] [Audio] ▶ Odtwarzam: /CD05/07 Wrap Your Arms Around Me.mp3 (rozpoczęto dekodowanie)
+[11:20:55.339] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:01
+[11:20:55.915] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:20:57.324] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR2 00:03
+[11:20:57.913] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:20:59.339] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:05
+[11:20:59.914] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:21:01.332] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR2 00:07
+[11:21:01.915] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:21:03.333] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:09
+[11:21:03.913] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:21:05.338] [STAT] poll15=7 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=3/3 | alloc=1 state=0x00 CD5 TR2 00:11
+[11:21:07.334] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR2 00:13
+[11:21:07.963] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:21:09.339] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR2 00:15
+[11:21:09.966] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:21:11.327] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:17
+[11:21:11.973] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:21:13.332] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD5 TR2 00:19
+[11:21:13.969] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:21:15.339] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR2 00:21
+[11:21:15.972] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:21:17.334] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR2 00:23
+[11:21:19.325] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:25
+[11:21:21.327] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:27
+[11:21:21.970] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:21:23.336] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:29
+[11:21:23.967] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:21:25.329] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=7/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:31
+[11:21:25.967] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:21:27.332] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:33
+[11:21:27.964] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:21:29.337] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD5 TR2 00:35
+[11:21:29.967] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:21:31.335] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:37
+[11:21:33.338] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR2 00:39
+[11:21:35.332] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:41
+[11:21:35.964] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:21:37.338] [STAT] poll15=6 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD5 TR2 00:43
+[11:21:37.971] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:21:39.339] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:45
+[11:21:39.969] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:21:41.338] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR2 00:47
+[11:21:41.972] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:21:43.338] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:49
+[11:21:43.972] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"
+[11:21:45.338] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:51
+[11:21:47.327] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:53
+[11:21:49.338] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR2 00:55
+[11:21:49.971] >> CD-TEXT wyslany: CD5 TR2 plyta="CD05" utwor="07 Wrap Your Arms Around Me"

@@ -1,0 +1,178 @@
+[11:10:53.534] Obsluga: MEX-BT3800u + CDX-M670 + PCM5102A DAC + USB
+[11:10:53.537] Oczekuje na radio (Stan C0 - Init)...
+[11:10:53.537] [NVS] Wczytano ostatni utwor: CD5 TR3
+[11:10:53.537] [Audio] Inicjalizacja...
+[11:10:53.537] [UsbDrive] Inicjalizacja USB Host...
+[11:10:53.537] [UsbDrive] USB Host gotowy. Podłącz pendrive'a do portu USB-OTG...
+[11:10:53.537] [UsbDrive] Nowe urządzenie USB (addr=1)
+[11:10:53.545] [UsbDrive] Konfiguruję urządzenie MSC (addr=1)...
+[11:10:53.545] [UsbDrive] VID=0x0951 PID=0x1653
+[11:10:53.545] [UsbDrive] Znaleziono interfejs MSC #0
+[11:10:53.545] [UsbDrive] Bulk IN:  0x81 (MPS=64)
+[11:10:53.545] [UsbDrive] Bulk OUT: 0x02 (MPS=64)
+[11:10:53.545] [UsbDrive] Czekam na gotowość urządzenia...
+[11:10:53.545] [UsbDrive] Pendrive: Kingston DT 100 G2
+[11:10:53.545] [UsbDrive] Dysk: 15644912 sektorów × 512 B = 7639 MB
+[11:10:53.545] [UsbDrive] Sektor 0 to GPT Protective MBR — parsowanie GPT...
+[11:10:53.545] [UsbDrive] GPT: wpisy od LBA 2, 128 wpisów × 128 B
+[11:10:53.562] [UsbDrive]   GPT wpis 0: start=2048 end=15644671 (Microsoft Basic Data)
+[11:10:53.562] [UsbDrive] ✓ Używam partycji GPT na sektorze 2048
+[11:10:53.562] [UsbDrive] ✓ System plików zamontowany pod /usb
+[11:10:53.562] [Audio] setPinout(BCK=7, LRCK=15, DIN=13) = OK
+[11:10:53.562] [Audio] Task dekodowania uruchomiony na rdzeniu 0
+[11:10:53.562] [Audio] CD01 [CD01] nazwa="CD01": 1 track(ów)
+[11:10:53.562] [Audio]   TR01: 01- Hasta Manana.mp3
+[11:10:53.562] [Audio] CD02 [CD02] nazwa="CD02": 2 track(ów)
+[11:10:53.562] [Audio]   TR01: 01. Waterloo.mp3
+[11:10:53.575] [Audio]   TR02: 02. Head Over Heels.mp3
+[11:10:53.575] [Audio] CD03 [CD03] nazwa="CD03": 3 track(ów)
+[11:10:53.577] [Audio]   TR01: 02. Mamma Mia.mp3
+[11:10:53.581] [Audio]   TR02: 03. Gimme! Gimme! Gimme! (A Man After Midnight).mp3
+[11:10:53.582] [Audio]   TR03: 03. I Do, I Do, I Do, I Do, I Do.mp3
+[11:10:53.584] [Audio] CD04 [CD04] nazwa="CD04": 4 track(ów)
+[11:10:53.584] [Audio]   TR01: 04. Dancing Queen.mp3
+[11:10:53.584] [Audio]   TR02: 04. Honey, Honey.mp3
+[11:10:53.587] [Audio]   TR03: 05. Take A Chance On Me.mp3
+[11:10:53.587] [Audio]   TR04: 06. Knowing Me, Knowing You.mp3
+[11:10:53.587] [Audio] CD05 [CD05] nazwa="CD05": 5 track(ów)
+[11:10:53.587] [Audio]   TR01: 06. Ring Ring.mp3
+[11:10:53.595] [Audio]   TR02: 07 Wrap Your Arms Around Me.mp3
+[11:10:53.595] [Audio]   TR03: 07. Eagle.mp3
+[11:10:53.595] [Audio]   TR04: 07. The Winner Takes It All.mp3
+[11:10:53.595] [Audio]   TR05: 08- Nina, pretty balerina.mp3
+[11:10:53.600] [Audio] CD06 [CD06] nazwa="CD06": 1 track(ów)
+[11:10:53.603] [Audio]   TR01: 03. I Do, I Do, I Do, I Do, I Do.mp3
+[11:10:53.603] [Audio] CD07 [CD07] nazwa="CD07": 1 track(ów)
+[11:10:53.603] [Audio]   TR01: 07 Wrap Your Arms Around Me.mp3
+[11:10:53.603] [Audio] CD08 [CD08] nazwa="CD08": 1 track(ów)
+[11:10:53.603] [Audio]   TR01: 07. Eagle.mp3
+[11:10:53.609] [Audio] CD09 [CD09] nazwa="CD09": 1 track(ów)
+[11:10:53.609] [Audio]   TR01: 07. The Winner Takes It All.mp3
+[11:10:53.609] [Audio] CD10 [CD10] nazwa="CD10": 1 track(ów)
+[11:10:53.609] [Audio]   TR01: 08- Nina, pretty balerina.mp3
+[11:10:53.609] [Audio] Inicjalizacja zakończona — pendrive gotowy.
+[11:10:53.609] [Audio] Gotowy do odtwarzania.
+[11:10:53.609] >>> Wykryto USB. Wznawiam zapamietana plyte: CD5 TR3
+[11:10:53.609] === BUS_ON = 1 ===
+[11:10:53.609] [Audio] Głośność: 18/21 (zlecone)
+[11:10:53.609] === BUS_ON = 0 ===
+[11:10:53.609] === SEN: magistrala wylaczona — zatrzymuje audio ===
+[11:10:53.625] [Audio] ⏹ Zatrzymano (zlecone).
+[11:10:53.625] === BUS_ON = 1 ===
+[11:10:53.625] [Audio] Głośność: 18/21 (zlecone)
+[11:10:53.815] === BUS_ON = 0 ===
+[11:10:53.815] === SEN: magistrala wylaczona — zatrzymuje audio ===
+[11:10:53.815] [Audio] ⏹ Zatrzymano (zlecone).
+[11:10:54.022] === BUS_ON = 1 ===
+[11:10:54.022] [Audio] Głośność: 18/21 (zlecone)
+[11:10:54.597] ===== CZARNA SKRZYNKA (RADIO SYSTEM RESET 18 10 01 00) — ostatnie 1 zdarzen =====
+[11:10:54.597] [-    0ms] RX    18 10 01 00 29 00
+[11:10:54.597] ======================================================
+[11:10:54.603] >> Radio system reset (#1) (juz bylem nieprzydzielony)
+[11:10:54.661] == Wykryto CDX-M670 (widziano 3B 10 02 11) ==
+[11:10:54.735] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 49ms po DB)
+[11:10:54.864] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 179ms po DB)
+[11:10:54.909] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#3, 228ms po DB)
+[11:10:54.957] >> Odpowiadam na ANYONE? device info 0x8C
+[11:10:54.989] >> Adres przydzielony: 0x31 (op2=0x14)! deviceAllocated=true
+[11:10:55.861] >> [Audio Bus] Radio sygnalizuje audio ON (87 2B) — tylko log
+[11:10:55.892] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B) — tylko log
+[11:10:57.526] [STAT] poll15=6 disp13(my)=1 disp13(3B)=5 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD5 TR3 00:00
+[11:10:58.538] >>> C0 -> 80 (Idle)
+[11:10:59.531] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD5 TR3 00:00
+[11:11:00.748] >> PLAY command received!
+[11:11:00.748] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:11:00.842] [Audio] Async connecttoFS("/CD05/07. Eagle.mp3") = OK
+[11:11:00.842] [Audio] ▶ Odtwarzam: /CD05/07. Eagle.mp3 (rozpoczęto dekodowanie)
+[11:11:01.227] >>> 40 -> 00 (Playing!)
+[11:11:01.528] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=5/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:00
+[11:11:02.573] >> ZADANIE 0x84: 31 71 84 D7 FD 70 00 00 00 6D 00
+[11:11:03.313] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:11:03.518] [STAT] poll15=10 disp13(my)=9 disp13(3B)=0 ping12(my)=1 btn=0 break=8/9 txt=1 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:02
+[11:11:05.311] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:11:05.518] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:04
+[11:11:06.691] >> TOGGLE REPEAT -> 1
+[11:11:06.706] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:07.516] [STAT] poll15=10 disp13(my)=9 disp13(3B)=0 ping12(my)=1 btn=1 break=10/10 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:06
+[11:11:08.694] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:09.090] >> TOGGLE REPEAT -> 2
+[11:11:09.504] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:09.519] [STAT] poll15=7 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=1 break=7/7 txt=0 seek=0 rxerr=3/3 | alloc=1 state=0x00 CD5 TR3 00:08
+[11:11:09.773] >> TOGGLE REPEAT -> 0
+[11:11:10.566] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:11:11.520] [STAT] poll15=12 disp13(my)=11 disp13(3B)=0 ping12(my)=1 btn=1 break=12/12 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:10
+[11:11:13.520] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:12
+[11:11:14.255] >> TOGGLE REPEAT -> 1
+[11:11:14.260] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:15.529] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=1 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:14
+[11:11:16.257] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:17.525] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:16
+[11:11:18.259] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:19.528] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:18
+[11:11:20.259] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:21.526] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:20
+[11:11:22.252] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:23.530] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:22
+[11:11:24.250] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:25.530] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:24
+[11:11:26.257] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:27.526] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:26
+[11:11:28.256] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:29.530] [STAT] poll15=6 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD5 TR3 00:28
+[11:11:30.254] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:31.531] [STAT] poll15=7 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD5 TR3 00:30
+[11:11:32.252] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:33.529] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:32
+[11:11:34.259] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:35.525] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:34
+[11:11:36.256] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:37.525] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:36
+[11:11:38.255] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:39.524] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:38
+[11:11:40.252] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:41.520] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:40
+[11:11:42.250] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:43.518] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:42
+[11:11:44.251] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:45.531] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD5 TR3 00:44
+[11:11:46.253] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:47.517] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=2 btn=0 break=6/6 txt=0 seek=0 rxerr=3/3 | alloc=1 state=0x00 CD5 TR3 00:46
+[11:11:48.255] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:49.528] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:48
+[11:11:50.258] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:51.531] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:50
+[11:11:52.252] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:52.433] >> TOGGLE REPEAT -> 2
+[11:11:53.211] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:53.530] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=1 break=9/9 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:52
+[11:11:55.205] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:55.523] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=6/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:54
+[11:11:57.202] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:57.528] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:56
+[11:11:59.210] >> CD-TEXT wyslany: CD5 TR3 plyta="--- OBD DASHBOARD ---" utwor="TURBO: 2500 mBar"
+[11:11:59.521] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:58
+[11:12:00.686] >> TOGGLE REPEAT -> 0
+[11:12:00.686] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:12:01.531] [STAT] poll15=10 disp13(my)=10 disp13(3B)=0 ping12(my)=0 btn=1 break=9/9 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 01:00
+[11:12:02.688] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:12:03.530] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 01:02
+[11:12:04.675] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:12:05.522] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 01:04
+[11:12:06.686] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:12:07.530] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 01:06
+[11:12:08.680] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:12:09.531] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 01:08
+[11:12:11.521] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=0 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 01:10
+[11:12:13.529] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 01:12
+[11:12:14.685] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:12:15.519] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 01:14
+[11:12:16.687] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:12:17.525] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 01:16
+[11:12:18.686] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:12:19.530] [STAT] poll15=7 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=7/7 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD5 TR3 01:18
+[11:12:20.682] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:12:21.529] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 01:20
+[11:12:22.681] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:12:23.525] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 01:22
+[11:12:25.528] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 01:24
+[11:12:27.529] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 01:26

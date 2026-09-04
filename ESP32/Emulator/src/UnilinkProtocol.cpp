@@ -144,8 +144,8 @@ static bool isTimeFlashActive() {
 // Otwiera/zamyka okno flashu wg konfiguracji. Zwraca true, jesli flash
 // jest aktywny (blokada CD-TEXT).
 static bool serviceTimeFlash(unsigned long now) {
-    // Funkcja wylaczona?
-    if (CDTEXT_TIME_FLASH_INTERVAL_MS == 0) return false;
+    // Funkcja wylaczona albo aktywny tryb OBD (Repeat)? W OBD pokazujemy tekst sztywno.
+    if (CDTEXT_TIME_FLASH_INTERVAL_MS == 0 || CdChanger::repeatMode() != CdChanger::RepeatMode::Off) return false;
     // Flash aktywny tylko w Playing z wyslana nazwa (s_textFlagState >= 1).
     if (CdChanger::mechState() != CdChanger::MechState::Playing) {
         s_timeFlashStartMs = 0;
@@ -653,11 +653,13 @@ static uint8_t discFromRequest(const uint8_t* buf, int len) {
     return disc;
 }
 
-// Nazwa PLYTY w formacie 0xDA. `disc` pozwala odpowiedziec takze o plyte inna
-// niz biezaca — tego potrzebuje lista plyt w radiu.
 static void enqueueCdTextDiscName(uint8_t disc) {
     char raw[64];
-    audioGetDiscName(disc, raw, sizeof(raw));
+    if (CdChanger::repeatMode() != CdChanger::RepeatMode::Off) {
+        snprintf(raw, sizeof(raw), "OBD");
+    } else {
+        audioGetDiscName(disc, raw, sizeof(raw));
+    }
     enqueueTextName(0xDA, raw, (uint8_t)(disc & 0x0F));
 }
 
@@ -685,7 +687,11 @@ static bool enqueueCdTextD2Track(bool withEndMarker, bool force) {
     }
 
     char raw[64];
-    audioGetTrackName(disc, track, raw, sizeof(raw));
+    if (CdChanger::repeatMode() != CdChanger::RepeatMode::Off) {
+        snprintf(raw, sizeof(raw), "2500 mBar");
+    } else {
+        audioGetTrackName(disc, track, raw, sizeof(raw));
+    }
     enqueueTextName(0xD2, raw, UnilinkFrame::encodeDiscNibble(track));
 
     enqueueCdTextDiscName(disc);
@@ -965,11 +971,13 @@ void servicePositionFrame1Hz(unsigned long now) {
 // wysylal (licznik `txt=0` w kazdym [STAT]) — stad pusty CD-TEXT.
 static uint8_t       s_textSentDisc  = 0;
 static uint8_t       s_textSentTrack = 0;
+static CdChanger::RepeatMode s_textSentRepeat = CdChanger::RepeatMode::Off;
 static unsigned long s_textSentMs    = 0;
 
 void resetCdTextCache() {
     s_textSentDisc  = 0;
     s_textSentTrack = 0;
+    s_textSentRepeat= CdChanger::RepeatMode::Off;
     s_textSentMs    = 0;
     s_textFlagState = 0;
 }
@@ -1009,9 +1017,10 @@ void serviceCdText(unsigned long now) {
         resetCdTextCache();
     }
 
-    const uint8_t disc  = CdChanger::disk();
-    const uint8_t track = CdChanger::track();
-    const bool changed  = (disc != s_textSentDisc || track != s_textSentTrack);
+    const uint8_t disc   = CdChanger::disk();
+    const uint8_t track  = CdChanger::track();
+    const CdChanger::RepeatMode repeat = CdChanger::repeatMode();
+    const bool changed   = (disc != s_textSentDisc || track != s_textSentTrack || repeat != s_textSentRepeat);
 
     // Zmiana utworu kasuje flage "mam nazwy" — radio ma najpierw zobaczyc, ze
     // tekst zniknal (nibbel 0x8), a dopiero potem, ze pojawil sie nowy (0xB).
@@ -1030,9 +1039,10 @@ void serviceCdText(unsigned long now) {
     // takze obok ramki statusu, inaczej przy jednej ramce na grant nigdy nie
     // trafialyby w okno "kolejka pusta".
     if (!enqueueCdTextD2Track(/*withEndMarker=*/false, /*force=*/false)) return;
-    s_textSentDisc  = disc;
-    s_textSentTrack = track;
-    s_textSentMs    = now;
+    s_textSentDisc   = disc;
+    s_textSentTrack  = track;
+    s_textSentRepeat = repeat;
+    s_textSentMs     = now;
 
     // Nibbel 0xB ("tekst dostepny + swiezo zmieniony") podnosimy tylko przy
     // realnej zmianie plyty/utworu albo gdy radio jeszcze nie wie, ze mamy
@@ -1043,8 +1053,15 @@ void serviceCdText(unsigned long now) {
 
     char name[64];
     char discName[64];
-    audioGetTrackName(disc, track, name, sizeof(name));
-    audioGetDiscName(disc, discName, sizeof(discName));
+    
+    // Jesli Repeat jest wlaczony (tryb OBD), nadpisujemy tekst parametrami silnika
+    if (repeat != CdChanger::RepeatMode::Off) {
+        snprintf(name, sizeof(name), "2500 mBar");
+        snprintf(discName, sizeof(discName), "OBD");
+    } else {
+        audioGetTrackName(disc, track, name, sizeof(name));
+        audioGetDiscName(disc, discName, sizeof(discName));
+    }
     Serial.printf(">> CD-TEXT wyslany: CD%d TR%d plyta=\"%s\" utwor=\"%s\"\n",
                   disc, track, discName, name);
 }
