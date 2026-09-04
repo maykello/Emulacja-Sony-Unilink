@@ -1105,3 +1105,312 @@
 [22:20:00.614] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
 [22:20:01.608] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 00:46
 [22:20:02.617] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:20:03.609] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 00:48
+[22:20:04.622] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:20:05.619] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 00:50
+[22:20:07.608] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 00:52
+[22:20:09.609] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 00:54
+[22:20:10.617] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:20:11.612] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 00:56
+[22:20:12.620] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:20:13.609] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 00:58
+[22:20:14.620] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:20:15.602] [STAT] poll15=8 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=8/8 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD11 TR1 01:00
+[22:20:16.616] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:20:17.604] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 01:02
+[22:20:18.613] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:20:19.595] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 01:04
+[22:20:21.607] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 01:06
+[22:20:23.608] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 01:08
+[22:20:24.618] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:20:25.599] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 01:10
+[22:20:26.620] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:20:27.596] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 01:12
+[22:20:28.619] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:20:29.594] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD11 TR1 01:14
+[22:20:30.611] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:20:31.602] [STAT] poll15=7 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=2/1 | alloc=1 state=0x00 CD11 TR1 01:16
+[22:20:32.616] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:20:33.600] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 01:18
+[22:20:34.219] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B) — tylko log
+[22:20:35.598] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD11 TR1 01:20
+[22:20:37.528] >> PLAY (juz gram — ignoruje, nie restartuje utworu)
+[22:20:37.607] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 01:22
+[22:20:38.607] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:20:39.604] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 01:24
+[22:20:40.608] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:20:41.602] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD11 TR1 01:26
+[22:20:42.617] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:20:43.597] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD11 TR1 01:28
+[22:20:43.819] >> ZADANIE 0x84: 31 71 84 D7 FD 70 00 00 01 6E 00
+[22:20:44.611] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:20:45.595] [STAT] poll15=12 disp13(my)=11 disp13(3B)=0 ping12(my)=1 btn=0 break=11/11 txt=1 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 01:30
+[22:20:46.611] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:20:47.605] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 01:32
+[22:20:49.596] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD11 TR1 01:34
+[22:20:51.598] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 01:36
+[22:20:52.620] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:20:53.594] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 01:38
+[22:20:54.611] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:20:55.608] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 01:40
+[22:20:56.605] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:20:57.607] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 01:42
+[22:20:58.604] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:20:59.600] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 01:44
+[22:21:00.620] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:21:01.597] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=6/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD11 TR1 01:46
+[22:21:03.604] [STAT] poll15=1 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 01:48
+[22:21:05.604] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 01:50
+[22:21:05.969] >> PLAY (juz gram — ignoruje, nie restartuje utworu)
+[22:21:06.619] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:21:07.607] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD11 TR1 01:52
+[22:21:08.619] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:21:09.605] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 01:54
+[22:21:09.763] >> ZADANIE 0x84: 31 71 84 D7 FD 70 00 00 00 6D 00
+[22:21:10.619] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:21:11.606] [STAT] poll15=12 disp13(my)=10 disp13(3B)=0 ping12(my)=1 btn=0 break=11/11 txt=1 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 01:56
+[22:21:12.605] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:21:13.613] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD11 TR1 01:58
+[22:21:14.619] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:21:15.608] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:00
+[22:21:17.606] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:02
+[22:21:19.607] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:04
+[22:21:20.610] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:21:21.604] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:06
+[22:21:22.619] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:21:23.606] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:08
+[22:21:24.612] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:21:25.595] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:10
+[22:21:26.615] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:21:27.601] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:12
+[22:21:28.616] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:21:29.593] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:14
+[22:21:31.601] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:16
+[22:21:33.602] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:18
+[22:21:34.611] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:21:35.594] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:20
+[22:21:36.618] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:21:37.595] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:22
+[22:21:38.609] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:21:39.597] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:24
+[22:21:40.617] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:21:41.597] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:26
+[22:21:42.613] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:21:43.604] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:28
+[22:21:45.606] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:30
+[22:21:47.600] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:32
+[22:21:48.619] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:21:49.598] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:34
+[22:21:50.606] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:21:51.595] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:36
+[22:21:52.613] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:21:53.591] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD11 TR1 02:38
+[22:21:54.618] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:21:55.598] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:40
+[22:21:56.617] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:21:57.601] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:42
+[22:21:59.606] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:44
+[22:22:01.600] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:46
+[22:22:02.618] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:22:03.605] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:48
+[22:22:04.617] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:22:05.591] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:50
+[22:22:06.617] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:22:07.601] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:52
+[22:22:08.616] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:22:09.605] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:54
+[22:22:10.608] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:22:11.602] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:56
+[22:22:13.605] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 02:58
+[22:22:15.602] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 03:00
+[22:22:16.610] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:22:17.610] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 03:02
+[22:22:18.619] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:22:19.605] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 03:04
+[22:22:20.615] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:22:21.599] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 03:06
+[22:22:22.607] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:22:23.603] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 03:08
+[22:22:24.617] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:22:25.603] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 03:10
+[22:22:27.605] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 03:12
+[22:22:29.605] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 03:14
+[22:22:30.616] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:22:31.597] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 03:16
+[22:22:32.616] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:22:33.604] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 03:18
+[22:22:34.613] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:22:35.597] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 03:20
+[22:22:36.603] >> CD-TEXT wyslany: CD11 TR1 plyta="CD11" utwor="Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną"
+[22:22:37.601] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD11 TR1 03:22
+[22:22:38.014] [Audio-info] Closing audio file
+[22:22:38.014] [Audio-info] End of file "Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną.mp3"
+[22:22:38.030] [Audio-eof] Koniec utworu: Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną.mp3
+[22:22:38.032] >> AUTO-NEXT: CD12 TR1 (repeat=0, moved=1)
+[22:22:38.034] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:22:38.077] >>> 40 -> 20 (ChangedCd)
+[22:22:38.187] >>> 20 -> 00 (Playing!)
+[22:22:38.219] [Audio] Async connecttoFS("/CD12/Krzysztof Krawczyk - To co dał nam świat.mp3") = OK
+[22:22:38.237] [Audio] ▶ Odtwarzam: /CD12/Krzysztof Krawczyk - To co dał nam świat.mp3 (rozpoczęto dekodowanie)
+[22:22:39.409] >> ZADANIE 0x84: 31 71 84 D7 FD 70 00 00 00 6D 00
+[22:22:39.597] [STAT] poll15=9 disp13(my)=8 disp13(3B)=0 ping12(my)=0 btn=0 break=8/8 txt=1 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:01
+[22:22:40.116] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:22:41.601] [STAT] poll15=10 disp13(my)=9 disp13(3B)=0 ping12(my)=1 btn=0 break=10/10 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR1 00:03
+[22:22:42.111] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:22:43.600] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:05
+[22:22:44.111] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:22:45.603] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:07
+[22:22:46.108] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:22:47.590] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:09
+[22:22:48.115] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:22:49.600] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:11
+[22:22:51.597] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:13
+[22:22:52.188] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:22:53.598] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:15
+[22:22:54.184] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:22:55.603] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR1 00:17
+[22:22:56.185] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:22:57.596] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:19
+[22:22:58.180] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:22:59.590] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:21
+[22:23:00.178] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:23:01.598] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:23
+[22:23:03.604] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR1 00:25
+[22:23:05.591] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:27
+[22:23:06.183] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:23:07.604] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:29
+[22:23:08.193] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:23:09.601] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:31
+[22:23:10.189] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:23:11.590] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:33
+[22:23:12.191] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:23:13.601] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:35
+[22:23:14.193] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:23:15.597] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:37
+[22:23:17.600] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:39
+[22:23:18.587] >> TOGGLE REPEAT -> 1
+[22:23:18.587] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1500 mBar"
+[22:23:19.595] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=0 btn=1 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:41
+[22:23:20.093] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1800 mBar"
+[22:23:21.593] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2100 mBar"
+[22:23:21.599] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:43
+[22:23:23.085] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2400 mBar"
+[22:23:23.603] [STAT] poll15=9 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=8/9 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR1 00:45
+[22:23:24.587] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1600 mBar"
+[22:23:25.603] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:47
+[22:23:26.091] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1900 mBar"
+[22:23:27.590] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2200 mBar"
+[22:23:27.597] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=8/7 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD12 TR1 00:49
+[22:23:29.091] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2500 mBar"
+[22:23:29.594] [STAT] poll15=9 disp13(my)=9 disp13(3B)=0 ping12(my)=0 btn=0 break=8/9 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:51
+[22:23:30.592] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1700 mBar"
+[22:23:31.599] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:53
+[22:23:32.091] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2000 mBar"
+[22:23:33.581] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2300 mBar"
+[22:23:33.598] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:55
+[22:23:35.090] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1500 mBar"
+[22:23:35.600] [STAT] poll15=9 disp13(my)=9 disp13(3B)=0 ping12(my)=1 btn=0 break=8/9 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:57
+[22:23:36.585] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1800 mBar"
+[22:23:37.602] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=6/1 | alloc=1 state=0x00 CD12 TR1 00:59
+[22:23:38.091] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2100 mBar"
+[22:23:38.692] >> TOGGLE REPEAT -> 2
+[22:23:39.045] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2 mg"
+[22:23:39.601] [STAT] poll15=11 disp13(my)=10 disp13(3B)=0 ping12(my)=0 btn=1 break=12/11 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR1 01:01
+[22:23:41.047] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="6 mg"
+[22:23:41.197] >> TOGGLE REPEAT -> 0
+[22:23:41.597] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=1 break=6/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:03
+[22:23:41.852] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:23:43.597] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:05
+[22:23:43.858] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:23:45.602] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD12 TR1 01:07
+[22:23:45.854] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:23:45.934] >> TOGGLE REPEAT -> 1
+[22:23:46.620] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1700 mBar"
+[22:23:47.427] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1800 mBar"
+[22:23:47.593] [STAT] poll15=11 disp13(my)=11 disp13(3B)=0 ping12(my)=1 btn=1 break=12/11 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:09
+[22:23:48.936] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2100 mBar"
+[22:23:49.600] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=0 btn=0 break=7/8 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:11
+[22:23:50.436] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2400 mBar"
+[22:23:51.589] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:13
+[22:23:51.934] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1600 mBar"
+[22:23:53.431] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1900 mBar"
+[22:23:53.596] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:15
+[22:23:54.929] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2200 mBar"
+[22:23:55.591] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=7/8 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:17
+[22:23:56.429] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2500 mBar"
+[22:23:57.598] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:19
+[22:23:57.933] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1700 mBar"
+[22:23:59.431] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2000 mBar"
+[22:23:59.590] [STAT] poll15=7 disp13(my)=8 disp13(3B)=0 ping12(my)=0 btn=0 break=8/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:21
+[22:24:00.930] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2300 mBar"
+[22:24:01.591] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=7/8 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:23
+[22:24:02.431] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1500 mBar"
+[22:24:03.592] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR1 01:25
+[22:24:03.935] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1800 mBar"
+[22:24:05.436] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2100 mBar"
+[22:24:05.603] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:27
+[22:24:06.936] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2400 mBar"
+[22:24:07.599] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=7/8 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:29
+[22:24:08.435] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1600 mBar"
+[22:24:09.597] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR1 01:31
+[22:24:09.934] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1900 mBar"
+[22:24:11.435] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2200 mBar"
+[22:24:11.601] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:33
+[22:24:12.935] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2500 mBar"
+[22:24:13.594] [STAT] poll15=9 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=8/9 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:35
+[22:24:14.431] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1700 mBar"
+[22:24:15.601] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR1 01:37
+[22:24:15.924] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2000 mBar"
+[22:24:17.434] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2300 mBar"
+[22:24:17.601] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR1 01:39
+[22:24:18.928] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1500 mBar"
+[22:24:19.589] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=0 btn=0 break=7/8 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:41
+[22:24:20.436] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1800 mBar"
+[22:24:21.589] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:43
+[22:24:21.921] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2100 mBar"
+[22:24:23.435] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2400 mBar"
+[22:24:23.590] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:45
+[22:24:24.930] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1600 mBar"
+[22:24:25.603] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=7/8 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:47
+[22:24:26.435] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1900 mBar"
+[22:24:27.602] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:49
+[22:24:27.925] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2200 mBar"
+[22:24:29.431] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2500 mBar"
+[22:24:29.598] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=0 btn=0 break=8/8 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:51
+[22:24:30.935] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1700 mBar"
+[22:24:31.601] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:53
+[22:24:32.432] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2000 mBar"
+[22:24:33.598] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:55
+[22:24:33.934] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2300 mBar"
+[22:24:35.430] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1500 mBar"
+[22:24:35.595] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:57
+[22:24:36.920] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1800 mBar"
+[22:24:37.599] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 01:59
+[22:24:38.423] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2100 mBar"
+[22:24:39.601] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 02:01
+[22:24:39.934] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2400 mBar"
+[22:24:41.435] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1600 mBar"
+[22:24:41.602] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=8/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 02:03
+[22:24:42.931] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1900 mBar"
+[22:24:43.599] [STAT] poll15=9 disp13(my)=9 disp13(3B)=0 ping12(my)=1 btn=0 break=8/9 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 02:05
+[22:24:44.423] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2200 mBar"
+[22:24:44.976] >> [Audio Bus] Radio sygnalizuje audio OFF (87 6A) — tylko log
+[22:24:45.002] >> [Audio Bus] Radio sygnalizuje audio OFF (87 2A) — tylko log
+[22:24:45.601] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 02:07
+[22:24:45.928] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2500 mBar"
+[22:24:47.436] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1700 mBar"
+[22:24:47.603] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 02:09
+[22:24:48.934] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2000 mBar"
+[22:24:49.604] [STAT] poll15=9 disp13(my)=8 disp13(3B)=0 ping12(my)=0 btn=0 break=8/9 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 02:11
+[22:24:50.435] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2300 mBar"
+[22:24:50.606] === BUS_ON = 0 ===
+[22:24:50.606] === SEN: magistrala wylaczona — zatrzymuje audio ===
+[22:24:50.611] [NVS] Zapamietano ostatni utwor: CD12 TR1
+[22:24:50.613] [Audio] ⏹ Zatrzymano (zlecone).
+[22:24:50.633] [Audio-info] Closing audio file
+[22:24:50.639] === BUS_ON = 1 ===
+[22:24:50.639] [Audio] Głośność: 18/21 (zlecone)
+[22:24:50.639] === BUS_ON = 0 ===
+[22:24:50.639] === SEN: magistrala wylaczona — zatrzymuje audio ===
+[22:24:50.639] [Audio] ⏹ Zatrzymano (zlecone).
+[22:24:51.601] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=0 state=0x80 CD12 TR1 02:12

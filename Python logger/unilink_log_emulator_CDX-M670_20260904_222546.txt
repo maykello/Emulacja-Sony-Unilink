@@ -1,0 +1,785 @@
+[22:25:48.581] Obsluga: MEX-BT3800u + CDX-M670 + PCM5102A DAC + USB
+[22:25:48.581] Oczekuje na radio (Stan C0 - Init)...
+[22:25:48.581] [NVS] Wczytano ostatni utwor: CD12 TR1
+[22:25:48.581] [Audio] Inicjalizacja...
+[22:25:48.581] [UsbDrive] Inicjalizacja USB Host...
+[22:25:48.595] [UsbDrive] USB Host gotowy. Podłącz pendrive'a do portu USB-OTG...
+[22:25:48.597] [UsbDrive] Nowe urządzenie USB (addr=1)
+[22:25:48.598] [UsbDrive] Konfiguruję urządzenie MSC (addr=1)...
+[22:25:48.598] [UsbDrive] VID=0x0951 PID=0x1653
+[22:25:48.598] [UsbDrive] Znaleziono interfejs MSC #0
+[22:25:48.598] [UsbDrive] Bulk IN:  0x81 (MPS=64)
+[22:25:48.598] [UsbDrive] Bulk OUT: 0x02 (MPS=64)
+[22:25:48.598] [UsbDrive] Czekam na gotowość urządzenia...
+[22:25:48.598] [UsbDrive] Pendrive: Kingston DT 100 G2
+[22:25:48.598] [UsbDrive] Dysk: 15644912 sektorów × 512 B = 7639 MB
+[22:25:48.598] [UsbDrive] Sektor 0 to GPT Protective MBR — parsowanie GPT...
+[22:25:48.612] [UsbDrive] GPT: wpisy od LBA 2, 128 wpisów × 128 B
+[22:25:48.614] [UsbDrive]   GPT wpis 0: start=2048 end=15644671 (Microsoft Basic Data)
+[22:25:48.614] [UsbDrive] ✓ Używam partycji GPT na sektorze 2048
+[22:25:48.614] [UsbDrive] ✓ System plików zamontowany pod /usb
+[22:25:48.614] [Audio] setPinout(BCK=7, LRCK=15, DIN=13) = OK
+[22:25:48.614] [Audio] Task dekodowania uruchomiony na rdzeniu 0
+[22:25:48.614] [Audio] CD01 [CD01] nazwa="CD01": 31 track(ów)
+[22:25:48.614] [Audio]   TR01: 01- Hasta Manana.mp3
+[22:25:48.614] [Audio]   TR02: 01. Waterloo.mp3
+[22:25:48.614] [Audio]   TR03: 02. Head Over Heels.mp3
+[22:25:48.628] [Audio]   TR04: 02. Mamma Mia.mp3
+[22:25:48.628] [Audio]   TR05: 03. Gimme! Gimme! Gimme! (A Man After Midnight).mp3
+[22:25:48.628] [Audio]   TR06: 03. I Do, I Do, I Do, I Do, I Do.mp3
+[22:25:48.628] [Audio]   TR07: 04. Dancing Queen.mp3
+[22:25:48.628] [Audio]   TR08: 04. Honey, Honey.mp3
+[22:25:48.628] [Audio]   TR09: 05. Take A Chance On Me.mp3
+[22:25:48.628] [Audio]   TR10: 06. Knowing Me, Knowing You.mp3
+[22:25:48.628] [Audio]   TR11: 06. Ring Ring.mp3
+[22:25:48.628] [Audio]   TR12: 07 Wrap Your Arms Around Me.mp3
+[22:25:48.628] [Audio]   TR13: 07. Eagle.mp3
+[22:25:48.644] [Audio]   TR14: 07. The Winner Takes It All.mp3
+[22:25:48.645] [Audio]   TR15: 08- Nina, pretty balerina.mp3
+[22:25:48.645] [Audio]   TR16: 08. Money, Money, Money.mp3
+[22:25:48.645] [Audio]   TR17: 09. Lay All Your Love On Me.mp3
+[22:25:48.645] [Audio]   TR18: 10. SOS.mp3
+[22:25:48.645] [Audio]   TR19: 11. I Have A Dream.mp3
+[22:25:48.645] [Audio]   TR20: 12. Happy New Year.mp3
+[22:25:48.645] [Audio]   TR21: 12. When I Kissed The Teacher.mp3
+[22:25:48.645] [Audio]   TR22: 13. Thank You For The Music.mp3
+[22:25:48.645] [Audio]   TR23: 14. Super Trouper.mp3
+[22:25:48.645] [Audio]   TR24: 15. Does Your Mother Know.mp3
+[22:25:48.659] [Audio]   TR25: 15. Voulez-Vous.mp3
+[22:25:48.661] [Audio]   TR26: 16. One Of Us.mp3
+[22:25:48.661] [Audio]   TR27: 16. The Name Of The Game.mp3
+[22:25:48.661] [Audio]   TR28: 17. Chiquitita.mp3
+[22:25:48.661] [Audio]   TR29: 18. Hasta Manana.mp3
+[22:25:48.661] [Audio]   TR30: 19. Fernando.mp3
+[22:25:48.661] [Audio]   TR31: 19. Under Attack.mp3
+[22:25:48.661] [Audio] CD02 [CD02] nazwa="CD02": 61 track(ów)
+[22:25:48.661] [Audio]   TR01: 01 - Joe Yellow - Lover To Lover (For Sale).mp3
+[22:25:48.661] [Audio]   TR02: 01 Bianca Neve - Prince Kiss.mp3
+[22:25:48.661] [Audio]   TR03: 01 Flame Of Love.mp3
+[22:25:48.675] [Audio]   TR04: 01 Girls Just Wanna Have Fun.mp3
+[22:25:48.678] [Audio]   TR05: 01. Sister Sister - Blue Night In Alcatraz.mp3
+[22:25:48.678] [Audio]   TR06: 01. Waterloo.mp3
+[22:25:48.678] [Audio]   TR07: 01_-_savage_-_radio.mp3
+[22:25:48.678] [Audio]   TR08: 02 - David Lyme - Playboy.mp3
+[22:25:48.678] [Audio]   TR09: 02 Savage - Time.mp3
+[22:25:48.678] [Audio]   TR10: 02. Head Over Heels.mp3
+[22:25:48.678] [Audio]   TR11: 02_-_fancy_-_slice_me_mice.mp3
+[22:25:48.678] [Audio]   TR12: 03 Big In Japan.mp3
+[22:25:48.678] [Audio]   TR13: 03. Bernie Paul - Attenzione! Go Go Radio.mp3
+[22:25:48.691] [Audio]   TR14: 03. Gimme! Gimme! Gimme! (A Man After Midnight).mp3
+[22:25:48.694] [Audio]   TR15: 04 - Grant Miller - Red For Love.mp3
+[22:25:48.694] [Audio]   TR16: 04 - Savage - Only You.mp3
+[22:25:48.694] [Audio]   TR17: 04 R Bais - Dial My Number.mp3
+[22:25:48.698] [Audio]   TR18: 04. Dance With Me.mp3
+[22:25:48.698] [Audio]   TR19: 05_-_rudy_&_co_-_mama_radio.mp3
+[22:25:48.698] [Audio]   TR20: 05_-_the_twins_-_love_system.mp3
+[22:25:48.698] [Audio]   TR21: 05_alan_cook_-_bad_dreams.mp3
+[22:25:48.698] [Audio]   TR22: 07_-_fabian_nesti_-_heigh_ho.mp3
+[22:25:48.698] [Audio]   TR23: 08- Nina, pretty balerina.mp3
+[22:25:48.707] [Audio]   TR24: 09 Sounds Like A Melody.mp3
+[22:25:48.709] [Audio]   TR25: 11 - Green Ice - Gigo.mp3
+[22:25:48.711] [Audio]   TR26: 11 - Squash Gang - I Want An Illusion.mp3
+[22:25:48.711] [Audio]   TR27: 11_-_k.b._caps_-_do_you_really_need_me.mp3
+[22:25:48.711] [Audio]   TR28: 12_-_bolero_-_i_wish.mp3
+[22:25:48.711] [Audio]   TR29: 13_-_two_girls_-_another_boy_in_town_(dj_mix).mp3
+[22:25:48.711] [Audio]   TR30: 17. Chiquitita.mp3
+[22:25:48.711] [Audio]   TR31: Alan Ross - Valentino Mon Amour.mp3
+[22:25:48.711] [Audio]   TR32: Albert One - Lady O.mp3
+[22:25:48.723] [Audio]   TR33: Angie St. John - Hot Nights In Ibiza.mp3
+[22:25:48.724] [Audio]   TR34: Bazykina Twins - Moskow Nights.mp3
+[22:25:48.727] [Audio]   TR35: Brand Image - Love In A Summer Night.mp3
+[22:25:48.727] [Audio]   TR36: Camaro's Gang - Fuerza Major.mp3
+[22:25:48.727] [Audio]   TR37: Danny Keith - Keep On Music.mp3
+[22:25:48.727] [Audio]   TR38: David Lyme - Bye Bye Mi Amor.mp3
+[22:25:48.727] [Audio]   TR39: David Lyme - I Don't Wanna Lose You.mp3
+[22:25:48.727] [Audio]   TR40: Daydream - In The Night.mp3
+[22:25:48.727] [Audio]   TR41: Digital Emotion - Go Go Yellow Screen.mp3
+[22:25:48.739] [Audio]   TR42: Divo - We Can't Go On.mp3
+[22:25:48.739] [Audio]   TR43: Fancy - Bolero.mp3
+[22:25:48.739] [Audio]   TR44: Julian - Straight To My Heart.mp3
+[22:25:48.744] [Audio]   TR45: Lian Ross - Fantasy.mp3
+[22:25:48.744] [Audio]   TR46: Lian Ross - Say You'll Never.mp3
+[22:25:48.744] [Audio]   TR47: Michael Bedford - More Than A Kiss.mp3
+[22:25:48.744] [Audio]   TR48: Miko Mission - Toc Toc Toc.mp3
+[22:25:48.744] [Audio]   TR49: Mirage - No More No War.mp3
+[22:25:48.744] [Audio]   TR50: Rocky M - Disco Lady.mp3
+[22:25:48.744] [Audio]   TR51: Rocky M - Fly With Me To Wonderland.mp3
+[22:25:48.754] [Audio]   TR52: Rose - Memories.mp3
+[22:25:48.754] [Audio]   TR53: Roy - Shooting Star.mp3
+[22:25:48.754] [Audio]   TR54: Ryan Paris - Dolce Vita.mp3
+[22:25:48.754] [Audio]   TR55: Self service - Special night.mp3
+[22:25:48.760] [Audio]   TR56: Squash Gang - I Want An Illusion.mp3
+[22:25:48.760] [Audio]   TR57: Squash Gang - Moving Your Hips.mp3
+[22:25:48.760] [Audio]   TR58: Steve Clark - No More Love.mp3
+[22:25:48.760] [Audio]   TR59: Tension - My Dreams.mp3
+[22:25:48.760] [Audio]   TR60: The Winners - Rocky.mp3
+[22:25:48.760] [Audio]   TR61: paul mcdowell-turbogeil extended.mp3
+[22:25:48.906] [Audio] CD03 [CD03] nazwa="CD03": 25 track(ów)
+[22:25:48.906] [Audio]   TR01: 01 - Marrakesh.mp3
+[22:25:48.906] [Audio]   TR02: 02 - I Will Return.mp3
+[22:25:48.906] [Audio]   TR03: 03 - Ave Maria No Morro.mp3
+[22:25:48.906] [Audio]   TR04: 04 - Long Time Ago.mp3
+[22:25:48.913] [Audio]   TR05: 04 Conga Man.mp3
+[22:25:48.913] [Audio]   TR06: 05 - Reggae Nights.mp3
+[22:25:48.913] [Audio]   TR07: 06 - The Magican.mp3
+[22:25:48.913] [Audio]   TR08: 06 Island Of Dreams.mp3
+[22:25:48.913] [Audio]   TR09: 07 - Seven Tears.mp3
+[22:25:48.913] [Audio]   TR10: 08 - Indio Boy.mp3
+[22:25:48.913] [Audio]   TR11: 09 - Lovely Land.mp3
+[22:25:48.913] [Audio]   TR12: 10 - Montezuma.mp3
+[22:25:48.913] [Audio]   TR13: 10 Paradise of Joy.mp3
+[22:25:48.913] [Audio]   TR14: 11 - I'll Be Home.mp3
+[22:25:48.913] [Audio]   TR15: 12 - Cherokee.mp3
+[22:25:48.913] [Audio]   TR16: 14 Aloha-Oe, Until We Meet Again.mp3
+[22:25:48.929] [Audio]   TR17: Goombay Dance Band-Bang Bang Lulu.mp3
+[22:25:48.929] [Audio]   TR18: Goombay Dance Band-Goombay Dance.mp3
+[22:25:48.929] [Audio]   TR19: Goombay Dance Band-Monkey.mp3
+[22:25:48.929] [Audio]   TR20: Goombay Dance Band-Ring Ting Ting.mp3
+[22:25:48.929] [Audio]   TR21: Goombay Dance Band-Sing Little Children.mp3
+[22:25:48.929] [Audio]   TR22: Goombay Dance Band-Sun of Jamaica.mp3
+[22:25:48.929] [Audio]   TR23: Goombay Dance Band-Sunny Caribbean.mp3
+[22:25:48.929] [Audio]   TR24: Goombay Dance Band-Take MFly Flamingoe Home to Jamaica.mp3
+[22:25:48.945] [Audio]   TR25: Goombay Dance Band-Take Me Home to Jamaica.mp3
+[22:25:49.400] [Audio] CD04 [CD04] nazwa="CD04": 36 track(ów)
+[22:25:49.400] [Audio]   TR01: 01 Acapulco.mp3
+[22:25:49.400] [Audio]   TR02: 01 Solaeado.mp3
+[22:25:49.400] [Audio]   TR03: 02 Tu.mp3
+[22:25:49.400] [Audio]   TR04: 02 Volo az 504.mp3
+[22:25:49.400] [Audio]   TR05: 03 Felicita.mp3
+[22:25:49.400] [Audio]   TR06: 03 Su di noi.mp3
+[22:25:49.416] [Audio]   TR07: 04 Ti Amo.mp3
+[22:25:49.416] [Audio]   TR08: 04 Tu Sei L'Unica Donna Per Me.mp3
+[22:25:49.416] [Audio]   TR09: 05 Piccola E Fragile.mp3
+[22:25:49.416] [Audio]   TR10: 05 Sara La Nostalgia.mp3
+[22:25:49.416] [Audio]   TR11: 06 Malinconia.mp3
+[22:25:49.416] [Audio]   TR12: 06 Mama Leone.mp3
+[22:25:49.416] [Audio]   TR13: 07 Piano Piano... M'Innamorai Di Te.mp3
+[22:25:49.416] [Audio]   TR14: 07 Tu Semplicita.mp3
+[22:25:49.416] [Audio]   TR15: 08 L'italiano.mp3
+[22:25:49.416] [Audio]   TR16: 08 Solo Tu.mp3
+[22:25:49.416] [Audio]   TR17: 09 A Far L'Amore Comincia Tu.mp3
+[22:25:49.432] [Audio]   TR18: 09 Balla Balla Ballerino.mp3
+[22:25:49.432] [Audio]   TR19: 10 Sara Perche ti amo.mp3
+[22:25:49.432] [Audio]   TR20: 10 Tu Ricordi.mp3
+[22:25:49.432] [Audio]   TR21: 11 Sharazan.mp3
+[22:25:49.432] [Audio]   TR22: 11 Una Notte Speciale.mp3
+[22:25:49.432] [Audio]   TR23: 12 Linda Bella Linda.mp3
+[22:25:49.432] [Audio]   TR24: 12 Piccollo amore.mp3
+[22:25:49.432] [Audio]   TR25: 13 America.mp3
+[22:25:49.432] [Audio]   TR26: 13 Serenata.mp3
+[22:25:49.432] [Audio]   TR27: 14 Africa.mp3
+[22:25:49.432] [Audio]   TR28: 14 Festa.mp3
+[22:25:49.432] [Audio]   TR29: 15 Donna Musica.mp3
+[22:25:49.432] [Audio]   TR30: 15 Quando Quando Quando.mp3
+[22:25:49.448] [Audio]   TR31: 16 Christina.mp3
+[22:25:49.448] [Audio]   TR32: 16 Sereno E'.mp3
+[22:25:49.448] [Audio]   TR33: 17 Una Lacrima Sul Viso.mp3
+[22:25:49.448] [Audio]   TR34: 17 Volare.mp3
+[22:25:49.448] [Audio]   TR35: 18 Ciao.mp3
+[22:25:49.448] [Audio]   TR36: 18 Marina.mp3
+[22:25:49.764] [Audio] CD05 [CD05] nazwa="CD05": 25 track(ów)
+[22:25:49.770] [Audio]   TR01: 01. MIKE OLDFIELD - Moonlight Shadow.mp3
+[22:25:49.770] [Audio]   TR02: 01. MIKE OLDFIELD - Tubular Bells.mp3
+[22:25:49.770] [Audio]   TR03: 02. MIKE OLDFIELD - Etude.mp3
+[22:25:49.770] [Audio]   TR04: 02. MIKE OLDFIELD - To France.mp3
+[22:25:49.770] [Audio]   TR05: 03. MIKE OLDFIELD - Five Miles Out.mp3
+[22:25:49.770] [Audio]   TR06: 03. MIKE OLDFIELD - Ommadawn.mp3
+[22:25:49.770] [Audio]   TR07: 04. MIKE OLDFIELD - In Dulci Jubilo.mp3
+[22:25:49.770] [Audio]   TR08: 04. MIKE OLDFIELD - Shadow On The Wall.mp3
+[22:25:49.770] [Audio]   TR09: 05. MIKE OLDFIELD - Foreign Affair.mp3
+[22:25:49.786] [Audio]   TR10: 05. MIKE OLDFIELD - Good News.mp3
+[22:25:49.786] [Audio]   TR11: 06. MIKE OLDFIELD - Phan's Theme 1 & 2.mp3
+[22:25:49.786] [Audio]   TR12: 06. MIKE OLDFIELD - Sentinel.mp3
+[22:25:49.786] [Audio]   TR13: 07. MIKE OLDFIELD - Family Man.mp3
+[22:25:49.786] [Audio]   TR14: 07. MIKE OLDFIELD - Phan's Departure.mp3
+[22:25:49.786] [Audio]   TR15: 08. MIKE OLDFIELD - Heavens Open.mp3
+[22:25:49.786] [Audio]   TR16: 08. MIKE OLDFIELD - Hergest Ridge (part 1).mp3
+[22:25:49.799] [Audio]   TR17: 09. MIKE OLDFIELD - Picture In The Dark.mp3
+[22:25:49.799] [Audio]   TR18: 09. MIKE OLDFIELD - Portsmouth.mp3
+[22:25:49.802] [Audio]   TR19: 10. MIKE OLDFIELD - Innocent.mp3
+[22:25:49.802] [Audio]   TR20: 11. MIKE OLDFIELD - Islands.mp3
+[22:25:49.802] [Audio]   TR21: 12. MIKE OLDFIELD - Incantation.mp3
+[22:25:49.802] [Audio]   TR22: 13. MIKE OLDFIELD - Blue night.mp3
+[22:25:49.802] [Audio]   TR23: 14. MIKE OLDFIELD - Man in the Rain.mp3
+[22:25:49.802] [Audio]   TR24: 15. MIKE OLDFIELD - Holy.mp3
+[22:25:49.802] [Audio]   TR25: 16. MIKE OLDFIELD - Runaway Son.mp3
+[22:25:52.776] [Audio] CD06 [CD06] nazwa="CD06": 99 track(ów)
+[22:25:52.776] [Audio]   TR01: 2plus1 - California non amour.mp3
+[22:25:52.776] [Audio]   TR02: 2plus1 - Chodź,pomaluj mój świat.mp3
+[22:25:52.776] [Audio]   TR03: 2plus1 - Czerwone słoneczko.mp3
+[22:25:52.776] [Audio]   TR04: 2plus1 - Easy come easy go.mp3
+[22:25:52.790] [Audio]   TR05: 2plus1 - Iść w stronę słońca.mp3
+[22:25:52.790] [Audio]   TR06: 2plus1 - Mama Chita.mp3
+[22:25:52.790] [Audio]   TR07: 2plus1 - Margarita..mp3
+[22:25:52.790] [Audio]   TR08: 2plus1 - Nie zmogła go kula.mp3
+[22:25:52.790] [Audio]   TR09: 2plus1 - Odpłyniesz wielkim autem.mp3
+[22:25:52.790] [Audio]   TR10: 2plus1 - Panna radosna..mp3
+[22:25:52.790] [Audio]   TR11: 2plus1 - Reqiem..mp3
+[22:25:52.790] [Audio]   TR12: 2plus1 - U kowala.mp3
+[22:25:52.802] [Audio]   TR13: 2plus1 - Wielki mały człowiek.mp3
+[22:25:52.802] [Audio]   TR14: 2plus1 - Windą do nieba.mp3
+[22:25:52.806] [Audio]   TR15: 2plus1 - Wstawaj szkoda dnia.mp3
+[22:25:52.806] [Audio]   TR16: Aja RL - Skóra.mp3
+[22:25:52.806] [Audio]   TR17: Alibabki - Kapitańskie tango.mp3
+[22:25:52.806] [Audio]   TR18: Alibabki - Kwiat jednej noc.mp3
+[22:25:52.806] [Audio]   TR19: Alibabki - Niech wie jak jest.mp3
+[22:25:52.806] [Audio]   TR20: Alibabki - Obladi oblada.mp3
+[22:25:52.806] [Audio]   TR21: Alibabki - Zuzanna.mp3
+[22:25:52.806] [Audio]   TR22: Alicja Majewska - Być kobietą.mp3
+[22:25:52.806] [Audio]   TR23: Alicja Majewska - Gdzie ci artyści szaleni.mp3
+[22:25:52.822] [Audio]   TR24: Alicja Majewska - Jeszcze tam sie zagiel bieli.mp3
+[22:25:52.822] [Audio]   TR25: Alicja Majewska - Na przekór wszystkim będę spać.mp3
+[22:25:52.822] [Audio]   TR26: Alicja Majewska - Odkryjemy miłość nieznaną .mp3
+[22:25:52.822] [Audio]   TR27: Alicja Majewska - Pan ciut niemodny.mp3
+[22:25:52.822] [Audio]   TR28: Andrzej Cierniewski - Duchy.mp3
+[22:25:52.822] [Audio]   TR29: Andrzej Dąbrowski-Do zakochania jeden krok.mp3
+[22:25:52.822] [Audio]   TR30: Andrzej Dąbrowski-Mary Ann.mp3
+[22:25:52.822] [Audio]   TR31: Andrzej Rosiewicz - Biały bal.mp3
+[22:25:52.822] [Audio]   TR32: Andrzej Rosiewicz - Chłopcy radarowcy.mp3
+[22:25:52.840] [Audio]   TR33: Andrzej Rosiewicz - Kazda potwora.mp3
+[22:25:52.841] [Audio]   TR34: Andrzej Rosiewicz - Mały Fiatek.mp3
+[22:25:52.843] [Audio]   TR35: Andrzej Rosiewicz - Najwięcej witaminy.mp3
+[22:25:52.846] [Audio]   TR36: Andrzej Rosiewicz - O chlopcu i dziewczynie.mp3
+[22:25:52.847] [Audio]   TR37: Andrzej Rosiewicz - Pytasz mnie.mp3
+[22:25:52.849] [Audio]   TR38: Andrzej Rosiewicz - W Lubartowie.mp3
+[22:25:52.851] [Audio]   TR39: Andrzej Rosiewicz - Wincenty Kalemba.mp3
+[22:25:52.853] [Audio]   TR40: Andrzej Rosiewicz - Zenek Blues.mp3
+[22:25:52.855] [Audio]   TR41: Andrzej Rybinski - Za kazdą cenę .mp3
+[22:25:52.857] [Audio]   TR42: Andrzej Rybiński - Mogłaś Małgoś.mp3
+[22:25:52.859] [Audio]   TR43: Andrzej Rybiński - Nie Licze Godzin I Lat.mp3
+[22:25:52.860] [Audio]   TR44: Andrzej Rybiński - Pogoda dla bogaczy.mp3
+[22:25:52.863] [Audio]   TR45: Andrzej Rybiński - Znajdę Cię.mp3
+[22:25:52.864] [Audio]   TR46: Andrzej Zaucha - Alibaba.mp3
+[22:25:52.865] [Audio]   TR47: Andrzej Zaucha - Baw się lalkami.mp3
+[22:25:52.867] [Audio]   TR48: Andrzej Zaucha - Baśka.mp3
+[22:25:52.870] [Audio]   TR49: Andrzej Zaucha - Byłaś serca biciem.mp3
+[22:25:52.871] [Audio]   TR50: Anna German - Być może.mp3
+[22:25:52.872] [Audio]   TR51: Anna German - Cyganeria.mp3
+[22:25:52.874] [Audio]   TR52: Anna German - Człowieczy los.mp3
+[22:25:52.876] [Audio]   TR53: Anna German - Greckie Wino.mp3
+[22:25:52.878] [Audio]   TR54: Anna German - Mój generał ołowiany.mp3
+[22:25:52.880] [Audio]   TR55: Anna Jantar - Hasta maniana.mp3
+[22:25:52.883] [Audio]   TR56: Anna Jantar - Jak W Taki Dzień Deszczowy.mp3
+[22:25:52.884] [Audio]   TR57: Anna Jantar - Jambalaya.mp3
+[22:25:52.886] [Audio]   TR58: Anna Jantar - Moj, tylko mój.mp3
+[22:25:52.887] [Audio]   TR59: Anna Jantar - Moje jedyne marzenie.mp3
+[22:25:52.890] [Audio]   TR60: Anna Jantar - Najtrudniejszy pierwszy krok  .mp3
+[22:25:52.892] [Audio]   TR61: Anna Jantar - Nic Nie Może Wiecznie Trwać.mp3
+[22:25:52.893] [Audio]   TR62: Anna Jantar - Nie żałujcie serca dziewczyny.mp3
+[22:25:52.893] [Audio]   TR63: Anna Jantar - Staruszek świat  .mp3
+[22:25:52.893] [Audio]   TR64: Anna Jantar - Twoje oczy obiecuja siodme niebo.mp3
+[22:25:52.893] [Audio]   TR65: Anna Jantar - Tyle słonca w całym mieście.mp3
+[22:25:52.902] [Audio]   TR66: Anna Jantar - Tylko mnie poproś do tańca.mp3
+[22:25:52.902] [Audio]   TR67: Anna Jantar - Za wszystkie noce.mp3
+[22:25:52.902] [Audio]   TR68: Anna Jantar - Zawsze gdzieś czeka ktoś.mp3
+[22:25:52.909] [Audio]   TR69: Anna Jantar - Żeby szczęśliwym być .mp3
+[22:25:52.910] [Audio]   TR70: Bajm - Biała Armia.mp3
+[22:25:52.910] [Audio]   TR71: Bajm - Co mi panie dasz.mp3
+[22:25:52.910] [Audio]   TR72: Czerwono-Czarni&Kasia Sobczyk - Mały książę.mp3
+[22:25:52.910] [Audio]   TR73: Gang Marcela - Mężczyzna i łzy.mp3
+[22:25:52.910] [Audio]   TR74: Halina Kunicka - Gwiazda naszej milości.mp3
+[22:25:52.910] [Audio]   TR75: Irena Jarocka - Kocha się raz.mp3
+[22:25:52.910] [Audio]   TR76: Irena Santor - Nie wszystko przeminie.mp3
+[22:25:52.910] [Audio]   TR77: Janusz Laskowski - Na Opolskim Rynku.mp3
+[22:25:52.924] [Audio]   TR78: Janusz Laskowski - Och jak bardzo Cię kocham.mp3
+[22:25:52.924] [Audio]   TR79: Krystyna Prońko - Kołysanka.mp3
+[22:25:52.924] [Audio]   TR80: Magda Umer - Oczy tej małej.mp3
+[22:25:52.924] [Audio]   TR81: Michał Bajor - Nie Znajda Nas -2000 Piotr Rubik-Andrzej Ozga  .mp3
+[22:25:52.924] [Audio]   TR82: Mieczysław Fogg - Pieśń o matce.mp3
+[22:25:52.924] [Audio]   TR83: Mieczysław Fogg - Serce Matki.mp3
+[22:25:52.924] [Audio]   TR84: Natalia Krakowiak - Nie wolno mi.mp3
+[22:25:52.924] [Audio]   TR85: Piotr Loretz - Ja już tamtej nie pamiętam.mp3
+[22:25:52.940] [Audio]   TR86: Piotr Szczepanik - Kochać.mp3
+[22:25:52.940] [Audio]   TR87: Piotr Szczepanik - Niedomówienia.mp3
+[22:25:52.940] [Audio]   TR88: Piotr Szczepanik - Nigdy więcej..mp3
+[22:25:52.940] [Audio]   TR89: Stanisław Wenglorz - Okno Z widokiem na parlament.mp3
+[22:25:52.940] [Audio]   TR90: Sumptuastic - W strugach deszczu.mp3
+[22:25:52.940] [Audio]   TR91: Symptuastic - A ja będę Twym aniołem.mp3
+[22:25:52.940] [Audio]   TR92: Sława Przybylska - Była sobie raz dziewczyna.mp3
+[22:25:52.940] [Audio]   TR93: Tadeusz Krok i Agata Rymarowicz - Piosenka o warkoczach.mp3
+[22:25:52.956] [Audio]   TR94: Universe - Deszczowa nieznajoma..mp3
+[22:25:52.956] [Audio]   TR95: Universe - Parę słów do pana Boga..mp3
+[22:25:52.956] [Audio]   TR96: Universe - Wołanie przez ciszę..mp3
+[22:25:52.956] [Audio]   TR97: Urszula Sipińska  - Komu weselne dzieci.mp3
+[22:25:52.956] [Audio]   TR98: Wojciech Paszkowski - Piękna córka.Taniec Wampirów .mp3
+[22:25:52.956] [Audio]   TR99: Zdzisława Sośnicka - Dom, który mam.mp3
+[22:25:55.758] [Audio] CD07 [CD07] nazwa="CD07": 99 track(ów)
+[22:25:55.758] [Audio]   TR01: Bajm - Józek, Nie Daruję Ci Tej Nocy.mp3
+[22:25:55.758] [Audio]   TR02: Bajm - Nie ma wody na pustyni.mp3
+[22:25:55.758] [Audio]   TR03: Bajm - O tobie.mp3
+[22:25:55.758] [Audio]   TR04: Bajm - OK. OK. nic nie wiem,nic nie wiem.mp3
+[22:25:55.758] [Audio]   TR05: Bajm - Piramidy na niby.mp3
+[22:25:55.758] [Audio]   TR06: Bajm - Po prostu stalo sie.mp3
+[22:25:55.774] [Audio]   TR07: Bajm - Płynie w Nas Goraca Krew.mp3
+[22:25:55.774] [Audio]   TR08: Bajm - Różowa kula.mp3
+[22:25:55.774] [Audio]   TR09: Bajm - Ucz się, ucz się.mp3
+[22:25:55.774] [Audio]   TR10: Bajm - W drodze do jej serca.mp3
+[22:25:55.774] [Audio]   TR11: Banda i Wanda - Hi-Fi.mp3
+[22:25:55.774] [Audio]   TR12: Banda i Wanda - Nie Będę Julią.mp3
+[22:25:55.785] [Audio]   TR13: Barbara Dunin i Zbigniew Kurtycz - Zeby sie ludzie kochali.mp3
+[22:25:55.785] [Audio]   TR14: Big cyc - Jak słodko zostać świrem.mp3
+[22:25:55.785] [Audio]   TR15: Big cyc - Kumpel Janosika.mp3
+[22:25:55.790] [Audio]   TR16: Big cyc - Makumba.mp3
+[22:25:55.790] [Audio]   TR17: Bobby Vinton - Moja droga ja cię kocham.mp3
+[22:25:55.790] [Audio]   TR18: Bohdan Czyżewski - Napisz do mnie miła.mp3
+[22:25:55.790] [Audio]   TR19: Bohdan Łazuka - Dzisiaj, jutro, zawsze.mp3
+[22:25:55.790] [Audio]   TR20: Bolter - Daj Mi Tę Noc.mp3
+[22:25:55.790] [Audio]   TR21: Bolter - Ty mnie jeszcze nie znasz.mp3
+[22:25:55.790] [Audio]   TR22: Bolter - Więcej słońca nam się marzy.mp3
+[22:25:55.790] [Audio]   TR23: Bractwo Kurkowe 1791 - Hej, przynieście.mp3
+[22:25:55.805] [Audio]   TR24: Bractwo Kurkowe 1791 - Moja Santa Maria.mp3
+[22:25:55.805] [Audio]   TR25: Brathanki - Ballada o miłości,Staszku i jego bracie Marianie .mp3
+[22:25:55.805] [Audio]   TR26: Brathanki - Czerwone korale.mp3
+[22:25:55.805] [Audio]   TR27: Brathanki - Gdzie ten, który powie mi .mp3
+[22:25:55.805] [Audio]   TR28: Brathanki - Heniek.mp3
+[22:25:55.805] [Audio]   TR29: Brathanki - Jestem ,jestem Nowak Rysiek.mp3
+[22:25:55.805] [Audio]   TR30: Brathanki - Poszlabym Za Toba Gora.mp3
+[22:25:55.805] [Audio]   TR31: Brathanki - Siebie dam po ślubie.mp3
+[22:25:55.821] [Audio]   TR32: Brathanki - W Kinie W Lublinie - Kochaj Mnie.mp3
+[22:25:55.821] [Audio]   TR33: Brathanki - Wesele.mp3
+[22:25:55.821] [Audio]   TR34: Brathanki - Wianek Hanki.mp3
+[22:25:55.821] [Audio]   TR35: Budka Suflera - 5 Bieg.mp3
+[22:25:55.821] [Audio]   TR36: Budka Suflera - Adam i Ewa.mp3
+[22:25:55.821] [Audio]   TR37: Budka Suflera - Bal Wszystkich Swietych.mp3
+[22:25:55.821] [Audio]   TR38: Budka Suflera - Bez aplauzu.mp3
+[22:25:55.821] [Audio]   TR39: Budka Suflera - Cały mój zgiełk_.mp3
+[22:25:55.821] [Audio]   TR40: Budka Suflera - Cień wielkiej góry.mp3
+[22:25:55.837] [Audio]   TR41: Budka Suflera - Cisza jak ta.mp3
+[22:25:55.837] [Audio]   TR42: Budka Suflera - Czas Olowiu.mp3
+[22:25:55.837] [Audio]   TR43: Budka Suflera - Czas czekania,czas olśnienia.mp3
+[22:25:55.837] [Audio]   TR44: Budka Suflera - Giganci Tańczą.mp3
+[22:25:55.837] [Audio]   TR45: Budka Suflera - Jest taki samotny dom.mp3
+[22:25:55.837] [Audio]   TR46: Budka Suflera - Jolka Jolka.mp3
+[22:25:55.837] [Audio]   TR47: Budka Suflera - Moja Alabama.mp3
+[22:25:55.837] [Audio]   TR48: Budka Suflera - Mokre oczy.mp3
+[22:25:55.837] [Audio]   TR49: Budka Suflera - Nic nie boli tak jak życie.mp3
+[22:25:55.853] [Audio]   TR50: Budka Suflera - Nie Umiesz Kochać.mp3
+[22:25:55.853] [Audio]   TR51: Budka Suflera - Nie wierz nigdy kobiecie.mp3
+[22:25:55.853] [Audio]   TR52: Budka Suflera - Nieśmiertelnie piękna twarz.mp3
+[22:25:55.853] [Audio]   TR53: Budka Suflera - Noc Komety.mp3
+[22:25:55.853] [Audio]   TR54: Budka Suflera - Nowa wieża Babel.mp3
+[22:25:55.853] [Audio]   TR55: Budka Suflera - Ona przyszła prosto z chmur.mp3
+[22:25:55.853] [Audio]   TR56: Budka Suflera - Piesn niepokorna.mp3
+[22:25:55.853] [Audio]   TR57: Budka Suflera - Pieśń niepokorna.mp3
+[22:25:55.868] [Audio]   TR58: Budka Suflera - Po tamtej stronie nadziei..mp3
+[22:25:55.868] [Audio]   TR59: Budka Suflera - Przegrywac - Czasem To Normalna Rze.mp3
+[22:25:55.868] [Audio]   TR60: Budka Suflera - Raigtime.mp3
+[22:25:55.868] [Audio]   TR61: Budka Suflera - Ratujmy co się da.mp3
+[22:25:55.868] [Audio]   TR62: Budka Suflera - Rok dwóch żywiołów.mp3
+[22:25:55.868] [Audio]   TR63: Budka Suflera - Sekret.mp3
+[22:25:55.868] [Audio]   TR64: Budka Suflera - Sen o dolinie.mp3
+[22:25:55.868] [Audio]   TR65: Budka Suflera - Strefa półcienia.mp3
+[22:25:55.868] [Audio]   TR66: Budka Suflera - Szukamy się.mp3
+[22:25:55.884] [Audio]   TR67: Budka Suflera - Takie tango.mp3
+[22:25:55.886] [Audio]   TR68: Budka Suflera - To nie tak miało być.mp3
+[22:25:55.886] [Audio]   TR69: Budka Suflera - Twoje radio.mp3
+[22:25:55.886] [Audio]   TR70: Budka Suflera - Tyle z tego masz.mp3
+[22:25:55.886] [Audio]   TR71: Budka Suflera - Z Dalekich Wypraw.mp3
+[22:25:55.886] [Audio]   TR72: Budka Suflera - Za ostatni Grosz.mp3
+[22:25:55.886] [Audio]   TR73: Budka Suflera - Zostan jeszcze.mp3
+[22:25:55.886] [Audio]   TR74: Budka Suflera - Świat od zaraz.mp3
+[22:25:55.886] [Audio]   TR75: Chłopcy z placu broni.- Chwalcie potęgę pieniądza.mp3
+[22:25:55.900] [Audio]   TR76: Chłopcy z placu broni.- Kocham Wolność.mp3
+[22:25:55.900] [Audio]   TR77: Chłopcy z placu broni.- O! Ela.mp3
+[22:25:55.905] [Audio]   TR78: Czerwone gitary - Anna M.mp3
+[22:25:55.905] [Audio]   TR79: Czerwone gitary - Anna Maria.mp3
+[22:25:55.905] [Audio]   TR80: Czerwone gitary - Biały krzyż.mp3
+[22:25:55.905] [Audio]   TR81: Czerwone gitary - Ciągle pada.mp3
+[22:25:55.905] [Audio]   TR82: Czerwone gitary - Florentyna.mp3
+[22:25:55.905] [Audio]   TR83: Czerwone gitary - Historia jednej znajomości.mp3
+[22:25:55.916] [Audio]   TR84: Czerwone gitary - Jest taki dzień.mp3
+[22:25:55.916] [Audio]   TR85: Czerwone gitary - Jeszcze dzień najwyżej dwa.mp3
+[22:25:55.916] [Audio]   TR86: Czerwone gitary - Kwiaty we włosach.mp3
+[22:25:55.916] [Audio]   TR87: Czerwone gitary - Lubisz gdy sie gniewam.mp3
+[22:25:55.916] [Audio]   TR88: Czerwone gitary - Niebo z moich stron.mp3
+[22:25:55.916] [Audio]   TR89: Czerwone gitary - Powiedz stary gdzieś ty był.mp3
+[22:25:55.928] [Audio]   TR90: Czerwone gitary - Płoną góry płoną lasy.mp3
+[22:25:55.928] [Audio]   TR91: Czerwone gitary - Tak bardzo się starałem.mp3
+[22:25:55.932] [Audio]   TR92: Czerwone gitary - Takie ładne oczy.mp3
+[22:25:55.932] [Audio]   TR93: Czerwono-Czarni - Będziesz tylko w tej piosence.mp3
+[22:25:55.932] [Audio]   TR94: Czerwono-Czarni - Napisze do ciebie z dalekiej podróży.mp3
+[22:25:55.932] [Audio]   TR95: Czerwono-Czarni - Nie bądź taki szybki Bill.mp3
+[22:25:55.932] [Audio]   TR96: Czerwono-Czarni&Karin Stanek - Czy krasnoludki są na świecie.mp3
+[22:25:55.932] [Audio]   TR97: Czerwono-Czarni&Karin Stanek - To nie moja wina.mp3
+[22:25:55.932] [Audio]   TR98: Czerwono-Czarni&Kasia Sobczyk - O mnie się nie martw.mp3
+[22:25:55.949] [Audio]   TR99: Czerwono-Czarni&Tony Keczer - Siedemnaście milionów.mp3
+[22:25:58.720] [Audio] CD08 [CD08] nazwa="CD08": 99 track(ów)
+[22:25:58.720] [Audio]   TR01: Czesław Niemen - Dziwny jest ten świat.mp3
+[22:25:58.720] [Audio]   TR02: Czesław Niemen - Płonąca stodoła.mp3
+[22:25:58.720] [Audio]   TR03: Czesław Niemen - Sen O Warszawie.mp3
+[22:25:58.735] [Audio]   TR04: Daab - Kalejdoskop moich dróg.mp3
+[22:25:58.735] [Audio]   TR05: Daab - Lecą anioly, leca demony .mp3
+[22:25:58.735] [Audio]   TR06: Daab - Przed nam wielka przestrzeń.mp3
+[22:25:58.735] [Audio]   TR07: Daab - W Moim Ogrodzie .mp3
+[22:25:58.735] [Audio]   TR08: Daniel Kłosek - Bezpanska miłość.mp3
+[22:25:58.735] [Audio]   TR09: Daniel Kłosek - Myśmy są wojsko.mp3
+[22:25:58.735] [Audio]   TR10: Daniel Kłosek - Strzelec Podhalanski.mp3
+[22:25:58.735] [Audio]   TR11: Danuta Rin&Bogdan Czyżewski - W.S.K...mp3
+[22:25:58.735] [Audio]   TR12: Danuta Rinn - Biedroneczki sa w kropeczki..mp3
+[22:25:58.751] [Audio]   TR13: Danuta Rinn, Czyżewski - Wszystkiego najlepszego.mp3
+[22:25:58.751] [Audio]   TR14: De Press - Bo jo Cie kochom.mp3
+[22:25:58.751] [Audio]   TR15: De press - Cy bocycie Świnty Ojce.mp3
+[22:25:58.751] [Audio]   TR16: Dyskoteka pana Jacka - Na dzień dobry jestem dobry -  Papa Dance, Tadeusz Broś.mp3
+[22:25:58.751] [Audio]   TR17: Edward Hulewicz - Obietnice.mp3
+[22:25:58.751] [Audio]   TR18: Edward Hulewicz - Serdeczne życzenia.mp3
+[22:25:58.751] [Audio]   TR19: Edward Hulewicz - Za Zdrowie Pań.mp3
+[22:25:58.767] [Audio]   TR20: Edyta Gepert - Jaka róża taki cierń.mp3
+[22:25:58.767] [Audio]   TR21: Edyta Gepert - Kocham cię życie.mp3
+[22:25:58.767] [Audio]   TR22: Edyta Gepert - Modlitwa do dobrego Boga.mp3
+[22:25:58.767] [Audio]   TR23: Edyta Gepert - Nie żaluje.mp3
+[22:25:58.767] [Audio]   TR24: Edyta Gepert - Szeptem.mp3
+[22:25:58.767] [Audio]   TR25: Edyta Gepert - Szukaj Mnie.mp3
+[22:25:58.767] [Audio]   TR26: Edyta Gepert - Zamiast.mp3
+[22:25:58.767] [Audio]   TR27: Elektryczne gitary.- Aty co..mp3
+[22:25:58.767] [Audio]   TR28: Elektryczne gitary.- Co ty tutaj robisz.mp3
+[22:25:58.783] [Audio]   TR29: Elektryczne gitary.- Na krzywy ryj..mp3
+[22:25:58.783] [Audio]   TR30: Elektryczne gitary.- Przewróciło się..mp3
+[22:25:58.783] [Audio]   TR31: Elektryczne gitary.- Wytrąciłaś.mp3
+[22:25:58.783] [Audio]   TR32: Eleni - A słońce sobie lśni.mp3
+[22:25:58.783] [Audio]   TR33: Eleni - Ballado, hej.mp3
+[22:25:58.783] [Audio]   TR34: Eleni - Bawmy się.mp3
+[22:25:58.783] [Audio]   TR35: Eleni - Chłopiec i orchidea.mp3
+[22:25:58.783] [Audio]   TR36: Eleni - Dla Ciebie jestem ja.mp3
+[22:25:58.783] [Audio]   TR37: Eleni - Do Widzenia.mp3
+[22:25:58.796] [Audio]   TR38: Eleni - Jażębino czerwona.mp3
+[22:25:58.799] [Audio]   TR39: Eleni - Kto ci w życiu więcej da_.mp3
+[22:25:58.799] [Audio]   TR40: Eleni - Milosc jak wino.mp3
+[22:25:58.799] [Audio]   TR41: Eleni - Mily juz jesien.mp3
+[22:25:58.799] [Audio]   TR42: Eleni - Muzyka Twoje imię ma.mp3
+[22:25:58.799] [Audio]   TR43: Eleni - Na miłość nie ma rady.mp3
+[22:25:58.799] [Audio]   TR44: Eleni - Na wielką milość.mp3
+[22:25:58.808] [Audio]   TR45: Eleni - Nasz najpiekniejszy dzień.mp3
+[22:25:58.808] [Audio]   TR46: Eleni - Odpowie ci wiatr.mp3
+[22:25:58.808] [Audio]   TR47: Eleni - Pewnie nie uwierzysz mi.mp3
+[22:25:58.814] [Audio]   TR48: Eleni - Po slonecznej stronie życia.mp3
+[22:25:58.814] [Audio]   TR49: Eleni - Postaw na mnie a zatrzymam deszcz_.mp3
+[22:25:58.818] [Audio]   TR50: Eleni - Pożar w godzinie serc.mp3
+[22:25:58.820] [Audio]   TR51: Eleni - Romans za grosz.mp3
+[22:25:58.822] [Audio]   TR52: Eleni - Roze czerwone.mp3
+[22:25:58.822] [Audio]   TR53: Eleni - Spójrz z dwóch stron.mp3
+[22:25:58.822] [Audio]   TR54: Eleni - Suliko.mp3
+[22:25:58.822] [Audio]   TR55: Eleni - To nie moj swiat.mp3
+[22:25:58.822] [Audio]   TR56: Eleni - Troszeczkę ziemi troszeczkę słońca.mp3
+[22:25:58.830] [Audio]   TR57: Eleni - Tu nie zawinił nikt.mp3
+[22:25:58.830] [Audio]   TR58: Eleni - Tu sie zaczyna świat.mp3
+[22:25:58.830] [Audio]   TR59: Eleni - Tylko w twoich dłoniach.mp3
+[22:25:58.830] [Audio]   TR60: Eleni - Wakacyjny mały flirt.mp3
+[22:25:58.830] [Audio]   TR61: Eleni - Wszystko w moim życiu zmienił.mp3
+[22:25:58.830] [Audio]   TR62: Eleni - Wystawię ci rachunek.mp3
+[22:25:58.830] [Audio]   TR63: Eleni - Za wszystkie noce.mp3
+[22:25:58.830] [Audio]   TR64: Eleni - Zorba.mp3
+[22:25:58.830] [Audio]   TR65: Elżbieta Starostecka - Za rok może dwa.mp3
+[22:25:58.830] [Audio]   TR66: Emilia Czerwińska - Nie żałujmy tej miłości.mp3
+[22:25:58.846] [Audio]   TR67: Ex Dance - Czarny smog (1987).mp3
+[22:25:58.846] [Audio]   TR68: Filipinki - Bal arlekina.mp3
+[22:25:58.846] [Audio]   TR69: Filipinki - Batumi.mp3
+[22:25:58.846] [Audio]   TR70: Filipinki - Czarny kot.mp3
+[22:25:58.846] [Audio]   TR71: Filipinki - Do widzenia profesorze.mp3
+[22:25:58.846] [Audio]   TR72: Filipinki - Filipinki to my.mp3
+[22:25:58.846] [Audio]   TR73: Filipinki - Siedmiu chłopców.mp3
+[22:25:58.846] [Audio]   TR74: Formacja Nieżywych Schabuff - Ławka.mp3
+[22:25:58.846] [Audio]   TR75: Formacja nieżywych schabów - A ja palę faję.mp3
+[22:25:58.862] [Audio]   TR76: Formacja nieżywych schabów - Da da da.mp3
+[22:25:58.864] [Audio]   TR77: Formacja nieżywych schabów - Klub Wesołego Szampana.mp3
+[22:25:58.864] [Audio]   TR78: Formacja nieżywych schabów - Najgłupsza piosenka świata.Kibel.mp3
+[22:25:58.864] [Audio]   TR79: Formacja nieżywych schabów - Swobodny dróżdż.mp3
+[22:25:58.864] [Audio]   TR80: Formacja nieżywych schabów - Zakochaj  się.mp3
+[22:25:58.864] [Audio]   TR81: Franek Kimono - Dysko Story.mp3
+[22:25:58.864] [Audio]   TR82: Franek Kimono - King Bruce Lee Karate Mistrz.mp3
+[22:25:58.878] [Audio]   TR83: Franek Kimono - Królowa Dysko.mp3
+[22:25:58.878] [Audio]   TR84: Gang Marcela - Bieszczady.mp3
+[22:25:58.878] [Audio]   TR85: Gang Marcela - Blues jest wtedy kiedy człowiekowi jest źle.mp3
+[22:25:58.878] [Audio]   TR86: Gang Marcela - Duszko Ma.mp3
+[22:25:58.878] [Audio]   TR87: Gang Marcela - Gdy jesteś tu.mp3
+[22:25:58.878] [Audio]   TR88: Gang Marcela - Gdybyś tak dziś.mp3
+[22:25:58.878] [Audio]   TR89: Gang Marcela - Kto jeśli nie Ty.mp3
+[22:25:58.878] [Audio]   TR90: Gang Marcela - Marzenia za grosz.mp3
+[22:25:58.878] [Audio]   TR91: Gang Marcela - Mój koń.mp3
+[22:25:58.893] [Audio]   TR92: Gang Marcela - Niedawno tak.mp3
+[22:25:58.896] [Audio]   TR93: Gang Marcela - Ojciec żyl tak jak chcial.mp3
+[22:25:58.897] [Audio]   TR94: Gang Marcela - Piękne życie spędzają kowboje.mp3
+[22:25:58.897] [Audio]   TR95: Gang Marcela - Róże czerwone są.mp3
+[22:25:58.897] [Audio]   TR96: Gang Marcela - Starzyk.mp3
+[22:25:58.897] [Audio]   TR97: Gang Marcela - Tyle złamanych serc.mp3
+[22:25:58.897] [Audio]   TR98: Gang Marcela - Wesele u sąsiada.mp3
+[22:25:58.897] [Audio]   TR99: Gang Marcela - Zaświeciła moja gwiazda.mp3
+[22:26:01.858] [Audio] CD09 [CD09] nazwa="CD09": 99 track(ów)
+[22:26:01.858] [Audio]   TR01: Grupa i - Radość o poranku (1974).mp3
+[22:26:01.858] [Audio]   TR02: Halina Frąckowiak - Badź gotowy dziś do drogi.mp3
+[22:26:01.858] [Audio]   TR03: Halina Frąckowiak - Dancing Queen.mp3
+[22:26:01.858] [Audio]   TR04: Halina Frąckowiak - Karolinka.mp3
+[22:26:01.858] [Audio]   TR05: Halina Frąckowiak - Mały Elf.mp3
+[22:26:01.870] [Audio]   TR06: Halina Frąckowiak - Napisz proszę chociaż krótki list.mp3
+[22:26:01.870] [Audio]   TR07: Halina Frąckowiak - Papierowy księżyc.mp3
+[22:26:01.870] [Audio]   TR08: Halina Frąckowiak - Pogoda dla bogaczy.mp3
+[22:26:01.870] [Audio]   TR09: Halina Frąckowiak - Przeżyłam  z  Tobą  Tyle  Lat.mp3
+[22:26:01.870] [Audio]   TR10: Halina Kunicka - Cyganka.mp3
+[22:26:01.870] [Audio]   TR11: Halina Kunicka - Czambałałajka.mp3
+[22:26:01.870] [Audio]   TR12: Halina Kunicka - Jak dobrze mieć sąsiada.mp3
+[22:26:01.870] [Audio]   TR13: Halina Kunicka - Marionetka.mp3
+[22:26:01.870] [Audio]   TR14: Halina Kunicka - Na gorąco.mp3
+[22:26:01.886] [Audio]   TR15: Halina Kunicka - Orkiestry dęte.mp3
+[22:26:01.886] [Audio]   TR16: Halina Kunicka - To były piękne dni.mp3
+[22:26:01.886] [Audio]   TR17: Hanna Banaszak - W Moim Magicznym Domu.mp3
+[22:26:01.886] [Audio]   TR18: Happy End - Jak się masz kochanie.mp3
+[22:26:01.886] [Audio]   TR19: Happy End - Nadaj do mnie SOS.mp3
+[22:26:01.886] [Audio]   TR20: Irena Jarocka - Beatelmania story.mp3
+[22:26:01.886] [Audio]   TR21: Irena Jarocka - Bliski serc dzień.mp3
+[22:26:01.901] [Audio]   TR22: Irena Jarocka - By coś zostalo z tych dni  .mp3
+[22:26:01.904] [Audio]   TR23: Irena Jarocka - Chłopcy z weselszych lat (inna wersja).mp3
+[22:26:01.906] [Audio]   TR24: Irena Jarocka - Co mnie w tobie zachwyciło.mp3
+[22:26:01.908] [Audio]   TR25: Irena Jarocka - Gdy serce mówi mi tak.mp3
+[22:26:01.911] [Audio]   TR26: Irena Jarocka - Kocha się raz.mp3
+[22:26:01.913] [Audio]   TR27: Irena Jarocka - Mary Ann.mp3
+[22:26:01.915] [Audio]   TR28: Irena Jarocka - Mój słodkj Charlie.mp3
+[22:26:01.916] [Audio]   TR29: Irena Jarocka - Niech tańczą nasze serca.mp3
+[22:26:01.918] [Audio]   TR30: Irena Jarocka - Odpływaja kawiarenki.mp3
+[22:26:01.918] [Audio]   TR31: Irena Jarocka - Piosenka spod welonu.mp3
+[22:26:01.923] [Audio]   TR32: Irena Jarocka - Sto lat czekam na twój list.mp3
+[22:26:01.923] [Audio]   TR33: Irena Jarocka - To co zdarza się raz.mp3
+[22:26:01.923] [Audio]   TR34: Irena Jarocka - Wymyslilam cie.mp3
+[22:26:01.923] [Audio]   TR35: Irena Jarocka - Zawsze pójdę z tobą.mp3
+[22:26:01.930] [Audio]   TR36: Irena Jarocka - Ślubne prezenty.mp3
+[22:26:01.931] [Audio]   TR37: Irena Jarocka - Śpiewam pod gołym niebem.mp3
+[22:26:01.933] [Audio]   TR38: Irena Jarocka&Bogusław Mec - Chcę z tobą iść w nieznane.mp3
+[22:26:01.933] [Audio]   TR39: Irena Jarocka&Budka suflera  - Nie odchodz jeszcze.mp3
+[22:26:01.933] [Audio]   TR40: Irena Santor - Graj piękny Cyganie.mp3
+[22:26:01.933] [Audio]   TR41: Irena Santor - Kowalem swego szczęścia każdy bywa sam.mp3
+[22:26:01.933] [Audio]   TR42: Irena Santor - Najpiękniejsze Warszawianki to przyjezdne.mp3
+[22:26:01.933] [Audio]   TR43: Irena Santor - Nalej mi wina.mp3
+[22:26:01.933] [Audio]   TR44: Irena Santor - Piosenka o sąsiedzie..mp3
+[22:26:01.949] [Audio]   TR45: Irena Santor - Powrócisz tu.mp3
+[22:26:01.949] [Audio]   TR46: Irena Santor - Tych lat nie odda nikt.mp3
+[22:26:01.949] [Audio]   TR47: Irena Santor - Tyle wiem o piosence.mp3
+[22:26:01.956] [Audio]   TR48: Izabella Trojanowska - Wszystko czego dziś chcę.mp3
+[22:26:01.958] [Audio]   TR49: Jacek Lech - Badź dziewczyną z moich marzen.mp3
+[22:26:01.959] [Audio]   TR50: Jacek Lech - Co jej mogleś dać.mp3
+[22:26:01.959] [Audio]   TR51: Jacek Lech - Dwadzieścia lat,a może mniej.mp3
+[22:26:01.964] [Audio]   TR52: Jacek Lech - Napiszę do ciebie z dalekiej podroży.mp3
+[22:26:01.966] [Audio]   TR53: Jacek Lech - Pozwólcie  spiewać ptakom.mp3
+[22:26:01.966] [Audio]   TR54: Jacek Skubikowski - Ja tu tylko śpię.mp3
+[22:26:01.969] [Audio]   TR55: Jacek Skubikowski - Jedyny hotel w miescie.mp3
+[22:26:01.969] [Audio]   TR56: Jacek Skubikowski - Słodkie cudo z M-2.mp3
+[22:26:01.969] [Audio]   TR57: Jacek Skubikowski - Uczciwa bieda.mp3
+[22:26:01.969] [Audio]   TR58: Jacek Skubikowski - Żółta żaba żarła żur.mp3
+[22:26:01.969] [Audio]   TR59: Jacek Zwoźniak - Ragazzo da Napoli.mp3
+[22:26:01.969] [Audio]   TR60: Jan Kaczmarek - Budujemy Kapitalizm.mp3
+[22:26:01.982] [Audio]   TR61: Jan Kaczmarek - Czego się boisz głupia.mp3
+[22:26:01.982] [Audio]   TR62: Jan Kaczmarek - Do Serca Przytul Psa.mp3
+[22:26:01.982] [Audio]   TR63: Jan Kaczmarek - Treser I Lew.mp3
+[22:26:01.982] [Audio]   TR64: Jan Kaczmarek - Warto było czekać.mp3
+[22:26:01.982] [Audio]   TR65: Jan Kaczmarek - Zerowy bilans czyli pero, pero.mp3
+[22:26:01.982] [Audio]   TR66: Janusz Gniatkowski - Ten chleb jest twój i mój.mp3
+[22:26:01.982] [Audio]   TR67: Janusz Laskowski - Kolorowe jarmarki.mp3
+[22:26:01.982] [Audio]   TR68: Jerzy Połomski - Bo z Dziewczynami.mp3
+[22:26:01.997] [Audio]   TR69: Jerzy Połomski - Cała sala śpiewa z nami.mp3
+[22:26:01.997] [Audio]   TR70: Jerzy Połomski - Daj.mp3
+[22:26:01.997] [Audio]   TR71: Kapitan Nemo - Bar paradise.mp3
+[22:26:01.997] [Audio]   TR72: Kapitan Nemo - Elektroniczna cywilizacja.mp3
+[22:26:01.997] [Audio]   TR73: Kapitan Nemo - Kochaj zawsze mnie.mp3
+[22:26:01.997] [Audio]   TR74: Kapitan Nemo - S O S Dla Planety.mp3
+[22:26:02.009] [Audio]   TR75: Kapitan Nemo - Słodkie słowo .mp3
+[22:26:02.009] [Audio]   TR76: Kapitan Nemo - Twoja Lorelei.mp3
+[22:26:02.012] [Audio]   TR77: Kapitan Nemo - Zimne kino.mp3
+[22:26:02.015] [Audio]   TR78: Kazimierz Grześkowiak - Chłop żywemu nie przepuści.mp3
+[22:26:02.015] [Audio]   TR79: Kazimierz Grześkowiak - To je moje.mp3
+[22:26:02.015] [Audio]   TR80: Klincz - Dla ciebie staczam się.mp3
+[22:26:02.015] [Audio]   TR81: Klincz - Jak lodu bryła.mp3
+[22:26:02.015] [Audio]   TR82: Kobranocka - List z pola boju.mp3
+[22:26:02.015] [Audio]   TR83: Kombi - Black and White.mp3
+[22:26:02.015] [Audio]   TR84: Kombi - Czekam wciąż.mp3
+[22:26:02.026] [Audio]   TR85: Kombi - Gdzie tak biegniecie bracia.mp3
+[22:26:02.026] [Audio]   TR86: Kombi - Jej wspomnienie.mp3
+[22:26:02.029] [Audio]   TR87: Kombi - Linia życia .mp3
+[22:26:02.029] [Audio]   TR88: Kombi - Nasze randez-vous.mp3
+[22:26:02.029] [Audio]   TR89: Kombi - Nie ma jak szpan.mp3
+[22:26:02.029] [Audio]   TR90: Kombi - Nietykalni zkamieniałe zło.mp3
+[22:26:02.029] [Audio]   TR91: Kombi - Pokolenie.mp3
+[22:26:02.029] [Audio]   TR92: Kombi - Przytul Mnie.mp3
+[22:26:02.029] [Audio]   TR93: Kombi - Słodkiego miłego życia.mp3
+[22:26:02.029] [Audio]   TR94: Kombi - Tabu-Obcy ląd.mp3
+[22:26:02.029] [Audio]   TR95: Kombi - Taniec w słońcu.mp3
+[22:26:02.029] [Audio]   TR96: Kombi - Za ciosem cios.mp3
+[22:26:02.046] [Audio]   TR97: Krystyna Giżowska - Nie było ciebie tyle lat.mp3
+[22:26:02.046] [Audio]   TR98: Krystyna Giżowska - Przeżyłam z tobą tyle lat.mp3
+[22:26:02.046] [Audio]   TR99: Krystyna Giżowska - Złote Obrączki.mp3
+[22:26:04.518] [Audio] CD10 [CD10] nazwa="CD10": 92 track(ów)
+[22:26:04.518] [Audio]   TR01: Krystyna Prońko - Jesteś lekiem na całe zło.mp3
+[22:26:04.518] [Audio]   TR02: Krystyna Prońko - Psalm stojących w kolejce.mp3
+[22:26:04.529] [Audio]   TR03: Krzysztof Krawczyk - Byle było tak.mp3
+[22:26:04.529] [Audio]   TR04: Krzysztof Krawczyk - Hej Barbara.mp3
+[22:26:04.529] [Audio]   TR05: Krzysztof Krawczyk - Jak minał dzień.mp3
+[22:26:04.529] [Audio]   TR06: Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną.mp3
+[22:26:04.529] [Audio]   TR07: Krzysztof Krawczyk - Pospieszny pociąg 8-02.mp3
+[22:26:04.529] [Audio]   TR08: Krzysztof Krawczyk - Rysunek na szkle.mp3
+[22:26:04.529] [Audio]   TR09: Krzysztof Krawczyk - To co dał nam świat.mp3
+[22:26:04.544] [Audio]   TR10: Krzysztof Krawczyk - Zabawa w stylu folk.mp3
+[22:26:04.545] [Audio]   TR11: Krzysztof Krawczyk&Bohdan Smoleń - Dziewczyny które mam na myśli.mp3
+[22:26:04.545] [Audio]   TR12: Krzysztof Krawczyk&Goran Bregovic - Mój przyjacielu.mp3
+[22:26:04.545] [Audio]   TR13: Lombard  - Stan gotowości.mp3
+[22:26:04.545] [Audio]   TR14: Lombard - Adriatyk ocean gorący.mp3
+[22:26:04.545] [Audio]   TR15: Lombard - Diamentowa kula.mp3
+[22:26:04.545] [Audio]   TR16: Lombard - Droga pani z TV.mp3
+[22:26:04.545] [Audio]   TR17: Lombard - Gołębi puch..mp3
+[22:26:04.545] [Audio]   TR18: Lombard - Kryształowa..mp3
+[22:26:04.560] [Audio]   TR19: Lombard - Kto mi zapłaci za łzy.mp3
+[22:26:04.560] [Audio]   TR20: Lombard - Mam dość.mp3
+[22:26:04.560] [Audio]   TR21: Lombard - Nasz ostatni taniec.mp3
+[22:26:04.560] [Audio]   TR22: Lombard - Ocalić serca.mp3
+[22:26:04.560] [Audio]   TR23: Lombard - Przeżyj to sam.mp3
+[22:26:04.569] [Audio]   TR24: Lombard - Szklana pogoda .mp3
+[22:26:04.569] [Audio]   TR25: Lombard - Taniec pingwina na szkle_.mp3
+[22:26:04.569] [Audio]   TR26: Lombard - Wąwóz Kolorado.mp3
+[22:26:04.569] [Audio]   TR27: Magda Umer - Koncert jesienny na dwa świerszcze..mp3
+[22:26:04.576] [Audio]   TR28: Marek Grechuta - Będziesz moją panią.mp3
+[22:26:04.576] [Audio]   TR29: Marek Grechuta - Nie dokazuj.mp3
+[22:26:04.576] [Audio]   TR30: Marek Kondrat - Mydełko FA.mp3
+[22:26:04.576] [Audio]   TR31: Maryla Rodowicz - Ale to juz bylo.mp3
+[22:26:04.576] [Audio]   TR32: Maryla Rodowicz - Damą być.mp3
+[22:26:04.576] [Audio]   TR33: Maryla Rodowicz - Do łezki łezka.mp3
+[22:26:04.576] [Audio]   TR34: Maryla Rodowicz - Dziś prawdziwych cyganów już nie ma .mp3
+[22:26:04.576] [Audio]   TR35: Maryla Rodowicz - Jada wozy kolorowe.mp3
+[22:26:04.592] [Audio]   TR36: Maryla Rodowicz - Małgośka.mp3
+[22:26:04.592] [Audio]   TR37: Maryla Rodowicz - Niech żyje bal.mp3
+[22:26:04.592] [Audio]   TR38: Maryla Rodowicz - Sing sing.mp3
+[22:26:04.592] [Audio]   TR39: Maryla Rodowicz - Szparka sekretarka.mp3
+[22:26:04.592] [Audio]   TR40: Maryla Rodowicz - Trzy może nawet cztery dni..mp3
+[22:26:04.592] [Audio]   TR41: Maryla Rodowicz - Wio koniku.mp3
+[22:26:04.592] [Audio]   TR42: Mieczysław Fogg - Gramofonomanka (DJ Twister Dancehall Remix.mp3
+[22:26:04.592] [Audio]   TR43: Mieczysław Fogg - Gramofonomanka.mp3
+[22:26:04.607] [Audio]   TR44: Mieczysław Wojnicki - Jabłuszko pełne snów.mp3
+[22:26:04.608] [Audio]   TR45: Mieczysław Wojnicki - Kaczuszka i mak.mp3
+[22:26:04.608] [Audio]   TR46: Mieczysław Wojnicki - Piosenka z przedmieścia.mp3
+[22:26:04.608] [Audio]   TR47: Mr Zoob - Kartka Dla Waldka.mp3
+[22:26:04.615] [Audio]   TR48: Mr.Zoob - Mój jest ten kawałek podłogi.mp3
+[22:26:04.615] [Audio]   TR49: Obywatel G C - Nie pytaj o Polskę.mp3
+[22:26:04.619] [Audio]   TR50: Papa Dance - Ciało i talent.mp3
+[22:26:04.619] [Audio]   TR51: Papa Dance - Czy ty lubisz to co ja.mp3
+[22:26:04.619] [Audio]   TR52: Papa Dance - Galaktyczny zwiad .mp3
+[22:26:04.623] [Audio]   TR53: Papa Dance - Kamikaze wróć.mp3
+[22:26:04.623] [Audio]   TR54: Papa Dance - Kanał XO2.mp3
+[22:26:04.623] [Audio]   TR55: Papa Dance - Nasz Disneyland.mp3
+[22:26:04.623] [Audio]   TR56: Papa Dance - Nietykalni.mp3
+[22:26:04.623] [Audio]   TR57: Papa Dance - Ocean wspomnień.mp3
+[22:26:04.623] [Audio]   TR58: Papa Dance - Panorama Tatr..mp3
+[22:26:04.623] [Audio]   TR59: Papa Dance - Pocztówka z wakacji..mp3
+[22:26:04.623] [Audio]   TR60: Papa Dance - Twój ziemski Eden.mp3
+[22:26:04.623] [Audio]   TR61: Papa dance - Naj story..mp3
+[22:26:04.623] [Audio]   TR62: Partita - Mamy tylko siebie.mp3
+[22:26:04.639] [Audio]   TR63: Partita - Pytasz mnie co ci dam.mp3
+[22:26:04.639] [Audio]   TR64: Piersi - Będziemy Piwo Pić.mp3
+[22:26:04.639] [Audio]   TR65: Piersi - Całuj mnie.mp3
+[22:26:04.639] [Audio]   TR66: Piersi - Chodz tu mila.mp3
+[22:26:04.647] [Audio]   TR67: Piersi - Impresje nacjonalistycze.mp3
+[22:26:04.649] [Audio]   TR68: Piersi - Leżę.mp3
+[22:26:04.649] [Audio]   TR69: Piersi - Lombardino.mp3
+[22:26:04.649] [Audio]   TR70: Piersi - Maryna.mp3
+[22:26:04.649] [Audio]   TR71: Piersi - Małżeństwo na wieczność ślubowane.mp3
+[22:26:04.655] [Audio]   TR72: Piersi - Mietek żul.mp3
+[22:26:04.655] [Audio]   TR73: Piersi - Nie Gniewaj się Janek.mp3
+[22:26:04.655] [Audio]   TR74: Piersi - Nie samym chlebem czlowiek żyje.mp3
+[22:26:04.655] [Audio]   TR75: Piersi - O Hela!!!.mp3
+[22:26:04.655] [Audio]   TR76: Piersi - Powróć że komuno.mp3
+[22:26:04.655] [Audio]   TR77: Piersi - Rezerwa.mp3
+[22:26:04.655] [Audio]   TR78: Piersi - Rodzina słowem silna.mp3
+[22:26:04.655] [Audio]   TR79: Piersi - Rozjebałem się na drzewie.mp3
+[22:26:04.655] [Audio]   TR80: Piersi - Silesian Song.mp3
+[22:26:04.655] [Audio]   TR81: Piersi - Wyrzucił Mnie z Roboty.mp3
+[22:26:04.671] [Audio]   TR82: Piersi - ZCHN zbliża się.mp3
+[22:26:04.671] [Audio]   TR83: Piersi - Zośka.mp3
+[22:26:04.671] [Audio]   TR84: Piotr Loretz - Ja już tamtej nie pamiętam.mp3
+[22:26:04.671] [Audio]   TR85: Pod Budą - Kraków, Piwna 7.mp3
+[22:26:04.671] [Audio]   TR86: Pod Budą - Urodzeni jesienią.mp3
+[22:26:04.671] [Audio]   TR87: Ptaki - Zapomnisz kiedyś, że to ja.mp3
+[22:26:04.671] [Audio]   TR88: Roman Gerczak - zabralas mi lato.mp3
+[22:26:04.671] [Audio]   TR89: Seweryn Krajewski - Najpiekniejsza.mp3
+[22:26:04.671] [Audio]   TR90: Stachursky - Czuje i wiem.mp3
+[22:26:04.687] [Audio]   TR91: Stachursky - Zostańmy razem.mp3
+[22:26:04.687] [Audio]   TR92: na skraju lasu domek sta-....mp3
+[22:26:04.687] [Audio] CD11 [CD11] nazwa="CD11": 1 track(ów)
+[22:26:04.687] [Audio]   TR01: Krzysztof Krawczyk - Ostatni raz zatańczysz ze mną.mp3
+[22:26:04.687] [Audio] CD12 [CD12] nazwa="CD12": 1 track(ów)
+[22:26:04.687] [Audio]   TR01: Krzysztof Krawczyk - To co dał nam świat.mp3
+[22:26:04.687] [Audio] CD13 [CD13] nazwa="CD13": 1 track(ów)
+[22:26:04.687] [Audio]   TR01: Krzysztof Krawczyk&Bohdan Smoleń - Dziewczyny które mam na myśli.mp3
+[22:26:04.702] [Audio] CD14 [CD14] nazwa="CD14": 1 track(ów)
+[22:26:04.702] [Audio]   TR01: Halina Frąckowiak - Mały Elf.mp3
+[22:26:04.702] [Audio] Inicjalizacja zakończona — pendrive gotowy.
+[22:26:04.702] [Audio] Gotowy do odtwarzania.
+[22:26:04.702] >>> Wykryto USB. Wznawiam zapamietana plyte: CD12 TR1
+[22:26:06.399] === BUS_ON = 1 ===
+[22:26:06.399] [Audio] Głośność: 18/21 (zlecone)
+[22:26:06.399] === BUS_ON = 0 ===
+[22:26:06.408] === SEN: magistrala wylaczona — zatrzymuje audio ===
+[22:26:06.409] [Audio] ⏹ Zatrzymano (zlecone).
+[22:26:06.699] === BUS_ON = 1 ===
+[22:26:06.716] [Audio] Głośność: 18/21 (zlecone)
+[22:26:07.111] === BUS_ON = 0 ===
+[22:26:07.118] === SEN: magistrala wylaczona — zatrzymuje audio ===
+[22:26:07.118] [Audio] ⏹ Zatrzymano (zlecone).
+[22:26:07.302] === BUS_ON = 1 ===
+[22:26:07.302] [Audio] Głośność: 18/21 (zlecone)
+[22:26:07.890] ===== CZARNA SKRZYNKA (RADIO SYSTEM RESET 18 10 01 00) — ostatnie 1 zdarzen =====
+[22:26:07.890] [-    0ms] RX    18 10 01 00 29 00
+[22:26:07.890] ======================================================
+[22:26:07.890] >> Radio system reset (#1) (juz bylem nieprzydzielony)
+[22:26:07.954] == Wykryto CDX-M670 (widziano 3B 10 02 11) ==
+[22:26:08.019] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 49ms po DB)
+[22:26:08.160] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 179ms po DB)
+[22:26:08.210] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#3, 228ms po DB)
+[22:26:08.256] >> Odpowiadam na ANYONE? device info 0x8C
+[22:26:08.271] >> Adres przydzielony: 0x31 (op2=0x14)! deviceAllocated=true
+[22:26:09.161] >> [Audio Bus] Radio sygnalizuje audio ON (87 2B)
+[22:26:09.177] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[22:26:10.641] [STAT] poll15=6 disp13(my)=1 disp13(3B)=5 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:00
+[22:26:11.793] >>> C0 -> 80 (Idle)
+[22:26:12.648] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:00
+[22:26:14.648] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:00
+[22:26:16.633] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:00
+[22:26:17.536] >> PLAY command received!
+[22:26:17.536] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:26:17.630] [Audio] Async connecttoFS("/CD12/Krzysztof Krawczyk - To co dał nam świat.mp3") = OK
+[22:26:17.631] [Audio] ▶ Odtwarzam: /CD12/Krzysztof Krawczyk - To co dał nam świat.mp3 (rozpoczęto dekodowanie)
+[22:26:17.930] >>> 40 -> 00 (Playing!)
+[22:26:18.644] [STAT] poll15=6 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=7/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR1 00:00
+[22:26:19.359] >> ZADANIE 0x84: 31 71 84 D7 FD 70 00 00 00 6D 00
+[22:26:20.047] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:26:20.648] [STAT] poll15=11 disp13(my)=9 disp13(3B)=0 ping12(my)=0 btn=0 break=10/10 txt=1 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD12 TR1 00:02
+[22:26:22.047] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:26:22.648] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:04
+[22:26:24.060] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:26:24.647] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:06
+[22:26:26.061] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:26:26.646] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:08
+[22:26:28.230] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[22:26:28.643] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:10
+[22:26:30.648] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:12
+[22:26:31.929] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:26:32.647] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:14
+[22:26:33.933] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:26:34.643] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:16
+[22:26:35.942] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:26:36.643] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:18
+[22:26:37.929] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:26:38.646] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:20
+[22:26:39.929] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[22:26:40.454] >> PLAY (juz gram — ignoruje, nie restartuje utworu)
+[22:26:40.640] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=5/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:22
+[22:26:41.608] >> ZADANIE 0x84: 31 71 84 D7 FD 70 00 00 00 6D 00
+[22:26:42.640] [STAT] poll15=8 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=1 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR1 00:24
+[22:26:44.414] >> [Audio Bus] Radio sygnalizuje audio OFF (87 6A)
+[22:26:44.414] [Audio] ⏹ Zatrzymano (zlecone).
+[22:26:44.414] [Audio-info] Closing audio file
+[22:26:44.430] >> [Audio Bus] Radio sygnalizuje audio OFF (87 2A)
+[22:26:44.430] [Audio] ⏹ Zatrzymano (zlecone).
+[22:26:44.640] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=4/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:26
+[22:26:46.644] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:26
+[22:26:46.738] >>> C0 -> 80 (Idle)
+[22:26:48.646] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:26
+[22:26:52.641] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:26
+[22:26:54.641] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:26
+[22:26:54.676] >> [Audio Bus] Radio sygnalizuje audio OFF (87 22)
+[22:26:54.676] [Audio] ⏹ Zatrzymano (zlecone).
+[22:26:54.689] === BUS_ON = 0 ===
+[22:26:54.689] === SEN: magistrala wylaczona — zatrzymuje audio ===
+[22:26:54.689] [Audio] ⏹ Zatrzymano (zlecone).

@@ -1199,11 +1199,17 @@ void handlePacket(const uint8_t* buf, int len) {
     // ===== BUS AUDIO IN — diagnostyka routingu dzwieku (18 10 87 ...) =====
     // Gorny nibble op2 to licznik sekwencji, bit0 = stan. Prawdziwa zmieniarka
     // NIGDY nie wycisza wlasnego wyjscia na tej podstawie — gra caly czas.
-    // Dlatego TYLKO logujemy i NIE ruszamy glosnosci DAC.
     if (rad == ADDR_BROADCAST && tad == ADDR_MASTER && op1 == 0x87) {
         bool on = (op2 & 0x01) != 0;
-        Serial.printf(">> [Audio Bus] Radio sygnalizuje audio %s (87 %02X) — tylko log\n",
+        Serial.printf(">> [Audio Bus] Radio sygnalizuje audio %s (87 %02X)\n",
                       on ? "ON" : "OFF", op2);
+        if (!on) {
+            // Radio sygnalizuje audio OFF (wylaczenie radia lub przejscie na FM).
+            // Zwalniamy magistrale i wracamy do fazy przed załączeniem PLAY.
+            CdChanger::sleep();
+            requestSessionActive = false;
+            txQueue.clear();
+        }
         return;
     }
 
