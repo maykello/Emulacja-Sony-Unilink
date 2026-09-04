@@ -221,6 +221,16 @@ constexpr unsigned long PERSIST_FLUSH_IDLE_US = 1500000;  // 1.5 s ciszy
 // zrodla albo utracie sesji ekran zostawal pusty do nastepnego okresu).
 constexpr unsigned long CD_TEXT_REPEAT_MS = 2000;
 
+// --- CD-TEXT TIME FLASH (okresowe pokazywanie timera zamiast nazwy) ---
+// Podczas odtwarzania z CD-TEXT radio pokazuje nazwe utworu/plyty. Co jakis czas
+// emulator chwilowo wycofuje flage CD-TEXT, zeby radio przeszlo na widok timera
+// (czas odtwarzania) — dokladnie tak, jak robi to prawdziwa zmieniarka.
+// INTERVAL = co ile sekund pojawia sie flash timera.
+// DURATION = jak dlugo timer jest widoczny zanim wroci CD-TEXT.
+// Ustaw INTERVAL na 0, zeby WYLACZYC te funkcje (CD-TEXT widoczny non-stop).
+constexpr unsigned long CDTEXT_TIME_FLASH_INTERVAL_MS = 10000;  // co 10s
+constexpr unsigned long CDTEXT_TIME_FLASH_DURATION_MS = 4000;   // na 4s
+
 // --- PAMIEC NIEULOTNA (NVS) ---
 constexpr const char* PREFS_NAMESPACE = "unilink";
 

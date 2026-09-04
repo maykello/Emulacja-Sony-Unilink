@@ -126,6 +126,52 @@ static uint8_t s_lastC0Sec      = 0xFF;
 // zapytac (licznik `txt=0` w kazdym [STAT]).
 static uint8_t s_textFlagState = 0;   // 0 = nazwy niewyslane, 1 = swiezo wyslane, 2 = ustalone
 
+// --- OKRESOWY FLASH TIMERA (Config: CDTEXT_TIME_FLASH_*) ---
+// Co INTERVAL ms wycofujemy flage CD-TEXT na DURATION ms, zeby radio pokazalo
+// czas odtwarzania zamiast nazwy. Mechanizm identyczny jak przy seeking:
+// discFlagsNibble() zwraca 0x08 (brak tekstu), serviceCdText() milczy.
+// Po zakonczeniu flashu resetujemy cache — radio wraca do widoku tekstowego.
+static unsigned long s_timeFlashStartMs  = 0;   // 0 = flash nieaktywny
+static unsigned long s_lastTimeFlashEndMs = 0;  // koniec ostatniego flashu
+static bool          s_timeFlashWasActive = false;
+
+// Czy flash timera jest wlasnie aktywny? Zwraca true w oknie DURATION ms.
+static bool isTimeFlashActive() {
+    return s_timeFlashStartMs != 0;
+}
+
+// Serwis stanu flashu — wolany z serviceCdText (raz na iteracje petli).
+// Otwiera/zamyka okno flashu wg konfiguracji. Zwraca true, jesli flash
+// jest aktywny (blokada CD-TEXT).
+static bool serviceTimeFlash(unsigned long now) {
+    // Funkcja wylaczona?
+    if (CDTEXT_TIME_FLASH_INTERVAL_MS == 0) return false;
+    // Flash aktywny tylko w Playing z wyslana nazwa (s_textFlagState >= 1).
+    if (CdChanger::mechState() != CdChanger::MechState::Playing) {
+        s_timeFlashStartMs = 0;
+        s_lastTimeFlashEndMs = now;  // restart cyklu po wyjsciu z Playing
+        return false;
+    }
+    // Czy flash jest w toku?
+    if (s_timeFlashStartMs != 0) {
+        if ((now - s_timeFlashStartMs) >= CDTEXT_TIME_FLASH_DURATION_MS) {
+            // Koniec flashu — radio wróci do CD-TEXT.
+            s_timeFlashStartMs = 0;
+            s_lastTimeFlashEndMs = now;
+            s_timeFlashWasActive = true;  // sygnalizuj reset cache w serviceCdText
+            return false;
+        }
+        return true;  // flash trwa
+    }
+    // Czy czas na nowy flash?
+    if (s_textFlagState >= 1 &&
+        (now - s_lastTimeFlashEndMs) >= CDTEXT_TIME_FLASH_INTERVAL_MS) {
+        s_timeFlashStartMs = now;
+        return true;  // wlasnie startujemy
+    }
+    return false;
+}
+
 static uint8_t discFlagsNibble() {
     if (audioGetTrackCount(CdChanger::disk()) == 0) return 0x00;   // pusty slot
     // Podczas seeking (FF/REW) kasujemy flage CD-TEXT — radio przełącza się na
@@ -134,6 +180,8 @@ static uint8_t discFlagsNibble() {
     // 0x02/0x01), a po powrocie do Playing wraca na 0xA/0xB. Dzieki temu radio
     // wie, ze w tej chwili tekst jest niedostepny i pokazuje timer zamiast nazwy.
     if (CdChanger::isSeeking()) return 0x08;    // plyta obecna, tekst niedostepny
+    // Okresowy flash timera — ten sam efekt co seeking.
+    if (isTimeFlashActive()) return 0x08;
     uint8_t flags = 0x08;                       // plyta obecna
     if (s_textFlagState >= 1) flags |= 0x02;    // CD-TEXT dostepny
     if (s_textFlagState == 1) flags |= 0x01;    // tekst wlasnie sie zmienil
@@ -947,6 +995,17 @@ void serviceCdText(unsigned long now) {
     // zmieniony") i wroci do widoku CD-TEXT.
     if (s_wasSeekingLastCdText) {
         s_wasSeekingLastCdText = false;
+        resetCdTextCache();
+    }
+
+    // --- OKRESOWY FLASH TIMERA ---
+    // Wycofaj flage CD-TEXT na chwile, zeby radio pokazalo timer.
+    if (serviceTimeFlash(now)) {
+        return;   // flash aktywny — nie wysylamy nazw
+    }
+    // Po zakonczeniu flashu: reset cache, zeby nazwy wrocily.
+    if (s_timeFlashWasActive) {
+        s_timeFlashWasActive = false;
         resetCdTextCache();
     }
 
