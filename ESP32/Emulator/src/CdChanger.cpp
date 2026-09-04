@@ -520,7 +520,7 @@ void resetToAllocated() {
 // komendach 0x34/0x35/0x36 — po kazdej zmianie (wlacznie z auto-advance)
 // zakolejkowana jest ramka 0x94 przez CdChanger::enqueueModeIcons().
 void toggleRepeat() {
-    // Cykl Off -> One -> All -> Off (R8.1).
+    // Cykl pelny na potrzeby OBD: Off -> One (Turbo) -> All (Paliwo) -> Off
     switch (playModesState.repeat) {
         case RepeatMode::Off: playModesState.repeat = RepeatMode::One; break;
         case RepeatMode::One: playModesState.repeat = RepeatMode::All; break;

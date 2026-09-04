@@ -687,8 +687,14 @@ static bool enqueueCdTextD2Track(bool withEndMarker, bool force) {
     }
 
     char raw[64];
-    if (CdChanger::repeatMode() != CdChanger::RepeatMode::Off) {
-        snprintf(raw, sizeof(raw), "2500 mBar");
+    if (CdChanger::repeatMode() == CdChanger::RepeatMode::One) {
+        // Mock dynamic OBD data: cisnienie skacze od 1500 do 2500
+        unsigned long mockPressure = 1500 + ((millis() / 500) % 11) * 100;
+        snprintf(raw, sizeof(raw), "%lu mBar", mockPressure);
+    } else if (CdChanger::repeatMode() == CdChanger::RepeatMode::All) {
+        // Mock dynamic OBD data: dawka paliwa od 0 do 53 mg
+        unsigned long mockFuel = ((millis() / 500) % 54);
+        snprintf(raw, sizeof(raw), "%lu mg", mockFuel);
     } else {
         audioGetTrackName(disc, track, raw, sizeof(raw));
     }
@@ -1020,18 +1026,27 @@ void serviceCdText(unsigned long now) {
     const uint8_t disc   = CdChanger::disk();
     const uint8_t track  = CdChanger::track();
     const CdChanger::RepeatMode repeat = CdChanger::repeatMode();
-    const bool changed   = (disc != s_textSentDisc || track != s_textSentTrack || repeat != s_textSentRepeat);
+    bool changed   = (disc != s_textSentDisc || track != s_textSentTrack || repeat != s_textSentRepeat);
+    bool obdForceUpdate = false;
+
+    // MOCK OBD UPDATE: W trybie OBD wymuszamy odswiezenie, zeby symulowac
+    // strumien danych live. 500ms zatykalo magistrale (3 ramki teksowe zajmuja 
+    // kilkaset ms), wiec uzywamy bezpiecznego interwalu 1500ms.
+    static unsigned long s_lastObdUpdateMs = 0;
+    if (repeat != CdChanger::RepeatMode::Off) {
+        if (now - s_lastObdUpdateMs >= 1500) {
+            obdForceUpdate = true;
+            s_lastObdUpdateMs = now;
+        }
+    }
 
     // Zmiana utworu kasuje flage "mam nazwy" — radio ma najpierw zobaczyc, ze
     // tekst zniknal (nibbel 0x8), a dopiero potem, ze pojawil sie nowy (0xB).
-    // Tak samo robi prawdziwa zmieniarka.
+    // UWAGA: Nie robimy tego przy obdForceUpdate, by radio nie "migalo" tekstem!
     if (changed && s_textFlagState != 0) s_textFlagState = 0;
 
-    // Odswiezenie okresowe: prawdziwa zmieniarka wysyla komplet nazw po niemal
-    // kazdej ramce statusu, co ~1-2 s przez cale odtwarzanie. Powtarzamy go z
-    // tym samym rytmem — dzieki temu radio ma nazwy takze po przelaczeniu
-    // zrodla, utracie sesji i po wejsciu w liste plyt.
-    if (!changed && (now - s_textSentMs) < CD_TEXT_REPEAT_MS) return;
+    // Odswiezenie okresowe normalne lub wymuszone przez OBD
+    if (!changed && !obdForceUpdate && (now - s_textSentMs) < CD_TEXT_REPEAT_MS) return;
 
     // Znaczniki aktualizujemy DOPIERO gdy blok naprawde wszedl do kolejki — gdy
     // poprzedni komplet nazw jeszcze z niej nie zszedl, sprobujemy w nastepnej
@@ -1046,17 +1061,20 @@ void serviceCdText(unsigned long now) {
 
     // Nibbel 0xB ("tekst dostepny + swiezo zmieniony") podnosimy tylko przy
     // realnej zmianie plyty/utworu albo gdy radio jeszcze nie wie, ze mamy
-    // nazwy. Samo odswiezenie okresowe zostawia 0xA ("tekst dostepny") — przy
-    // powtorce co CD_TEXT_REPEAT_MS klamalibysmy inaczej o zmianie i co 2 s
-    // restartowali radiu przewijanie nazwy w polowie cyklu.
+    // nazwy. Samo odswiezenie okresowe zostawia 0xA ("tekst dostepny").
     if (changed || s_textFlagState == 0) s_textFlagState = 1;
 
     char name[64];
     char discName[64];
     
     // Jesli Repeat jest wlaczony (tryb OBD), nadpisujemy tekst parametrami silnika
-    if (repeat != CdChanger::RepeatMode::Off) {
-        snprintf(name, sizeof(name), "2500 mBar");
+    if (repeat == CdChanger::RepeatMode::One) {
+        unsigned long mockPressure = 1500 + ((millis() / 500) % 11) * 100;
+        snprintf(name, sizeof(name), "%lu mBar", mockPressure);
+        snprintf(discName, sizeof(discName), "OBD");
+    } else if (repeat == CdChanger::RepeatMode::All) {
+        unsigned long mockFuel = ((millis() / 500) % 54);
+        snprintf(name, sizeof(name), "%lu mg", mockFuel);
         snprintf(discName, sizeof(discName), "OBD");
     } else {
         audioGetTrackName(disc, track, name, sizeof(name));

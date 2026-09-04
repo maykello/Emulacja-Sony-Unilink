@@ -1,0 +1,509 @@
+[11:28:48.198] Obsluga: MEX-BT3800u + CDX-M670 + PCM5102A DAC + USB
+[11:28:48.202] Oczekuje na radio (Stan C0 - Init)...
+[11:28:48.203] [NVS] Wczytano ostatni utwor: CD5 TR3
+[11:28:48.203] [Audio] Inicjalizacja...
+[11:28:48.206] [UsbDrive] Inicjalizacja USB Host...
+[11:28:48.208] [UsbDrive] USB Host gotowy. Podłącz pendrive'a do portu USB-OTG...
+[11:28:48.208] [UsbDrive] Nowe urządzenie USB (addr=1)
+[11:28:48.208] [UsbDrive] Konfiguruję urządzenie MSC (addr=1)...
+[11:28:48.208] [UsbDrive] VID=0x0951 PID=0x1653
+[11:28:48.212] [UsbDrive] Znaleziono interfejs MSC #0
+[11:28:48.215] [UsbDrive] Bulk IN:  0x81 (MPS=64)
+[11:28:48.216] [UsbDrive] Bulk OUT: 0x02 (MPS=64)
+[11:28:48.216] [UsbDrive] Czekam na gotowość urządzenia...
+[11:28:48.216] [UsbDrive] Pendrive: Kingston DT 100 G2
+[11:28:48.220] [UsbDrive] Dysk: 15644912 sektorów × 512 B = 7639 MB
+[11:28:48.220] [UsbDrive] Sektor 0 to GPT Protective MBR — parsowanie GPT...
+[11:28:48.220] [UsbDrive] GPT: wpisy od LBA 2, 128 wpisów × 128 B
+[11:28:48.227] [UsbDrive]   GPT wpis 0: start=2048 end=15644671 (Microsoft Basic Data)
+[11:28:48.227] [UsbDrive] ✓ Używam partycji GPT na sektorze 2048
+[11:28:48.230] [UsbDrive] ✓ System plików zamontowany pod /usb
+[11:28:48.230] [Audio] setPinout(BCK=7, LRCK=15, DIN=13) = OK
+[11:28:48.230] [Audio] Task dekodowania uruchomiony na rdzeniu 0
+[11:28:48.230] [Audio] CD01 [CD01] nazwa="CD01": 1 track(ów)
+[11:28:48.230] [Audio]   TR01: 01- Hasta Manana.mp3
+[11:28:48.237] [Audio] CD02 [CD02] nazwa="CD02": 2 track(ów)
+[11:28:48.239] [Audio]   TR01: 01. Waterloo.mp3
+[11:28:48.240] [Audio]   TR02: 02. Head Over Heels.mp3
+[11:28:48.240] [Audio] CD03 [CD03] nazwa="CD03": 3 track(ów)
+[11:28:48.244] [Audio]   TR01: 02. Mamma Mia.mp3
+[11:28:48.246] [Audio]   TR02: 03. Gimme! Gimme! Gimme! (A Man After Midnight).mp3
+[11:28:48.246] [Audio]   TR03: 03. I Do, I Do, I Do, I Do, I Do.mp3
+[11:28:48.246] [Audio] CD04 [CD04] nazwa="CD04": 4 track(ów)
+[11:28:48.250] [Audio]   TR01: 04. Dancing Queen.mp3
+[11:28:48.252] [Audio]   TR02: 04. Honey, Honey.mp3
+[11:28:48.252] [Audio]   TR03: 05. Take A Chance On Me.mp3
+[11:28:48.252] [Audio]   TR04: 06. Knowing Me, Knowing You.mp3
+[11:28:48.252] [Audio] CD05 [CD05] nazwa="CD05": 5 track(ów)
+[11:28:48.252] [Audio]   TR01: 06. Ring Ring.mp3
+[11:28:48.252] [Audio]   TR02: 07 Wrap Your Arms Around Me.mp3
+[11:28:48.252] [Audio]   TR03: 07. Eagle.mp3
+[11:28:48.252] [Audio]   TR04: 07. The Winner Takes It All.mp3
+[11:28:48.264] [Audio]   TR05: 08- Nina, pretty balerina.mp3
+[11:28:48.264] [Audio] CD06 [CD06] nazwa="CD06": 1 track(ów)
+[11:28:48.264] [Audio]   TR01: 03. I Do, I Do, I Do, I Do, I Do.mp3
+[11:28:48.264] [Audio] CD07 [CD07] nazwa="CD07": 1 track(ów)
+[11:28:48.264] [Audio]   TR01: 07 Wrap Your Arms Around Me.mp3
+[11:28:48.264] [Audio] CD08 [CD08] nazwa="CD08": 1 track(ów)
+[11:28:48.264] [Audio]   TR01: 07. Eagle.mp3
+[11:28:48.264] [Audio] CD09 [CD09] nazwa="CD09": 1 track(ów)
+[11:28:48.276] [Audio]   TR01: 07. The Winner Takes It All.mp3
+[11:28:48.276] [Audio] CD10 [CD10] nazwa="CD10": 1 track(ów)
+[11:28:48.276] [Audio]   TR01: 08- Nina, pretty balerina.mp3
+[11:28:48.276] [Audio] Inicjalizacja zakończona — pendrive gotowy.
+[11:28:48.283] [Audio] Gotowy do odtwarzania.
+[11:28:48.283] >>> Wykryto USB. Wznawiam zapamietana plyte: CD5 TR3
+[11:28:48.731] === BUS_ON = 1 ===
+[11:28:48.731] [Audio] Głośność: 18/21 (zlecone)
+[11:28:48.731] === BUS_ON = 0 ===
+[11:28:48.740] === SEN: magistrala wylaczona — zatrzymuje audio ===
+[11:28:48.740] [Audio] ⏹ Zatrzymano (zlecone).
+[11:28:49.040] === BUS_ON = 1 ===
+[11:28:49.040] [Audio] Głośność: 18/21 (zlecone)
+[11:28:49.441] === BUS_ON = 0 ===
+[11:28:49.441] === SEN: magistrala wylaczona — zatrzymuje audio ===
+[11:28:49.441] [Audio] ⏹ Zatrzymano (zlecone).
+[11:28:49.646] === BUS_ON = 1 ===
+[11:28:49.646] [Audio] Głośność: 18/21 (zlecone)
+[11:28:50.215] ===== CZARNA SKRZYNKA (RADIO SYSTEM RESET 18 10 01 00) — ostatnie 1 zdarzen =====
+[11:28:50.215] [-    0ms] RX    18 10 01 00 29 00
+[11:28:50.215] ======================================================
+[11:28:50.228] >> Radio system reset (#1) (juz bylem nieprzydzielony)
+[11:28:50.276] == Wykryto CDX-M670 (widziano 3B 10 02 11) ==
+[11:28:50.361] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 49ms po DB)
+[11:28:50.483] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 178ms po DB)
+[11:28:50.541] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#3, 227ms po DB)
+[11:28:50.587] >> Odpowiadam na ANYONE? device info 0x8C
+[11:28:50.616] >> Adres przydzielony: 0x31 (op2=0x14)! deviceAllocated=true
+[11:28:51.497] >> [Audio Bus] Radio sygnalizuje audio ON (87 2B) — tylko log
+[11:28:51.520] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B) — tylko log
+[11:28:52.178] [STAT] poll15=6 disp13(my)=1 disp13(3B)=4 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD5 TR3 00:00
+[11:28:54.153] >>> C0 -> 80 (Idle)
+[11:28:54.167] [STAT] poll15=0 disp13(my)=0 disp13(3B)=1 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD5 TR3 00:00
+[11:28:55.292] >> PLAY command received!
+[11:28:55.292] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:28:55.387] [Audio] Async connecttoFS("/CD05/07. Eagle.mp3") = OK
+[11:28:55.387] [Audio] ▶ Odtwarzam: /CD05/07. Eagle.mp3 (rozpoczęto dekodowanie)
+[11:28:55.768] >>> 40 -> 00 (Playing!)
+[11:28:56.163] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=5/4 txt=0 seek=0 rxerr=12/2 | alloc=1 state=0x00 CD5 TR3 00:00
+[11:28:57.290] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:28:58.179] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD5 TR3 00:02
+[11:28:59.289] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:29:00.178] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=3/3 | alloc=1 state=0x00 CD5 TR3 00:04
+[11:29:00.939] >> ZADANIE 0x84: 31 71 84 D7 FD 70 00 00 01 6E 00
+[11:29:01.638] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:29:02.178] [STAT] poll15=10 disp13(my)=10 disp13(3B)=0 ping12(my)=1 btn=0 break=9/9 txt=1 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:06
+[11:29:03.638] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:29:04.175] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=2 btn=0 break=7/7 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:08
+[11:29:05.631] >> CD-TEXT wyslany: CD5 TR3 plyta="CD05" utwor="07. Eagle"
+[11:29:05.726] >> TOGGLE REPEAT -> 1
+[11:29:06.169] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=1 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:10
+[11:29:06.439] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2200 mBar"
+[11:29:07.228] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2400 mBar"
+[11:29:08.176] [STAT] poll15=11 disp13(my)=11 disp13(3B)=0 ping12(my)=1 btn=0 break=11/11 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:12
+[11:29:08.227] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="1500 mBar"
+[11:29:09.227] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="1700 mBar"
+[11:29:10.174] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=8/8 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:14
+[11:29:10.229] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="1900 mBar"
+[11:29:11.218] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2100 mBar"
+[11:29:12.178] [STAT] poll15=9 disp13(my)=9 disp13(3B)=0 ping12(my)=1 btn=0 break=9/9 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:16
+[11:29:12.218] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2300 mBar"
+[11:29:13.229] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2500 mBar"
+[11:29:14.177] [STAT] poll15=9 disp13(my)=9 disp13(3B)=0 ping12(my)=1 btn=0 break=9/9 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:18
+[11:29:14.224] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="1600 mBar"
+[11:29:15.228] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="1800 mBar"
+[11:29:16.175] [STAT] poll15=10 disp13(my)=9 disp13(3B)=0 ping12(my)=0 btn=0 break=10/10 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:20
+[11:29:16.228] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2000 mBar"
+[11:29:16.726] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2100 mBar"
+[11:29:17.728] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2300 mBar"
+[11:29:18.177] [STAT] poll15=11 disp13(my)=10 disp13(3B)=0 ping12(my)=1 btn=0 break=11/11 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:22
+[11:29:18.728] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2500 mBar"
+[11:29:19.727] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="1600 mBar"
+[11:29:20.178] [STAT] poll15=9 disp13(my)=9 disp13(3B)=0 ping12(my)=1 btn=0 break=9/9 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:24
+[11:29:20.728] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="1800 mBar"
+[11:29:21.728] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2000 mBar"
+[11:29:22.177] [STAT] poll15=10 disp13(my)=9 disp13(3B)=0 ping12(my)=1 btn=0 break=10/10 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD5 TR3 00:26
+[11:29:22.729] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2200 mBar"
+[11:29:23.727] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2400 mBar"
+[11:29:24.176] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=0 btn=0 break=8/8 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:28
+[11:29:24.728] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="1500 mBar"
+[11:29:24.810] ===== CZARNA SKRZYNKA (RADIO SYSTEM RESET 18 10 01 00) — ostatnie 128 zdarzen =====
+[11:29:24.810] [- 4750ms] RX    18 10 01 15 3E 00
+[11:29:24.814] [- 4750ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:24.814] [- 4723ms] RX    31 10 01 13 55 00
+[11:29:24.818] [- 4723ms] TX    70 31 DA 4F CA 42 44 00 00 00 02 00 05 10 67 00
+[11:29:24.818] [- 4609ms] BREAK
+[11:29:24.818] [- 4595ms] RX    18 10 01 15 3E 00
+[11:29:24.822] [- 4595ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:24.822] [- 4568ms] RX    31 10 01 13 55 00
+[11:29:24.822] [- 4568ms] TX    70 31 DA 00 7B 00 00 00 00 00 00 01 05 10 91 00
+[11:29:24.826] [- 4472ms] RX    3B 10 01 12 5E 00
+[11:29:24.826] [- 4461ms] RX    10 3B 00 C0 0B 00
+[11:29:24.826] [- 4065ms] BREAK
+[11:29:24.831] [- 4051ms] RX    18 10 01 15 3E 00
+[11:29:24.831] [- 4051ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:24.831] [- 4024ms] RESYNC
+[11:29:24.831] [- 4019ms] RXFLUSH
+[11:29:24.831] [- 3909ms] BREAK
+[11:29:24.835] [- 3895ms] RX    18 10 01 15 3E 00
+[11:29:24.835] [- 3895ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:24.835] [- 3868ms] RX    31 10 01 13 55 00
+[11:29:24.839] [- 3868ms] TX    70 31 D2 31 A4 38 30 30 20 6D 02 00 F3 10 CE 00
+[11:29:24.839] [- 3836ms] RX    71 10 01 12 94 00
+[11:29:24.839] [- 3825ms] RX    10 71 00 00 81 00
+[11:29:24.844] [- 3765ms] BREAK
+[11:29:24.844] [- 3751ms] RX    18 10 01 15 3E 00
+[11:29:24.844] [- 3751ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:24.848] [- 3724ms] RX    31 10 01 13 55 00
+[11:29:24.849] [- 3724ms] TX    70 31 D2 42 B5 61 72 00 00 00 00 01 F3 10 8C 00
+[11:29:24.849] [- 3610ms] BREAK
+[11:29:24.852] [- 3596ms] RX    18 10 01 15 3E 00
+[11:29:24.852] [- 3596ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:24.852] [- 3569ms] RX    31 10 01 13 55 00
+[11:29:24.856] [- 3569ms] TX    70 31 DA 4F CA 42 44 00 00 00 02 00 05 10 67 00
+[11:29:24.856] [- 3537ms] RESYNC
+[11:29:24.856] [- 3532ms] RXFLUSH
+[11:29:24.860] [- 3515ms] RX    18 11 80 09 B2 0A 00 00 00 BC 00
+[11:29:24.860] [- 3493ms] RX    18 10 81 00 A9 00 00 01 01 AB 00
+[11:29:24.863] [- 3476ms] RX    18 10 08 00 30 00
+[11:29:24.864] [- 3449ms] RX    77 51 C0 02 8A 00 00 00 04 11 F8 75 00 F2 FE 00
+[11:29:24.864] [- 3422ms] RX    70 51 C1 2D AF 2D 2D 2D 2D 2D 2D 2D 00 02 EC 00
+[11:29:24.869] [- 3400ms] RX    70 51 92 02 55 00 00 00 00 55 00
+[11:29:24.869] [- 3381ms] BREAK
+[11:29:24.869] [- 3367ms] RX    18 10 01 15 3E 00
+[11:29:24.873] [- 3367ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:24.873] [- 3340ms] RX    31 10 01 13 55 00
+[11:29:24.877] [- 3340ms] TX    70 31 DA 00 7B 00 00 00 00 00 00 01 05 10 91 00
+[11:29:24.877] [- 3298ms] RX    70 10 C0 00 40 00 00 00 00 00 00 00 00 00 40 00
+[11:29:24.877] [- 3248ms] BREAK
+[11:29:24.881] [- 3233ms] RX    18 10 01 15 3E 00
+[11:29:24.881] [- 3233ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:24.881] [- 3207ms] RX    31 10 01 13 55 00
+[11:29:24.885] [- 3207ms] TX    70 31 C0 00 61 00 00 00 00 30 F3 F0 25 5B F4 00
+[11:29:24.885] [- 3175ms] RX    31 10 01 12 54 00
+[11:29:24.889] [- 3175ms] TX    10 31 00 00 41 00
+[11:29:24.889] [- 3071ms] BREAK
+[11:29:24.889] [- 3057ms] RX    18 10 01 15 3E 00
+[11:29:24.894] [- 3057ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:24.894] [- 3030ms] RX    31 10 01 13 55 00
+[11:29:24.894] [- 3030ms] TX    70 31 D2 32 A5 30 30 30 20 6D 02 00 F3 10 C7 00
+[11:29:24.894] [- 2916ms] BREAK
+[11:29:24.898] [- 2902ms] RX    18 10 01 15 3E 00
+[11:29:24.902] [- 2902ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:24.902] [- 2875ms] RX    31 10 01 13 55 00
+[11:29:24.902] [- 2875ms] TX    70 31 D2 42 B5 61 72 00 00 00 00 01 F3 10 8C 00
+[11:29:24.902] [- 2761ms] BREAK
+[11:29:24.906] [- 2747ms] RX    18 10 01 15 3E 00
+[11:29:24.906] [- 2747ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:24.910] [- 2720ms] RX    31 10 01 13 55 00
+[11:29:24.910] [- 2720ms] TX    70 31 DA 4F CA 42 44 00 00 00 02 00 05 10 67 00
+[11:29:24.910] [- 2623ms] BREAK
+[11:29:24.910] [- 2609ms] RX    18 10 01 15 3E 00
+[11:29:24.915] [- 2609ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:24.915] [- 2582ms] RX    31 10 01 13 55 00
+[11:29:24.919] [- 2582ms] TX    70 31 DA 00 7B 00 00 00 00 00 00 01 05 10 91 00
+[11:29:24.919] [- 2550ms] RX    18 10 01 11 3A 00
+[11:29:24.919] [- 2068ms] BREAK
+[11:29:24.919] [- 2054ms] RX    18 10 01 15 3E 00
+[11:29:24.923] [- 2054ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:24.923] [- 2027ms] RX    31 10 01 13 55 00
+[11:29:24.927] [- 2027ms] TX    70 31 D2 32 A5 32 30 30 20 6D 02 00 F3 10 C9 00
+[11:29:24.927] [- 1931ms] RX    3B 10 01 12 5E 00
+[11:29:24.927] [- 1920ms] RX    10 3B 00 C0 0B 00
+[11:29:24.932] [- 1907ms] BREAK
+[11:29:24.932] [- 1893ms] RX    18 10 01 15 3E 00
+[11:29:24.932] [- 1893ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:24.936] [- 1866ms] RX    31 10 01 13 55 00
+[11:29:24.936] [- 1866ms] TX    70 31 D2 42 B5 61 72 00 00 00 00 01 F3 10 8C 00
+[11:29:24.936] [- 1768ms] BREAK
+[11:29:24.940] [- 1754ms] RX    18 10 01 15 3E 00
+[11:29:24.940] [- 1754ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:24.940] [- 1727ms] RX    31 10 01 13 55 00
+[11:29:24.944] [- 1727ms] TX    70 31 DA 4F CA 42 44 00 00 00 02 00 05 10 67 00
+[11:29:24.944] [- 1613ms] BREAK
+[11:29:24.947] [- 1599ms] RX    18 10 01 15 3E 00
+[11:29:24.949] [- 1599ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:24.949] [- 1572ms] RX    31 10 01 13 55 00
+[11:29:24.953] [- 1572ms] TX    70 31 DA 00 7B 00 00 00 00 00 00 01 05 10 91 00
+[11:29:24.953] [- 1301ms] RX    71 10 01 12 94 00
+[11:29:24.953] [- 1290ms] RX    10 71 00 00 81 00
+[11:29:24.953] [- 1069ms] BREAK
+[11:29:24.957] [- 1055ms] RX    18 10 01 15 3E 00
+[11:29:24.957] [- 1055ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:24.961] [- 1028ms] RX    31 10 01 13 55 00
+[11:29:24.961] [- 1028ms] TX    70 31 D2 32 A5 34 30 30 20 6D 02 00 F3 10 CB 00
+[11:29:24.961] [-  915ms] BREAK
+[11:29:24.964] [-  901ms] RX    18 10 01 15 3E 00
+[11:29:24.965] [-  900ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:24.965] [-  874ms] RX    31 10 01 13 55 00
+[11:29:24.969] [-  874ms] TX    70 31 D2 42 B5 61 72 00 00 00 00 01 F3 10 8C 00
+[11:29:24.969] [-  760ms] BREAK
+[11:29:24.969] [-  746ms] RX    18 10 01 15 3E 00
+[11:29:24.973] [-  746ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:24.973] [-  719ms] RX    31 10 01 13 55 00
+[11:29:24.973] [-  719ms] TX    70 31 DA 4F CA 42 44 00 00 00 02 00 05 10 67 00
+[11:29:24.978] [-  671ms] RESYNC
+[11:29:24.978] [-  666ms] RXFLUSH
+[11:29:24.978] [-  620ms] BREAK
+[11:29:24.978] [-  606ms] RX    18 10 01 15 3E 00
+[11:29:24.982] [-  606ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:24.982] [-  579ms] RX    31 10 01 13 55 00
+[11:29:24.986] [-  579ms] TX    70 31 DA 00 7B 00 00 00 00 00 00 01 05 10 91 00
+[11:29:24.986] [-  547ms] RESYNC
+[11:29:24.986] [-  542ms] RXFLUSH
+[11:29:24.986] [-  323ms] RX    18 10 08 00 30 00
+[11:29:24.986] [-   66ms] RESYNC
+[11:29:24.990] [-   61ms] RXFLUSH
+[11:29:24.990] [-   46ms] BREAK
+[11:29:24.990] [-    0ms] RX    18 10 01 00 29 00
+[11:29:24.990] ======================================================
+[11:29:24.994] >> Radio system reset (#2)! Reset deviceAllocated.
+[11:29:24.994] >> resetToAllocated: audio gra, zachowuje Playing 00:29
+[11:29:24.999] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 49ms po DB)
+[11:29:25.080] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 178ms po DB)
+[11:29:25.130] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#3, 227ms po DB)
+[11:29:25.179] >> Odpowiadam na ANYONE? device info 0x8C
+[11:29:25.205] >> Adres przydzielony: 0x31 (op2=0x14)! deviceAllocated=true
+[11:29:26.085] >> [Audio Bus] Radio sygnalizuje audio ON (87 AB) — tylko log
+[11:29:26.132] >> [Audio Bus] Radio sygnalizuje audio ON (87 EB) — tylko log
+[11:29:26.174] [STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=2/3 | alloc=1 state=0x80 CD5 TR3 00:29
+[11:29:26.244] >> PLAY (wznowienie bez restartu, np. po resecie radia: 00:30)
+[11:29:26.248] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="1800 mBar"
+[11:29:27.745] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2100 mBar"
+[11:29:28.178] [STAT] poll15=7 disp13(my)=4 disp13(3B)=2 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:31
+[11:29:30.177] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=3/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:33
+[11:29:30.378] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="1500 mBar"
+[11:29:31.243] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="1700 mBar"
+[11:29:32.176] [STAT] poll15=11 disp13(my)=11 disp13(3B)=0 ping12(my)=1 btn=0 break=11/12 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:35
+[11:29:32.245] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="1900 mBar"
+[11:29:32.746] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2000 mBar"
+[11:29:33.744] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2200 mBar"
+[11:29:34.177] [STAT] poll15=11 disp13(my)=11 disp13(3B)=0 ping12(my)=1 btn=0 break=11/11 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:37
+[11:29:34.746] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2400 mBar"
+[11:29:35.745] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="1500 mBar"
+[11:29:36.171] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=8/8 txt=0 seek=0 rxerr=2/1 | alloc=1 state=0x00 CD5 TR3 00:39
+[11:29:36.739] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="1700 mBar"
+[11:29:37.243] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="1800 mBar"
+[11:29:38.175] [STAT] poll15=10 disp13(my)=10 disp13(3B)=0 ping12(my)=1 btn=0 break=10/10 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:41
+[11:29:38.246] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2000 mBar"
+[11:29:39.241] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2200 mBar"
+[11:29:40.177] [STAT] poll15=9 disp13(my)=8 disp13(3B)=0 ping12(my)=0 btn=0 break=9/9 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:43
+[11:29:40.246] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2400 mBar"
+[11:29:41.246] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="1500 mBar"
+[11:29:42.176] [STAT] poll15=9 disp13(my)=9 disp13(3B)=0 ping12(my)=1 btn=0 break=9/9 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:45
+[11:29:42.241] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="1700 mBar"
+[11:29:43.237] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="1900 mBar"
+[11:29:43.738] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2000 mBar"
+[11:29:43.891] ===== CZARNA SKRZYNKA (RADIO SYSTEM RESET 18 10 01 00) — ostatnie 128 zdarzen =====
+[11:29:43.893] [- 4983ms] RX    31 10 01 13 55 00
+[11:29:43.893] [- 4983ms] TX    70 31 DA 00 7B 00 00 00 00 00 00 01 05 10 91 00
+[11:29:43.893] [- 4629ms] BREAK
+[11:29:43.893] [- 4615ms] RX    18 10 01 15 3E 00
+[11:29:43.899] [- 4615ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:43.899] [- 4588ms] RX    31 10 01 13 55 00
+[11:29:43.902] [- 4588ms] TX    70 31 D2 32 A5 32 30 30 20 6D 02 00 F3 10 C9 00
+[11:29:43.902] [- 4492ms] RX    3B 10 01 12 5E 00
+[11:29:43.902] [- 4481ms] RX    10 3B 00 C0 0B 00
+[11:29:43.905] [- 4469ms] BREAK
+[11:29:43.905] [- 4454ms] RX    18 10 01 15 3E 00
+[11:29:43.905] [- 4454ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:43.909] [- 4428ms] RX    31 10 01 13 55 00
+[11:29:43.909] [- 4427ms] TX    70 31 D2 42 B5 61 72 00 00 00 00 01 F3 10 8C 00
+[11:29:43.909] [- 4330ms] BREAK
+[11:29:43.909] [- 4316ms] RX    18 10 01 15 3E 00
+[11:29:43.909] [- 4316ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:43.909] [- 4289ms] RX    31 10 01 13 55 00
+[11:29:43.909] [- 4289ms] TX    70 31 DA 4F CA 42 44 00 00 00 02 00 05 10 67 00
+[11:29:43.919] [- 4175ms] BREAK
+[11:29:43.919] [- 4161ms] RX    18 10 01 15 3E 00
+[11:29:43.919] [- 4161ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:43.919] [- 4134ms] RX    31 10 01 13 55 00
+[11:29:43.919] [- 4134ms] TX    70 31 DA 00 7B 00 00 00 00 00 00 01 05 10 91 00
+[11:29:43.919] [- 3878ms] RX    71 10 01 12 94 00
+[11:29:43.929] [- 3868ms] RX    10 71 00 00 81 00
+[11:29:43.931] [- 3631ms] BREAK
+[11:29:43.933] [- 3617ms] RX    18 10 01 15 3E 00
+[11:29:43.933] [- 3617ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:43.933] [- 3590ms] RX    31 10 01 13 55 00
+[11:29:43.933] [- 3590ms] TX    70 31 D2 32 A5 34 30 30 20 6D 02 00 F3 10 CB 00
+[11:29:43.940] [- 3558ms] RESYNC
+[11:29:43.940] [- 3553ms] RXFLUSH
+[11:29:43.940] [- 3475ms] BREAK
+[11:29:43.940] [- 3461ms] RX    18 10 01 15 3E 00
+[11:29:43.940] [- 3461ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:43.940] [- 3434ms] RX    31 10 01 13 55 00
+[11:29:43.947] [- 3434ms] TX    70 31 D2 42 B5 61 72 00 00 00 00 01 F3 10 8C 00
+[11:29:43.948] [- 3321ms] BREAK
+[11:29:43.948] [- 3306ms] RX    18 10 01 15 3E 00
+[11:29:43.950] [- 3306ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:43.950] [- 3280ms] RX    31 10 01 13 55 00
+[11:29:43.950] [- 3279ms] TX    70 31 DA 4F CA 42 44 00 00 00 02 00 05 10 67 00
+[11:29:43.950] [- 3248ms] RX    31 10 01 12 54 00
+[11:29:43.950] [- 3248ms] TX    10 31 00 00 41 00
+[11:29:43.950] [- 3176ms] BREAK
+[11:29:43.950] [- 3162ms] RX    18 10 01 15 3E 00
+[11:29:43.960] [- 3162ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:43.960] [- 3135ms] RX    31 10 01 13 55 00
+[11:29:43.960] [- 3135ms] TX    70 31 DA 00 7B 00 00 00 00 00 00 01 05 10 91 00
+[11:29:43.960] [- 2624ms] RX    18 10 01 11 3A 00
+[11:29:43.960] [- 2605ms] BREAK
+[11:29:43.960] [- 2591ms] RX    18 10 01 15 3E 00
+[11:29:43.960] [- 2591ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:43.970] [- 2564ms] RX    31 10 01 13 55 00
+[11:29:43.970] [- 2564ms] TX    70 31 D2 31 A4 35 30 30 20 6D 02 00 F3 10 CB 00
+[11:29:43.970] [- 2482ms] BREAK
+[11:29:43.970] [- 2468ms] RX    18 10 01 15 3E 00
+[11:29:43.970] [- 2468ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:43.970] [- 2441ms] RX    31 10 01 13 55 00
+[11:29:43.970] [- 2441ms] TX    70 31 D2 42 B5 61 72 00 00 00 00 01 F3 10 8C 00
+[11:29:43.981] [- 2327ms] BREAK
+[11:29:43.981] [- 2313ms] RX    18 10 01 15 3E 00
+[11:29:43.981] [- 2313ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:43.981] [- 2286ms] RX    31 10 01 13 55 00
+[11:29:43.988] [- 2286ms] TX    70 31 DA 4F CA 42 44 00 00 00 02 00 05 10 67 00
+[11:29:43.988] [- 2173ms] BREAK
+[11:29:43.988] [- 2158ms] RX    18 10 01 15 3E 00
+[11:29:43.991] [- 2158ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:43.991] [- 2132ms] RX    31 10 01 13 55 00
+[11:29:43.991] [- 2131ms] TX    70 31 DA 00 7B 00 00 00 00 00 00 01 05 10 91 00
+[11:29:43.991] [- 2034ms] BREAK
+[11:29:43.991] [- 2020ms] RX    18 10 01 15 3E 00
+[11:29:43.991] [- 2020ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:43.991] [- 1993ms] RX    31 10 01 13 55 00
+[11:29:44.001] [- 1993ms] TX    70 31 C0 00 61 00 00 00 00 30 F3 F0 45 58 11 00
+[11:29:44.001] [- 1961ms] RX    3B 10 01 12 5E 00
+[11:29:44.001] [- 1950ms] RX    10 3B 00 C0 0B 00
+[11:29:44.001] [- 1634ms] BREAK
+[11:29:44.001] [- 1619ms] RX    18 10 01 15 3E 00
+[11:29:44.001] [- 1619ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:44.001] [- 1592ms] RX    31 10 01 13 55 00
+[11:29:44.011] [- 1592ms] TX    70 31 D2 31 A4 37 30 30 20 6D 02 00 F3 10 CD 00
+[11:29:44.011] [- 1479ms] BREAK
+[11:29:44.011] [- 1465ms] RX    18 10 01 15 3E 00
+[11:29:44.011] [- 1465ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:44.016] [- 1438ms] RX    31 10 01 13 55 00
+[11:29:44.017] [- 1438ms] TX    70 31 D2 42 B5 61 72 00 00 00 00 01 F3 10 8C 00
+[11:29:44.017] [- 1342ms] RX    71 10 01 12 94 00
+[11:29:44.021] [- 1331ms] RX    10 71 00 00 81 00
+[11:29:44.021] [- 1318ms] BREAK
+[11:29:44.021] [- 1304ms] RX    18 10 01 15 3E 00
+[11:29:44.021] [- 1304ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:44.021] [- 1277ms] RX    31 10 01 13 55 00
+[11:29:44.021] [- 1277ms] TX    70 31 DA 4F CA 42 44 00 00 00 02 00 05 10 67 00
+[11:29:44.021] [- 1179ms] BREAK
+[11:29:44.021] [- 1165ms] RX    18 10 01 15 3E 00
+[11:29:44.032] [- 1165ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:44.034] [- 1138ms] RX    31 10 01 13 55 00
+[11:29:44.034] [- 1138ms] TX    70 31 DA 00 7B 00 00 00 00 00 00 01 05 10 91 00
+[11:29:44.034] [-  723ms] RX    31 10 01 12 54 00
+[11:29:44.034] [-  723ms] TX    10 31 00 00 41 00
+[11:29:44.034] [-  701ms] RESYNC
+[11:29:44.034] [-  696ms] RXFLUSH
+[11:29:44.034] [-  634ms] BREAK
+[11:29:44.042] [-  620ms] RX    18 10 01 15 3E 00
+[11:29:44.042] [-  620ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:44.042] [-  593ms] RX    31 10 01 13 55 00
+[11:29:44.042] [-  593ms] TX    70 31 D2 31 A4 39 30 30 20 6D 02 00 F3 10 CF 00
+[11:29:44.042] [-  480ms] BREAK
+[11:29:44.042] [-  465ms] RX    18 10 01 15 3E 00
+[11:29:44.042] [-  465ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:44.052] [-  438ms] RX    31 10 01 13 55 00
+[11:29:44.052] [-  438ms] TX    70 31 D2 42 B5 61 72 00 00 00 00 01 F3 10 8C 00
+[11:29:44.052] [-  325ms] BREAK
+[11:29:44.052] [-  311ms] RX    18 10 01 15 3E 00
+[11:29:44.052] [-  311ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:44.052] [-  284ms] RX    31 10 01 13 55 00
+[11:29:44.052] [-  284ms] TX    70 31 DA 4F CA 42 44 00 00 00 02 00 05 10 67 00
+[11:29:44.063] [-  186ms] BREAK
+[11:29:44.063] [-  172ms] RX    18 10 01 15 3E 00
+[11:29:44.063] [-  172ms] TX    10 18 82 04 AE 00 00 00 00 AE 00
+[11:29:44.063] [-  145ms] RX    31 10 01 13 55 00
+[11:29:44.063] [-  145ms] TX    70 31 DA 00 7B 00 00 00 00 00 00 01 05 10 91 00
+[11:29:44.071] [-   81ms] RESYNC
+[11:29:44.071] [-   76ms] RXFLUSH
+[11:29:44.071] [-   30ms] BREAK
+[11:29:44.073] [-    0ms] RX    18 10 01 00 29 00
+[11:29:44.074] ======================================================
+[11:29:44.074] >> Radio system reset (#3)! Reset deviceAllocated.
+[11:29:44.078] >> resetToAllocated: audio gra, zachowuje Playing 00:48
+[11:29:44.078] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 49ms po DB)
+[11:29:44.161] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 178ms po DB)
+[11:29:44.175] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=9/9 txt=0 seek=0 rxerr=2/2 | alloc=0 state=0x00 CD5 TR3 00:48
+[11:29:44.206] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#3, 227ms po DB)
+[11:29:44.257] >> Odpowiadam na ANYONE? device info 0x8C
+[11:29:44.277] >> Adres przydzielony: 0x31 (op2=0x14)! deviceAllocated=true
+[11:29:45.159] >> [Audio Bus] Radio sygnalizuje audio ON (87 AB) — tylko log
+[11:29:45.189] >> [Audio Bus] Radio sygnalizuje audio ON (87 EB) — tylko log
+[11:29:45.301] >> PLAY (wznowienie bez restartu, np. po resecie radia: 00:49)
+[11:29:45.301] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2300 mBar"
+[11:29:46.175] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:49
+[11:29:46.297] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2500 mBar"
+[11:29:46.795] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="1500 mBar"
+[11:29:48.177] [STAT] poll15=7 disp13(my)=5 disp13(3B)=2 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:51
+[11:29:49.594] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2000 mBar"
+[11:29:50.177] [STAT] poll15=8 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=9/9 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD5 TR3 00:53
+[11:29:50.299] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2200 mBar"
+[11:29:51.298] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2400 mBar"
+[11:29:52.170] [STAT] poll15=10 disp13(my)=10 disp13(3B)=0 ping12(my)=1 btn=0 break=9/9 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 00:55
+[11:29:52.304] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="1500 mBar"
+[11:29:52.628] >> TOGGLE REPEAT -> 2
+[11:29:53.113] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="25 mg"
+[11:29:53.804] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="27 mg"
+[11:29:54.177] [STAT] poll15=13 disp13(my)=13 disp13(3B)=0 ping12(my)=0 btn=1 break=13/13 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:57
+[11:29:54.798] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="29 mg"
+[11:29:55.795] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="31 mg"
+[11:29:56.177] [STAT] poll15=9 disp13(my)=9 disp13(3B)=0 ping12(my)=1 btn=0 break=9/9 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 00:59
+[11:29:56.799] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="33 mg"
+[11:29:57.803] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="35 mg"
+[11:29:58.177] [STAT] poll15=9 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=9/9 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 01:01
+[11:29:58.803] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="37 mg"
+[11:29:59.804] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="39 mg"
+[11:30:00.177] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=8/8 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 01:03
+[11:30:00.300] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="40 mg"
+[11:30:01.294] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="42 mg"
+[11:30:02.168] [STAT] poll15=10 disp13(my)=10 disp13(3B)=0 ping12(my)=1 btn=0 break=10/10 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 01:05
+[11:30:02.303] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="44 mg"
+[11:30:03.304] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="46 mg"
+[11:30:04.168] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=0 btn=0 break=8/8 txt=0 seek=0 rxerr=0/2 | alloc=1 state=0x00 CD5 TR3 01:07
+[11:30:04.303] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="48 mg"
+[11:30:05.304] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="50 mg"
+[11:30:06.175] [STAT] poll15=9 disp13(my)=9 disp13(3B)=0 ping12(my)=1 btn=0 break=9/9 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 01:09
+[11:30:06.300] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="52 mg"
+[11:30:07.302] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="0 mg"
+[11:30:08.167] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=8/8 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 01:11
+[11:30:08.303] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="2 mg"
+[11:30:09.298] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="4 mg"
+[11:30:10.176] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=8/8 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 01:13
+[11:30:10.303] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="6 mg"
+[11:30:11.302] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="8 mg"
+[11:30:12.175] [STAT] poll15=9 disp13(my)=9 disp13(3B)=0 ping12(my)=0 btn=0 break=9/9 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 01:15
+[11:30:12.297] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="10 mg"
+[11:30:13.302] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="12 mg"
+[11:30:14.175] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=8/8 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 01:17
+[11:30:14.297] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="14 mg"
+[11:30:15.303] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="16 mg"
+[11:30:16.171] [STAT] poll15=9 disp13(my)=9 disp13(3B)=0 ping12(my)=1 btn=0 break=9/9 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 01:19
+[11:30:16.302] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="18 mg"
+[11:30:17.297] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="20 mg"
+[11:30:18.175] [STAT] poll15=9 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=9/9 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 01:21
+[11:30:18.302] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="22 mg"
+[11:30:19.302] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="24 mg"
+[11:30:20.172] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=8/8 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD5 TR3 01:23
+[11:30:20.294] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="26 mg"
+[11:30:21.299] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="28 mg"
+[11:30:22.177] [STAT] poll15=9 disp13(my)=9 disp13(3B)=0 ping12(my)=0 btn=0 break=10/10 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 01:25
+[11:30:22.302] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="30 mg"
+[11:30:23.302] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="32 mg"
+[11:30:24.177] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/5 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD5 TR3 01:27
+[11:30:25.296] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="36 mg"
+[11:30:26.175] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=8/8 txt=0 seek=0 rxerr=7/2 | alloc=1 state=0x00 CD5 TR3 01:29
+[11:30:26.303] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="38 mg"
+[11:30:27.302] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="40 mg"
+[11:30:28.176] [STAT] poll15=10 disp13(my)=8 disp13(3B)=0 ping12(my)=0 btn=0 break=10/10 txt=0 seek=0 rxerr=3/3 | alloc=1 state=0x00 CD5 TR3 01:31
+[11:30:28.298] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="42 mg"
+[11:30:29.294] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="44 mg"
+[11:30:30.166] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=8/8 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD5 TR3 01:33
+[11:30:30.297] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="46 mg"
+[11:30:31.301] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="48 mg"
+[11:30:32.172] [STAT] poll15=10 disp13(my)=10 disp13(3B)=0 ping12(my)=1 btn=0 break=10/10 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD5 TR3 01:35
+[11:30:32.294] >> CD-TEXT wyslany: CD5 TR3 plyta="OBD" utwor="50 mg"
