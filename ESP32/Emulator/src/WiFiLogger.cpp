@@ -64,22 +64,34 @@ void WiFiLoggerClass::loop() {
         // 2. Akceptowanie nowych połączeń klienta TCP
         if (server.hasClient()) {
             WiFiClient newClient = server.accept();
-            if (!activeClient || !activeClient.connected()) {
-                activeClient = newClient;
-                activeClient.setNoDelay(true);
-                clientConnected = true;
-                ::Serial.printf("[WiFiLogger] Nowy klient połączenia z IP: %s\n", activeClient.remoteIP().toString().c_str());
-                activeClient.printf("=== SONY UNILINK ESP32 LOG STREAM (%s.local) ===\n", MDNS_HOSTNAME);
-            } else {
-                newClient.stop(); // Tylko jeden aktywny klient naraz
+            // Jeśli jest stary klient, zrzucamy go na rzecz nowego (np. po restarcie skryptu Pythona)
+            if (activeClient && activeClient.connected()) {
+                ::Serial.println("[WiFiLogger] Zrzucanie starego klienta (nowe połączenie).");
+                activeClient.stop();
             }
+            
+            activeClient = newClient;
+            activeClient.setNoDelay(true);
+            clientConnected = true;
+            ::Serial.printf("[WiFiLogger] Nowy klient połączenia z IP: %s\n", activeClient.remoteIP().toString().c_str());
+            activeClient.printf("=== SONY UNILINK ESP32 LOG STREAM (%s.local) ===\n", MDNS_HOSTNAME);
         }
 
-        // 3. Sprawdzanie stanu obecnego klienta
-        if (clientConnected && !activeClient.connected()) {
-            clientConnected = false;
-            activeClient.stop();
-            ::Serial.println("[WiFiLogger] Klient rozłączony.");
+        // 3. Sprawdzanie stanu obecnego klienta i czyszczenie bufora RX
+        if (clientConnected && activeClient) {
+            // Skrypt w Pythonie wysyła "pingi" (puste znaki nowej linii). 
+            // Musimy je na bieżąco odbierać i ignorować, w przeciwnym razie bufor RX
+            // ESP32 się zapcha. Funkcja connected() potrafi zwracać true nawet po zerwaniu,
+            // dopóki w buforze odbiorczym znajdują się nieodczytane bajty!
+            while (activeClient.available()) {
+                activeClient.read(); 
+            }
+            
+            if (!activeClient.connected()) {
+                clientConnected = false;
+                activeClient.stop();
+                ::Serial.println("[WiFiLogger] Klient rozłączony.");
+            }
         }
     } else {
         if (wifiConnected) {
