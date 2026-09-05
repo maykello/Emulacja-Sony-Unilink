@@ -20,11 +20,18 @@
 #include "CdChanger.h"
 #include "UnilinkProtocol.h"
 #include "AudioPlayer.h"
+#include <LittleFS.h>
 
 // Stan zasilania magistrali (do wykrywania zboczy BUS_ON).
 static bool busPoweredLast = false;
+static bool powerLatchActive = false;
 
 void setup() {
+    // --- NATYCHMIASTOWE PRZEJECIE ZASILANIA (Suicide Circuit) ---
+    pinMode(PIN_POWER_LATCH, OUTPUT);
+    digitalWrite(PIN_POWER_LATCH, HIGH);
+    powerLatchActive = true;
+
     Serial.begin(921600);   // wyzszy baud: pelne logowanie ramek (DEBUG_FRAMES)
                             // nie obciaza petli (przy 115200 ~12% czasu = ryzyko
                             // kolizji). Logger musi uzywac tego samego baudu.
@@ -32,22 +39,26 @@ void setup() {
     Serial.println("Obsluga: MEX-BT3800u + CDX-M670 + PCM5102A DAC + USB");
     Serial.println("Oczekuje na radio (Stan C0 - Init)...");
 
+    // Inicjalizacja LittleFS dla pamieci podrecznej (indeks pendrive'a)
+    if (!LittleFS.begin(true)) {
+        Serial.println("[LittleFS] UWAGA: Błąd inicjalizacji partycji LittleFS!");
+    }
+
     // Pamiec nieulotna — wczytaj ostatnio odtwarzany utwor.
     CdChanger::begin();
 
-    // Audio (USB Host + I2S). MUSI byc PRZED UnilinkBus::begin(), bo uruchomienie
-    // USB Host uzywa delay(), a magistrala nie ma jeszcze podlaczonego przerwania.
-    if (audioInit()) {
-        Serial.println("[Audio] Gotowy do odtwarzania.");
-    } else {
-        Serial.println("[Audio] UWAGA: Brak nosnika USB — emulator dziala bez dzwieku.");
-    }
-
-    // Warstwa fizyczna magistrali (piny + przerwanie zegara).
+    // --- MAGISTRALA STARTUJE JAKO PIERWSZA ---
+    // Musimy reagowac na 'Ping' radia od pierwszych milisekund.
     UnilinkBus::begin();
-
-    // Stan sesji protokolu.
     UnilinkProtocol::begin();
+
+    // --- AUDIO I USB ---
+    // Startuje nieblokujaco w tle.
+    if (audioInit()) {
+        Serial.println("[Audio] Inicjalizacja zlecona (dziala w tle).");
+    } else {
+        Serial.println("[Audio] UWAGA: Inicjalizacja I2S nie powiodła się.");
+    }
 }
 
 // ===== ODBIOR I PRZETWARZANIE RAMEK =====
@@ -102,10 +113,27 @@ void loop() {
         busPoweredLast = busPowered;
         Serial.printf("=== BUS_ON = %d ===\n", busPowered ? 1 : 0);
         if (!busPowered) {
-            Serial.println("=== SEN: magistrala wylaczona — zatrzymuje audio ===");
+            Serial.println("=== SEN: magistrala wylaczona ===");
             CdChanger::sleep();
             UnilinkProtocol::onBusOff();
             UnilinkBus::resetRx();  // bajty z fazy BUS=0 sa "obce"
+            
+            // --- PROCEDURA SAMOBOJCZA ---
+            if (powerLatchActive) {
+                Serial.println("=== ROZPOCZYNAM PROCEDURĘ WYŁĄCZANIA ZASILANIA ===");
+                
+                // Czekaj chwile, zeby logi dotarly przez UART i NVS sie zapisal
+                delay(100);
+                
+                // Odcięcie zasilania
+                Serial.println("=== ODCINAM PRĄD. DOBRANOC. ===");
+                Serial.flush();
+                digitalWrite(PIN_POWER_LATCH, LOW);
+                powerLatchActive = false;
+                
+                // W tym miejscu w realnym ukladzie ESP32 powinno zgasnac.
+                // Jesli to plytka podpieta pod USB z PC, uklad bedzie dzialal dalej.
+            }
         } else {
             CdChanger::wake();
         }

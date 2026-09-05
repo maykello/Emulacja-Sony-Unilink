@@ -723,24 +723,12 @@ bool usbDriveInit() {
         return false;
     }
     
-    Serial.printf("[%s] USB Host gotowy. Podłącz pendrive'a do portu USB-OTG...\n", TAG);
+    Serial.printf("[%s] USB Host gotowy. Działam w trybie nieblokującym...\n", TAG);
     
-    // 5. Czekaj na podpięcie pendrive'a (max 5 sekund)
-    //    setup() jeszcze nie ma attachInterrupt, więc delay() jest bezpieczne
-    for (int i = 0; i < 50; i++) {
-        if (newDevAddr >= 0) {
-            int addr = newDevAddr;
-            newDevAddr = -1;
-            if (configureMscDevice(addr)) {
-                return true;
-            }
-        }
-        delay(100);
-    }
-    
+    // Zamiast czekać 5 sekund, wracamy natychmiast.
+    // Pendrive zostanie zamontowany asynchronicznie przez logikę hot-plug w audioLoop().
     if (!filesystemMounted) {
-        Serial.printf("[%s] Pendrive nie wykryty w ciągu 5s — emulator ruszy bez dźwięku.\n", TAG);
-        Serial.printf("[%s] Możesz podpiąć pendrive'a w dowolnym momencie (hot-plug).\n", TAG);
+        Serial.printf("[%s] Pendrive jeszcze nie wykryty, czekam na hot-plug.\n", TAG);
     }
     
     return true; // USB Host działa, nawet jeśli pendrive jeszcze nie podpięty

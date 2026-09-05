@@ -1,0 +1,43 @@
+[23:47:48.042] Obsluga: MEX-BT3800u + CDX-M670 + PCM5102A DAC + USB
+[23:47:48.042] Oczekuje na radio (Stan C0 - Init)...
+[23:47:48.042] [NVS] Wczytano ostatni utwor: CD12 TR1
+[23:47:48.048] [Audio] Inicjalizacja...
+[23:47:48.048] [UsbDrive] Inicjalizacja USB Host...
+[23:47:48.051] [UsbDrive] USB Host gotowy. Działam w trybie nieblokującym...
+[23:47:48.053] [UsbDrive] Pendrive jeszcze nie wykryty, czekam na hot-plug.
+[23:47:48.054] [Audio] setPinout(BCK=7, LRCK=15, DIN=13) = OK
+[23:47:48.054] [Audio] Inicjalizacja I2S zakończona — oczekuję na pendrive.
+[23:47:48.059] [Audio] Task dekodowania uruchomiony na rdzeniu 0
+[23:47:48.059] [Audio] Inicjalizacja zlecona (dziala w tle).
+[23:47:48.059] [UsbDrive] Konfiguruję urządzenie MSC (addr=1)...
+[23:47:48.059] [UsbDrive] Nowe urządzenie USB (addr=1)
+[23:47:48.059] [UsbDrive] VID=0x0951 PID=0x1653
+[23:47:48.059] [UsbDrive] Znaleziono interfejs MSC #0
+[23:47:48.068] [UsbDrive] Bulk IN:  0x81 (MPS=64)
+[23:47:48.069] [UsbDrive] Bulk OUT: 0x02 (MPS=64)
+[23:47:48.069] [UsbDrive] Czekam na gotowość urządzenia...
+[23:47:48.069] [UsbDrive] Pendrive: Kingston DT 100 G2
+[23:47:48.073] [UsbDrive] Dysk: 15644912 sektorów × 512 B = 7639 MB
+[23:47:48.076] [UsbDrive] Sektor 0 to GPT Protective MBR — parsowanie GPT...
+[23:47:48.078] [UsbDrive] GPT: wpisy od LBA 2, 128 wpisów × 128 B
+[23:47:48.078] [UsbDrive]   GPT wpis 0: start=2048 end=15644671 (Microsoft Basic Data)
+[23:47:48.078] [UsbDrive] ✓ Używam partycji GPT na sektorze 2048
+[23:47:48.084] [UsbDrive] ✓ System plików zamontowany pod /usb
+[23:47:48.084] [Audio] Pendrive podpięty — skanowanie folderów...
+[23:47:48.088] [Audio] Indeks nieaktualny lub brak. Wykonuję głębokie skanowanie...
+[23:47:48.088] [Audio] CD01 [CD01] nazwa="CD01": 31 track(ów)
+[23:47:48.088] [Audio] CD02 [CD02] nazwa="CD02": 61 track(ów)
+[23:47:48.309] [Audio] CD03 [CD03] nazwa="CD03": 25 track(ów)
+[23:47:48.804] [Audio] CD04 [CD04] nazwa="CD04": 36 track(ów)
+[23:47:49.153] [Audio] CD05 [CD05] nazwa="CD05": 25 track(ów)
+[23:47:52.152] [Audio] CD06 [CD06] nazwa="CD06": 99 track(ów)
+[23:47:55.072] [Audio] CD07 [CD07] nazwa="CD07": 99 track(ów)
+[23:47:57.979] [Audio] CD08 [CD08] nazwa="CD08": 99 track(ów)
+[23:48:01.058] [Audio] CD09 [CD09] nazwa="CD09": 99 track(ów)
+[23:48:03.661] [Audio] CD10 [CD10] nazwa="CD10": 92 track(ów)
+[23:48:03.678] [Audio] CD11 [CD11] nazwa="CD11": 1 track(ów)
+[23:48:03.691] [Audio] CD12 [CD12] nazwa="CD12": 1 track(ów)
+[23:48:03.709] [Audio] CD13 [CD13] nazwa="CD13": 1 track(ów)
+[23:48:03.728] [Audio] CD14 [CD14] nazwa="CD14": 1 track(ów)
+[23:48:03.731] [Audio] Błąd otwarcia pliku indeksu do zapisu w LittleFS.
+[23:48:03.731] >>> Wykryto USB. Wznawiam zapamietana plyte: CD12 TR1

@@ -6,6 +6,8 @@
 #include "freertos/task.h"
 #include "freertos/semphr.h"
 #include <string.h>
+#include <LittleFS.h>
+#include "ff.h"
 
 // --- Obiekt audio (globalny singleton z biblioteki ESP32-audioI2S) ---
 Audio audio;
@@ -140,7 +142,7 @@ static uint8_t parseDiscDir(const String &dirName, String &label) {
 // Zbiera WSZYSTKIE pliki audio (dowolna nazwa), sortuje
 // alfabetycznie i przypisuje numery tracków 1, 2, 3...
 // ============================================================
-static void scanDiscs() {
+static void performDeepScan() {
     if (!usbDriveIsMounted()) {
         Serial.println("[Audio] Pendrive nie zamontowany — nie mogę skanować.");
         return;
@@ -222,8 +224,155 @@ static void scanDiscs() {
         Serial.printf("[Audio] CD%02d [%s] nazwa=\"%s\": %d track(ów)\n",
                       d, discDirName[d].c_str(), discLabel[d].c_str(), count);
         for (int t = 0; t < count; t++) {
-            Serial.printf("[Audio]   TR%02d: %s\n", t + 1, trackFiles[d][t].c_str());
+            // Serial.printf("[Audio]   TR%02d: %s\n", t + 1, trackFiles[d][t].c_str());
         }
+    }
+}
+
+// ============================================================
+// Zapisywanie i odczytywanie indeksu z/do pliku
+// Format tekstowy:
+// Wersja|Darmowe_Klastry
+// Dysk|Katalog|Etykieta|LiczbaTrackow
+// Dysk|NazwaPliku (powtarzane 'LiczbaTrackow' razy)
+// ============================================================
+static bool saveIndexToFile() {
+    if (!usbDriveIsMounted()) return false;
+    
+    // Pobierz wolne klastry z FatFs (z dysku "1:")
+    DWORD fre_clust = 0;
+    FATFS *fs_ptr;
+    if (f_getfree("1:", &fre_clust, &fs_ptr) != FR_OK) {
+        Serial.println("[Audio] Błąd pobierania wolnych klastrów.");
+    }
+    
+    File file = LittleFS.open(INDEX_FILE_PATH, FILE_WRITE);
+    if (!file) {
+        Serial.println("[Audio] Błąd otwarcia pliku indeksu do zapisu w LittleFS.");
+        return false;
+    }
+    
+    file.printf("UNILINK_INDEX_V2|%lu\n", (unsigned long)fre_clust);
+    for (int d = 1; d <= MAX_DISCS; d++) {
+        if (trackCount[d] == 0) continue;
+        
+        // Zapisz nagłówek dysku
+        file.printf("%d|%s|%s|%d\n", d, discDirName[d].c_str(), discLabel[d].c_str(), trackCount[d]);
+        
+        // Zapisz ścieżki plików
+        for (int t = 0; t < trackCount[d]; t++) {
+            file.printf("%d|%s\n", d, trackFiles[d][t].c_str());
+        }
+    }
+    file.close();
+    Serial.printf("[Audio] Zapisano indeks do pliku (free_clusters=%lu).\n", (unsigned long)fre_clust);
+    return true;
+}
+
+static bool loadIndexFromFile() {
+    if (!usbDriveIsMounted()) return false;
+    
+    if (!LittleFS.exists(INDEX_FILE_PATH)) {
+        return false; // Brak pliku indeksu
+    }
+    
+    // Pobierz wolne klastry z FatFs (z dysku "1:")
+    DWORD fre_clust = 0;
+    FATFS *fs_ptr;
+    if (f_getfree("1:", &fre_clust, &fs_ptr) != FR_OK) {
+        Serial.println("[Audio] Błąd pobierania wolnych klastrów dla sprawdzenia.");
+    }
+    unsigned long current_free_clusters = (unsigned long)fre_clust;
+    
+    File file = LittleFS.open(INDEX_FILE_PATH, FILE_READ);
+    if (!file) {
+        Serial.println("[Audio] Błąd otwarcia pliku indeksu do odczytu w LittleFS.");
+        return false;
+    }
+    
+    String header = file.readStringUntil('\n');
+    header.trim();
+    int pipeIdx = header.indexOf('|');
+    if (pipeIdx < 0 || header.substring(0, pipeIdx) != "UNILINK_INDEX_V2") {
+        Serial.println("[Audio] Zła wersja pliku indeksu lub uszkodzony nagłówek.");
+        file.close();
+        return false;
+    }
+    
+    unsigned long saved_free_clusters = strtoul(header.substring(pipeIdx + 1).c_str(), NULL, 10);
+    
+    if (saved_free_clusters != current_free_clusters) {
+        Serial.printf("[Audio] Zmiana na pendrive! Oczekiwano %lu wolnych klastrów, jest %lu.\n", 
+                      saved_free_clusters, current_free_clusters);
+        file.close();
+        return false;
+    }
+    
+    // Wyczyść stare wpisy
+    for (int d = 1; d <= MAX_DISCS; d++) {
+        trackCount[d]  = 0;
+        discDirName[d] = "";
+        discLabel[d]   = "";
+        for (int t = 0; t < MAX_TRACKS_STORED; t++) {
+            trackFiles[d][t] = "";
+        }
+    }
+    
+    int currentDisc = 0;
+    int expectedTracks = 0;
+    int loadedTracks = 0;
+    
+    while (file.available()) {
+        String line = file.readStringUntil('\n');
+        line.trim();
+        if (line.length() == 0) continue;
+        
+        int firstPipe = line.indexOf('|');
+        if (firstPipe < 0) continue;
+        
+        int disc = line.substring(0, firstPipe).toInt();
+        if (disc < 1 || disc > MAX_DISCS) continue;
+        
+        int secondPipe = line.indexOf('|', firstPipe + 1);
+        
+        if (secondPipe > 0) {
+            // Nagłówek dysku: Dysk|Katalog|Etykieta|LiczbaTrackow
+            int thirdPipe = line.indexOf('|', secondPipe + 1);
+            if (thirdPipe > 0) {
+                currentDisc = disc;
+                discDirName[currentDisc] = line.substring(firstPipe + 1, secondPipe);
+                discLabel[currentDisc] = line.substring(secondPipe + 1, thirdPipe);
+                expectedTracks = line.substring(thirdPipe + 1).toInt();
+                loadedTracks = 0;
+            }
+        } else {
+            // Ścieżka pliku: Dysk|NazwaPliku
+            if (disc == currentDisc && loadedTracks < expectedTracks && loadedTracks < MAX_TRACKS_STORED) {
+                trackFiles[currentDisc][loadedTracks] = line.substring(firstPipe + 1);
+                loadedTracks++;
+                trackCount[currentDisc] = loadedTracks;
+            }
+        }
+    }
+    
+    file.close();
+    Serial.println("[Audio] Pomyślnie wczytano indeks z wbudowanej pamięci.");
+    
+    // Wypisz dla debugowania
+    for (int d = 1; d <= MAX_DISCS; d++) {
+        if (trackCount[d] > 0) {
+            Serial.printf("[Audio-Index] CD%02d [%s] nazwa=\"%s\": %d track(ów)\n",
+                          d, discDirName[d].c_str(), discLabel[d].c_str(), trackCount[d]);
+        }
+    }
+    return true;
+}
+
+static void scanDiscs() {
+    if (!loadIndexFromFile()) {
+        Serial.println("[Audio] Indeks nieaktualny lub brak. Wykonuję głębokie skanowanie...");
+        performDeepScan();
+        saveIndexToFile();
     }
 }
 

@@ -55,7 +55,6 @@ bool audioSeekToSec(uint32_t targetSec);
 // skanowania FF/REW, gdy setTimeOffset generuje setki komunikatow/s.
 void audioSetInfoSquelch(bool squelch);
 
-// Ile tracków ma dany dysk (1..10). 0 = dysk pusty/brak folderu.
 uint8_t audioGetTrackCount(uint8_t disc);
 
 // --- INTERFEJS NAZW (źródło dla CD-TEXT) ---

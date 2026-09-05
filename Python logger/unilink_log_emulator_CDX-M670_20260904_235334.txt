@@ -1,0 +1,88 @@
+[23:54:00.341] Obsluga: MEX-BT3800u + CDX-M670 + PCM5102A DAC + USB
+[23:54:00.343] Oczekuje na radio (Stan C0 - Init)...
+[23:54:00.346] [NVS] Wczytano ostatni utwor: CD12 TR1
+[23:54:00.347] [Audio] Inicjalizacja...
+[23:54:00.348] [UsbDrive] Inicjalizacja USB Host...
+[23:54:00.368] [UsbDrive] USB Host gotowy. Działam w trybie nieblokującym...
+[23:54:00.372] [UsbDrive] Pendrive jeszcze nie wykryty, czekam na hot-plug.
+[23:54:00.374] [Audio] setPinout(BCK=7, LRCK=15, DIN=13) = OK
+[23:54:00.374] [Audio] Inicjalizacja I2S zakończona — oczekuję na pendrive.
+[23:54:00.374] [Audio] Task dekodowania uruchomiony na rdzeniu 0
+[23:54:00.380] [Audio] Inicjalizacja zlecona (dziala w tle).
+[23:54:00.754] [UsbDrive] Konfiguruję urządzenie MSC (addr=1)...
+[23:54:00.758] [UsbDrive] Nowe urządzenie USB (addr=1)
+[23:54:00.758] [UsbDrive] VID=0x0951 PID=0x1653
+[23:54:00.758] [UsbDrive] Znaleziono interfejs MSC #0
+[23:54:00.758] [UsbDrive] Bulk IN:  0x81 (MPS=64)
+[23:54:00.762] [UsbDrive] Bulk OUT: 0x02 (MPS=64)
+[23:54:00.764] [UsbDrive] Czekam na gotowość urządzenia...
+[23:54:00.840] [UsbDrive] Pendrive: Kingston DT 100 G2
+[23:54:00.842] [UsbDrive] Dysk: 15644912 sektorów × 512 B = 7639 MB
+[23:54:00.842] [UsbDrive] Sektor 0 to GPT Protective MBR — parsowanie GPT...
+[23:54:00.842] [UsbDrive] GPT: wpisy od LBA 2, 128 wpisów × 128 B
+[23:54:00.842] [UsbDrive]   GPT wpis 0: start=2048 end=15644671 (Microsoft Basic Data)
+[23:54:00.849] [UsbDrive] ✓ Używam partycji GPT na sektorze 2048
+[23:54:00.850] [UsbDrive] ✓ System plików zamontowany pod /usb
+[23:54:00.853] [Audio] Pendrive podpięty — skanowanie folderów...
+[23:54:01.153] [Audio] Pomyślnie wczytano indeks z wbudowanej pamięci.
+[23:54:01.153] [Audio-Index] CD01 [CD01] nazwa="CD01": 31 track(ów)
+[23:54:01.153] [Audio-Index] CD02 [CD02] nazwa="CD02": 61 track(ów)
+[23:54:01.153] [Audio-Index] CD03 [CD03] nazwa="CD03": 25 track(ów)
+[23:54:01.162] [Audio-Index] CD04 [CD04] nazwa="CD04": 36 track(ów)
+[23:54:01.164] [Audio-Index] CD05 [CD05] nazwa="CD05": 25 track(ów)
+[23:54:01.166] [Audio-Index] CD06 [CD06] nazwa="CD06": 99 track(ów)
+[23:54:01.166] [Audio-Index] CD07 [CD07] nazwa="CD07": 99 track(ów)
+[23:54:01.166] [Audio-Index] CD08 [CD08] nazwa="CD08": 99 track(ów)
+[23:54:01.172] [Audio-Index] CD09 [CD09] nazwa="CD09": 99 track(ów)
+[23:54:01.172] [Audio-Index] CD10 [CD10] nazwa="CD10": 92 track(ów)
+[23:54:01.175] [Audio-Index] CD11 [CD11] nazwa="CD11": 1 track(ów)
+[23:54:01.175] [Audio-Index] CD12 [CD12] nazwa="CD12": 1 track(ów)
+[23:54:01.175] [Audio-Index] CD13 [CD13] nazwa="CD13": 1 track(ów)
+[23:54:01.175] [Audio-Index] CD14 [CD14] nazwa="CD14": 1 track(ów)
+[23:54:01.182] >>> Wykryto USB. Wznawiam zapamietana plyte: CD12 TR1
+[23:54:03.442] === BUS_ON = 1 ===
+[23:54:03.442] [Audio] Głośność: 18/21 (zlecone)
+[23:54:03.452] === BUS_ON = 0 ===
+[23:54:03.453] === SEN: magistrala wylaczona ===
+[23:54:03.455] [Audio] ⏹ Zatrzymano (zlecone).
+[23:54:03.455] === ROZPOCZYNAM PROCEDURĘ WYŁĄCZANIA ZASILANIA ===
+[23:54:03.554] === ODCINAM PRĄD. DOBRANOC. ===
+[23:54:03.754] === BUS_ON = 1 ===
+[23:54:03.762] [Audio] Głośność: 18/21 (zlecone)
+[23:54:04.162] === BUS_ON = 0 ===
+[23:54:04.162] === SEN: magistrala wylaczona ===
+[23:54:04.162] [Audio] ⏹ Zatrzymano (zlecone).
+[23:54:04.360] === BUS_ON = 1 ===
+[23:54:04.363] [Audio] Głośność: 18/21 (zlecone)
+[23:54:04.933] ===== CZARNA SKRZYNKA (RADIO SYSTEM RESET 18 10 01 00) — ostatnie 1 zdarzen =====
+[23:54:04.933] [-    1ms] RX    18 10 01 00 29 00
+[23:54:04.939] ======================================================
+[23:54:04.939] >> Radio system reset (#1) (juz bylem nieprzydzielony)
+[23:54:04.999] == Wykryto CDX-M670 (widziano 3B 10 02 11) ==
+[23:54:05.074] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 49ms po DB)
+[23:54:05.202] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 179ms po DB)
+[23:54:05.252] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#3, 228ms po DB)
+[23:54:05.302] >> Odpowiadam na ANYONE? device info 0x8C
+[23:54:05.329] >> Adres przydzielony: 0x31 (op2=0x14)! deviceAllocated=true
+[23:54:06.212] >> [Audio Bus] Radio sygnalizuje audio ON (87 2B)
+[23:54:06.233] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[23:54:08.134] [STAT] poll15=6 disp13(my)=1 disp13(3B)=5 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:00
+[23:54:08.876] >>> C0 -> 80 (Idle)
+[23:54:12.132] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:00
+[23:54:14.135] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:00
+[23:54:16.138] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:00
+[23:54:16.308] >> [Audio Bus] Radio sygnalizuje audio OFF (87 6A)
+[23:54:16.309] [Audio] ⏹ Zatrzymano (zlecone).
+[23:54:16.330] >> [Audio Bus] Radio sygnalizuje audio OFF (87 2A)
+[23:54:16.332] [Audio] ⏹ Zatrzymano (zlecone).
+[23:54:18.137] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:00
+[23:54:18.782] >>> C0 -> 80 (Idle)
+[23:54:22.138] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:00
+[23:54:24.138] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:00
+[23:54:26.137] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:00
+[23:54:28.137] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:00
+[23:54:29.982] >> [Audio Bus] Radio sygnalizuje audio OFF (87 22)
+[23:54:29.982] [Audio] ⏹ Zatrzymano (zlecone).
+[23:54:29.997] === BUS_ON = 0 ===
+[23:54:29.997] === SEN: magistrala wylaczona ===
+[23:54:29.997] [Audio] ⏹ Zatrzymano (zlecone).

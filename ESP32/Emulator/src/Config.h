@@ -19,6 +19,10 @@ constexpr uint8_t PIN_BUS_ON = 4;   // zasilanie magistrali (HIGH = radio wlaczo
 constexpr uint8_t PIN_CLOCK  = 5;   // zegar magistrali (przerwanie)
 constexpr uint8_t PIN_DATA   = 6;   // linia danych (dwukierunkowa)
 
+// --- KONFIGURACJA ZASILANIA I USB ---
+constexpr uint8_t PIN_POWER_LATCH = 9; // pin trzymajacy zasilanie przetwornicy (HIGH = wlaczone)
+constexpr const char* INDEX_FILE_PATH = "/unilink_index.dat"; // bufor struktury katalogow
+
 // --- USTAWIENIA SPRZETOWE WARSTWY FIZYCZNEJ ---
 constexpr bool INVERT_DATA = true;     // sprzetowy inwerter na linii DATA
 constexpr int  CLOCK_EDGE  = RISING;   // zbocze zegara, na ktorym probkujemy bit

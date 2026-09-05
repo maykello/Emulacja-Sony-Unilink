@@ -1,0 +1,122 @@
+[23:51:38.664] Obsluga: MEX-BT3800u + CDX-M670 + PCM5102A DAC + USB
+[23:51:38.664] Oczekuje na radio (Stan C0 - Init)...
+[23:51:38.664] [NVS] Wczytano ostatni utwor: CD12 TR1
+[23:51:38.664] [Audio] Inicjalizacja...
+[23:51:38.672] [UsbDrive] Inicjalizacja USB Host...
+[23:51:38.673] [UsbDrive] USB Host gotowy. Działam w trybie nieblokującym...
+[23:51:38.675] [UsbDrive] Pendrive jeszcze nie wykryty, czekam na hot-plug.
+[23:51:38.675] [Audio] setPinout(BCK=7, LRCK=15, DIN=13) = OK
+[23:51:38.681] [Audio] Inicjalizacja I2S zakończona — oczekuję na pendrive.
+[23:51:38.682] [Audio] Task dekodowania uruchomiony na rdzeniu 0
+[23:51:38.682] [Audio] Inicjalizacja zlecona (dziala w tle).
+[23:51:38.682] [UsbDrive] Konfiguruję urządzenie MSC (addr=1)...
+[23:51:38.682] [UsbDrive] Nowe urządzenie USB (addr=1)
+[23:51:38.688] [UsbDrive] VID=0x0951 PID=0x1653
+[23:51:38.688] [UsbDrive] Znaleziono interfejs MSC #0
+[23:51:38.691] [UsbDrive] Bulk IN:  0x81 (MPS=64)
+[23:51:38.692] [UsbDrive] Bulk OUT: 0x02 (MPS=64)
+[23:51:38.694] [UsbDrive] Czekam na gotowość urządzenia...
+[23:51:38.694] [UsbDrive] Pendrive: Kingston DT 100 G2
+[23:51:38.694] [UsbDrive] Dysk: 15644912 sektorów × 512 B = 7639 MB
+[23:51:38.700] [UsbDrive] Sektor 0 to GPT Protective MBR — parsowanie GPT...
+[23:51:38.701] [UsbDrive] GPT: wpisy od LBA 2, 128 wpisów × 128 B
+[23:51:38.702] [UsbDrive]   GPT wpis 0: start=2048 end=15644671 (Microsoft Basic Data)
+[23:51:38.705] [UsbDrive] ✓ Używam partycji GPT na sektorze 2048
+[23:51:38.707] [UsbDrive] ✓ System plików zamontowany pod /usb
+[23:51:38.707] [Audio] Pendrive podpięty — skanowanie folderów...
+[23:51:38.707] [Audio] Indeks nieaktualny lub brak. Wykonuję głębokie skanowanie...
+[23:51:38.713] [Audio] CD01 [CD01] nazwa="CD01": 31 track(ów)
+[23:51:38.713] [Audio] CD02 [CD02] nazwa="CD02": 61 track(ów)
+[23:51:38.952] [Audio] CD03 [CD03] nazwa="CD03": 25 track(ów)
+[23:51:39.444] [Audio] CD04 [CD04] nazwa="CD04": 36 track(ów)
+[23:51:39.792] [Audio] CD05 [CD05] nazwa="CD05": 25 track(ów)
+[23:51:42.792] [Audio] CD06 [CD06] nazwa="CD06": 99 track(ów)
+[23:51:45.719] [Audio] CD07 [CD07] nazwa="CD07": 99 track(ów)
+[23:51:48.626] [Audio] CD08 [CD08] nazwa="CD08": 99 track(ów)
+[23:51:51.702] [Audio] CD09 [CD09] nazwa="CD09": 99 track(ów)
+[23:51:54.302] [Audio] CD10 [CD10] nazwa="CD10": 92 track(ów)
+[23:51:54.325] [Audio] CD11 [CD11] nazwa="CD11": 1 track(ów)
+[23:51:54.342] [Audio] CD12 [CD12] nazwa="CD12": 1 track(ów)
+[23:51:54.358] [Audio] CD13 [CD13] nazwa="CD13": 1 track(ów)
+[23:51:54.374] [Audio] CD14 [CD14] nazwa="CD14": 1 track(ów)
+[23:51:54.517] [Audio] Zapisano indeks do pliku (free_clusters=1151233).
+[23:51:54.517] == Wykryto CDX-M670 (widziano 3B 10 02 11) ==
+[23:51:54.520] === BUS_ON = 1 ===
+[23:51:54.521] [Audio] Głośność: 18/21 (zlecone)
+[23:51:54.522] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 1ms po DB)
+[23:51:54.522] >>> Wykryto USB. Wznawiam zapamietana plyte: CD12 TR1
+[23:51:56.265] >> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+[23:51:56.356] ===== CZARNA SKRZYNKA (RADIO SYSTEM RESET 18 10 01 00) — ostatnie 16 zdarzen =====
+[23:51:56.356] [- 1838ms] RESYNC
+[23:51:56.359] [- 1838ms] RX    3B 10 02 11 5E 00
+[23:51:56.361] [- 1838ms] RX    10 3B 8C 00 D7 05 1C 2E 12 38 00
+[23:51:56.362] [- 1838ms] RX    DB 10 02 12 FF 00
+[23:51:56.362] [- 1838ms] RESYNC
+[23:51:56.362] [- 1837ms] RX    18 10 01 02 2B 00
+[23:51:56.362] [- 1837ms] RX    18 70 8C 00 14 80 05 0A 01 A4 00
+[23:51:56.362] [- 1837ms] RX    71 10 02 12 95 00
+[23:51:56.362] [- 1837ms] RXFLUSH
+[23:51:56.362] [- 1343ms] RX    3B 10 01 12 5E 00
+[23:51:56.362] [- 1332ms] RX    10 3B 00 C0 0B 00
+[23:51:56.372] [-  715ms] RX    71 10 01 12 94 00
+[23:51:56.372] [-  704ms] RX    10 71 00 00 81 00
+[23:51:56.372] [-   86ms] RX    18 10 01 11 3A 00
+[23:51:56.372] [-   86ms] TX    10 18 04 00 2C 00
+[23:51:56.376] [-    0ms] RX    18 10 01 00 29 00
+[23:51:56.376] ======================================================
+[23:51:56.376] >> Radio system reset (#1) (juz bylem nieprzydzielony)
+[23:51:56.492] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 49ms po DB)
+[23:51:56.622] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 179ms po DB)
+[23:51:56.675] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#3, 228ms po DB)
+[23:51:56.723] >> Odpowiadam na ANYONE? device info 0x8C
+[23:51:56.742] >> Adres przydzielony: 0x31 (op2=0x14)! deviceAllocated=true
+[23:51:57.632] >> [Audio Bus] Radio sygnalizuje audio ON (87 AB)
+[23:51:57.673] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[23:51:58.521] [STAT] poll15=4 disp13(my)=1 disp13(3B)=3 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:00
+[23:52:00.022] >> PLAY command received!
+[23:52:00.032] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[23:52:00.117] [Audio] Async connecttoFS("/CD12/Krzysztof Krawczyk - To co dał nam świat.mp3") = OK
+[23:52:00.122] [Audio] ▶ Odtwarzam: /CD12/Krzysztof Krawczyk - To co dał nam świat.mp3 (rozpoczęto dekodowanie)
+[23:52:00.522] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=11/3 | alloc=1 state=0x40 CD12 TR1 00:00
+[23:52:01.414] >>> 40 -> 00 (Playing!)
+[23:52:02.029] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[23:52:02.522] [STAT] poll15=8 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=9/8 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:01
+[23:52:03.568] >> ZADANIE 0x84: 31 71 84 D7 FD 70 00 00 00 6D 00
+[23:52:04.265] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[23:52:04.518] [STAT] poll15=9 disp13(my)=8 disp13(3B)=0 ping12(my)=0 btn=0 break=9/8 txt=1 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR1 00:03
+[23:52:06.267] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[23:52:06.520] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:05
+[23:52:08.265] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[23:52:08.521] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:07
+[23:52:10.262] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[23:52:10.519] [STAT] poll15=7 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:09
+[23:52:12.520] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:11
+[23:52:14.521] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:13
+[23:52:15.422] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[23:52:16.520] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR1 00:15
+[23:52:17.422] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[23:52:18.520] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR1 00:17
+[23:52:19.422] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[23:52:20.521] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD12 TR1 00:19
+[23:52:21.422] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[23:52:22.521] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:21
+[23:52:23.422] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[23:52:24.521] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=6/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:23
+[23:52:25.502] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[23:52:26.520] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=2/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:25
+[23:52:28.521] [STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR1 00:27
+[23:52:29.422] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[23:52:30.513] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:29
+[23:52:31.322] >> [Audio Bus] Radio sygnalizuje audio OFF (87 6A)
+[23:52:31.322] [Audio] ⏹ Zatrzymano (zlecone).
+[23:52:31.342] >> [Audio Bus] Radio sygnalizuje audio OFF (87 2A)
+[23:52:31.350] [Audio] ⏹ Zatrzymano (zlecone).
+[23:52:31.352] [Audio-info] Closing audio file
+[23:52:32.518] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:29
+[23:52:33.082] >>> C0 -> 80 (Idle)
+[23:52:36.518] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:29
+[23:52:38.520] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:29
+[23:52:40.516] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:29
+[23:52:42.520] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:29
+[23:52:46.520] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:29
+[23:52:48.515] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:29

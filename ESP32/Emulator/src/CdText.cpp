@@ -68,11 +68,55 @@ size_t sanitizeAscii(const char* in, char* out, size_t maxLen) {
     size_t written = 0;
     if (in != nullptr) {
         // Zostaw miejsce na terminator (maxLen liczy terminator).
-        for (size_t i = 0; in[i] != '\0' && written + 1 < maxLen; ++i) {
-            unsigned char c = static_cast<unsigned char>(in[i]);
-            if (isPrintableAscii(c)) {
-                out[written++] = static_cast<char>(c);
+        for (size_t i = 0; in[i] != '\0' && written + 1 < maxLen; ) {
+            unsigned char c1 = static_cast<unsigned char>(in[i]);
+            
+            // Obsługa UTF-8 (polskie znaki)
+            if (c1 >= 0xC0 && in[i+1] != '\0') {
+                unsigned char c2 = static_cast<unsigned char>(in[i+1]);
+                char replacement = 0;
+                
+                if (c1 == 0xC3) {
+                    if (c2 == 0xB3) replacement = 'o'; // ó
+                    else if (c2 == 0x93) replacement = 'O'; // Ó
+                } else if (c1 == 0xC4) {
+                    if (c2 == 0x85) replacement = 'a'; // ą
+                    else if (c2 == 0x84) replacement = 'A'; // Ą
+                    else if (c2 == 0x87) replacement = 'c'; // ć
+                    else if (c2 == 0x86) replacement = 'C'; // Ć
+                    else if (c2 == 0x99) replacement = 'e'; // ę
+                    else if (c2 == 0x98) replacement = 'E'; // Ę
+                } else if (c1 == 0xC5) {
+                    if (c2 == 0x82) replacement = 'l'; // ł
+                    else if (c2 == 0x81) replacement = 'L'; // Ł
+                    else if (c2 == 0x84) replacement = 'n'; // ń
+                    else if (c2 == 0x83) replacement = 'N'; // Ń
+                    else if (c2 == 0x9B) replacement = 's'; // ś
+                    else if (c2 == 0x9A) replacement = 'S'; // Ś
+                    else if (c2 == 0xBA) replacement = 'z'; // ź
+                    else if (c2 == 0xB9) replacement = 'Z'; // Ź
+                    else if (c2 == 0xBC) replacement = 'z'; // ż
+                    else if (c2 == 0xBB) replacement = 'Z'; // Ż
+                }
+                
+                if (replacement != 0) {
+                    out[written++] = replacement;
+                    i += 2;
+                    continue;
+                }
+                
+                // Jeśli to inny znak UTF-8, pomiń go całościowo (żeby nie zostawiać krzaków)
+                if ((c1 & 0xE0) == 0xC0) i += 2;
+                else if ((c1 & 0xF0) == 0xE0) i += 3;
+                else if ((c1 & 0xF8) == 0xF0) i += 4;
+                else i += 1;
+                continue;
             }
+            
+            if (isPrintableAscii(c1)) {
+                out[written++] = static_cast<char>(c1);
+            }
+            i++;
         }
     }
     out[written] = '\0';
