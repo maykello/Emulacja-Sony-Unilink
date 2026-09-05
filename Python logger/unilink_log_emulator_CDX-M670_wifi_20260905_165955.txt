@@ -1,0 +1,439 @@
+[17:00:02.505] === SONY UNILINK ESP32 LOG STREAM (unilink.local) ===
+[17:00:34.135] === BUS_ON = 0 ===
+[17:00:34.138] === SEN: magistrala wylaczona ===
+[17:00:34.143] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.143] === ROZPOCZYNAM PROCEDURĘ WYŁĄCZANIA ZASILANIA ===
+[17:00:34.242] === ODCINAM PRĄD. DOBRANOC. ===
+[17:00:34.242] === BUS_ON = 1 ===
+[17:00:34.242] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.255] === BUS_ON = 0 ===
+[17:00:34.255] === SEN: magistrala wylaczona ===
+[17:00:34.255] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.271] === BUS_ON = 1 ===
+[17:00:34.271] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.271] === BUS_ON = 0 ===
+[17:00:34.271] === SEN: magistrala wylaczona ===
+[17:00:34.271] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.287] === BUS_ON = 1 ===
+[17:00:34.287] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.287] === BUS_ON = 0 ===
+[17:00:34.287] === SEN: magistrala wylaczona ===
+[17:00:34.303] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.303] === BUS_ON = 1 ===
+[17:00:34.303] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.319] === BUS_ON = 0 ===
+[17:00:34.319] === SEN: magistrala wylaczona ===
+[17:00:34.319] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.319] === BUS_ON = 1 ===
+[17:00:34.319] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.339] === BUS_ON = 0 ===
+[17:00:34.339] === SEN: magistrala wylaczona ===
+[17:00:34.343] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.343] === BUS_ON = 1 ===
+[17:00:34.350] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.350] === BUS_ON = 0 ===
+[17:00:34.350] === SEN: magistrala wylaczona ===
+[17:00:34.350] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.366] === BUS_ON = 1 ===
+[17:00:34.366] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.366] === BUS_ON = 0 ===
+[17:00:34.381] === SEN: magistrala wylaczona ===
+[17:00:34.383] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.388] === BUS_ON = 1 ===
+[17:00:34.388] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.398] === BUS_ON = 0 ===
+[17:00:34.398] === SEN: magistrala wylaczona ===
+[17:00:34.398] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.398] === BUS_ON = 1 ===
+[17:00:34.398] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.414] === BUS_ON = 0 ===
+[17:00:34.414] === SEN: magistrala wylaczona ===
+[17:00:34.414] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.414] === BUS_ON = 1 ===
+[17:00:34.430] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.438] === BUS_ON = 0 ===
+[17:00:34.439] === SEN: magistrala wylaczona ===
+[17:00:34.443] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.447] === BUS_ON = 1 ===
+[17:00:34.447] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.447] === BUS_ON = 0 ===
+[17:00:34.447] === SEN: magistrala wylaczona ===
+[17:00:34.464] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.464] === BUS_ON = 1 ===
+[17:00:34.464] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.464] === BUS_ON = 0 ===
+[17:00:34.478] === SEN: magistrala wylaczona ===
+[17:00:34.478] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.478] === BUS_ON = 1 ===
+[17:00:34.489] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.494] === BUS_ON = 0 ===
+[17:00:34.494] === SEN: magistrala wylaczona ===
+[17:00:34.494] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.494] === BUS_ON = 1 ===
+[17:00:34.512] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.512] === BUS_ON = 0 ===
+[17:00:34.512] === SEN: magistrala wylaczona ===
+[17:00:34.529] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.529] === BUS_ON = 1 ===
+[17:00:34.533] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.538] === BUS_ON = 0 ===
+[17:00:34.541] === SEN: magistrala wylaczona ===
+[17:00:34.544] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.553] === BUS_ON = 1 ===
+[17:00:34.553] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.557] === BUS_ON = 0 ===
+[17:00:34.557] === SEN: magistrala wylaczona ===
+[17:00:34.557] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.557] === BUS_ON = 1 ===
+[17:00:34.557] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.573] === BUS_ON = 0 ===
+[17:00:34.573] === SEN: magistrala wylaczona ===
+[17:00:34.573] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.590] === BUS_ON = 1 ===
+[17:00:34.590] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.590] === BUS_ON = 0 ===
+[17:00:34.590] === SEN: magistrala wylaczona ===
+[17:00:34.590] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.605] === BUS_ON = 1 ===
+[17:00:34.605] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.605] === BUS_ON = 0 ===
+[17:00:34.621] === SEN: magistrala wylaczona ===
+[17:00:34.621] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.621] === BUS_ON = 1 ===
+[17:00:34.621] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.640] === BUS_ON = 0 ===
+[17:00:34.640] === SEN: magistrala wylaczona ===
+[17:00:34.644] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.644] === BUS_ON = 1 ===
+[17:00:34.653] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.653] === BUS_ON = 0 ===
+[17:00:34.653] === SEN: magistrala wylaczona ===
+[17:00:34.653] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.653] === BUS_ON = 1 ===
+[17:00:34.669] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.669] === BUS_ON = 0 ===
+[17:00:34.669] === SEN: magistrala wylaczona ===
+[17:00:34.669] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.685] === BUS_ON = 1 ===
+[17:00:34.690] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.690] === BUS_ON = 0 ===
+[17:00:34.690] === SEN: magistrala wylaczona ===
+[17:00:34.701] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.701] === BUS_ON = 1 ===
+[17:00:34.701] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.716] === BUS_ON = 0 ===
+[17:00:34.717] === SEN: magistrala wylaczona ===
+[17:00:34.717] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.717] === BUS_ON = 1 ===
+[17:00:34.717] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.732] === BUS_ON = 0 ===
+[17:00:34.739] === SEN: magistrala wylaczona ===
+[17:00:34.741] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.748] === BUS_ON = 1 ===
+[17:00:34.748] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.758] === BUS_ON = 0 ===
+[17:00:34.758] === SEN: magistrala wylaczona ===
+[17:00:34.764] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.764] === BUS_ON = 1 ===
+[17:00:34.764] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.764] === BUS_ON = 0 ===
+[17:00:34.764] === SEN: magistrala wylaczona ===
+[17:00:34.780] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.780] === BUS_ON = 1 ===
+[17:00:34.780] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.796] === BUS_ON = 0 ===
+[17:00:34.796] === SEN: magistrala wylaczona ===
+[17:00:34.796] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.796] === BUS_ON = 1 ===
+[17:00:34.796] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.812] === BUS_ON = 0 ===
+[17:00:34.812] === SEN: magistrala wylaczona ===
+[17:00:34.812] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.827] === BUS_ON = 1 ===
+[17:00:34.827] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.827] === BUS_ON = 0 ===
+[17:00:34.839] === SEN: magistrala wylaczona ===
+[17:00:34.843] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.845] === BUS_ON = 1 ===
+[17:00:34.845] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.845] === BUS_ON = 0 ===
+[17:00:34.863] === SEN: magistrala wylaczona ===
+[17:00:34.863] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.863] === BUS_ON = 1 ===
+[17:00:34.863] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.876] === BUS_ON = 0 ===
+[17:00:34.876] === SEN: magistrala wylaczona ===
+[17:00:34.876] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.876] === BUS_ON = 1 ===
+[17:00:34.893] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.893] === BUS_ON = 0 ===
+[17:00:34.893] === SEN: magistrala wylaczona ===
+[17:00:34.893] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.907] === BUS_ON = 1 ===
+[17:00:34.907] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.907] === BUS_ON = 0 ===
+[17:00:34.923] === SEN: magistrala wylaczona ===
+[17:00:34.923] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.923] === BUS_ON = 1 ===
+[17:00:34.923] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.923] === BUS_ON = 0 ===
+[17:00:34.941] === SEN: magistrala wylaczona ===
+[17:00:34.943] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.946] === BUS_ON = 1 ===
+[17:00:34.946] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.956] === BUS_ON = 0 ===
+[17:00:34.956] === SEN: magistrala wylaczona ===
+[17:00:34.956] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.956] === BUS_ON = 1 ===
+[17:00:34.971] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.971] === BUS_ON = 0 ===
+[17:00:34.988] === SEN: magistrala wylaczona ===
+[17:00:34.988] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:34.988] === BUS_ON = 1 ===
+[17:00:34.988] [Audio] Głośność: 18/21 (zlecone)
+[17:00:34.993] === BUS_ON = 0 ===
+[17:00:35.003] === SEN: magistrala wylaczona ===
+[17:00:35.003] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.003] === BUS_ON = 1 ===
+[17:00:35.003] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.003] === BUS_ON = 0 ===
+[17:00:35.019] === SEN: magistrala wylaczona ===
+[17:00:35.019] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.019] === BUS_ON = 1 ===
+[17:00:35.019] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.040] === BUS_ON = 0 ===
+[17:00:35.040] === SEN: magistrala wylaczona ===
+[17:00:35.040] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.051] === BUS_ON = 1 ===
+[17:00:35.051] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.051] === BUS_ON = 0 ===
+[17:00:35.051] === SEN: magistrala wylaczona ===
+[17:00:35.051] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.066] === BUS_ON = 1 ===
+[17:00:35.066] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.066] === BUS_ON = 0 ===
+[17:00:35.066] === SEN: magistrala wylaczona ===
+[17:00:35.082] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.082] === BUS_ON = 1 ===
+[17:00:35.082] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.098] === BUS_ON = 0 ===
+[17:00:35.098] === SEN: magistrala wylaczona ===
+[17:00:35.098] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.098] === BUS_ON = 1 ===
+[17:00:35.098] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.114] === BUS_ON = 0 ===
+[17:00:35.114] === SEN: magistrala wylaczona ===
+[17:00:35.114] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.130] === BUS_ON = 1 ===
+[17:00:35.130] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.140] === BUS_ON = 0 ===
+[17:00:35.140] === SEN: magistrala wylaczona ===
+[17:00:35.140] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.146] === BUS_ON = 1 ===
+[17:00:35.146] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.146] === BUS_ON = 0 ===
+[17:00:35.146] === SEN: magistrala wylaczona ===
+[17:00:35.162] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.162] === BUS_ON = 1 ===
+[17:00:35.162] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.178] === BUS_ON = 0 ===
+[17:00:35.178] === SEN: magistrala wylaczona ===
+[17:00:35.178] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.178] === BUS_ON = 1 ===
+[17:00:35.178] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.195] === BUS_ON = 0 ===
+[17:00:35.195] === SEN: magistrala wylaczona ===
+[17:00:35.195] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.195] === BUS_ON = 1 ===
+[17:00:35.210] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.210] === BUS_ON = 0 ===
+[17:00:35.210] === SEN: magistrala wylaczona ===
+[17:00:35.210] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.226] === BUS_ON = 1 ===
+[17:00:35.226] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.226] === BUS_ON = 0 ===
+[17:00:35.226] === SEN: magistrala wylaczona ===
+[17:00:35.242] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.247] === BUS_ON = 1 ===
+[17:00:35.247] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.258] === BUS_ON = 0 ===
+[17:00:35.258] === SEN: magistrala wylaczona ===
+[17:00:35.258] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.258] === BUS_ON = 1 ===
+[17:00:35.258] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.274] === BUS_ON = 0 ===
+[17:00:35.274] === SEN: magistrala wylaczona ===
+[17:00:35.274] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.290] === BUS_ON = 1 ===
+[17:00:35.290] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.296] === BUS_ON = 0 ===
+[17:00:35.296] === SEN: magistrala wylaczona ===
+[17:00:35.296] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.306] === BUS_ON = 1 ===
+[17:00:35.306] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.306] === BUS_ON = 0 ===
+[17:00:35.306] === SEN: magistrala wylaczona ===
+[17:00:35.322] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.322] === BUS_ON = 1 ===
+[17:00:35.322] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.322] === BUS_ON = 0 ===
+[17:00:35.338] === SEN: magistrala wylaczona ===
+[17:00:35.340] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.347] === BUS_ON = 1 ===
+[17:00:35.347] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.354] === BUS_ON = 0 ===
+[17:00:35.354] === SEN: magistrala wylaczona ===
+[17:00:35.354] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.370] === BUS_ON = 1 ===
+[17:00:35.370] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.370] === BUS_ON = 0 ===
+[17:00:35.370] === SEN: magistrala wylaczona ===
+[17:00:35.381] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.387] === BUS_ON = 1 ===
+[17:00:35.387] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.397] === BUS_ON = 0 ===
+[17:00:35.397] === SEN: magistrala wylaczona ===
+[17:00:35.401] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.401] === BUS_ON = 1 ===
+[17:00:35.401] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.413] === BUS_ON = 0 ===
+[17:00:35.417] === SEN: magistrala wylaczona ===
+[17:00:35.417] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.417] === BUS_ON = 1 ===
+[17:00:35.417] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.433] === BUS_ON = 0 ===
+[17:00:35.440] === SEN: magistrala wylaczona ===
+[17:00:35.440] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.447] === BUS_ON = 1 ===
+[17:00:35.449] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.449] === BUS_ON = 0 ===
+[17:00:35.449] === SEN: magistrala wylaczona ===
+[17:00:35.449] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.465] === BUS_ON = 1 ===
+[17:00:35.465] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.465] === BUS_ON = 0 ===
+[17:00:35.465] === SEN: magistrala wylaczona ===
+[17:00:35.482] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.482] === BUS_ON = 1 ===
+[17:00:35.482] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.482] === BUS_ON = 0 ===
+[17:00:35.497] === SEN: magistrala wylaczona ===
+[17:00:35.497] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.497] === BUS_ON = 1 ===
+[17:00:35.497] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.513] === BUS_ON = 0 ===
+[17:00:35.513] === SEN: magistrala wylaczona ===
+[17:00:35.521] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.530] === BUS_ON = 1 ===
+[17:00:35.530] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.530] === BUS_ON = 0 ===
+[17:00:35.541] === SEN: magistrala wylaczona ===
+[17:00:35.541] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.548] === BUS_ON = 1 ===
+[17:00:35.548] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.548] === BUS_ON = 0 ===
+[17:00:35.548] === SEN: magistrala wylaczona ===
+[17:00:35.562] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.562] === BUS_ON = 1 ===
+[17:00:35.562] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.578] === BUS_ON = 0 ===
+[17:00:35.578] === SEN: magistrala wylaczona ===
+[17:00:35.578] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.578] === BUS_ON = 1 ===
+[17:00:35.578] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.594] === BUS_ON = 0 ===
+[17:00:35.598] === SEN: magistrala wylaczona ===
+[17:00:35.598] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.610] === BUS_ON = 1 ===
+[17:00:35.610] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.610] === BUS_ON = 0 ===
+[17:00:35.610] === SEN: magistrala wylaczona ===
+[17:00:35.626] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.626] === BUS_ON = 1 ===
+[17:00:35.626] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.626] === BUS_ON = 0 ===
+[17:00:35.640] === SEN: magistrala wylaczona ===
+[17:00:35.642] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.649] === BUS_ON = 1 ===
+[17:00:35.649] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.649] === BUS_ON = 0 ===
+[17:00:35.658] === SEN: magistrala wylaczona ===
+[17:00:35.658] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.658] === BUS_ON = 1 ===
+[17:00:35.658] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.674] === BUS_ON = 0 ===
+[17:00:35.674] === SEN: magistrala wylaczona ===
+[17:00:35.674] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.674] === BUS_ON = 1 ===
+[17:00:35.690] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.699] === BUS_ON = 0 ===
+[17:00:35.699] === SEN: magistrala wylaczona ===
+[17:00:35.699] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.706] === BUS_ON = 1 ===
+[17:00:35.706] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.714] === BUS_ON = 0 ===
+[17:00:35.714] === SEN: magistrala wylaczona ===
+[17:00:35.722] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.722] === BUS_ON = 1 ===
+[17:00:35.722] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.722] === BUS_ON = 0 ===
+[17:00:35.740] === SEN: magistrala wylaczona ===
+[17:00:35.740] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.750] === BUS_ON = 1 ===
+[17:00:35.750] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.754] === BUS_ON = 0 ===
+[17:00:35.754] === SEN: magistrala wylaczona ===
+[17:00:35.754] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.754] === BUS_ON = 1 ===
+[17:00:35.770] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.770] === BUS_ON = 0 ===
+[17:00:35.770] === SEN: magistrala wylaczona ===
+[17:00:35.770] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.786] === BUS_ON = 1 ===
+[17:00:35.786] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.786] === BUS_ON = 0 ===
+[17:00:35.786] === SEN: magistrala wylaczona ===
+[17:00:35.802] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.802] === BUS_ON = 1 ===
+[17:00:35.802] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.802] === BUS_ON = 0 ===
+[17:00:35.819] === SEN: magistrala wylaczona ===
+[17:00:35.819] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.819] === BUS_ON = 1 ===
+[17:00:35.819] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.834] === BUS_ON = 0 ===
+[17:00:35.834] === SEN: magistrala wylaczona ===
+[17:00:35.840] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.850] === BUS_ON = 1 ===
+[17:00:35.850] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.852] === BUS_ON = 0 ===
+[17:00:35.852] === SEN: magistrala wylaczona ===
+[17:00:35.852] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.866] === BUS_ON = 1 ===
+[17:00:35.866] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.866] === BUS_ON = 0 ===
+[17:00:35.866] === SEN: magistrala wylaczona ===
+[17:00:35.882] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.882] === BUS_ON = 1 ===
+[17:00:35.882] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.882] === BUS_ON = 0 ===
+[17:00:35.898] === SEN: magistrala wylaczona ===
+[17:00:35.898] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.903] === BUS_ON = 1 ===
+[17:00:35.903] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.913] === BUS_ON = 0 ===
+[17:00:35.913] === SEN: magistrala wylaczona ===
+[17:00:35.913] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.913] === BUS_ON = 1 ===
+[17:00:35.930] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.930] === BUS_ON = 0 ===
+[17:00:35.930] === SEN: magistrala wylaczona ===
+[17:00:35.941] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.946] === BUS_ON = 1 ===
+[17:00:35.949] [Audio] Głośność: 18/21 (zlecone)
+[17:00:35.953] === BUS_ON = 0 ===
+[17:00:35.962] === SEN: magistrala wylaczona ===
+[17:00:35.962] [Audio] ⏹ Zatrzymano (zlecone).
+[17:00:35.962] === BUS_ON = 1 ===
+[17:00:35.962] [Audio] Głośność: 18/21 (zlecone)
+[17:00:50.928] >> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery

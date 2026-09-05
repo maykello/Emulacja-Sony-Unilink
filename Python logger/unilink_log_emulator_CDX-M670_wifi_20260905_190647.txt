@@ -1,0 +1,155 @@
+[19:06:55.221] === SONY UNILINK ESP32 LOG STREAM (unilink.local) ===
+[19:06:56.331] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:06:56.805] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 01:12
+[19:06:58.333] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:06:58.796] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 01:14
+[19:07:00.324] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:07:00.798] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=5/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 01:16
+[19:07:02.332] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:07:02.799] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD8 TR5 01:18
+[19:07:04.808] [STAT] poll15=3 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD8 TR5 01:20
+[19:07:06.804] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 01:22
+[19:07:08.332] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:07:08.797] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 01:24
+[19:07:10.317] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:07:10.806] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 01:26
+[19:07:12.320] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:07:12.795] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 01:28
+[19:07:14.333] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:07:14.804] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=4/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 01:30
+[19:07:16.332] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:07:16.801] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 01:32
+[19:07:17.769] >> [Audio Bus] Radio sygnalizuje audio OFF (87 6A)
+[19:07:17.769] [NVS] Zapamietano ostatni utwor: CD8 TR5
+[19:07:17.769] [Audio] ⏹ Zatrzymano (zlecone).
+[19:07:17.785] >> [Audio Bus] Radio sygnalizuje audio OFF (87 2A)
+[19:07:17.785] [Audio] ⏹ Zatrzymano (zlecone).
+[19:07:17.785] [Audio-info] Closing audio file
+[19:07:18.793] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD8 TR5 01:33
+[19:07:18.985] >>> C0 -> 80 (Idle)
+[19:07:20.796] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD8 TR5 01:33
+[19:07:24.802] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD8 TR5 01:33
+[19:07:26.797] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD8 TR5 01:33
+[19:07:28.006] >> [Audio Bus] Radio sygnalizuje audio OFF (87 22)
+[19:07:28.006] [Audio] ⏹ Zatrzymano (zlecone).
+[19:07:28.006] === BUS_ON = 0 ===
+[19:07:28.006] === SEN: magistrala wylaczona ===
+[19:07:28.011] [Audio] ⏹ Zatrzymano (zlecone).
+[19:07:44.600] === SONY UNILINK ESP32 LOG STREAM (unilink.local) ===
+[19:07:44.701] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:07:45.398] [STAT] poll15=7 disp13(my)=4 disp13(3B)=3 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:02
+[19:07:46.931] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:07:47.409] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD8 TR5 00:04
+[19:07:48.929] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:07:49.410] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:06
+[19:07:50.931] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:07:51.413] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:08
+[19:07:52.934] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:07:53.404] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD8 TR5 00:10
+[19:07:55.395] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=2 btn=0 break=3/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD8 TR5 00:12
+[19:07:57.376] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:07:57.408] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:14
+[19:07:59.381] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:07:59.409] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:16
+[19:08:01.382] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:08:01.404] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD8 TR5 00:18
+[19:08:03.381] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:08:03.404] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD8 TR5 00:20
+[19:08:05.381] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:08:05.405] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:22
+[19:08:07.407] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:24
+[19:08:09.411] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:26
+[19:08:11.380] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:08:11.410] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:28
+[19:08:13.379] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:08:13.410] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:30
+[19:08:15.381] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:08:15.410] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD8 TR5 00:32
+[19:08:17.380] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:08:17.408] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:34
+[19:08:19.380] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:08:19.408] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:36
+[19:08:21.409] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:38
+[19:08:23.411] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:40
+[19:08:25.381] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:08:25.408] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD8 TR5 00:42
+[19:08:27.380] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:08:27.408] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:44
+[19:08:29.381] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:08:29.407] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:46
+[19:08:31.378] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:08:32.881] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:48
+[19:08:33.371] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:08:33.408] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:50
+[19:09:43.725] === SONY UNILINK ESP32 LOG STREAM (unilink.local) ===
+[19:09:43.942] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:09:44.747] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD8 TR5 00:09
+[19:09:46.733] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:11
+[19:09:48.745] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:13
+[19:09:49.672] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:09:50.745] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:15
+[19:09:51.669] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:09:52.741] [STAT] poll15=4 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=5/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD8 TR5 00:17
+[19:09:53.665] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:09:54.748] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:19
+[19:09:55.672] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:09:56.745] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/7 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD8 TR5 00:21
+[19:09:57.672] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:09:58.758] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:23
+[19:10:00.742] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:25
+[19:10:02.738] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD8 TR5 00:27
+[19:10:03.666] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:10:04.736] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:29
+[19:10:05.664] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:10:06.750] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:31
+[19:10:07.660] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:10:08.748] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD8 TR5 00:33
+[19:10:09.658] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:10:10.743] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:35
+[19:10:11.684] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:10:12.748] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:37
+[19:10:14.736] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:39
+[19:10:16.739] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:41
+[19:10:17.665] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:10:18.746] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:43
+[19:10:19.663] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:10:20.747] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:45
+[19:10:21.662] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:12:34.549] === SONY UNILINK ESP32 LOG STREAM (unilink.local) ===
+[19:12:34.626] [STAT] poll15=11 disp13(my)=10 disp13(3B)=0 ping12(my)=1 btn=0 break=10/10 txt=1 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:03
+[19:12:36.165] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:12:36.628] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=7/6 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD8 TR5 00:05
+[19:12:38.159] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:12:38.664] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:07
+[19:12:40.159] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:12:40.626] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD8 TR5 00:09
+[19:12:42.639] [STAT] poll15=4 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:11
+[19:12:44.618] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:13
+[19:12:45.301] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:12:46.613] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:15
+[19:12:47.300] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:12:48.623] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD8 TR5 00:17
+[19:12:49.301] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:12:50.614] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:19
+[19:12:51.302] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:12:52.614] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD8 TR5 00:21
+[19:12:53.300] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:12:54.617] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:23
+[19:12:56.614] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:25
+[19:12:58.626] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:27
+[19:12:59.298] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:13:00.626] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:29
+[19:13:01.305] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:13:02.626] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:31
+[19:13:03.298] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:13:04.628] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:33
+[19:13:05.297] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:13:06.642] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:35
+[19:13:07.298] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:13:08.626] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:37
+[19:13:10.625] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:39
+[19:13:12.616] [STAT] poll15=2 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD8 TR5 00:41
+[19:13:13.304] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:13:14.615] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD8 TR5 00:43
+[19:13:15.304] >> CD-TEXT wyslany: CD8 TR5 plyta="CD08" utwor="Daab - Lecą anioly, leca demony "
+[19:13:16.631] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD8 TR5 00:45

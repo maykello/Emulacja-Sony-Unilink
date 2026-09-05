@@ -1,0 +1,47 @@
+[16:19:12.982] === SONY UNILINK ESP32 LOG STREAM (unilink.local) ===
+[16:19:13.584] >> Radio system reset (#2) (juz bylem nieprzydzielony)
+[16:19:13.668] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 49ms po DB)
+[16:19:13.794] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 179ms po DB)
+[16:19:13.843] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#3, 228ms po DB)
+[16:19:13.892] >> Odpowiadam na ANYONE? device info 0x8C
+[16:19:13.920] >> Adres przydzielony: 0x31 (op2=0x14)! deviceAllocated=true
+[16:19:14.802] >> [Audio Bus] Radio sygnalizuje audio OFF (87 2A)
+[16:19:14.802] [Audio] ⏹ Zatrzymano (zlecone).
+[16:19:14.839] >> [Audio Bus] Radio sygnalizuje audio OFF (87 2A)
+[16:19:14.839] [Audio] ⏹ Zatrzymano (zlecone).
+[16:19:15.664] >> [Audio Bus] Radio sygnalizuje audio ON (87 EB)
+[16:19:16.900] >> PLAY command received!
+[16:19:16.900] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[16:19:16.981] [STAT] poll15=2 disp13(my)=0 disp13(3B)=2 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x40 CD12 TR1 00:00
+[16:19:17.002] [Audio] Async connecttoFS("/CD12/Krzysztof Krawczyk - To co dał nam świat.mp3") = OK
+[16:19:17.002] [Audio] ▶ Odtwarzam: /CD12/Krzysztof Krawczyk - To co dał nam świat.mp3 (rozpoczęto dekodowanie)
+[16:19:17.850] >>> 40 -> 00 (Playing!)
+[16:19:18.984] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=5/3 txt=0 seek=0 rxerr=18/5 | alloc=1 state=0x00 CD12 TR1 00:01
+[16:19:19.027] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[16:19:20.983] [STAT] poll15=9 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/8 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR1 00:03
+[16:19:20.999] >> ZADANIE 0x84: 31 71 84 D7 FD 70 00 00 00 6D 00
+[16:19:21.703] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[16:19:22.968] [STAT] poll15=10 disp13(my)=10 disp13(3B)=0 ping12(my)=1 btn=0 break=10/10 txt=1 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD12 TR1 00:05
+[16:19:23.689] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[16:19:24.970] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR1 00:07
+[16:19:25.703] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[16:19:26.966] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:09
+[16:19:27.700] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[16:19:28.977] [STAT] poll15=7 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:11
+[16:19:30.975] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:13
+[16:19:31.847] >> CD-TEXT wyslany: CD12 TR1 plyta="CD12" utwor="Krzysztof Krawczyk - To co dał nam świat"
+[16:19:32.252] >> [Audio Bus] Radio sygnalizuje audio OFF (87 6A)
+[16:19:32.252] [Audio] ⏹ Zatrzymano (zlecone).
+[16:19:32.284] >> [Audio Bus] Radio sygnalizuje audio OFF (87 2A)
+[16:19:32.285] [Audio] ⏹ Zatrzymano (zlecone).
+[16:19:32.285] [Audio-info] Closing audio file
+[16:19:32.981] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:14
+[16:19:33.580] >>> C0 -> 80 (Idle)
+[16:19:36.972] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:14
+[16:19:38.971] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:14
+[16:19:40.971] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:14
+[16:19:42.971] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:14
+[16:19:44.119] >> [Audio Bus] Radio sygnalizuje audio OFF (87 22)
+[16:19:44.119] [Audio] ⏹ Zatrzymano (zlecone).
+[16:19:49.307] [Audio] ⏹ Zatrzymano (zlecone).
+[16:19:49.548] --- Radio timeout (5s). Reset do C0 + STOP audio ---

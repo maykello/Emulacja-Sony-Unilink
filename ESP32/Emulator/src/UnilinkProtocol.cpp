@@ -288,9 +288,11 @@ bool serviceTimeout(unsigned long now) {
     // po przydzieleniu adresu — to byla przyczyna petli SYSTEM RESET.
     if ((long)(now - lastPingTime) <= (long)RADIO_TIMEOUT_MS) return false;
 
-    // Radio zniklo — wracamy do stanu startowego (R4.1, R4.5).
-    setAddrState(AddressManager::apply(addrState(), AddressManager::Event::Start, 0));
-    claimMask = CLAIM_MASK_DEFAULT;   // wlasciwy bit nadejdzie z kolejnym appointem
+    // Radio zniklo (nie nadaje pingow). Usuniecie przydzialu adresu (deviceAllocated = false)
+    // powodowalo "zawieszanie sie" emulatora, jesli radio po wlaczeniu nie robilo
+    // ponownego discovery (Appoint), tylko wznawialo odpytywanie znanego adresu.
+    // Dlatego ZACHOWUJEMY adres i deviceAllocated, jedynie odswiezamy lastPingTime.
+    // CdChanger::sleep() wywolane w Emulator.cpp przeniesie mechanizm do stanu C0 (Init).
     lastPingTime = now; // nie zglaszaj tego samego timeoutu raz za razem
     return true;
 }

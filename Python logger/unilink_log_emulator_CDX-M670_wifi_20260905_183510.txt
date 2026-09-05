@@ -1,0 +1,264 @@
+[18:35:17.760] === SONY UNILINK ESP32 LOG STREAM (unilink.local) ===
+[18:35:17.847] >> CD-TEXT wyslany: CD6 TR1 plyta="CD06" utwor="2plus1 - California non amour"
+[18:35:19.250] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 00:17
+[18:35:19.853] >> CD-TEXT wyslany: CD6 TR1 plyta="CD06" utwor="2plus1 - California non amour"
+[18:35:21.254] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 00:19
+[18:35:21.849] >> CD-TEXT wyslany: CD6 TR1 plyta="CD06" utwor="2plus1 - California non amour"
+[18:35:23.239] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=2 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR1 00:21
+[18:35:23.847] >> CD-TEXT wyslany: CD6 TR1 plyta="CD06" utwor="2plus1 - California non amour"
+[18:35:25.251] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 00:23
+[18:35:27.252] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 00:25
+[18:35:29.249] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 00:27
+[18:35:29.840] >> CD-TEXT wyslany: CD6 TR1 plyta="CD06" utwor="2plus1 - California non amour"
+[18:35:31.245] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 00:29
+[18:35:31.852] >> CD-TEXT wyslany: CD6 TR1 plyta="CD06" utwor="2plus1 - California non amour"
+[18:35:33.241] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR1 00:31
+[18:35:33.849] >> CD-TEXT wyslany: CD6 TR1 plyta="CD06" utwor="2plus1 - California non amour"
+[18:35:35.247] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 00:33
+[18:35:35.847] >> CD-TEXT wyslany: CD6 TR1 plyta="CD06" utwor="2plus1 - California non amour"
+[18:35:37.243] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 00:35
+[18:35:37.849] >> CD-TEXT wyslany: CD6 TR1 plyta="CD06" utwor="2plus1 - California non amour"
+[18:35:39.253] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 00:37
+[18:35:41.238] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 00:39
+[18:35:43.246] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 00:41
+[18:35:43.853] >> CD-TEXT wyslany: CD6 TR1 plyta="CD06" utwor="2plus1 - California non amour"
+[18:35:45.246] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR1 00:43
+[18:35:45.854] >> CD-TEXT wyslany: CD6 TR1 plyta="CD06" utwor="2plus1 - California non amour"
+[18:35:47.240] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 00:45
+[18:35:47.846] >> CD-TEXT wyslany: CD6 TR1 plyta="CD06" utwor="2plus1 - California non amour"
+[18:35:49.255] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 00:47
+[18:35:49.848] >> CD-TEXT wyslany: CD6 TR1 plyta="CD06" utwor="2plus1 - California non amour"
+[18:35:51.244] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 00:49
+[18:35:51.845] >> CD-TEXT wyslany: CD6 TR1 plyta="CD06" utwor="2plus1 - California non amour"
+[18:35:53.251] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 00:51
+[18:35:55.253] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 00:53
+[18:35:57.240] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 00:55
+[18:35:57.854] >> CD-TEXT wyslany: CD6 TR1 plyta="CD06" utwor="2plus1 - California non amour"
+[18:35:59.255] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 00:57
+[18:35:59.847] >> CD-TEXT wyslany: CD6 TR1 plyta="CD06" utwor="2plus1 - California non amour"
+[18:36:01.245] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 00:59
+[18:36:01.850] >> CD-TEXT wyslany: CD6 TR1 plyta="CD06" utwor="2plus1 - California non amour"
+[18:36:03.248] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR1 01:01
+[18:36:03.849] >> CD-TEXT wyslany: CD6 TR1 plyta="CD06" utwor="2plus1 - California non amour"
+[18:36:05.250] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 01:03
+[18:36:05.852] >> CD-TEXT wyslany: CD6 TR1 plyta="CD06" utwor="2plus1 - California non amour"
+[18:36:07.248] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 01:05
+[18:36:12.308] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 01:07
+[18:36:12.373] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR1 01:09
+[18:36:12.373] >> CD-TEXT wyslany: CD6 TR1 plyta="CD06" utwor="2plus1 - California non amour"
+[18:36:12.373] >> NEXT TRACK: CD6 TR2 (max=99)
+[18:36:12.373] [Audio-info] Closing audio file
+[18:36:12.373] >>> 40 -> 00 (Playing!)
+[18:36:12.373] >> CD-TEXT wyslany: CD6 TR2 plyta="CD06" utwor="2plus1 - Chodź,pomaluj mój świat"
+[18:36:12.576] [Audio] Async connecttoFS("/CD06/2plus1 - Chodź,pomaluj mój świat.mp3") = OK
+[18:36:12.576] [Audio] ▶ Odtwarzam: /CD06/2plus1 - Chodź,pomaluj mój świat.mp3 (rozpoczęto dekodowanie)
+[18:36:12.986] [Audio-info] VBR recognized, audioFileDuration is estimated
+[18:36:13.253] [STAT] poll15=13 disp13(my)=10 disp13(3B)=0 ping12(my)=1 btn=1 break=12/12 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:00
+[18:36:14.356] >> CD-TEXT wyslany: CD6 TR2 plyta="CD06" utwor="2plus1 - Chodź,pomaluj mój świat"
+[18:36:15.251] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:02
+[18:36:16.364] >> CD-TEXT wyslany: CD6 TR2 plyta="CD06" utwor="2plus1 - Chodź,pomaluj mój świat"
+[18:36:17.249] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:04
+[18:36:18.353] >> CD-TEXT wyslany: CD6 TR2 plyta="CD06" utwor="2plus1 - Chodź,pomaluj mój świat"
+[18:36:19.247] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:06
+[18:36:20.349] >> CD-TEXT wyslany: CD6 TR2 plyta="CD06" utwor="2plus1 - Chodź,pomaluj mój świat"
+[18:36:21.246] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:08
+[18:36:23.243] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:10
+[18:36:25.247] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:12
+[18:36:26.357] >> CD-TEXT wyslany: CD6 TR2 plyta="CD06" utwor="2plus1 - Chodź,pomaluj mój świat"
+[18:36:27.248] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD6 TR2 00:14
+[18:36:28.362] >> CD-TEXT wyslany: CD6 TR2 plyta="CD06" utwor="2plus1 - Chodź,pomaluj mój świat"
+[18:36:29.252] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:16
+[18:36:30.362] >> CD-TEXT wyslany: CD6 TR2 plyta="CD06" utwor="2plus1 - Chodź,pomaluj mój świat"
+[18:36:31.236] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR2 00:18
+[18:36:32.358] >> CD-TEXT wyslany: CD6 TR2 plyta="CD06" utwor="2plus1 - Chodź,pomaluj mój świat"
+[18:36:33.236] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:20
+[18:36:34.360] >> CD-TEXT wyslany: CD6 TR2 plyta="CD06" utwor="2plus1 - Chodź,pomaluj mój świat"
+[18:36:35.244] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:22
+[18:36:37.245] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:24
+[18:36:39.250] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:26
+[18:36:40.362] >> CD-TEXT wyslany: CD6 TR2 plyta="CD06" utwor="2plus1 - Chodź,pomaluj mój świat"
+[18:36:41.249] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:28
+[18:36:42.350] >> CD-TEXT wyslany: CD6 TR2 plyta="CD06" utwor="2plus1 - Chodź,pomaluj mój świat"
+[18:36:43.251] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:30
+[18:36:44.359] >> CD-TEXT wyslany: CD6 TR2 plyta="CD06" utwor="2plus1 - Chodź,pomaluj mój świat"
+[18:36:45.241] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:32
+[18:36:46.357] >> CD-TEXT wyslany: CD6 TR2 plyta="CD06" utwor="2plus1 - Chodź,pomaluj mój świat"
+[18:36:47.245] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:34
+[18:36:48.364] >> CD-TEXT wyslany: CD6 TR2 plyta="CD06" utwor="2plus1 - Chodź,pomaluj mój świat"
+[18:36:49.247] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR2 00:36
+[18:36:51.240] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:38
+[18:36:53.240] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:40
+[18:36:54.356] >> CD-TEXT wyslany: CD6 TR2 plyta="CD06" utwor="2plus1 - Chodź,pomaluj mój świat"
+[18:36:55.252] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:42
+[18:36:56.354] >> CD-TEXT wyslany: CD6 TR2 plyta="CD06" utwor="2plus1 - Chodź,pomaluj mój świat"
+[18:36:57.247] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:44
+[18:36:58.358] >> CD-TEXT wyslany: CD6 TR2 plyta="CD06" utwor="2plus1 - Chodź,pomaluj mój świat"
+[18:36:59.235] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:46
+[18:37:00.355] >> CD-TEXT wyslany: CD6 TR2 plyta="CD06" utwor="2plus1 - Chodź,pomaluj mój świat"
+[18:37:01.240] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR2 00:48
+[18:37:02.357] >> CD-TEXT wyslany: CD6 TR2 plyta="CD06" utwor="2plus1 - Chodź,pomaluj mój świat"
+[18:37:03.239] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=2 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR2 00:50
+[18:37:05.243] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR2 00:52
+[18:37:06.000] >> NEXT TRACK: CD6 TR3 (max=99)
+[18:37:06.000] >> CD-TEXT wyslany: CD6 TR3 plyta="CD06" utwor="2plus1 - Czerwone słoneczko"
+[18:37:06.000] [Audio-info] Closing audio file
+[18:37:06.080] >>> 40 -> 00 (Playing!)
+[18:37:06.272] [Audio] Async connecttoFS("/CD06/2plus1 - Czerwone słoneczko.mp3") = OK
+[18:37:06.272] [Audio] ▶ Odtwarzam: /CD06/2plus1 - Czerwone słoneczko.mp3 (rozpoczęto dekodowanie)
+[18:37:06.672] [Audio-info] VBR recognized, audioFileDuration is estimated
+[18:37:07.247] [STAT] poll15=8 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=1 break=8/8 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR3 00:01
+[18:37:08.000] >> CD-TEXT wyslany: CD6 TR3 plyta="CD06" utwor="2plus1 - Czerwone słoneczko"
+[18:37:09.241] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR3 00:03
+[18:37:09.352] >> NEXT TRACK: CD6 TR4 (max=99)
+[18:37:09.352] >> CD-TEXT wyslany: CD6 TR4 plyta="CD06" utwor="2plus1 - Easy come easy go"
+[18:37:09.352] [Audio-info] Closing audio file
+[18:37:09.439] >>> 40 -> 00 (Playing!)
+[18:37:09.627] [Audio] Async connecttoFS("/CD06/2plus1 - Easy come easy go.mp3") = OK
+[18:37:09.627] [Audio] ▶ Odtwarzam: /CD06/2plus1 - Easy come easy go.mp3 (rozpoczęto dekodowanie)
+[18:37:11.246] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=1 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR4 00:01
+[18:37:11.361] >> CD-TEXT wyslany: CD6 TR4 plyta="CD06" utwor="2plus1 - Easy come easy go"
+[18:37:11.754] >> NEXT TRACK: CD6 TR5 (max=99)
+[18:37:11.764] [Audio-info] Closing audio file
+[18:37:11.824] >>> 40 -> 00 (Playing!)
+[18:37:11.836] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:37:12.032] [Audio] Async connecttoFS("/CD06/2plus1 - Iść w stronę słońca.mp3") = OK
+[18:37:12.032] [Audio] ▶ Odtwarzam: /CD06/2plus1 - Iść w stronę słońca.mp3 (rozpoczęto dekodowanie)
+[18:37:13.243] [STAT] poll15=11 disp13(my)=11 disp13(3B)=0 ping12(my)=1 btn=1 break=14/14 txt=0 seek=0 rxerr=6/5 | alloc=1 state=0x00 CD6 TR5 00:01
+[18:37:13.804] >> NEXT TRACK: CD6 TR6 (max=99)
+[18:37:13.804] >> CD-TEXT wyslany: CD6 TR6 plyta="CD06" utwor="2plus1 - Mama Chita"
+[18:37:13.828] [Audio-info] Closing audio file
+[18:37:13.874] >>> 40 -> 00 (Playing!)
+[18:37:14.093] [Audio] Async connecttoFS("/CD06/2plus1 - Mama Chita.mp3") = OK
+[18:37:14.093] [Audio] ▶ Odtwarzam: /CD06/2plus1 - Mama Chita.mp3 (rozpoczęto dekodowanie)
+[18:37:15.241] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=1 break=7/7 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD6 TR6 00:01
+[18:37:15.807] >> CD-TEXT wyslany: CD6 TR6 plyta="CD06" utwor="2plus1 - Mama Chita"
+[18:37:16.815] >> PREV TRACK: CD6 TR5
+[18:37:16.819] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:37:16.819] [Audio-info] Closing audio file
+[18:37:16.868] >>> 40 -> 00 (Playing!)
+[18:37:17.094] [Audio] Async connecttoFS("/CD06/2plus1 - Iść w stronę słońca.mp3") = OK
+[18:37:17.107] [Audio] ▶ Odtwarzam: /CD06/2plus1 - Iść w stronę słońca.mp3 (rozpoczęto dekodowanie)
+[18:37:17.238] [STAT] poll15=9 disp13(my)=9 disp13(3B)=0 ping12(my)=1 btn=1 break=10/9 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR5 00:00
+[18:37:18.820] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:37:19.248] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=8/8 txt=0 seek=0 rxerr=1/2 | alloc=1 state=0x00 CD6 TR5 00:02
+[18:37:20.807] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:37:21.247] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR5 00:04
+[18:37:22.816] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:37:23.242] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=6/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 00:06
+[18:37:24.823] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:37:25.246] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 00:08
+[18:37:26.819] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:37:27.242] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 00:10
+[18:37:29.247] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 00:12
+[18:37:30.856] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:37:31.248] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR5 00:14
+[18:37:32.863] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:37:33.246] [STAT] poll15=6 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD6 TR5 00:16
+[18:37:34.861] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:37:35.244] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 00:18
+[18:37:36.864] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:37:37.242] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR5 00:20
+[18:37:38.865] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:37:39.247] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR5 00:22
+[18:37:41.247] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 00:24
+[18:37:43.243] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 00:26
+[18:37:44.868] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:37:45.243] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 00:28
+[18:37:46.865] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:37:47.241] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 00:30
+[18:37:48.863] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:37:49.237] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR5 00:32
+[18:37:50.853] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:37:51.246] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 00:34
+[18:37:52.868] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:37:53.248] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR5 00:36
+[18:37:55.234] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 00:38
+[18:37:57.235] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 00:40
+[18:37:58.874] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:37:59.244] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 00:42
+[18:38:00.866] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:38:01.251] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD6 TR5 00:44
+[18:38:02.865] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:38:03.237] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR5 00:46
+[18:38:04.853] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:38:05.239] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 00:48
+[18:38:06.867] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:38:07.239] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 00:50
+[18:38:09.240] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD6 TR5 00:52
+[18:38:11.246] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 00:54
+[18:38:12.856] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:38:13.242] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 00:56
+[18:38:14.859] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:38:15.242] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 00:58
+[18:38:16.867] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:38:17.241] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 01:00
+[18:38:18.867] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:38:19.247] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 01:02
+[18:38:20.864] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:38:21.240] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 01:04
+[18:38:23.248] [STAT] poll15=3 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 01:06
+[18:38:25.243] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 01:08
+[18:38:26.864] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:38:27.244] [STAT] poll15=4 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR5 01:10
+[18:38:28.861] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:38:29.244] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 01:12
+[18:38:30.864] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:38:31.238] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR5 01:14
+[18:38:32.865] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:38:33.247] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 01:16
+[18:38:34.866] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:38:35.247] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR5 01:18
+[18:38:37.241] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 01:20
+[18:38:39.239] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 01:22
+[18:38:40.862] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:38:41.244] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 01:24
+[18:38:42.861] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:38:43.244] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 01:26
+[18:38:44.862] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:38:45.245] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR5 01:28
+[18:38:46.863] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:38:47.242] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR5 01:30
+[18:38:48.869] >> CD-TEXT wyslany: CD6 TR5 plyta="CD06" utwor="2plus1 - Iść w stronę słońca"
+[18:38:48.996] >> NEXT TRACK: CD6 TR6 (max=99)
+[18:38:48.996] [Audio-info] Closing audio file
+[18:38:49.085] >>> 40 -> 00 (Playing!)
+[18:38:49.236] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=1 break=7/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR6 00:00
+[18:38:49.283] [Audio] Async connecttoFS("/CD06/2plus1 - Mama Chita.mp3") = OK
+[18:38:49.283] [Audio] ▶ Odtwarzam: /CD06/2plus1 - Mama Chita.mp3 (rozpoczęto dekodowanie)
+[18:38:49.419] >> CD-TEXT wyslany: CD6 TR6 plyta="CD06" utwor="2plus1 - Mama Chita"
+[18:38:51.239] [STAT] poll15=9 disp13(my)=7 disp13(3B)=0 ping12(my)=0 btn=0 break=10/11 txt=0 seek=0 rxerr=1/2 | alloc=1 state=0x00 CD6 TR6 00:02
+[18:38:51.425] >> CD-TEXT wyslany: CD6 TR6 plyta="CD06" utwor="2plus1 - Mama Chita"
+[18:38:53.245] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR6 00:04
+[18:38:53.412] >> CD-TEXT wyslany: CD6 TR6 plyta="CD06" utwor="2plus1 - Mama Chita"
+[18:38:55.234] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR6 00:06
+[18:38:55.423] >> CD-TEXT wyslany: CD6 TR6 plyta="CD06" utwor="2plus1 - Mama Chita"
+[18:38:57.245] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR6 00:08
+[18:38:57.421] >> CD-TEXT wyslany: CD6 TR6 plyta="CD06" utwor="2plus1 - Mama Chita"
+[18:38:59.242] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR6 00:10
+[18:39:01.246] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR6 00:12
+[18:39:03.081] >> CD-TEXT wyslany: CD6 TR6 plyta="CD06" utwor="2plus1 - Mama Chita"
+[18:39:03.238] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR6 00:14
+[18:39:05.082] >> CD-TEXT wyslany: CD6 TR6 plyta="CD06" utwor="2plus1 - Mama Chita"
+[18:39:05.241] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR6 00:16
+[18:39:07.074] >> CD-TEXT wyslany: CD6 TR6 plyta="CD06" utwor="2plus1 - Mama Chita"
+[18:39:07.239] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR6 00:18
+[18:39:09.072] >> CD-TEXT wyslany: CD6 TR6 plyta="CD06" utwor="2plus1 - Mama Chita"
+[18:39:09.237] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD6 TR6 00:20
+[18:39:11.073] >> CD-TEXT wyslany: CD6 TR6 plyta="CD06" utwor="2plus1 - Mama Chita"
+[18:39:11.232] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD6 TR6 00:22
+[18:39:11.248] >> [Audio Bus] Radio sygnalizuje audio OFF (87 6A)
+[18:39:11.248] [NVS] Zapamietano ostatni utwor: CD6 TR6
+[18:39:11.248] [Audio] ⏹ Zatrzymano (zlecone).
+[18:39:11.265] >> [Audio Bus] Radio sygnalizuje audio OFF (87 2A)
+[18:39:11.265] [Audio] ⏹ Zatrzymano (zlecone).
+[18:39:11.280] [Audio-info] Closing audio file
+[18:39:12.209] >>> C0 -> 80 (Idle)
+[18:39:13.240] [STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD6 TR6 00:22
+[18:39:15.251] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD6 TR6 00:22
+[18:39:17.244] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD6 TR6 00:22
+[18:39:19.245] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD6 TR6 00:22
+[18:39:22.224] >> [Audio Bus] Radio sygnalizuje audio OFF (87 22)
+[18:39:22.224] [Audio] ⏹ Zatrzymano (zlecone).
+[18:39:22.224] === BUS_ON = 0 ===
+[18:39:22.224] === SEN: magistrala wylaczona ===
+[18:39:22.237] [Audio] ⏹ Zatrzymano (zlecone).

@@ -257,4 +257,8 @@ constexpr bool DEBUG_VERBOSE = false;
 // odpowiedzi `01 15` (zamrozony ekran). Wlacz tylko na krotka diagnoze.
 constexpr bool DEBUG_FRAMES = false;
 
+#include "WiFiLogger.h"
+#define Serial WiFiLogger
+
 #endif // CONFIG_H
+

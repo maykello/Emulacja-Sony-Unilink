@@ -26,6 +26,24 @@
 static bool busPoweredLast = false;
 static bool powerLatchActive = false;
 
+void commitSuicide() {
+    if (powerLatchActive) {
+        Serial.println("=== ROZPOCZYNAM PROCEDURĘ WYŁĄCZANIA ZASILANIA ===");
+        
+        // Czekaj chwile, zeby logi dotarly przez UART i NVS sie zapisal
+        delay(100);
+        
+        // Odcięcie zasilania
+        Serial.println("=== ODCINAM PRĄD. DOBRANOC. ===");
+        Serial.flush();
+        digitalWrite(PIN_POWER_LATCH, LOW);
+        powerLatchActive = false;
+        
+        // W tym miejscu w realnym ukladzie ESP32 powinno zgasnac.
+        // Jesli to plytka podpieta pod USB z PC, uklad bedzie dzialal dalej.
+    }
+}
+
 void setup() {
     // --- NATYCHMIASTOWE PRZEJECIE ZASILANIA (Suicide Circuit) ---
     pinMode(PIN_POWER_LATCH, OUTPUT);
@@ -119,21 +137,7 @@ void loop() {
             UnilinkBus::resetRx();  // bajty z fazy BUS=0 sa "obce"
             
             // --- PROCEDURA SAMOBOJCZA ---
-            if (powerLatchActive) {
-                Serial.println("=== ROZPOCZYNAM PROCEDURĘ WYŁĄCZANIA ZASILANIA ===");
-                
-                // Czekaj chwile, zeby logi dotarly przez UART i NVS sie zapisal
-                delay(100);
-                
-                // Odcięcie zasilania
-                Serial.println("=== ODCINAM PRĄD. DOBRANOC. ===");
-                Serial.flush();
-                digitalWrite(PIN_POWER_LATCH, LOW);
-                powerLatchActive = false;
-                
-                // W tym miejscu w realnym ukladzie ESP32 powinno zgasnac.
-                // Jesli to plytka podpieta pod USB z PC, uklad bedzie dzialal dalej.
-            }
+            commitSuicide();
         } else {
             CdChanger::wake();
         }
@@ -194,4 +198,8 @@ void loop() {
 
     // ===== Lekka diagnostyka (1 linia / 2s): czy radio nas pollu­je o ekran =====
     UnilinkProtocol::serviceStats(now);
+
+    // ===== Obsługa połączeń WiFi i klienta logów TCP =====
+    WiFiLogger.loop();
 }
+

@@ -1,0 +1,2 @@
+[16:17:54.682] === SONY UNILINK ESP32 LOG STREAM (unilink.local) ===
+[16:17:54.984] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:00

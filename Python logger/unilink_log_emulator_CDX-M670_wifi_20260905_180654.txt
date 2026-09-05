@@ -1,0 +1,43 @@
+[18:07:01.330] === SONY UNILINK ESP32 LOG STREAM (unilink.local) ===
+[18:07:02.860] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 00:29
+[18:07:03.017] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[18:07:04.859] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=8/8 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD1 TR1 00:31
+[18:07:05.019] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[18:07:06.861] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 00:33
+[18:07:07.017] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[18:07:08.858] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD1 TR1 00:35
+[18:07:09.018] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[18:07:10.859] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 00:37
+[18:07:12.859] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 00:39
+[18:07:14.858] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 00:41
+[18:07:15.017] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[18:07:16.857] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD1 TR1 00:43
+[18:07:17.019] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[18:07:18.861] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 00:45
+[18:07:19.022] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[18:07:20.857] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 00:47
+[18:07:21.021] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[18:07:22.862] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD1 TR1 00:49
+[18:07:23.018] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[18:07:24.859] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 00:51
+[18:07:26.857] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 00:53
+[18:07:28.861] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 00:55
+[18:07:29.017] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[18:07:30.858] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD1 TR1 00:57
+[18:07:31.014] >> CD-TEXT wyslany: CD1 TR1 plyta="CD01" utwor="01- Hasta Manana"
+[18:07:31.226] >> [Audio Bus] Radio sygnalizuje audio OFF (87 6A)
+[18:07:31.229] [Audio] ⏹ Zatrzymano (zlecone).
+[18:07:31.246] >> [Audio Bus] Radio sygnalizuje audio OFF (87 2A)
+[18:07:31.249] [Audio] ⏹ Zatrzymano (zlecone).
+[18:07:31.252] [Audio-info] Closing audio file
+[18:07:32.854] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:58
+[18:07:34.094] >>> C0 -> 80 (Idle)
+[18:07:34.857] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:58
+[18:07:36.855] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:58
+[18:07:38.857] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:58
+[18:07:40.858] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD1 TR1 00:58
+[18:07:41.417] >> [Audio Bus] Radio sygnalizuje audio OFF (87 22)
+[18:07:41.417] [Audio] ⏹ Zatrzymano (zlecone).
+[18:07:41.418] === BUS_ON = 0 ===
+[18:07:41.426] === SEN: magistrala wylaczona ===
+[18:07:41.426] [Audio] ⏹ Zatrzymano (zlecone).
