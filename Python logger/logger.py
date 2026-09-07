@@ -124,11 +124,11 @@ def main():
                         try:
                             print(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Próba połączenia z portem {selected_port}...")
                             ser = serial.Serial(selected_port, baud_rate, timeout=1)
-                            time.sleep(2)
+                            time.sleep(1)
                             print(f"[USB] Pomyślnie połączono z {selected_port}\n")
                         except serial.SerialException as e:
                             print(f"[USB Błąd] Nie można otworzyć portu {selected_port}: {e}. Kolejna próba za 5 sekund...\n")
-                            time.sleep(5)
+                            time.sleep(1)
                             continue
 
                     try:
@@ -146,7 +146,7 @@ def main():
                         if ser:
                             ser.close()
                         ser = None
-                        time.sleep(5)
+                        time.sleep(0.5)
                         continue
 
                 else:
@@ -158,7 +158,7 @@ def main():
                             print(f"[WiFi] Pomyślnie połączono z {wifi_host}:{wifi_port}\n")
                         except Exception as e:
                             print(f"[WiFi Błąd] Nie można połączyć: {e}. Kolejna próba za 5 sekund...\n")
-                            time.sleep(5)
+                            time.sleep(1)
                             continue
 
                     try:
@@ -167,7 +167,7 @@ def main():
                             print("\n[WiFi] Połączenie zostało zamknięte przez ESP32. Próba wznowienia za 5 sekund...")
                             sock.close()
                             sock = None
-                            time.sleep(5)
+                            time.sleep(1)
                             continue
                         buffer += chunk
                         while '\n' in buffer:
@@ -188,20 +188,20 @@ def main():
                             print(f"\n[WiFi] Wykryto zerwanie połączenia z ESP32 (ping failed: {e}). Próba wznowienia za 5 sekund...")
                             sock.close()
                             sock = None
-                            time.sleep(5)
+                            time.sleep(1)
                         continue
                     except (ConnectionResetError, ConnectionAbortedError):
                         print("\n[WiFi] Połączenie zerwane przez serwer. Próba wznowienia za 5 sekund...")
                         sock.close()
                         sock = None
-                        time.sleep(5)
+                        time.sleep(1)
                         continue
                     except Exception as e:
                         print(f"\n[WiFi Błąd połączenia] {e}. Próba wznowienia za 5 sekund...")
                         if sock:
                             sock.close()
                         sock = None
-                        time.sleep(5)
+                        time.sleep(1)
                         continue
 
 

@@ -1318,6 +1318,9 @@ void handlePacket(const uint8_t* buf, int len) {
             (nowAR - lastPoll15Ms) > POLL15_ALIVE_MS) {
             Serial.println(">> 01 11 a poll15 nie wraca — reset sesji, ponowne discovery");
             Diagnostics::dump("AUTO-RECOVERY: 01 11 + dead poll15");
+            if (millis() > CRASHLOG_GRACE_MS) {
+                Serial.dumpCrashLog("AUTO-RECOVERY: 01 11 + dead poll15");
+            }
             setAddrState(AddressManager::apply(addrState(), AddressManager::Event::Start, 0));
             claimMask = CLAIM_MASK_DEFAULT;
             CdChanger::resetToAllocated();   // zachowaj audio jesli gra
@@ -1341,6 +1344,9 @@ void handlePacket(const uint8_t* buf, int len) {
         // Zrzuc czarna skrzynke ZANIM zresetujemy stan — pokaze ramki, ktore
         // doprowadzily do resetu radia.
         Diagnostics::dump("RADIO SYSTEM RESET 18 10 01 00");
+        if (millis() > CRASHLOG_GRACE_MS) {
+            Serial.dumpCrashLog("RADIO SYSTEM RESET 18 10 01 00");
+        }
         resetLoopCount++;
         lastSystemResetMs = millis();  // grace period dla auto-recovery i Slave Break
         if (deviceAllocated) {

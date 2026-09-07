@@ -211,6 +211,13 @@ constexpr unsigned long PRELIMINARY_WINDOW_MS = 250;
 // --- TIMEOUTY ---
 constexpr unsigned long RADIO_TIMEOUT_MS = 5000;   // brak PINGa => radio zniknelo
 
+// --- CRASH LOG (pendrive) ---
+// Crash logi (radio timeout, SYSTEM RESET) sa zapisywane na pendrive dopiero po
+// tym czasie od startu ESP32 — odfiltruje to normalne resety radia przy wlaczaniu.
+// ESP panic/WDT restart ignoruje grace period (bo jest wazniejszy).
+constexpr unsigned long CRASHLOG_GRACE_MS = 60000;  // 60s od startu ESP
+constexpr int           CRASHLOG_MAX_FILES = 10;    // rotacja: max plikow w /CrashLogs/
+
 // Zapis NVS (flash) blokuje petle na ~15-40ms. Robimy go WYLACZNIE gdy magistrala
 // jest bezczynna dluzej niz ten prog (radio nie pollu­je) — nigdy w trakcie
 // aktywnej wymiany, by nie opoznic odpowiedzi na radio.

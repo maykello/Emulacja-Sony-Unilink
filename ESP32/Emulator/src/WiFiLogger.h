@@ -22,8 +22,9 @@ public:
     bool isWiFiConnected() const { return wifiConnected; }
     bool hasClient() const { return clientConnected; }
 
-    // Zapisz bufor kołowy logów do pliku na pendrive
-    void dumpBlackbox();
+    // Zapisz crash log na pendrive (surowe ramki + logi tekstowe).
+    // reason: krotki opis powodu zrzutu (np. "RADIO TIMEOUT", "SYSTEM RESET").
+    void dumpCrashLog(const char* reason);
 
 private:
     WiFiServer server{WIFI_LOGGER_PORT};
@@ -33,7 +34,7 @@ private:
     unsigned long lastReconnectAttempt = 0;
 
     // Bufor kołowy (czarna skrzynka) przechowujący ostatnie ~4KB logów
-    static constexpr size_t BLACKBOX_SIZE = 4096;
+    static constexpr size_t BLACKBOX_SIZE = 8192;
     char blackboxBuf[BLACKBOX_SIZE];
     size_t blackboxHead = 0;
     size_t blackboxTail = 0;

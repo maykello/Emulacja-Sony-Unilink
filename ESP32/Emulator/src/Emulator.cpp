@@ -21,6 +21,7 @@
 #include "UnilinkProtocol.h"
 #include <Arduino.h>
 #include <LittleFS.h>
+#include <esp_system.h>
 
 // Stan zasilania magistrali (do wykrywania zboczy BUS_ON).
 static bool busPoweredLast = false;
@@ -33,8 +34,7 @@ void commitSuicide() {
     Serial.flush();
     delay(50); // daj czas klientowi TCP na odebranie pakietu
 
-    // Zapisz czarną skrzynkę na USB (jeśli zamontowane)
-    Serial.dumpBlackbox();
+    // Normalne wyłączenie — NIE zapisujemy crash logu (to nie crash).
 
     // Czekaj chwile, zeby logi dotarly przez UART i NVS sie zapisal
     delay(100);
@@ -95,6 +95,18 @@ void setup() {
     Serial.println("[Audio] Inicjalizacja zlecona (dziala w tle).");
   } else {
     Serial.println("[Audio] UWAGA: Inicjalizacja I2S nie powiodła się.");
+  }
+
+  // --- DETEKCJA RESTARTU ESP32 (panic/watchdog) ---
+  // Jesli ESP zresetowalo sie z panic lub WDT, zapisz crash log od razu
+  // (ignoruje grace period — to jest poważny błąd wart zapisania).
+  esp_reset_reason_t resetReason = esp_reset_reason();
+  if (resetReason == ESP_RST_PANIC || resetReason == ESP_RST_INT_WDT ||
+      resetReason == ESP_RST_TASK_WDT || resetReason == ESP_RST_WDT) {
+    Serial.printf("[CrashLog] ESP zrestartowalo sie z powodu: %d — zapisuje crash log!\n", (int)resetReason);
+    // Pendrive moze nie byc jeszcze zamontowany w tym momencie,
+    // ale dumpCrashLog() sam to sprawdza i zaloguje brak USB.
+    Serial.dumpCrashLog("ESP RESTART (panic/WDT)");
   }
 }
 
@@ -209,9 +221,10 @@ void loop() {
   if (UnilinkProtocol::serviceTimeout(now)) {
     // Radio przestało z nami gadać
     // ... (już zalogowane wewnątrz UnilinkProtocol)
-    // Zrzucamy czarną skrzynkę na pendrive, bo to prawdopodobnie crash lub błąd
-    // komunikacji!
-    Serial.dumpBlackbox();
+    // Zrzucamy crash log na pendrive (po grace period)
+    if (millis() > CRASHLOG_GRACE_MS) {
+      Serial.dumpCrashLog("RADIO TIMEOUT (5s bez pinga)");
+    }
     CdChanger::sleep();
     Serial.println("--- Radio timeout (5s). Reset do C0 + STOP audio ---");
   }

@@ -2,6 +2,7 @@
 #define DIAGNOSTICS_H
 
 #include <Arduino.h>
+#include <FS.h>
 
 // =============================================================================
 // Diagnostics — "czarna skrzynka" magistrali (flight recorder)
@@ -26,6 +27,10 @@ void recordNote(const char* note);
 
 // Wypisz caly bufor (od najstarszego do najnowszego) z czasami wzglednymi.
 void dump(const char* reason);
+
+// Zapisz bufor surowych ramek bezposrednio do otwartego pliku (pendrive).
+// Uzycie: Diagnostics::dumpToFile(crashFile) w WiFiLogger::dumpCrashLog().
+void dumpToFile(fs::File& f);
 
 } // namespace Diagnostics
 

@@ -53,4 +53,20 @@ void dump(const char* reason) {
     Serial.println("======================================================\n");
 }
 
+void dumpToFile(fs::File& f) {
+    f.printf("===== BUS FRAMES (last %d) =====\n", count);
+    unsigned long now = millis();
+    int idx = (head - count + RING_SIZE) % RING_SIZE;
+    for (int i = 0; i < count; i++) {
+        Entry& e = ring[idx];
+        f.printf("[-%5lums] %-8s", now - e.timeMs, e.label);
+        for (int b = 0; b < e.len; b++) {
+            f.printf(" %02X", e.data[b]);
+        }
+        f.print('\n');
+        idx = (idx + 1) % RING_SIZE;
+    }
+    f.println("=====================================");
+}
+
 } // namespace Diagnostics
