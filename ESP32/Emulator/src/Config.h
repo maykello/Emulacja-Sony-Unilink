@@ -21,6 +21,7 @@ constexpr uint8_t PIN_DATA   = 6;   // linia danych (dwukierunkowa)
 
 // --- KONFIGURACJA ZASILANIA I USB ---
 constexpr uint8_t PIN_POWER_LATCH = 9; // pin trzymajacy zasilanie przetwornicy (HIGH = wlaczone)
+constexpr unsigned long BUS_OFF_SUICIDE_DELAY_MS = 4000; // czas (ms) ciaglego braku BUS_ON przed odcieciem zasilania
 constexpr const char* INDEX_FILE_PATH = "/unilink_index.dat"; // bufor struktury katalogow
 
 // --- USTAWIENIA SPRZETOWE WARSTWY FIZYCZNEJ ---
@@ -136,7 +137,7 @@ constexpr unsigned long BREAK_BACKOFF_MAX_MS = 3000;
 // stan (uzytkownik wlasnie nacisnal klawisz i czeka na reakcje). Wtedy zwykly
 // odstep i okno BREAK_RECOVERY_MS sa pomijane, bo kilkusekundowe opoznienie
 // numeru plyty czy licznika czasu jest natychmiast widoczne na wyswietlaczu.
-constexpr unsigned long BREAK_URGENT_MIN_MS = 60;
+constexpr unsigned long BREAK_URGENT_MIN_MS = 250;
 // Odstep dla Breaka, gdy w kolejce TX ZALEGAJA jeszcze ramki (blok CD-TEXT to
 // 3-4 ramki, a na jeden grant idzie dokladnie jedna). Przy BREAK_RETRY_MS caly
 // blok schodzil ~2 s (log: `poll15=4 break=4/4` w okienku 2 s po zmianie

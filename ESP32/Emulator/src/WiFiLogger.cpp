@@ -1,4 +1,6 @@
 #include "WiFiLogger.h"
+#include "UsbDrive.h"
+#include <FS.h>
 
 #ifndef WIFI_SSID
 #define WIFI_SSID "Mayk3lGames2G"
@@ -104,26 +106,80 @@ void WiFiLoggerClass::loop() {
 
 
 size_t WiFiLoggerClass::write(uint8_t c) {
+    addToBlackbox(c);
     ::Serial.write(c);
     if (clientConnected && activeClient.connected()) {
-        // Zabezpieczenie przed blokowaniem pętli przy słabym WiFi
-        if (activeClient.availableForWrite() >= 1) {
-            activeClient.write(c);
-        }
+        activeClient.write(c);
     }
     return 1;
 }
 
 size_t WiFiLoggerClass::write(const uint8_t *buffer, size_t size) {
+    for (size_t i = 0; i < size; i++) {
+        addToBlackbox(buffer[i]);
+    }
     ::Serial.write(buffer, size);
     if (clientConnected && activeClient.connected()) {
-        // Sprawdzamy czy bufor TCP w ESP32 pomieści loga. 
-        // Jeśli nie - UTRACAMY TEN LOG przez WiFi, ale NIE BLOKUJEMY 
-        // pętli głównej (co by spowodowało crash emulacji UniLink).
-        if (activeClient.availableForWrite() >= size) {
-            activeClient.write(buffer, size);
-        }
+        activeClient.write(buffer, size);
     }
     return size;
+}
+
+void WiFiLoggerClass::flush() {
+    ::Serial.flush();
+    if (clientConnected && activeClient.connected()) {
+        activeClient.flush();
+    }
+}
+
+void WiFiLoggerClass::addToBlackbox(uint8_t c) {
+    blackboxBuf[blackboxHead] = (char)c;
+    blackboxHead = (blackboxHead + 1) % BLACKBOX_SIZE;
+    if (blackboxHead == blackboxTail) {
+        blackboxTail = (blackboxTail + 1) % BLACKBOX_SIZE;
+        blackboxFull = true;
+    }
+}
+
+void WiFiLoggerClass::dumpBlackbox() {
+    // Zapobiegaj rekursji logowania w trakcie zrzutu
+    static bool dumping = false;
+    if (dumping) return;
+    dumping = true;
+    
+    if (!usbDriveIsMounted()) {
+        ::Serial.println("\n[BlackBox] USB niezamontowane - brak zrzutu logow.");
+        dumping = false;
+        return;
+    }
+    
+    fs::FS& fs = usbDriveGetFS();
+    if (!fs.exists("/Logs")) {
+        fs.mkdir("/Logs");
+    }
+    
+    char filename[64];
+    snprintf(filename, sizeof(filename), "/Logs/dump_%lu.txt", millis());
+    
+    ::Serial.printf("\n[BlackBox] Zrzucam bufor do %s...\n", filename);
+    
+    File f = fs.open(filename, FILE_WRITE);
+    if (!f) {
+        ::Serial.println("[BlackBox] Błąd otwarcia pliku! Upewnij się, że pendrive to FAT32 i nie jest uszkodzony.");
+        dumping = false;
+        return;
+    }
+    
+    size_t count = 0;
+    while (blackboxTail != blackboxHead || blackboxFull) {
+        f.write((uint8_t)blackboxBuf[blackboxTail]);
+        blackboxTail = (blackboxTail + 1) % BLACKBOX_SIZE;
+        blackboxFull = false;
+        count++;
+    }
+    f.close();
+    
+    ::Serial.printf("[BlackBox] Zapisano %d bajtów.\n", count);
+    dumping = false;
 }
 

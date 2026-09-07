@@ -154,7 +154,8 @@ void update(unsigned long now, bool radioEngaged) {
     // patrz komentarz przy deklaracji pollsInState. Stan ChangedCd (0x20)
     // przechodzimy TYLKO przy faktycznej zmianie plyty.
     if (cdState == MechState::LoadingTrack &&
-        (now - seekStartTime > LOAD_DURATION_MS) && pollsInState > 0) {
+        ((now - seekStartTime > LOAD_DURATION_MS && pollsInState > 0) ||
+         (now - seekStartTime > 600))) {
         if (loadDiscChanged) {
             enterState(MechState::ChangedCd);
             seekStartTime = millis();
@@ -165,7 +166,8 @@ void update(unsigned long now, bool radioEngaged) {
             Serial.println(">>> 40 -> 00 (Playing!)");
         }
     } else if (cdState == MechState::ChangedCd &&
-               (now - seekStartTime > SEEK_DURATION_MS) && pollsInState > 0) {
+               ((now - seekStartTime > SEEK_DURATION_MS && pollsInState > 0) ||
+                (now - seekStartTime > 600))) {
         enterPlaying(now);
         Serial.println(">>> 20 -> 00 (Playing!)");
     }

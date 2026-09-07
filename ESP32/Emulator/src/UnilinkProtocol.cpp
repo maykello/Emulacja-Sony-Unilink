@@ -12,6 +12,7 @@
 #include "CdText.h"
 #include "Magazine.h"
 #include "AudioPlayer.h"
+#include <Preferences.h>
 
 namespace UnilinkProtocol {
 
@@ -24,6 +25,8 @@ namespace UnilinkProtocol {
 // nas. Adoptujemy DOWOLNE ID z grupy CD (0x30..0x3F), nie tylko 0x31..0x3A.
 static uint8_t myAddr          = AddressManager::ADDR_GROUP_CD;  // = ADDR_DEFAULT (0x30)
 static bool    deviceAllocated = false;
+static bool    persistAddrPending = false;
+static Preferences prefsProto;
 static unsigned long lastPingTime = 0;
 // Czas ostatniego `01 12` bezposrednio do NAS (nie broadcast). Uzywane do
 // rozroznienia "radio w housekeeping" (pinguje nas, ale nie robi 01 15) od
@@ -59,8 +62,11 @@ static inline AddressManager::State addrState() {
     return AddressManager::State{ myAddr, deviceAllocated };
 }
 static inline void setAddrState(const AddressManager::State& s) {
-    myAddr          = s.myAddr;
-    deviceAllocated = s.allocated;
+    if (myAddr != s.myAddr || deviceAllocated != s.allocated) {
+        myAddr          = s.myAddr;
+        deviceAllocated = s.allocated;
+        persistAddrPending = true;
+    }
 }
 
 // --- UTILITY: kod statusu z MechState (Kompendium §7.1, Wymaganie 5) ---
@@ -226,6 +232,14 @@ static uint16_t statSeek = 0;     // 0x24/0x25 — FF/REW do nas
 // ============================================================
 void begin() {
     lastPingTime = millis();
+    myAddr = AddressManager::ADDR_GROUP_CD;
+    deviceAllocated = false;
+    claimMask = CLAIM_MASK_DEFAULT;
+}
+
+void servicePersist() {
+    // Dynamiczny adres i stan sesji sa przydzielane przez mastera w fazie discovery,
+    // nie ma potrzeby ani sensu utrwalac ich w pamieci nieulotnej.
 }
 
 bool isAllocated() {
@@ -271,13 +285,24 @@ void serviceStats(unsigned long now) {
 // ------------------------------------------------------------
 void onBusOff() {
     // Zdarzenie Start (cykl zycia) -> {0x30, false} (R4.1, R4.4, R4.5).
+    // Gdy magistrala gasnie, sesja arbitrazowa mastera wygasa. Po ponownym wlaczeniu
+    // master musi przeprowadzic discovery (01 11 -> 01 00 -> 01 02 -> Appoint).
     setAddrState(AddressManager::apply(addrState(), AddressManager::Event::Start, 0));
+    claimMask = CLAIM_MASK_DEFAULT;
+
     // Reset markerow preliminary (ale NIE isCdxM670 — to zostaje po wykryciu,
     // zeby przezyc cykl BUS_ON).
     lastPreliminaryTime = 0;
     anyoneIgnoredCount = 0;
     resetLoopCount = 0;
     resetCdTextCache();   // nowa sesja => nazwy trzeba wyslac od nowa
+    requestSessionActive = false;
+    txQueue.clear();
+    UnilinkBus::cancelSlaveBreak();
+    s_lastShownDisc  = CdChanger::disk();
+    s_lastShownTrack = CdChanger::track();
+    s_lastShownState = statusByteFromState(CdChanger::mechState());
+    CdChanger::clearDisplayDirty();
 }
 
 bool serviceTimeout(unsigned long now) {
@@ -320,13 +345,21 @@ bool serviceTimeout(unsigned long now) {
 // natychmiast, ekran dlugo pokazywal poprzednia plyte, a czas startowal od
 // 00:05 zamiast 00:00).
 static bool displayStale() {
+    const CdChanger::MechState ms = CdChanger::mechState();
+    if (ms == CdChanger::MechState::Init || ms == CdChanger::MechState::Idle) {
+        return false;
+    }
     return CdChanger::disk()  != s_lastShownDisc  ||
            CdChanger::track() != s_lastShownTrack ||
-           statusByteFromState(CdChanger::mechState()) != s_lastShownState;
+           statusByteFromState(ms) != s_lastShownState;
 }
 
 static bool wantsBus() {
     if (!deviceAllocated) return false;
+    const CdChanger::MechState ms = CdChanger::mechState();
+    if (ms == CdChanger::MechState::Init || ms == CdChanger::MechState::Idle) {
+        return false;
+    }
     if (!txQueue.isEmpty() || CdChanger::isDisplayDirty() || displayStale()) return true;
     return requestSessionActive;
 }
@@ -349,6 +382,12 @@ static void maybeCloseRequestSession() {
 
 void serviceSlaveBreak(bool busPowered) {
     if (!busPowered || !deviceAllocated) {
+        UnilinkBus::cancelSlaveBreak();
+        return;
+    }
+
+    const CdChanger::MechState ms = CdChanger::mechState();
+    if (ms == CdChanger::MechState::Init || ms == CdChanger::MechState::Idle) {
         UnilinkBus::cancelSlaveBreak();
         return;
     }
@@ -388,9 +427,8 @@ void serviceSlaveBreak(bool busPowered) {
     // NIEZALEZNIE od Request Pollingu, wiec warunek "nie rob Break, dopoki radio
     // nas pinguje" blokowal Break na zawsze: po zamknieciu `01 15` emulator
     // milczal, a ekran zastygal na stale (log 20:31: poll15=0, break=0/0,
-    // ping12=1 co 2 s, czas na ekranie stoi mimo dzialajacego licznika).
-    if ((nowMs - lastPoll15Ms) <
-        (draining ? POLL15_QUIET_DRAIN_MS : POLL15_QUIET_BREAK_MS)) {
+    // Polling zywy — nie potrzebujemy Break.
+    if ((nowMs - lastPoll15Ms) < POLL15_QUIET_BREAK_MS) {
         breakBackoffMs = BREAK_RETRY_MS;
         breakOkAwaitingPollMs = 0;
         return;
@@ -1211,6 +1249,11 @@ void handlePacket(const uint8_t* buf, int len) {
             CdChanger::sleep();
             requestSessionActive = false;
             txQueue.clear();
+            UnilinkBus::cancelSlaveBreak();
+            s_lastShownDisc  = CdChanger::disk();
+            s_lastShownTrack = CdChanger::track();
+            s_lastShownState = statusByteFromState(CdChanger::mechState());
+            CdChanger::clearDisplayDirty();
         }
         return;
     }
@@ -1327,7 +1370,11 @@ void handlePacket(const uint8_t* buf, int len) {
         // Wraz z adresem master przydziela nam bit w arbitrazu `01 15` — jest to
         // dolny nibbel CMD2 tej ramki (0x14 -> 0x04 w sniffie CDX-M670).
         if ((op2 & 0x0F) != 0) {
-            claimMask = (uint8_t)(op2 & 0x0F);
+            uint8_t newMask = (uint8_t)(op2 & 0x0F);
+            if (claimMask != newMask) {
+                claimMask = newMask;
+                persistAddrPending = true;
+            }
         }
         // Okno "master o mnie zapomnial" liczymy od przydzialu adresu. Bez tego
         // lastDisplayServedMs zostaje na 0 i tuz po appoincie wygladamy na

@@ -276,6 +276,31 @@ static esp_err_t scsiRead10(uint32_t lba, uint16_t numSectors, uint8_t *destBuf)
     return botReceiveCSW();
 }
 
+static esp_err_t scsiWrite10(uint32_t lba, uint16_t numSectors, const uint8_t *srcBuf) {
+    uint8_t cmd[10];
+    memset(cmd, 0, sizeof(cmd));
+    cmd[0] = 0x2A;  // WRITE(10)
+    cmd[2] = (lba >> 24) & 0xFF;
+    cmd[3] = (lba >> 16) & 0xFF;
+    cmd[4] = (lba >> 8)  & 0xFF;
+    cmd[5] = lba & 0xFF;
+    cmd[7] = (numSectors >> 8) & 0xFF;
+    cmd[8] = numSectors & 0xFF;
+    
+    uint32_t dataLen = (uint32_t)numSectors * diskSectorSize;
+    
+    // Wyślij CBW
+    esp_err_t err = botSendCBW(cmd, 10, dataLen, false);
+    if (err != ESP_OK) return err;
+    
+    // Wyślij dane
+    err = bulkOut(srcBuf, dataLen);
+    if (err != ESP_OK) return err;
+    
+    // Odbierz CSW
+    return botReceiveCSW();
+}
+
 // ====================================================================
 //  INTERFEJS DISKIO DLA FatFs
 // ====================================================================
@@ -304,7 +329,21 @@ static DRESULT usbDiskRead(BYTE pdrv, BYTE *buff, DWORD sector, UINT count) {
 }
 
 static DRESULT usbDiskWrite(BYTE pdrv, const BYTE *buff, DWORD sector, UINT count) {
-    return RES_WRPRT; // Read-only — nie piszemy na pendrive'a
+    if (!deviceConnected) return RES_NOTRDY;
+    
+    DWORD physSector = sector + partitionOffset;
+    
+    while (count > 0) {
+        UINT toWrite = (count > USB_MAX_SECT_READ) ? USB_MAX_SECT_READ : count;
+        if (scsiWrite10(physSector, toWrite, buff) != ESP_OK) {
+            Serial.printf("[%s] Błąd zapisu sektora %lu\n", TAG, (unsigned long)physSector);
+            return RES_ERROR;
+        }
+        physSector += toWrite;
+        count      -= toWrite;
+        buff       += toWrite * diskSectorSize;
+    }
+    return RES_OK;
 }
 
 static DRESULT usbDiskIoctl(BYTE pdrv, BYTE cmd, void *buff) {
@@ -449,7 +488,7 @@ static bool configureMscDevice(uint8_t devAddr) {
     if (xferOut) { usb_host_transfer_free(xferOut); xferOut = NULL; }
     if (xferIn)  { usb_host_transfer_free(xferIn);  xferIn  = NULL; }
     
-    err = usb_host_transfer_alloc(512, 0, &xferOut);  // CBW = 31 bajtów, 512 z zapasem
+    err = usb_host_transfer_alloc(USB_XFER_BUF_SIZE, 0, &xferOut);  // Musi pomieścić zapis wielu sektorów
     if (err != ESP_OK) {
         Serial.printf("[%s] Alokacja xferOut nie powiodła się\n", TAG);
         return false;

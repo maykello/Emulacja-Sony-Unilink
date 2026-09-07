@@ -120,6 +120,9 @@ bool isAllocated();
 // nas o status/ekran, ile breakow, czy oddaje ekran 3B). Wywolywac w loop().
 void serviceStats(unsigned long now);
 
+// Zapisuje stan adresacji do NVS, jesli nastapila zmiana. Wywolywac w loop().
+void servicePersist();
+
 // Wysłać ramki pozycji i pełnego statusu natychmiast — używana przy 0x08
 // (zakończenie przewijania) do natychmiastowego odświeżenia ekranu radia.
 void sendDisplayStatus();
