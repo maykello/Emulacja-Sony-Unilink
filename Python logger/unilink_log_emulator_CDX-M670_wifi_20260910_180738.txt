@@ -1,0 +1,173 @@
+[18:07:46.259] === SONY UNILINK ESP32 LOG STREAM (unilink.local) ===
+[18:07:47.217] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:07:47.649] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:07:49.156] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:07:49.222] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:07:50.659] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:07:51.225] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:07:52.162] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:07:53.220] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:07:53.654] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:07:55.161] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:07:55.216] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:07:56.655] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:07:57.215] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:07:58.158] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:07:59.216] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:07:59.662] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:01.161] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:01.224] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:02.649] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:03.221] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:04.155] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:05.218] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:05.653] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:07.156] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:07.219] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:08.659] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:09.222] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:10.155] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:11.216] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=0 btn=0 break=6/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:11.654] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:13.155] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:13.218] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:14.656] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:15.214] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:16.160] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:17.217] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:19.022] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:19.156] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:19.214] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:20.662] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:21.226] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:22.155] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:23.211] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:23.649] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:25.158] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:25.218] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:26.659] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:27.216] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:28.156] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:29.222] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:29.657] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:31.159] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:31.222] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=0 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:32.660] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:33.218] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=2 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:34.162] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:35.226] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:35.660] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:37.155] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:37.217] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:38.650] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:39.224] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:40.156] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:41.222] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=0 btn=0 break=6/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:41.662] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:43.160] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:43.223] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:44.660] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:45.227] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:46.156] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:47.224] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:47.653] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:49.156] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:49.211] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:50.660] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:51.224] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:52.158] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:53.211] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:53.662] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:55.161] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:55.224] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:56.661] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:08:57.063] >> TOGGLE REPEAT -> 1
+[18:08:57.224] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=1 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:08:58.152] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1600 mBar"
+[18:08:59.224] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=8/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:00.069] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2000 mBar"
+[18:09:01.210] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:01.571] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="2300 mBar"
+[18:09:03.069] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="1500 mBar"
+[18:09:03.214] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:03.884] >> TOGGLE REPEAT -> 2
+[18:09:04.481] >> CD-TEXT wyslany: CD12 TR1 plyta="OBD" utwor="12 mg"
+[18:09:05.217] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=1 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:05.586] >> TOGGLE REPEAT -> 0
+[18:09:06.212] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:07.218] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=1 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:08.213] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:09.225] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:10.087] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:11.225] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:11.585] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:13.085] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:13.219] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:14.583] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:15.212] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:16.084] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:17.217] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:17.587] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:19.074] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:19.225] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:20.588] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:21.217] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:22.088] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:23.225] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:23.586] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:25.082] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:25.209] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:26.581] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:27.217] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:28.086] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:29.222] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:29.586] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:31.077] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:31.229] [STAT] poll15=6 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:32.574] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:33.215] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:34.084] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:35.227] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:35.581] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:37.075] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:37.220] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:38.583] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:39.223] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:40.080] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:41.221] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:41.575] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:43.088] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:43.219] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:44.586] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:45.223] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:46.077] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:47.213] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:47.582] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:49.085] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:49.215] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:50.587] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:51.223] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:52.083] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:53.219] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:00
+[18:09:53.584] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:55.085] >> CD-TEXT wyslany: CD12 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[18:09:55.213] >> [Audio Bus] Radio sygnalizuje audio OFF (87 6A)
+[18:09:55.213] [NVS] Zapamietano ostatni utwor: CD12 TR1
+[18:09:55.213] [Audio] ⏹ Zatrzymano (zlecone).
+[18:09:55.213] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:00
+[18:09:55.237] >> [Audio Bus] Radio sygnalizuje audio OFF (87 2A)
+[18:09:55.240] [Audio] ⏹ Zatrzymano (zlecone).
+[18:09:56.981] >>> C0 -> 80 (Idle)
+[18:09:57.227] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:00
+[18:09:59.227] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:00
+[18:10:01.234] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:00
+[18:10:05.229] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR1 00:00
+[18:10:05.408] >> [Audio Bus] Radio sygnalizuje audio OFF (87 22)
+[18:10:05.408] [Audio] ⏹ Zatrzymano (zlecone).
+[18:10:05.424] === BUS_ON = 0 ===
+[18:10:05.440] === SEN: magistrala wylaczona ===
+[18:10:05.456] [Audio] ⏹ Zatrzymano (zlecone).
+[18:10:05.474] === BUS_ON = 0: Oczekiwanie 4000ms na wylaczenie zasilania ===
+[18:10:09.460] === BUS_ON nieaktywny przez 4s: Wylaczam zasilanie (commitSuicide) ===
+[18:10:09.471] === ROZPOCZYNAM PROCEDURĘ WYŁĄCZANIA ZASILANIA ===
+[18:10:09.620] === ODCINAM PRĄD. DOBRANOC. ===

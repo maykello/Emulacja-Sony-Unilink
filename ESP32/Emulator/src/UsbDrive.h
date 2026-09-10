@@ -12,6 +12,12 @@ bool usbDriveInit();
 // Czy pendrive jest zamontowany i gotowy do odczytu plików?
 bool usbDriveIsMounted();
 
+// Czy fizyczne urządzenie USB jest podłączone (niezależnie od stanu FAT32)?
+bool usbDriveIsConnected();
+
+// Czy stos USB Host działa poprawnie?
+bool usbDriveHostIsRunning();
+
 // Referencja do systemu plików USB (fs::FS) — do użycia z audio.connecttoFS().
 // UWAGA: wywołuj TYLKO gdy usbDriveIsMounted() == true!
 fs::FS& usbDriveGetFS();

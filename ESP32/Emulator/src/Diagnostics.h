@@ -32,6 +32,27 @@ void dump(const char* reason);
 // Uzycie: Diagnostics::dumpToFile(crashFile) w WiFiLogger::dumpCrashLog().
 void dumpToFile(fs::File& f);
 
+// --- SYSTEM ERROR MANAGEMENT (DLA CD-TEXT) ---
+enum class SystemError : uint8_t {
+    None = 0,
+    DacPinShort,    // "PIN X VCC"
+    DacInitErr,     // "DAC FAIL"
+    AudioTaskErr,   // "I2S TASK"
+    UsbHostErr,     // "USB FAIL"
+    NoUsb,          // "NO PENDRIVE"
+    UsbFsErr,       // "FAT32 ERR"
+    NoTracks,       // "NO TRACKS"
+    EmptyDisc,      // "EMPTY CD"
+    FileErr         // "BAD FILE"
+};
+
+void setError(SystemError err, int detail = 0);
+void clearError(SystemError err);
+SystemError getError();
+bool hasError();
+const char* getErrorString();
+const char* getErrorDiscName();
+
 } // namespace Diagnostics
 
 #endif // DIAGNOSTICS_H

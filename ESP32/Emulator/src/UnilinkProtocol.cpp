@@ -150,8 +150,8 @@ static bool isTimeFlashActive() {
 // Otwiera/zamyka okno flashu wg konfiguracji. Zwraca true, jesli flash
 // jest aktywny (blokada CD-TEXT).
 static bool serviceTimeFlash(unsigned long now) {
-    // Funkcja wylaczona albo aktywny tryb OBD (Repeat)? W OBD pokazujemy tekst sztywno.
-    if (CDTEXT_TIME_FLASH_INTERVAL_MS == 0 || CdChanger::repeatMode() != CdChanger::RepeatMode::Off) return false;
+    // Funkcja wylaczona, aktywny błąd albo tryb OBD (Repeat)? W błędzie i OBD pokazujemy tekst sztywno.
+    if (CDTEXT_TIME_FLASH_INTERVAL_MS == 0 || Diagnostics::hasError() || CdChanger::repeatMode() != CdChanger::RepeatMode::Off) return false;
     // Flash aktywny tylko w Playing z wyslana nazwa (s_textFlagState >= 1).
     if (CdChanger::mechState() != CdChanger::MechState::Playing) {
         s_timeFlashStartMs = 0;
@@ -179,7 +179,7 @@ static bool serviceTimeFlash(unsigned long now) {
 }
 
 static uint8_t discFlagsNibble() {
-    if (audioGetTrackCount(CdChanger::disk()) == 0) return 0x00;   // pusty slot
+    if (audioGetTrackCount(CdChanger::disk()) == 0 && !Diagnostics::hasError()) return 0x00;   // pusty slot
     // Podczas seeking (FF/REW) kasujemy flage CD-TEXT — radio przełącza się na
     // widok zwykły z timerem, bez nazw. Prawdziwa zmieniarka robi to samo:
     // w sniffie CDX-M670 podczas cue/review nibbel spada do 0x8 (brak flagi
@@ -507,10 +507,28 @@ static void enqueueCdTextField(bool isDisc, int field) {
 
     // Zrodlo nazwy: biezaca selekcja zmieniarki (patrz ZALOZENIE wyzej).
     char raw[64];
-    if (isDisc) {
-        audioGetDiscName(CdChanger::disk(), raw, sizeof(raw));
+    if (Diagnostics::hasError() && CdChanger::repeatMode() == CdChanger::RepeatMode::Off) {
+        if (isDisc) {
+            snprintf(raw, sizeof(raw), "%s", Diagnostics::getErrorDiscName());
+        } else {
+            snprintf(raw, sizeof(raw), "%s", Diagnostics::getErrorString());
+        }
+    } else if (isDisc) {
+        if (CdChanger::repeatMode() != CdChanger::RepeatMode::Off) {
+            snprintf(raw, sizeof(raw), "OBD");
+        } else {
+            audioGetDiscName(CdChanger::disk(), raw, sizeof(raw));
+        }
     } else {
-        audioGetTrackName(CdChanger::disk(), CdChanger::track(), raw, sizeof(raw));
+        if (CdChanger::repeatMode() == CdChanger::RepeatMode::One) {
+            unsigned long mockPressure = 1500 + ((millis() / 500) % 11) * 100;
+            snprintf(raw, sizeof(raw), "%lu mBar", mockPressure);
+        } else if (CdChanger::repeatMode() == CdChanger::RepeatMode::All) {
+            unsigned long mockFuel = ((millis() / 500) % 54);
+            snprintf(raw, sizeof(raw), "%lu mg", mockFuel);
+        } else {
+            audioGetTrackName(CdChanger::disk(), CdChanger::track(), raw, sizeof(raw));
+        }
     }
 
     // R6.6: sanityzacja zrodla do drukowalnego ASCII przed podzialem na pola.
@@ -695,7 +713,9 @@ static uint8_t discFromRequest(const uint8_t* buf, int len) {
 
 static void enqueueCdTextDiscName(uint8_t disc) {
     char raw[64];
-    if (CdChanger::repeatMode() != CdChanger::RepeatMode::Off) {
+    if (Diagnostics::hasError() && CdChanger::repeatMode() == CdChanger::RepeatMode::Off) {
+        snprintf(raw, sizeof(raw), "%s", Diagnostics::getErrorDiscName());
+    } else if (CdChanger::repeatMode() != CdChanger::RepeatMode::Off) {
         snprintf(raw, sizeof(raw), "OBD");
     } else {
         audioGetDiscName(disc, raw, sizeof(raw));
@@ -727,7 +747,9 @@ static bool enqueueCdTextD2Track(bool withEndMarker, bool force) {
     }
 
     char raw[64];
-    if (CdChanger::repeatMode() == CdChanger::RepeatMode::One) {
+    if (Diagnostics::hasError() && CdChanger::repeatMode() == CdChanger::RepeatMode::Off) {
+        snprintf(raw, sizeof(raw), "%s", Diagnostics::getErrorString());
+    } else if (CdChanger::repeatMode() == CdChanger::RepeatMode::One) {
         // Mock dynamic OBD data: cisnienie skacze od 1500 do 2500
         unsigned long mockPressure = 1500 + ((millis() / 500) % 11) * 100;
         snprintf(raw, sizeof(raw), "%lu mBar", mockPressure);
@@ -1018,12 +1040,14 @@ void servicePositionFrame1Hz(unsigned long now) {
 static uint8_t       s_textSentDisc  = 0;
 static uint8_t       s_textSentTrack = 0;
 static CdChanger::RepeatMode s_textSentRepeat = CdChanger::RepeatMode::Off;
+static Diagnostics::SystemError s_textSentError = Diagnostics::SystemError::None;
 static unsigned long s_textSentMs    = 0;
 
 void resetCdTextCache() {
     s_textSentDisc  = 0;
     s_textSentTrack = 0;
     s_textSentRepeat= CdChanger::RepeatMode::Off;
+    s_textSentError = (Diagnostics::SystemError)255;
     s_textSentMs    = 0;
     s_textFlagState = 0;
 }
@@ -1066,8 +1090,12 @@ void serviceCdText(unsigned long now) {
     const uint8_t disc   = CdChanger::disk();
     const uint8_t track  = CdChanger::track();
     const CdChanger::RepeatMode repeat = CdChanger::repeatMode();
-    bool changed   = (disc != s_textSentDisc || track != s_textSentTrack || repeat != s_textSentRepeat);
+    const Diagnostics::SystemError currentError = Diagnostics::getError();
+
+    bool changed   = (disc != s_textSentDisc || track != s_textSentTrack || 
+                      repeat != s_textSentRepeat || currentError != s_textSentError);
     bool obdForceUpdate = false;
+    bool errorForceUpdate = false;
 
     // MOCK OBD UPDATE: W trybie OBD wymuszamy odswiezenie, zeby symulowac
     // strumien danych live. 500ms zatykalo magistrale (3 ramki teksowe zajmuja 
@@ -1080,13 +1108,22 @@ void serviceCdText(unsigned long now) {
         }
     }
 
-    // Zmiana utworu kasuje flage "mam nazwy" — radio ma najpierw zobaczyc, ze
+    // ERROR UPDATE: W stanie błędu (gdy Repeat jest Off) wymuszamy ciągłe odświeżanie co 1500ms
+    static unsigned long s_lastErrorUpdateMs = 0;
+    if (currentError != Diagnostics::SystemError::None && repeat == CdChanger::RepeatMode::Off) {
+        if (now - s_lastErrorUpdateMs >= 1500) {
+            errorForceUpdate = true;
+            s_lastErrorUpdateMs = now;
+        }
+    }
+
+    // Zmiana utworu lub błędu kasuje flage "mam nazwy" — radio ma najpierw zobaczyc, ze
     // tekst zniknal (nibbel 0x8), a dopiero potem, ze pojawil sie nowy (0xB).
-    // UWAGA: Nie robimy tego przy obdForceUpdate, by radio nie "migalo" tekstem!
+    // UWAGA: Nie robimy tego przy obdForceUpdate ani errorForceUpdate, by radio nie "migalo" tekstem!
     if (changed && s_textFlagState != 0) s_textFlagState = 0;
 
-    // Odswiezenie okresowe normalne lub wymuszone przez OBD
-    if (!changed && !obdForceUpdate && (now - s_textSentMs) < CD_TEXT_REPEAT_MS) return;
+    // Odswiezenie okresowe normalne lub wymuszone przez OBD / błąd
+    if (!changed && !obdForceUpdate && !errorForceUpdate && (now - s_textSentMs) < CD_TEXT_REPEAT_MS) return;
 
     // Znaczniki aktualizujemy DOPIERO gdy blok naprawde wszedl do kolejki — gdy
     // poprzedni komplet nazw jeszcze z niej nie zszedl, sprobujemy w nastepnej
@@ -1097,18 +1134,22 @@ void serviceCdText(unsigned long now) {
     s_textSentDisc   = disc;
     s_textSentTrack  = track;
     s_textSentRepeat = repeat;
+    s_textSentError  = currentError;
     s_textSentMs     = now;
 
     // Nibbel 0xB ("tekst dostepny + swiezo zmieniony") podnosimy tylko przy
-    // realnej zmianie plyty/utworu albo gdy radio jeszcze nie wie, ze mamy
+    // realnej zmianie plyty/utworu/błędu albo gdy radio jeszcze nie wie, ze mamy
     // nazwy. Samo odswiezenie okresowe zostawia 0xA ("tekst dostepny").
     if (changed || s_textFlagState == 0) s_textFlagState = 1;
 
     char name[64];
     char discName[64];
     
-    // Jesli Repeat jest wlaczony (tryb OBD), nadpisujemy tekst parametrami silnika
-    if (repeat == CdChanger::RepeatMode::One) {
+    // W stanie błędu pokazujemy błąd, chyba że użytkownik celowo włączył tryb OBD (Repeat One/All)
+    if (currentError != Diagnostics::SystemError::None && repeat == CdChanger::RepeatMode::Off) {
+        snprintf(name, sizeof(name), "%s", Diagnostics::getErrorString());
+        snprintf(discName, sizeof(discName), "%s", Diagnostics::getErrorDiscName());
+    } else if (repeat == CdChanger::RepeatMode::One) {
         unsigned long mockPressure = 1500 + ((millis() / 500) % 11) * 100;
         snprintf(name, sizeof(name), "%lu mBar", mockPressure);
         snprintf(discName, sizeof(discName), "OBD");
@@ -1228,11 +1269,23 @@ void handlePacket(const uint8_t* buf, int len) {
             isCdxM670 = true;
             Serial.println("== Wykryto CDX-M670 (widziano 3B 10 02 11) ==");
         }
-        lastPreliminaryTime = millis();
+        // [FIX: RESET LOOP] Po SYSTEM RESET ten pakiet to normalny appoint
+        // wewnętrznego CD w NOWYM discovery — nie blokuj ANYONE? oknem
+        // preliminary, bo ANYONE? po nim jest DLA NAS, nie preliminary.
+        if ((millis() - lastSystemResetMs) > POST_RESET_PRELIMINARY_SKIP_MS) {
+            lastPreliminaryTime = millis();
+        } else {
+            Serial.println(">> [CDX-M670] 3B appoint po SYSTEM RESET — pomijam okno preliminary");
+        }
         return;
     }
     if (rad == 0xDB && tad == ADDR_MASTER && op1 == 0x02 && op2 == 0x12) {
-        lastPreliminaryTime = millis();
+        // [FIX: RESET LOOP] Analogicznie jak dla 3B — nie blokuj po SYSTEM RESET.
+        if ((millis() - lastSystemResetMs) > POST_RESET_PRELIMINARY_SKIP_MS) {
+            lastPreliminaryTime = millis();
+        } else {
+            Serial.println(">> [CDX-M670] DB appoint po SYSTEM RESET — pomijam okno preliminary");
+        }
         return;
     }
 
@@ -1332,6 +1385,16 @@ void handlePacket(const uint8_t* buf, int len) {
             breakOkAwaitingPollMs = 0;
         }
         if (!deviceAllocated) {
+            // [FIX: RESET LOOP] Nie odpowiadaj magic, jeśli jesteśmy w oknie
+            // preliminary (radio prowadzi discovery i zaraz wyśle ANYONE?).
+            // Wysłanie magic teraz powoduje SYSTEM RESET, po którym radio
+            // znów robi preliminary → ANYONE? (ignorowane) → 01 11 → magic
+            // → nieskończona pętla resetów.
+            if (isCdxM670 && lastPreliminaryTime != 0 &&
+                (millis() - lastPreliminaryTime) < PRELIMINARY_WINDOW_MS) {
+                Serial.println(">> [CDX-M670] 01 11 w oknie preliminary — pomijam magic (zapobiega petli resetow)");
+                return;
+            }
             const uint8_t magic[] = {0x10, 0x18, 0x04, 0x00, 0x2C, 0x00};
             UnilinkBus::sendRaw(magic, sizeof(magic));
             Serial.println(">> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery");
@@ -1592,17 +1655,12 @@ void handlePacket(const uint8_t* buf, int len) {
     // Radio prosi o mape obecnosci plyt (R7.1). Odpowiedz kolejkowana
     // (Tx::PRIO_MAGAZINE), nadawana po grancie 0x13.
     else if (rad == myAddr && op1 == 0x84 && op2 == 0x95) {
-        // Sony NIE uklada bitow obecnosci po kolei. Sniff CDX-M670 z jedna
-        // plyta (CD8) w magazynku: `70 31 95 08 3E 00 00 00 8A C8 00` — bit3
-        // CMD2 = CD8, D1..D3 = 0, D4 = numer plyty w gornym nibblu | 0x0A.
-        // Wczesniej wysylalismy zwykla mape liniowa w D1/D2, wiec radio
-        // pokazywalo pusty magazynek.
         const uint16_t pm = Magazine::presenceMap();
         uint8_t data[4] = {
-            Magazine::magazineD1FromMap(pm),                                  // D1 = CD9/CD10
+            Magazine::magazineD1FromMap(pm),                                  // D1 = CD9..CD14
             0x00,                                                             // D2
             0x00,                                                             // D3
-            UnilinkFrame::discHighNibble(CdChanger::disk(), 0x0A)             // D4 = biezaca plyta
+            UnilinkFrame::discHighNibble(CdChanger::disk(), MAX_DISC)         // D4 = biezaca plyta | pojemnosc (MAX_DISC=14)
         };
         enqueueMagazineMiddle(0x95, Magazine::magazineCmd2FromMap(pm), data);
     }
@@ -1634,8 +1692,8 @@ void handlePacket(const uint8_t* buf, int len) {
             if (track == 0) track = 1;
         }
 
-        // Walidacja płyty: 1..10, obecna w magazynku
-        bool discValid = (disc >= 1 && disc <= 10) && ((Magazine::presenceMap() >> (disc - 1)) & 1);
+        // Walidacja płyty: 1..MAX_DISC, obecna w magazynku
+        bool discValid = (disc >= 1 && disc <= MAX_DISC) && ((Magazine::presenceMap() >> (disc - 1)) & 1);
         // Walidacja utworu: 1..MAX_TRACKS, w granicach dostępnych na danej plycie
         uint8_t maxTrack = audioGetTrackCount(disc);
         if (maxTrack == 0) maxTrack = MAX_TRACKS;  // fallback bez nosnika
@@ -1669,9 +1727,9 @@ void handlePacket(const uint8_t* buf, int len) {
             uint8_t d1 = buf[5];
             // D1 moze byc zakodowane jako F|nr (0xF1..) albo surowy numer.
             uint8_t cand = ((d1 & 0xF0) == 0xF0)
-                               ? UnilinkFrame::discNibbleToNumber(d1)
-                               : d1;
-            if (cand >= 1) disc = cand;
+                                ? UnilinkFrame::discNibbleToNumber(d1)
+                                : d1;
+            if (cand >= 1 && cand <= MAX_DISC) disc = cand;
         }
         uint8_t data[Magazine::DISC_INFO_DATA_LEN];
         Magazine::buildDiscInfo(disc, data);
@@ -1757,7 +1815,7 @@ static void buildStatusC0(uint8_t* frame) {
     //   70 31 C0 40 A1 00 00 00 00 00 F1 F0 00 11 93 00   (CD1 — slot pusty)
     // Emulator wysylal tu na sztywno 0x00, czyli melodowal radiu "slot pusty"
     // przy KAZDEJ plycie — stad brak nazw na liscie i brak zapytan o CD-TEXT.
-    const bool discPresent = audioGetTrackCount(disc) > 0;
+    const bool discPresent = (audioGetTrackCount(disc) > 0) || Diagnostics::hasError();
     frame[9]  = discPresent ? 0x30 : 0x00; // D5 = obecnosc plyty
     frame[10] = trkB;                      // D6 = numer utworu (F-padded BCD)
     frame[11] = minB;                      // D7 = minuty (F-padded BCD / 0xFF)

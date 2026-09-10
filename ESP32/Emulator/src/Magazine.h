@@ -23,8 +23,8 @@
 // buildDiscId) zyja w Magazine.cpp i odpytuja AudioPlayer.
 //
 // Uklad danych ramek (CMD2 oraz parzystosci dokleja dyspozytor):
-//   0x95 (middle): CMD2 = PRZEPLATANA mapa obecnosci, D1 = plyty 9-10,
-//                  D2=D3=0, D4 = numer plyty w gornym nibblu | 0x0A
+//   0x95 (middle): CMD2 = PRZEPLATANA mapa obecnosci, D1 = plyty 9-14,
+//                  D2=D3=0, D4 = numer plyty w gornym nibblu | MAX_DISC (0x0E)
 //   0x97 (middle): CMD2=0x01, D1=liczba utworow (BCD), D2=min(BCD),
 //                  D3=sek(BCD), D4=numer plyty w gornym nibblu
 //   0xC5/0xD5 (long): CMD2=0xA|setne, D1=liczba utworow (BCD), D2=min (BCD),

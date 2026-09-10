@@ -1,6 +1,7 @@
 #include "AudioPlayer.h"
 #include "UsbDrive.h"
 #include "Config.h"
+#include "Diagnostics.h"
 #include "Audio.h"     // ESP32-audioI2S by schreibfaul1
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -394,6 +395,10 @@ static bool findTrackPath(uint8_t disc, uint8_t track, char* outPath, size_t pat
     return true;
 }
 
+void audioSetMute(bool mute) {
+    digitalWrite(I2S_XSMT_PIN, mute ? LOW : HIGH);
+}
+
 // ============================================================
 // Task dekodowania audio (FreeRTOS)
 // ============================================================
@@ -401,11 +406,16 @@ static void audioTaskFunc(void *param) {
     Serial.printf("[Audio] Task dekodowania uruchomiony na rdzeniu %d\n", xPortGetCoreID());
     uint32_t loopCounter = 0;
     unsigned long lastDebugTime = 0;
+    unsigned long playStartedMs = 0;
+    bool dacUnmuted = false;
     
     for (;;) {
         // --- Żądania sterujace z Core 1 (nieblokujace dla glownej petli) ---
         if (stopRequestPending) {
             stopRequestPending = false;
+            audioSetMute(true);
+            dacUnmuted = false;
+            playStartedMs = 0;
             if (audioMutex) xSemaphoreTake(audioMutex, portMAX_DELAY);
             audio.stopSong();
             if (audioMutex) xSemaphoreGive(audioMutex);
@@ -433,6 +443,9 @@ static void audioTaskFunc(void *param) {
         // --- Obsługa żądania nowej piosenki ---
         if (playRequestPending) {
             playRequestPending = false;
+            audioSetMute(true);
+            dacUnmuted = false;
+            playStartedMs = 0;
             
             if (audioMutex) xSemaphoreTake(audioMutex, portMAX_DELAY);
             audio.stopSong();
@@ -444,8 +457,12 @@ static void audioTaskFunc(void *param) {
             if (!result) {
                 isPlaying = false;
                 songFinishedFlag = true; // Pomiń do następnego utworu
+                Diagnostics::setError(Diagnostics::SystemError::FileErr);
             } else {
                 isPlaying = true;
+                if (Diagnostics::getError() == Diagnostics::SystemError::FileErr) {
+                    Diagnostics::clearError(Diagnostics::SystemError::FileErr);
+                }
                 Serial.printf("[Audio] ▶ Odtwarzam: %s (rozpoczęto dekodowanie)\n", playRequestPath);
             }
             // Zmiana utworu zakonczona — mozna znow wykrywac koniec utworu.
@@ -468,6 +485,26 @@ static void audioTaskFunc(void *param) {
             }
             
             xSemaphoreGive(audioMutex);
+        }
+
+        // --- Sterowanie wyciszeniem sprzętowym DAC (XSMT na GPIO 16) ---
+        // Odciszamy dopiero po 100ms stabilnego działania dekodera (audio.isRunning()),
+        // gdy bufor I2S DMA jest już stabilnie wypełniony próbkami i zegary są zsynchronizowane.
+        if (isPlaying && audio.isRunning()) {
+            if (playStartedMs == 0) {
+                playStartedMs = millis();
+            } else if (!dacUnmuted && (millis() - playStartedMs >= 100)) {
+                audioSetMute(false);
+                dacUnmuted = true;
+                Serial.println("[Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)");
+            }
+        } else {
+            if (dacUnmuted) {
+                audioSetMute(true);
+                dacUnmuted = false;
+                Serial.println("[Audio] DAC XSMT (GPIO 16) -> LOW (Wyciszono)");
+            }
+            playStartedMs = 0;
         }
         
         loopCounter++;
@@ -497,22 +534,46 @@ bool audioInit() {
     // Zeruj tablicę tracków
     for (int i = 0; i <= MAX_DISCS; i++) trackCount[i] = 0;
     
-    // Inicjalizacja USB Host (pendrive)
+    // 0. Konfiguracja pinu wyciszenia sprzętowego DAC (XSMT na GPIO 16) — wycisz na starcie
+    pinMode(I2S_XSMT_PIN, OUTPUT);
+    audioSetMute(true);
+    
+    // 1. Sprawdzenie zwarcia linii I2S do 3.3V (VCC) przed konfiguracją I2S
+    pinMode(I2S_BCK_PIN, INPUT_PULLDOWN);
+    pinMode(I2S_LRCK_PIN, INPUT_PULLDOWN);
+    pinMode(I2S_DIN_PIN, INPUT_PULLDOWN);
+    delay(2);
+    if (digitalRead(I2S_BCK_PIN) == HIGH) {
+        Serial.printf("[Audio] BŁĄD: Pin BCK (GPIO %d) zwarty do 3.3V!\n", I2S_BCK_PIN);
+        Diagnostics::setError(Diagnostics::SystemError::DacPinShort, I2S_BCK_PIN);
+    } else if (digitalRead(I2S_LRCK_PIN) == HIGH) {
+        Serial.printf("[Audio] BŁĄD: Pin LRCK (GPIO %d) zwarty do 3.3V!\n", I2S_LRCK_PIN);
+        Diagnostics::setError(Diagnostics::SystemError::DacPinShort, I2S_LRCK_PIN);
+    } else if (digitalRead(I2S_DIN_PIN) == HIGH) {
+        Serial.printf("[Audio] BŁĄD: Pin DIN (GPIO %d) zwarty do 3.3V!\n", I2S_DIN_PIN);
+        Diagnostics::setError(Diagnostics::SystemError::DacPinShort, I2S_DIN_PIN);
+    }
+
+    // 2. Inicjalizacja USB Host (pendrive)
     if (!usbDriveInit()) {
         Serial.println("[Audio] BŁĄD: USB Host nie uruchomiony!");
-        // Kontynuujemy — I2S i tak skonfigurujemy, pendrive może być podpięty później
+        Diagnostics::setError(Diagnostics::SystemError::UsbHostErr);
     }
     
-    // Konfiguracja I2S → PCM5102A
+    // 3. Konfiguracja I2S → PCM5102A
     bool pinoutOk = audio.setPinout(I2S_BCK_PIN, I2S_LRCK_PIN, I2S_DIN_PIN);
     Serial.printf("[Audio] setPinout(BCK=%d, LRCK=%d, DIN=%d) = %s\n", 
                   I2S_BCK_PIN, I2S_LRCK_PIN, I2S_DIN_PIN, pinoutOk ? "OK" : "FAIL");
+    if (!pinoutOk) {
+        Diagnostics::setError(Diagnostics::SystemError::DacInitErr);
+    }
     audio.setVolume(AUDIO_VOLUME);
     
     // Mutex do synchronizacji dostępu do obiektu audio między taskami
     audioMutex = xSemaphoreCreateMutex();
     if (!audioMutex) {
         Serial.println("[Audio] BŁĄD: Nie mogę utworzyć mutexu audio!");
+        Diagnostics::setError(Diagnostics::SystemError::AudioTaskErr);
         return false;
     }
     
@@ -527,6 +588,7 @@ bool audioInit() {
         audioTaskFunc, "audio_dec", 8192, NULL, 2, &audioTaskHandle, 0);
     if (ret != pdPASS) {
         Serial.println("[Audio] BŁĄD: Nie mogę uruchomić tasku audio!");
+        Diagnostics::setError(Diagnostics::SystemError::AudioTaskErr);
         return false;
     }
     
@@ -534,8 +596,18 @@ bool audioInit() {
     if (usbDriveIsMounted()) {
         wasUsbMounted = true;
         scanDiscs();
+        if (audioGetTotalTrackCount() == 0) {
+            Diagnostics::setError(Diagnostics::SystemError::NoTracks);
+        } else {
+            Diagnostics::clearError(Diagnostics::SystemError::NoTracks);
+        }
         Serial.println("[Audio] Inicjalizacja zakończona — pendrive gotowy.");
     } else {
+        if (!usbDriveIsConnected()) {
+            Diagnostics::setError(Diagnostics::SystemError::NoUsb);
+        } else {
+            Diagnostics::setError(Diagnostics::SystemError::UsbFsErr);
+        }
         Serial.println("[Audio] Inicjalizacja I2S zakończona — oczekuję na pendrive.");
     }
     
@@ -545,6 +617,11 @@ bool audioInit() {
 bool audioPlayTrack(uint8_t disc, uint8_t track) {
     if (!usbDriveIsMounted()) {
         Serial.println("[Audio] Pendrive nie zamontowany — nie mogę odtwarzać.");
+        if (!usbDriveIsConnected()) {
+            Diagnostics::setError(Diagnostics::SystemError::NoUsb);
+        } else {
+            Diagnostics::setError(Diagnostics::SystemError::UsbFsErr);
+        }
         return false;
     }
     
@@ -553,16 +630,31 @@ bool audioPlayTrack(uint8_t disc, uint8_t track) {
         return false;
     }
     
+    if (trackCount[disc] == 0) {
+        Serial.printf("[Audio] Pusty dysk CD%02d\n", disc);
+        Diagnostics::setError(Diagnostics::SystemError::EmptyDisc);
+        isPlaying = false;
+        return false;
+    }
+    
     char path[128];  // dłuższy bufor na dowolne nazwy plików
     if (!findTrackPath(disc, track, path, sizeof(path))) {
         Serial.printf("[Audio] Brak pliku: CD%02d track %d (maks=%d)\n", disc, track, trackCount[disc]);
+        Diagnostics::setError(Diagnostics::SystemError::FileErr);
         isPlaying = false;
         return false;
+    }
+    
+    // Jeśli wcześniej wisiał błąd pustej płyty lub pliku, czyścimy go
+    if (Diagnostics::getError() == Diagnostics::SystemError::EmptyDisc ||
+        Diagnostics::getError() == Diagnostics::SystemError::FileErr) {
+        Diagnostics::clearError(Diagnostics::getError());
     }
     
     // Zapisz ścieżkę do zmiennej globalnej i podnieś flagę dla taska asynchronicznego
     // Zdejmujemy tym samym WSZELKIE operacje plikowe z głównego wątku (Core 0),
     // by całkowicie uniknąć blokowania przerwań i timeoutów radia (co powodowało System Reset).
+    audioSetMute(true);       // Wycisz sprzętowo DAC na czas zmiany/ładowania utworu
     strlcpy(playRequestPath, path, sizeof(playRequestPath));
     songFinishedFlag = false;
     trackChanging = true;     // blokuj awaryjny detektor konca utworu
@@ -575,6 +667,7 @@ bool audioPlayTrack(uint8_t disc, uint8_t track) {
 void audioStop() {
     // Nieblokujaco: zlec zatrzymanie taskowi audio. isPlaying gasimy od razu,
     // by reszta systemu natychmiast widziala "nie gram".
+    audioSetMute(true);       // Wycisz sprzętowo DAC natychmiast
     isPlaying = false;
     stopRequestPending = true;
     Serial.println("[Audio] ⏹ Zatrzymano (zlecone).");
@@ -617,6 +710,14 @@ void audioSetInfoSquelch(bool squelch) {
 uint8_t audioGetTrackCount(uint8_t disc) {
     if (disc < 1 || disc > MAX_DISCS) return 0;
     return trackCount[disc];
+}
+
+uint16_t audioGetTotalTrackCount() {
+    uint16_t total = 0;
+    for (int i = 1; i <= MAX_DISCS; i++) {
+        total += trackCount[i];
+    }
+    return total;
 }
 
 // ============================================================
@@ -704,10 +805,23 @@ void audioLoop() {
         // Pendrive właśnie podpięty → skanuj foldery
         Serial.println("[Audio] Pendrive podpięty — skanowanie folderów...");
         scanDiscs();
+        if (audioGetTotalTrackCount() == 0) {
+            Diagnostics::setError(Diagnostics::SystemError::NoTracks);
+        } else {
+            // Wyczyść ewentualne błędy USB/nośnika
+            if (Diagnostics::getError() == Diagnostics::SystemError::NoUsb ||
+                Diagnostics::getError() == Diagnostics::SystemError::UsbFsErr ||
+                Diagnostics::getError() == Diagnostics::SystemError::NoTracks ||
+                Diagnostics::getError() == Diagnostics::SystemError::EmptyDisc ||
+                Diagnostics::getError() == Diagnostics::SystemError::FileErr) {
+                Diagnostics::clearError(Diagnostics::getError());
+            }
+        }
     }
     else if (!isMounted && wasUsbMounted) {
         // Pendrive odłączony → zatrzymaj audio, wyczyść tracki
         Serial.println("[Audio] Pendrive odłączony — zatrzymuję odtwarzanie.");
+        audioSetMute(true);
         stopRequestPending = true;   // nieblokujaco (task audio wykona stopSong)
         isPlaying = false;
         songFinishedFlag = false;
@@ -719,8 +833,31 @@ void audioLoop() {
                 trackFiles[i][t] = "";
             }
         }
+        if (!usbDriveIsConnected()) {
+            Diagnostics::setError(Diagnostics::SystemError::NoUsb);
+        } else {
+            Diagnostics::setError(Diagnostics::SystemError::UsbFsErr);
+        }
     }
     wasUsbMounted = isMounted;
+
+    // Okresowe sprawdzanie stanu USB/plików (jeśli brak błędów sprzętowych DAC)
+    Diagnostics::SystemError currErr = Diagnostics::getError();
+    if (currErr != Diagnostics::SystemError::DacPinShort &&
+        currErr != Diagnostics::SystemError::DacInitErr &&
+        currErr != Diagnostics::SystemError::AudioTaskErr) {
+        if (!usbDriveHostIsRunning()) {
+            Diagnostics::setError(Diagnostics::SystemError::UsbHostErr);
+        } else if (!isMounted) {
+            if (!usbDriveIsConnected()) {
+                Diagnostics::setError(Diagnostics::SystemError::NoUsb);
+            } else {
+                Diagnostics::setError(Diagnostics::SystemError::UsbFsErr);
+            }
+        } else if (audioGetTotalTrackCount() == 0) {
+            Diagnostics::setError(Diagnostics::SystemError::NoTracks);
+        }
+    }
     
     // --- Dekodowanie audio → PRZENIESIONE na osobny task (audioTaskFunc) ---
     // audio.loop() nie jest tu już wywoływane — działa na tasku "audio_dec"
@@ -750,6 +887,7 @@ void audioLoop() {
                 notRunningSince = millis();
             } else if (millis() - notRunningSince > 300) {
                 Serial.println("[Audio] Wykryto koniec odtwarzania (isRunning()==false, debounce)");
+                audioSetMute(true);
                 isPlaying = false;
                 songStarted = false;
                 songFinishedFlag = true;

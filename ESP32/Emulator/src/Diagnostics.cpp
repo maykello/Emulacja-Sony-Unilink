@@ -69,4 +69,75 @@ void dumpToFile(fs::File& f) {
     f.println("=====================================");
 }
 
+static SystemError currentError = SystemError::None;
+static int errorDetail = 0;
+static char errorStr[32] = "";
+
+void setError(SystemError err, int detail) {
+    if (currentError != err || errorDetail != detail) {
+        currentError = err;
+        errorDetail = detail;
+        switch (err) {
+            case SystemError::None:
+                errorStr[0] = '\0';
+                break;
+            case SystemError::DacPinShort:
+                snprintf(errorStr, sizeof(errorStr), (detail >= 10) ? "PIN%d VCC" : "PIN %d VCC", detail);
+                break;
+            case SystemError::DacInitErr:
+                snprintf(errorStr, sizeof(errorStr), "DAC FAIL");
+                break;
+            case SystemError::AudioTaskErr:
+                snprintf(errorStr, sizeof(errorStr), "I2S TASK");
+                break;
+            case SystemError::UsbHostErr:
+                snprintf(errorStr, sizeof(errorStr), "USB FAIL");
+                break;
+            case SystemError::NoUsb:
+                snprintf(errorStr, sizeof(errorStr), "NO PENDRIVE");
+                break;
+            case SystemError::UsbFsErr:
+                snprintf(errorStr, sizeof(errorStr), "FAT32 ERR");
+                break;
+            case SystemError::NoTracks:
+                snprintf(errorStr, sizeof(errorStr), "NO TRACKS");
+                break;
+            case SystemError::EmptyDisc:
+                snprintf(errorStr, sizeof(errorStr), "EMPTY CD");
+                break;
+            case SystemError::FileErr:
+                snprintf(errorStr, sizeof(errorStr), "BAD FILE");
+                break;
+        }
+        if (err != SystemError::None) {
+            Serial.printf("[Diagnostics] BŁĄD SYSTEMOWY: %s\n", errorStr);
+        }
+    }
+}
+
+void clearError(SystemError err) {
+    if (currentError == err) {
+        currentError = SystemError::None;
+        errorDetail = 0;
+        errorStr[0] = '\0';
+        Serial.println("[Diagnostics] Błąd systemowy ustąpił (OK).");
+    }
+}
+
+SystemError getError() {
+    return currentError;
+}
+
+bool hasError() {
+    return currentError != SystemError::None;
+}
+
+const char* getErrorString() {
+    return errorStr;
+}
+
+const char* getErrorDiscName() {
+    return "ERROR";
+}
+
 } // namespace Diagnostics

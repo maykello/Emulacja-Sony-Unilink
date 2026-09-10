@@ -4,6 +4,7 @@
 #include "CdChanger.h"
 #include "Config.h"
 #include "AudioPlayer.h"
+#include "Diagnostics.h"
 #include "UnilinkProtocol.h"
 #include <Preferences.h>
 
@@ -134,19 +135,35 @@ void begin() {
 // rozjezdzaloby wyswietlacz z dzwiekiem o caly czas trwania fazy LOAD.
 static void enterPlaying(unsigned long now) {
     enterState(MechState::Playing);
-    uint32_t t = audioIsPlaying() ? audioGetCurrentTimeSec() : 0;
-    playMinutes = (uint8_t)((t / 60) % 100);
-    playSeconds = (uint8_t)(t % 60);
-    playBaseMs  = now - (unsigned long)t * 1000;
+    if (Diagnostics::hasError()) {
+        playMinutes = 99;
+        playSeconds = 1;
+        playBaseMs  = now;
+    } else {
+        uint32_t t = audioIsPlaying() ? audioGetCurrentTimeSec() : 0;
+        playMinutes = (uint8_t)((t / 60) % 100);
+        playSeconds = (uint8_t)(t % 60);
+        playBaseMs  = now - (unsigned long)t * 1000;
+    }
     needDisplayUpdate = true;
 }
 
 void update(unsigned long now, bool radioEngaged) {
-    // C0 -> 80 (po INIT_DURATION_MS od pierwszego PINGa, gdy sesja aktywna)
-    if (cdState == MechState::Init && radioEngaged && initWaitTime != 0 &&
-        (now - initWaitTime > INIT_DURATION_MS)) {
-        enterState(MechState::Idle);
-        Serial.println(">>> C0 -> 80 (Idle)");
+    // Jeśli wystąpił błąd (np. brak pendrive'a) i radio rozmawia z emulatorem,
+    // wchodzimy w tryb Playing z licznikiem 99:01..99:10, aby nadawać CD-TEXT błędu
+    // dokładnie tak jak zwykłą piosenkę.
+    if (radioEngaged && Diagnostics::hasError()) {
+        if (cdState == MechState::Init || cdState == MechState::Idle) {
+            enterPlaying(now);
+            Serial.println(">>> CdChanger: wejscie w Playing (Error Mode 99:01..99:10)");
+        }
+    } else {
+        // C0 -> 80 (po INIT_DURATION_MS od pierwszego PINGa, gdy sesja aktywna)
+        if (cdState == MechState::Init && radioEngaged && initWaitTime != 0 &&
+            (now - initWaitTime > INIT_DURATION_MS)) {
+            enterState(MechState::Idle);
+            Serial.println(">>> C0 -> 80 (Idle)");
+        }
     }
 
     // 0x40 -> [0x20] -> 0x00 (LoadingTrack -> [ChangedCd] -> Playing).
@@ -195,13 +212,26 @@ void update(unsigned long now, bool radioEngaged) {
     // wantsBus() zwraca true i emulator ZAWSZE sie zglasza w arbitrazu 01 15.
     // Prawdziwa zmieniarka co sekunde raportuje nowy czas — nasz emulator tez.
     if (cdState == MechState::Playing) {
-        uint32_t elapsed = (now - playBaseMs) / 1000;
-        uint8_t newMin = (uint8_t)((elapsed / 60) % 100);
-        uint8_t newSec = (uint8_t)(elapsed % 60);
-        if (newSec != playSeconds || newMin != playMinutes) {
-            playSeconds = newSec;
-            playMinutes = newMin;
-            needDisplayUpdate = true;  // co sekunde — nowy czas do nadania
+        if (Diagnostics::hasError()) {
+            // W stanie błędu licznik zapętla się w zakresie 99:01 - 99:10,
+            // sygnalizując anomalię i utrzymując regularny rytm magistrali.
+            uint32_t elapsed = (now - playBaseMs) / 1000;
+            uint8_t newMin = 99;
+            uint8_t newSec = 1 + (uint8_t)(elapsed % 10);  // 1..10 (01..10)
+            if (newSec != playSeconds || newMin != playMinutes) {
+                playSeconds = newSec;
+                playMinutes = newMin;
+                needDisplayUpdate = true;
+            }
+        } else {
+            uint32_t elapsed = (now - playBaseMs) / 1000;
+            uint8_t newMin = (uint8_t)((elapsed / 60) % 100);
+            uint8_t newSec = (uint8_t)(elapsed % 60);
+            if (newSec != playSeconds || newMin != playMinutes) {
+                playSeconds = newSec;
+                playMinutes = newMin;
+                needDisplayUpdate = true;  // co sekunde — nowy czas do nadania
+            }
         }
     }
 }
@@ -263,6 +293,16 @@ void serviceMediaMount() {
                 Serial.printf(">>> Wykryto USB. Ustawiono pierwsza niepusta plyte: CD%d\n",
                               currentDisk);
             }
+        }
+
+        // --- AUTOMATYCZNY POWRÓT DO GRY PO HOT-PLUG USB ---
+        // Jeśli radio jest/było w stanie Playing lub LoadingTrack (czeka na muzykę),
+        // w stanie błędu lub sesja radia jest aktywna — automatycznie startujemy utwór!
+        if (cdState == MechState::Playing || cdState == MechState::LoadingTrack ||
+            cdState == MechState::ChangedCd || Diagnostics::hasError() ||
+            UnilinkProtocol::isAllocated()) {
+            Serial.println(">>> Hot-plug USB: Wznawiam odtwarzanie (enterSeek)!");
+            enterSeek(/*discChanged=*/true);
         }
     } else if (!isMounted && wasMounted) {
         wasMounted = false;

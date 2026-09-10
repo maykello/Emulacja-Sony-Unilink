@@ -1,0 +1,261 @@
+===== CRASH LOG =====
+Reason:    RADIO SYSTEM RESET 18 10 01 00
+Uptime:    1207655 ms
+ESP Reset: POWERON
+File:      /CrashLogs/crash_00018.txt
+=====================
+
+===== BUS FRAMES (last 128) =====
+[- 5784ms] RESYNC  
+[- 5784ms] RX       18 10 01 02 2B 00
+[- 5782ms] RX       18 70 8C 00 14 80 05 0A 01 A4 00
+[- 5782ms] RESYNC  
+[- 5782ms] RX       18 71 8C 00 15 00 0A 14 03 4A 71
+[- 5782ms] DROP    
+[- 5782ms] RESYNC  
+[- 5779ms] RESYNC  
+[- 5775ms] RXFLUSH 
+[- 5758ms] RX       18 51 8C 06 FB 84 C3 80 02 C4 00
+[- 5736ms] RX       18 51 8D 10 06 00 00 00 00 06 00
+[- 5715ms] RX       18 10 8C 00 B4 01 00 00 01 B6 00
+[- 5693ms] RX       20 10 88 C0 78 00 80 00 00 F8 00
+[- 5671ms] RX       30 10 88 00 C8 F0 01 00 00 B9 00
+[- 5649ms] RX       50 10 88 FF E7 FF 26 00 00 0C 00
+[- 5627ms] RX       60 10 88 00 F8 00 00 00 00 F8 00
+[- 5605ms] RX       70 10 88 01 09 04 F0 00 10 0D 00
+[- 5583ms] RX       70 10 89 01 0A 10 00 00 00 1A 00
+[- 5561ms] RX       91 10 88 00 29 2A 8D E8 01 C9 00
+[- 5539ms] RX       92 10 88 00 2A 2A 80 00 01 D5 00
+[- 5517ms] RX       93 10 88 00 2B 2A 80 00 01 D6 00
+[- 5495ms] RX       94 10 88 00 2C 2A 80 00 01 D7 00
+[- 5473ms] RX       95 10 88 00 2D 2A 80 00 01 D8 00
+[- 5451ms] RX       91 10 89 40 6A 00 00 00 40 AA 00
+[- 5429ms] RX       92 10 89 00 2B 00 00 00 00 2B 00
+[- 5407ms] RX       93 10 89 00 2C 00 00 00 00 2C 00
+[- 5385ms] RX       94 10 89 00 2D 00 00 00 00 2D 00
+[- 5363ms] RX       95 10 89 00 2E 00 00 00 00 2E 00
+[- 5341ms] RX       C0 10 88 02 5A 20 00 00 00 7A 00
+[- 5319ms] RX       D0 10 88 00 68 B0 00 00 00 18 00
+[- 5297ms] RX       53 10 88 00 EB 00 00 00 00 EB 00
+[- 5275ms] RX       53 10 89 80 6C 00 00 00 00 6C 00
+[- 5248ms] RX       30 10 F9 12 4B 00 00 00 12 00 00 00 00 22 7F 00
+[- 5231ms] RX       18 10 01 01 2A 00
+[- 5209ms] RX       18 10 87 2B DA 02 00 00 00 DC 00
+[- 5187ms] RX       70 C1 91 F1 B3 20 02 01 C0 96 00
+[- 5166ms] RX       18 10 87 6B 1A 02 00 00 00 1C 00
+[- 5144ms] RX       18 10 81 00 A9 00 00 01 01 AB 00
+[- 5122ms] RX       70 10 91 00 11 00 00 00 00 11 00
+[- 5095ms] RX       70 10 C4 00 44 00 00 00 00 00 00 00 00 00 44 00
+[- 5068ms] RX       70 10 C4 00 44 00 00 00 00 00 00 00 01 00 45 00
+[- 5046ms] RX       70 10 B1 7C AD 05 01 00 C4 77 00
+[- 5029ms] RX       70 10 2A 10 BA 00
+[- 5012ms] RX       70 11 27 10 B8 00
+[- 4995ms] RX       90 11 3E 0A E9 00
+[- 4973ms] RX       70 11 9F B5 D5 02 00 00 2C 03 00
+[- 4956ms] RX       18 10 08 00 30 00
+[- 4934ms] RX       77 C1 91 F1 BA 20 02 11 C0 AD 00
+[- 4901ms] RX       18 10 01 15 3E 00
+[- 4885ms] RX       10 18 82 01 AB 00 00 00 00 AB 00
+[- 4874ms] RX       18 10 08 00 30 00
+[- 4857ms] RX       3B 10 01 13 5F 00
+[- 4846ms] RX       10 3B 71 00 BC 00
+[- 4595ms] RX       3B 10 01 12 5E 00
+[- 4585ms] RX       10 3B 00 C0 0B 00
+[- 3983ms] RX       71 10 01 12 94 00
+[- 3972ms] RX       10 71 00 00 81 00
+[- 3354ms] RX       18 10 01 11 3A 00
+[- 3354ms] TX       10 18 04 00 2C 00
+[- 3268ms] RX       18 10 01 00 29 00
+[- 2794ms] RX       DB 10 02 12 FF 00
+[- 2794ms] RESYNC  
+[- 2794ms] RX       18 10 01 02 2B 00
+[- 2792ms] RX       18 70 8C 00 14 80 05 0A 01 A4 00
+[- 2792ms] RX       71 10 02 12 95 00
+[- 2792ms] RX       18 71 8C 00 15 80 05 0A 01 A5 00
+[- 2792ms] RX       71 10 01 05 87 00
+[- 2792ms] RESYNC  
+[- 2792ms] RX       18 10 01 04 2D 00
+[- 2790ms] RESYNC  
+[- 2789ms] RESYNC  
+[- 2788ms] RESYNC  
+[- 2787ms] RESYNC  
+[- 2786ms] RESYNC  
+[- 2785ms] RESYNC  
+[- 2780ms] RXFLUSH 
+[- 2763ms] RX       18 C1 8C 00 65 00 0C 00 00 71 00
+[- 2741ms] RX       18 51 8C 06 FB 84 C3 80 02 C4 00
+[- 2719ms] RX       18 51 8D 10 06 00 00 00 00 06 00
+[- 2697ms] RX       18 10 8C 00 B4 01 00 00 01 B6 00
+[- 2675ms] RX       20 10 88 C0 78 00 80 00 00 F8 00
+[- 2653ms] RX       30 10 88 00 C8 F0 01 00 00 B9 00
+[- 2631ms] RX       50 10 88 FF E7 FF 26 00 00 0C 00
+[- 2609ms] RX       60 10 88 00 F8 00 00 00 00 F8 00
+[- 2587ms] RX       70 10 88 01 09 04 F0 00 10 0D 00
+[- 2565ms] RX       70 10 89 01 0A 10 00 00 00 1A 00
+[- 2543ms] RX       91 10 88 00 29 2A 8D E8 01 C9 00
+[- 2521ms] RX       92 10 88 00 2A 2A 80 00 01 D5 00
+[- 2499ms] RX       93 10 88 00 2B 2A 80 00 01 D6 00
+[- 2477ms] RX       94 10 88 00 2C 2A 80 00 01 D7 00
+[- 2455ms] RX       95 10 88 00 2D 2A 80 00 01 D8 00
+[- 2433ms] RX       91 10 89 40 6A 00 00 00 40 AA 00
+[- 2411ms] RX       92 10 89 00 2B 00 00 00 00 2B 00
+[- 2389ms] RX       93 10 89 00 2C 00 00 00 00 2C 00
+[- 2367ms] RX       94 10 89 00 2D 00 00 00 00 2D 00
+[- 2345ms] RX       95 10 89 00 2E 00 00 00 00 2E 00
+[- 2323ms] RX       C0 10 88 02 5A 20 00 00 00 7A 00
+[- 2301ms] RX       D0 10 88 00 68 B0 00 00 00 18 00
+[- 2280ms] RX       53 10 88 00 EB 00 00 00 00 EB 00
+[- 2258ms] RX       53 10 89 80 6C 00 00 00 00 6C 00
+[- 2231ms] RX       30 10 F9 12 4B 00 00 00 12 00 00 00 00 22 7F 00
+[- 2214ms] RX       18 10 01 01 2A 00
+[- 2192ms] RX       18 10 87 2B DA 02 00 00 00 DC 00
+[- 2170ms] RX       18 10 87 6B 1A 02 00 00 00 1C 00
+[- 2148ms] RX       18 10 81 00 A9 00 00 01 01 AB 00
+[- 2126ms] RX       70 10 91 00 11 00 00 00 00 11 00
+[- 2099ms] RX       70 10 C4 00 44 00 00 00 00 00 00 00 00 00 44 00
+[- 2072ms] RX       70 10 C4 00 44 00 00 00 00 00 00 00 01 00 45 00
+[- 2045ms] RXFLUSH 
+[- 2033ms] RX       70 10 2A 10 BA 00
+[- 2016ms] RX       70 11 27 10 B8 00
+[- 1999ms] RX       90 11 3E 0A E9 00
+[- 1977ms] RX       70 11 9F B5 D5 02 00 00 2C 03 00
+[- 1960ms] RX       18 10 08 00 30 00
+[- 1938ms] RX       70 C1 91 F1 B3 20 05 11 C0 A9 00
+[- 1905ms] RX       18 10 01 15 3E 00
+[- 1889ms] RX       10 18 82 01 AB 00 00 00 00 AB 00
+[- 1878ms] RX       3B 10 01 13 5F 00
+[- 1867ms] RX       10 3B 71 00 BC 00
+[- 1744ms] RX       18 10 08 00 30 00
+[- 1584ms] RX       18 10 08 00 30 00
+[- 1567ms] RX       3B 10 01 12 5E 00
+[- 1556ms] RX       10 3B 00 C0 0B 00
+[-  938ms] RX       71 10 01 12 94 00
+[-  927ms] RX       10 71 00 00 81 00
+[-  309ms] RX       18 10 01 11 3A 00
+[-  309ms] TX       10 18 04 00 2C 00
+[-  238ms] RX       18 10 01 00 29 00
+=====================================
+
+===== TEXT LOG (last ~8192 bytes) =====
+: magistrala wylaczona ===
+[NVS] Zapamietano ostatni utwor: CD12 TR21
+[Audio] ⏹ Zatrzymano (zlecone).
+=== BUS_ON = 0: Oczekiwanie 4000ms na wylaczenie zasilania ===
+[Audio] DAC XSMT (GPIO 16) -> LOW (Wyciszono)
+=== BUS_ON = 1 ===
+[Audio] Głośność: 18/21 (zlecone)
+[Audio-info] Closing audio file
+>> Odpowiadam na ANYONE? device info 0x8C
+>> Adres przydzielony: 0x31 (op2=0x14)! deviceAllocated=true
+>> [Audio Bus] Radio sygnalizuje audio ON (87 2B)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[STAT] poll15=3 disp13(my)=0 disp13(3B)=3 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=2/0 | alloc=1 state=0x80 CD12 TR21 00:19
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR21 00:19
+>>> C0 -> 80 (Idle)
+>> PLAY command received!
+>> CD-TEXT wyslany: CD12 TR21 plyta="POLSKIE GK" utwor="Irena Jarocka - Bliski serc dzień"
+[Audio] Async connecttoFS("/CD12.POLSKIE GK/Irena Jarocka - Bliski serc dzień.mp3") = OK
+[Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Irena Jarocka - Bliski serc dzień.mp3 (rozpoczęto dekodowanie)
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=0 btn=0 break=1/0 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x40 CD12 TR21 00:00
+[Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+>>> 40 -> 00 (Playing!)
+>> CD-TEXT wyslany: CD12 TR21 plyta="POLSKIE GK" utwor="Irena Jarocka - Bliski serc dzień"
+[STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=2 btn=0 break=6/6 txt=0 seek=0 rxerr=12/3 | alloc=1 state=0x00 CD12 TR21 00:01
+>> ZADANIE 0x84: 31 71 84 D7 FD 70 00 00 01 6E 00
+[STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/4 txt=1 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR21 00:03
+>> Radio system reset (#1)! Reset deviceAllocated.
+>> resetToAllocated: audio gra, zachowuje Playing 00:04
+>> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 15ms po DB)
+>> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 64ms po DB)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 AB)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[STAT] poll15=2 disp13(my)=0 disp13(3B)=2 ping12(my)=0 btn=0 break=1/2 txt=0 seek=0 rxerr=1/1 | alloc=0 state=0x00 CD12 TR21 00:05
+>> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+>> Radio system reset (#2) (juz bylem nieprzydzielony)
+>> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 39ms po DB)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 2B)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=1/1 | alloc=0 state=0x00 CD12 TR21 00:09
+>> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+>> Radio system reset (#3) (juz bylem nieprzydzielony)
+>> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+>> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 37ms po DB)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 2B)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=2/1 | alloc=0 state=0x00 CD12 TR21 00:11
+>> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+>> Radio system reset (#4) (juz bylem nieprzydzielony)
+>> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+>> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 7ms po DB)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 2B)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=0 state=0x00 CD12 TR21 00:15
+>> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+>> Radio system reset (#5) (juz bylem nieprzydzielony)
+>> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+>> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 19ms po DB)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 AB)
+>> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+>> Radio system reset (#6) (juz bylem nieprzydzielony)
+>> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=2/1 | alloc=0 state=0x00 CD12 TR21 00:19
+>> [Audio Bus] Radio sygnalizuje audio ON (87 AB)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 EB)
+[STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=0 state=0x00 CD12 TR21 00:21
+>> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+>> Radio system reset (#7) (juz bylem nieprzydzielony)
+>> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 AB)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 EB)
+>> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+>> Radio system reset (#8) (juz bylem nieprzydzielony)
+>> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=7/2 | alloc=0 state=0x00 CD12 TR21 00:25
+>> [Audio Bus] Radio sygnalizuje audio ON (87 AB)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 EB)
+[STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=6/2 | alloc=0 state=0x00 CD12 TR21 00:27
+>> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+>> Radio system reset (#9) (juz bylem nieprzydzielony)
+>> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 AB)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 EB)
+>> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+>> Radio system reset (#10) (juz bylem nieprzydzielony)
+>> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=2/0 | alloc=0 state=0x00 CD12 TR21 00:31
+>> [Audio Bus] Radio sygnalizuje audio ON (87 AB)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 EB)
+[STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=0 state=0x00 CD12 TR21 00:33
+>> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+>> Radio system reset (#11) (juz bylem nieprzydzielony)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 AB)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 EB)
+>> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+>> Radio system reset (#12) (juz bylem nieprzydzielony)
+>> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=4/1 | alloc=0 state=0x00 CD12 TR21 00:37
+>> [Audio Bus] Radio sygnalizuje audio ON (87 AB)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 EB)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=11/3 | alloc=0 state=0x00 CD12 TR21 00:39
+>> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+>> Radio system reset (#13) (juz bylem nieprzydzielony)
+>> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 2B)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+>> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+>> Radio system reset (#14) (juz bylem nieprzydzielony)
+>> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=3/0 | alloc=0 state=0x00 CD12 TR21 00:44
+>> [Audio Bus] Radio sygnalizuje audio ON (87 2B)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=1/1 | alloc=0 state=0x00 CD12 TR21 00:46
+>> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+>> Radio system reset (#15) (juz bylem nieprzydzielony)
+>> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 2B)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=8/2 | alloc=0 state=0x00 CD12 TR21 00:48
+>> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+
+=====================================

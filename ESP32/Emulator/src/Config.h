@@ -208,6 +208,12 @@ constexpr unsigned long FOREIGN_POLL_GUARD_MS = 30;
 // dokonczylo preliminary discovery bez nas (tak robi prawdziwa zmieniarka).
 constexpr unsigned long PRELIMINARY_WINDOW_MS = 250;
 
+// [FIX: RESET LOOP] Po SYSTEM RESET nie otwieraj okna preliminary przez ten czas.
+// Discovery po resecie to NOWY cykl — ANYONE? w nim jest DLA NAS, nie preliminary.
+// Bez tego emulator ignoruje ANYONE?, nie dostaje adresu, odpowiada magic na 01 11,
+// co wywoluje kolejny SYSTEM RESET → nieskonczona petla resetow.
+constexpr unsigned long POST_RESET_PRELIMINARY_SKIP_MS = 2000;
+
 // --- TIMEOUTY ---
 constexpr unsigned long RADIO_TIMEOUT_MS = 5000;   // brak PINGa => radio zniknelo
 

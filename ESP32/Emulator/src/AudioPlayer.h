@@ -8,6 +8,7 @@
 #define I2S_BCK_PIN    7   // Bit Clock
 #define I2S_LRCK_PIN  15   // Word Select (Left/Right Clock)
 #define I2S_DIN_PIN   13   // Data In
+#define I2S_XSMT_PIN  16   // Soft Mute PCM5102A (LOW = Wyciszony, HIGH = Odciszony)
 // GPIO 12 — wolny (zapasowy kabel)
 
 // --- NOŚNIK: USB PENDRIVE ---
@@ -56,6 +57,7 @@ bool audioSeekToSec(uint32_t targetSec);
 void audioSetInfoSquelch(bool squelch);
 
 uint8_t audioGetTrackCount(uint8_t disc);
+uint16_t audioGetTotalTrackCount();
 
 // --- INTERFEJS NAZW (źródło dla CD-TEXT) ---
 // Zwraca nazwę utworu (źródło: nazwa pliku) dla danego dysku/utworu.
@@ -90,5 +92,9 @@ void audioRescan();
 
 // Ustaw głośność (0..21).
 void audioSetVolume(uint8_t vol);
+
+// Sterowanie wyciszeniem sprzętowym DAC (XSMT na PCM5102A, GPIO 16).
+// true = wycisz (LOW), false = odcisz (HIGH).
+void audioSetMute(bool mute);
 
 #endif // AUDIO_PLAYER_H

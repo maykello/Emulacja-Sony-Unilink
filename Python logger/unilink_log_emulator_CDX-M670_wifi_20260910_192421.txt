@@ -1,0 +1,1233 @@
+[19:24:29.369] === SONY UNILINK ESP32 LOG STREAM (unilink.local) ===
+[19:24:31.078] >> CD-TEXT wyslany: CD12 TR1 plyta="POLSKIE GK" utwor="Grupa i - Radość o poranku (1974)"
+[19:24:31.329] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:46
+[19:24:33.079] >> CD-TEXT wyslany: CD12 TR1 plyta="POLSKIE GK" utwor="Grupa i - Radość o poranku (1974)"
+[19:24:33.340] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=2 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR1 00:48
+[19:24:35.074] >> CD-TEXT wyslany: CD12 TR1 plyta="POLSKIE GK" utwor="Grupa i - Radość o poranku (1974)"
+[19:24:35.089] >> NEXT TRACK: CD12 TR2 (max=99)
+[19:24:35.105] [Audio-info] Closing audio file
+[19:24:35.169] >>> 40 -> 00 (Playing!)
+[19:24:35.330] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=1 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR2 00:00
+[19:24:35.335] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Frąckowiak - Badź gotowy dziś do drogi.mp3") = OK
+[19:24:35.335] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Frąckowiak - Badź gotowy dziś do drogi.mp3 (rozpoczęto dekodowanie)
+[19:24:35.456] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[19:24:36.011] >> CD-TEXT wyslany: CD12 TR2 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Badź gotowy dziś do drogi"
+[19:24:36.851] >> NEXT TRACK: CD12 TR3 (max=99)
+[19:24:36.853] [Audio-info] Closing audio file
+[19:24:36.902] >>> 40 -> 00 (Playing!)
+[19:24:37.074] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Frąckowiak - Dancing Queen.mp3") = OK
+[19:24:37.083] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Frąckowiak - Dancing Queen.mp3 (rozpoczęto dekodowanie)
+[19:24:37.196] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[19:24:37.331] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=1 break=7/7 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD12 TR3 00:00
+[19:24:37.351] >> NEXT TRACK: CD12 TR4 (max=99)
+[19:24:37.360] [Audio-info] Closing audio file
+[19:24:37.412] >>> 40 -> 00 (Playing!)
+[19:24:37.460] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Frąckowiak - Karolinka.mp3") = OK
+[19:24:37.461] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Frąckowiak - Karolinka.mp3 (rozpoczęto dekodowanie)
+[19:24:37.582] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[19:24:37.932] >> CD-TEXT wyslany: CD12 TR4 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Karolinka"
+[19:24:39.330] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=1 break=8/8 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD12 TR4 00:01
+[19:24:39.938] >> CD-TEXT wyslany: CD12 TR4 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Karolinka"
+[19:24:41.330] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR4 00:03
+[19:24:41.937] >> CD-TEXT wyslany: CD12 TR4 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Karolinka"
+[19:24:43.328] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR4 00:05
+[19:24:43.935] >> CD-TEXT wyslany: CD12 TR4 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Karolinka"
+[19:24:45.324] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR4 00:07
+[19:24:45.934] >> CD-TEXT wyslany: CD12 TR4 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Karolinka"
+[19:24:47.326] [STAT] poll15=5 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR4 00:09
+[19:24:49.333] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR4 00:11
+[19:24:51.326] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR4 00:13
+[19:24:51.411] >> CD-TEXT wyslany: CD12 TR4 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Karolinka"
+[19:24:53.328] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR4 00:15
+[19:24:53.409] >> CD-TEXT wyslany: CD12 TR4 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Karolinka"
+[19:24:55.329] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR4 00:17
+[19:24:55.409] >> CD-TEXT wyslany: CD12 TR4 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Karolinka"
+[19:24:57.333] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR4 00:19
+[19:24:57.411] >> CD-TEXT wyslany: CD12 TR4 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Karolinka"
+[19:24:59.326] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR4 00:21
+[19:24:59.405] >> CD-TEXT wyslany: CD12 TR4 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Karolinka"
+[19:25:01.329] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR4 00:23
+[19:25:03.335] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR4 00:25
+[19:25:05.333] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR4 00:27
+[19:25:05.410] >> CD-TEXT wyslany: CD12 TR4 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Karolinka"
+[19:25:07.328] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR4 00:29
+[19:25:07.414] >> CD-TEXT wyslany: CD12 TR4 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Karolinka"
+[19:25:09.329] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR4 00:31
+[19:25:09.409] >> CD-TEXT wyslany: CD12 TR4 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Karolinka"
+[19:25:11.329] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR4 00:33
+[19:25:11.411] >> CD-TEXT wyslany: CD12 TR4 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Karolinka"
+[19:25:12.186] >> NEXT TRACK: CD12 TR5 (max=99)
+[19:25:12.186] [Audio-info] Closing audio file
+[19:25:12.224] >>> 40 -> 00 (Playing!)
+[19:25:12.306] >> CD-TEXT wyslany: CD12 TR5 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Mały Elf"
+[19:25:12.410] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Frąckowiak - Mały Elf.mp3") = OK
+[19:25:12.410] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Frąckowiak - Mały Elf.mp3 (rozpoczęto dekodowanie)
+[19:25:12.527] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[19:25:12.638] >> NEXT TRACK: CD12 TR6 (max=99)
+[19:25:12.649] [Audio-info] Closing audio file
+[19:25:12.742] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Frąckowiak - Napisz proszę chociaż krótki list.mp3") = OK
+[19:25:12.747] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Frąckowiak - Napisz proszę chociaż krótki list.mp3 (rozpoczęto dekodowanie)
+[19:25:12.859] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[19:25:12.890] >>> 40 -> 00 (Playing!)
+[19:25:13.221] >> NEXT TRACK: CD12 TR7 (max=99)
+[19:25:13.244] [Audio-info] Closing audio file
+[19:25:13.328] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=3 break=7/7 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x40 CD12 TR7 00:00
+[19:25:13.460] >>> 40 -> 00 (Playing!)
+[19:25:13.477] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Frąckowiak - Papierowy księżyc.mp3") = OK
+[19:25:13.478] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Frąckowiak - Papierowy księżyc.mp3 (rozpoczęto dekodowanie)
+[19:25:13.502] [Audio-info] file has no mp3 tag, skip metadata
+[19:25:13.595] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[19:25:13.990] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:25:15.329] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=0 btn=0 break=7/7 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD12 TR7 00:01
+[19:25:15.988] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:25:17.329] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:03
+[19:25:17.988] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:25:19.331] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:05
+[19:25:19.985] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:25:21.333] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:07
+[19:25:21.986] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:25:23.326] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:09
+[19:25:25.329] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:11
+[19:25:27.329] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:13
+[19:25:27.458] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:25:29.329] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:15
+[19:25:29.457] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:25:31.321] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:17
+[19:25:31.459] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:25:33.329] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:19
+[19:25:33.456] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:25:35.329] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:21
+[19:25:35.455] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:25:37.328] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:23
+[19:25:39.331] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:25
+[19:25:41.331] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:27
+[19:25:41.457] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:25:43.333] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:29
+[19:25:43.456] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:25:45.331] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:31
+[19:25:45.461] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:25:47.329] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:33
+[19:25:47.455] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:25:49.329] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:35
+[19:25:49.456] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:25:51.338] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:37
+[19:25:53.342] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:39
+[19:25:55.334] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:41
+[19:25:55.461] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:25:57.328] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:43
+[19:25:57.457] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:25:59.330] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=2 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:45
+[19:25:59.460] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:26:01.329] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:47
+[19:26:01.455] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:26:03.328] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:49
+[19:26:03.457] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:26:05.329] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:51
+[19:26:07.327] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:53
+[19:26:09.326] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:55
+[19:26:09.459] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:26:11.329] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 00:57
+[19:26:11.456] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:26:13.325] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD12 TR7 00:59
+[19:26:13.459] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:26:15.326] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 01:01
+[19:26:15.457] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:26:17.330] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 01:03
+[19:26:17.457] >> CD-TEXT wyslany: CD12 TR7 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Papierowy księżyc"
+[19:26:19.328] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR7 01:05
+[19:26:20.972] >> NEXT TRACK: CD12 TR8 (max=99)
+[19:26:20.976] >> CD-TEXT wyslany: CD12 TR8 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Pogoda dla bogaczy"
+[19:26:20.979] [Audio-info] Closing audio file
+[19:26:21.053] >>> 40 -> 00 (Playing!)
+[19:26:21.202] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Frąckowiak - Pogoda dla bogaczy.mp3") = OK
+[19:26:21.207] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Frąckowiak - Pogoda dla bogaczy.mp3 (rozpoczęto dekodowanie)
+[19:26:21.234] [Audio-info] file has no mp3 tag, skip metadata
+[19:26:21.320] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[19:26:21.320] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=1 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR8 00:00
+[19:26:22.971] >> CD-TEXT wyslany: CD12 TR8 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Pogoda dla bogaczy"
+[19:26:23.323] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:02
+[19:26:24.973] >> CD-TEXT wyslany: CD12 TR8 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Pogoda dla bogaczy"
+[19:26:25.324] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:04
+[19:26:26.970] >> CD-TEXT wyslany: CD12 TR8 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Pogoda dla bogaczy"
+[19:26:27.322] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:06
+[19:26:28.969] >> CD-TEXT wyslany: CD12 TR8 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Pogoda dla bogaczy"
+[19:26:29.329] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:08
+[19:26:30.973] >> CD-TEXT wyslany: CD12 TR8 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Pogoda dla bogaczy"
+[19:26:31.327] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR8 00:10
+[19:26:33.332] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:12
+[19:26:35.044] >> CD-TEXT wyslany: CD12 TR8 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Pogoda dla bogaczy"
+[19:26:35.324] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:14
+[19:26:37.050] >> CD-TEXT wyslany: CD12 TR8 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Pogoda dla bogaczy"
+[19:26:37.326] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:16
+[19:26:39.053] >> CD-TEXT wyslany: CD12 TR8 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Pogoda dla bogaczy"
+[19:26:39.319] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:18
+[19:26:41.050] >> CD-TEXT wyslany: CD12 TR8 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Pogoda dla bogaczy"
+[19:26:41.329] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR8 00:20
+[19:26:43.053] >> CD-TEXT wyslany: CD12 TR8 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Pogoda dla bogaczy"
+[19:26:43.328] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD12 TR8 00:22
+[19:26:45.332] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:24
+[19:26:47.330] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:26
+[19:26:49.052] >> CD-TEXT wyslany: CD12 TR8 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Pogoda dla bogaczy"
+[19:26:49.330] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:28
+[19:26:51.050] >> CD-TEXT wyslany: CD12 TR8 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Pogoda dla bogaczy"
+[19:26:51.328] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:30
+[19:26:53.051] >> CD-TEXT wyslany: CD12 TR8 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Pogoda dla bogaczy"
+[19:26:53.329] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR8 00:32
+[19:26:55.050] >> CD-TEXT wyslany: CD12 TR8 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Pogoda dla bogaczy"
+[19:26:55.330] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=6/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:34
+[19:26:57.055] >> CD-TEXT wyslany: CD12 TR8 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Pogoda dla bogaczy"
+[19:26:57.328] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:36
+[19:26:59.328] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:38
+[19:27:01.328] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:40
+[19:27:03.051] >> CD-TEXT wyslany: CD12 TR8 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Pogoda dla bogaczy"
+[19:27:03.330] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:42
+[19:27:05.054] >> CD-TEXT wyslany: CD12 TR8 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Pogoda dla bogaczy"
+[19:27:05.333] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD12 TR8 00:44
+[19:27:07.055] >> CD-TEXT wyslany: CD12 TR8 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Pogoda dla bogaczy"
+[19:27:07.333] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:46
+[19:27:09.053] >> CD-TEXT wyslany: CD12 TR8 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Pogoda dla bogaczy"
+[19:27:09.330] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR8 00:48
+[19:27:11.036] >> CD-TEXT wyslany: CD12 TR8 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Pogoda dla bogaczy"
+[19:27:11.327] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR8 00:50
+[19:27:11.391] >> NEXT TRACK: CD12 TR9 (max=99)
+[19:27:11.407] [Audio-info] Closing audio file
+[19:27:11.444] >>> 40 -> 00 (Playing!)
+[19:27:11.630] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Frąckowiak - Przeżyłam  z  Tobą  Tyle  Lat.mp3") = OK
+[19:27:11.630] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Frąckowiak - Przeżyłam  z  Tobą  Tyle  Lat.mp3 (rozpoczęto dekodowanie)
+[19:27:11.747] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[19:27:11.773] >> NEXT TRACK: CD12 TR10 (max=99)
+[19:27:11.780] [Audio-info] Closing audio file
+[19:27:11.884] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Kunicka - Cyganka.mp3") = OK
+[19:27:11.884] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Kunicka - Cyganka.mp3 (rozpoczęto dekodowanie)
+[19:27:11.976] >>> 40 -> 00 (Playing!)
+[19:27:11.998] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[19:27:12.251] >> NEXT TRACK: CD12 TR11 (max=99)
+[19:27:12.267] >> CD-TEXT wyslany: CD12 TR11 plyta="POLSKIE GK" utwor="Halina Kunicka - Czambałałajka"
+[19:27:12.286] [Audio-info] Closing audio file
+[19:27:12.304] >>> 40 -> 00 (Playing!)
+[19:27:12.510] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Kunicka - Czambałałajka.mp3") = OK
+[19:27:12.510] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Kunicka - Czambałałajka.mp3 (rozpoczęto dekodowanie)
+[19:27:12.624] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[19:27:12.728] >> NEXT TRACK: CD12 TR12 (max=99)
+[19:27:12.734] [Audio-info] Closing audio file
+[19:27:12.839] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Kunicka - Jak dobrze mieć sąsiada.mp3") = OK
+[19:27:12.839] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Kunicka - Jak dobrze mieć sąsiada.mp3 (rozpoczęto dekodowanie)
+[19:27:12.951] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)>>> 40 -> 00 (Playing!)
+[19:27:13.191] >> NEXT TRACK: CD12 TR13 (max=99)
+[19:27:13.239] [Audio-info] Closing audio file
+[19:27:13.335] [STAT] poll15=7 disp13(my)=4 disp13(3B)=0 ping12(my)=2 btn=5 break=8/7 txt=0 seek=0 rxerr=3/5 | alloc=1 state=0x40 CD12 TR13 00:00
+[19:27:13.390] >>> 40 -> 00 (Playing!)
+[19:27:13.480] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Kunicka - Marionetka.mp3") = OK
+[19:27:13.480] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Kunicka - Marionetka.mp3 (rozpoczęto dekodowanie)
+[19:27:13.592] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[19:27:13.592] >> NEXT TRACK: CD12 TR14 (max=99)
+[19:27:13.592] [Audio-info] Closing audio file
+[19:27:13.672] >>> 40 -> 00 (Playing!)
+[19:27:13.714] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Kunicka - Na gorąco.mp3") = OK
+[19:27:13.714] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Kunicka - Na gorąco.mp3 (rozpoczęto dekodowanie)
+[19:27:13.829] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[19:27:14.007] >> NEXT TRACK: CD12 TR15 (max=99)
+[19:27:14.023] [Audio-info] Closing audio file
+[19:27:14.135] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Kunicka - Orkiestry dęte.mp3") = OK
+[19:27:14.135] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Kunicka - Orkiestry dęte.mp3 (rozpoczęto dekodowanie)
+[19:27:14.247] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[19:27:14.395] >> NEXT TRACK: CD12 TR16 (max=99)
+[19:27:14.407] [Audio-info] Closing audio file
+[19:27:14.521] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Kunicka - To były piękne dni.mp3") = OK
+[19:27:14.521] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Kunicka - To były piękne dni.mp3 (rozpoczęto dekodowanie)
+[19:27:14.633] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[19:27:15.001] >>> 40 -> 00 (Playing!)
+[19:27:15.082] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:27:15.322] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=3 break=7/7 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD12 TR16 00:00
+[19:27:17.085] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:27:17.320] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=2 btn=0 break=6/7 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD12 TR16 00:02
+[19:27:19.092] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:27:19.341] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:04
+[19:27:21.090] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:27:21.325] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:06
+[19:27:23.087] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:27:23.332] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:08
+[19:27:25.328] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:10
+[19:27:27.329] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:12
+[19:27:29.006] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:27:29.328] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:14
+[19:27:31.005] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:27:31.328] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:16
+[19:27:33.006] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:27:33.343] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:18
+[19:27:35.006] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:27:35.329] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:20
+[19:27:37.008] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:27:37.327] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:22
+[19:27:39.329] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:24
+[19:27:41.328] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 00:26
+[19:27:43.009] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:27:43.329] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:28
+[19:27:45.008] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:27:45.324] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:30
+[19:27:47.006] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:27:47.328] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:32
+[19:27:49.006] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:27:49.330] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:34
+[19:27:51.002] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:27:51.327] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:36
+[19:27:53.328] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:38
+[19:27:55.326] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:40
+[19:27:57.009] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:27:57.328] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:42
+[19:27:59.009] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:27:59.331] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:44
+[19:28:01.000] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:01.324] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 00:46
+[19:28:03.008] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:03.330] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:48
+[19:28:05.007] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:05.319] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:50
+[19:28:07.328] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:52
+[19:28:09.328] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:54
+[19:28:11.007] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:11.321] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:56
+[19:28:13.003] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:13.328] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:58
+[19:28:15.010] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:15.328] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 01:00
+[19:28:17.007] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:17.329] [STAT] poll15=7 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:02
+[19:28:19.009] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:19.329] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:04
+[19:28:21.325] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:06
+[19:28:23.332] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:08
+[19:28:25.007] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:25.328] [STAT] poll15=3 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=3/3 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 01:10
+[19:28:27.008] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:27.328] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:12
+[19:28:29.005] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:29.328] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:14
+[19:28:31.009] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:31.378] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:16
+[19:28:33.018] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:33.322] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:18
+[19:28:35.325] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:20
+[19:28:37.335] [STAT] poll15=2 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:22
+[19:28:39.006] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:39.329] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 01:24
+[19:28:41.009] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:41.328] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:26
+[19:28:43.002] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:43.327] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 01:28
+[19:28:45.004] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:45.326] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:30
+[19:28:47.005] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:47.326] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 01:32
+[19:28:49.316] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:34
+[19:28:51.326] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:36
+[19:28:52.997] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:53.328] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:38
+[19:28:55.000] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:55.332] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:40
+[19:28:56.998] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:57.327] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:42
+[19:28:59.003] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:28:59.322] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 01:44
+[19:29:01.001] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:29:01.330] [STAT] poll15=7 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:46
+[19:29:03.326] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:48
+[19:29:05.320] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:50
+[19:29:06.997] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:29:07.320] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:52
+[19:29:09.000] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:29:09.334] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 01:54
+[19:29:11.006] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:29:11.333] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:56
+[19:29:13.008] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:29:13.329] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 01:58
+[19:29:15.004] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:29:15.327] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:00
+[19:29:17.330] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 02:02
+[19:29:19.327] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:04
+[19:29:21.004] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:29:21.327] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:06
+[19:29:23.010] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:29:23.334] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:08
+[19:29:25.005] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:29:25.326] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:10
+[19:29:27.006] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:29:27.329] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:12
+[19:29:29.007] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:29:29.326] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:14
+[19:29:31.327] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:16
+[19:29:33.330] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:18
+[19:29:35.001] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:29:35.327] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:20
+[19:29:37.005] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:29:37.327] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:22
+[19:29:39.006] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:29:39.331] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 02:24
+[19:29:41.006] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:29:41.324] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 02:26
+[19:29:43.008] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:29:43.331] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 02:28
+[19:29:45.329] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:30
+[19:29:47.327] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:32
+[19:29:49.005] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:29:49.327] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:34
+[19:29:51.011] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:29:51.325] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:36
+[19:29:53.009] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:29:53.327] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:38
+[19:29:55.005] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:29:55.324] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:40
+[19:29:57.005] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:29:57.327] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:42
+[19:29:59.334] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:44
+[19:30:01.331] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:46
+[19:30:03.006] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:30:03.327] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:48
+[19:30:05.007] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:30:05.327] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:50
+[19:30:07.007] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:30:07.329] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:52
+[19:30:09.004] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:30:09.327] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 02:54
+[19:30:11.006] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:30:11.327] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 02:56
+[19:30:13.323] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD12 TR16 02:58
+[19:30:15.331] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:00
+[19:30:17.004] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:30:17.323] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:02
+[19:30:18.998] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:30:19.327] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:04
+[19:30:21.002] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:30:21.326] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:06
+[19:30:23.006] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:30:23.322] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:08
+[19:30:25.003] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:30:25.325] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 03:10
+[19:30:27.322] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:12
+[19:30:29.314] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:14
+[19:30:31.004] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:30:31.319] [STAT] poll15=2 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 03:16
+[19:30:33.006] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:30:33.330] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:18
+[19:30:35.003] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:30:35.326] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=2 btn=0 break=5/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 03:20
+[19:30:37.007] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:30:37.326] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 03:22
+[19:30:38.995] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:30:39.317] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:24
+[19:30:41.325] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:26
+[19:30:43.327] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=2 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 03:28
+[19:30:45.005] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:30:45.326] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:30
+[19:30:47.010] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:30:47.328] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 03:32
+[19:30:49.010] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:30:49.330] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:34
+[19:30:51.006] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:30:51.330] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:36
+[19:30:53.008] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:30:53.327] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:38
+[19:30:55.324] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 03:40
+[19:30:57.326] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:42
+[19:30:59.015] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:30:59.328] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:44
+[19:31:01.004] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:31:01.326] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:46
+[19:31:03.001] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:31:03.327] [STAT] poll15=6 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:48
+[19:31:05.000] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:31:05.327] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:50
+[19:31:06.999] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:31:07.326] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:52
+[19:31:09.327] [STAT] poll15=4 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:54
+[19:31:11.325] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:56
+[19:31:13.004] >> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[19:31:13.325] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 03:58
+[19:31:13.650] [Audio-info] Closing audio file
+[19:31:13.652] [Audio-info] End of file "Halina Kunicka - To były piękne dni.mp3"
+[19:31:13.657] [Audio-eof] Koniec utworu: Halina Kunicka - To były piękne dni.mp3
+[19:31:13.657] >> AUTO-NEXT: CD12 TR17 (repeat=0, moved=1)
+[19:31:13.663] [Audio] DAC XSMT (GPIO 16) -> LOW (Wyciszono)
+[19:31:13.894] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Hanna Banaszak - W Moim Magicznym Domu.mp3") = OK
+[19:31:13.896] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Hanna Banaszak - W Moim Magicznym Domu.mp3 (rozpoczęto dekodowanie)
+[19:31:13.896] >>> 40 -> 00 (Playing!)
+[19:31:13.899] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:31:13.921] [Audio-info] file has no mp3 tag, skip metadata
+[19:31:14.012] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[19:31:15.326] [STAT] poll15=7 disp13(my)=8 disp13(3B)=0 ping12(my)=0 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:01
+[19:31:15.897] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:31:17.330] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR17 00:03
+[19:31:17.904] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:31:19.326] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:05
+[19:31:19.898] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:31:21.326] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:07
+[19:31:21.897] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:31:23.329] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR17 00:09
+[19:31:25.326] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=0 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:11
+[19:31:27.326] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:13
+[19:31:27.900] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:31:29.325] [STAT] poll15=6 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR17 00:15
+[19:31:29.896] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:31:31.326] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR17 00:17
+[19:31:31.899] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:31:33.326] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:19
+[19:31:33.893] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:31:35.330] [STAT] poll15=7 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:21
+[19:31:35.898] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:31:37.319] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:23
+[19:31:39.331] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:25
+[19:31:41.322] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:27
+[19:31:41.900] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:31:43.326] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:29
+[19:31:43.896] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:31:45.326] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:31
+[19:31:45.895] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:31:47.325] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:33
+[19:31:47.898] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:31:49.328] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:35
+[19:31:49.900] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:31:51.328] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR17 00:37
+[19:31:53.326] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=0 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:39
+[19:31:55.327] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:41
+[19:31:55.897] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:31:57.324] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:43
+[19:31:57.891] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:31:59.325] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR17 00:45
+[19:31:59.894] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:32:01.320] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=0 btn=0 break=7/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR17 00:47
+[19:32:01.898] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:32:03.329] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:49
+[19:32:03.894] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:32:05.320] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:51
+[19:32:07.324] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:53
+[19:32:09.326] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:55
+[19:32:09.898] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:32:11.322] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR17 00:57
+[19:32:11.897] >> CD-TEXT wyslany: CD12 TR17 plyta="POLSKIE GK" utwor="Hanna Banaszak - W Moim Magicznym Domu"
+[19:32:12.360] >> NEXT TRACK: CD12 TR18 (max=99)
+[19:32:12.365] [Audio-info] Closing audio file
+[19:32:12.533] >>> 40 -> 00 (Playing!)
+[19:32:12.609] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Happy End - Jak się masz kochanie.mp3") = OK
+[19:32:12.609] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Happy End - Jak się masz kochanie.mp3 (rozpoczęto dekodowanie)
+[19:32:12.722] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[19:32:13.061] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:32:13.327] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=1 break=7/7 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD12 TR18 00:00
+[19:32:15.060] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:32:15.328] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:02
+[19:32:17.057] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:32:17.319] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:04
+[19:32:19.061] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:32:19.328] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:06
+[19:32:21.061] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:32:21.324] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR18 00:08
+[19:32:23.324] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:10
+[19:32:25.324] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:12
+[19:32:26.537] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:32:27.324] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:14
+[19:32:28.533] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:32:29.323] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:16
+[19:32:30.532] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:32:31.330] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:18
+[19:32:32.535] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:32:33.328] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:20
+[19:32:34.531] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:32:35.325] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:22
+[19:32:37.331] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=2 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:24
+[19:32:39.325] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:26
+[19:32:40.531] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:32:41.327] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:28
+[19:32:42.530] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:32:43.328] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=6/1 | alloc=1 state=0x00 CD12 TR18 00:30
+[19:32:44.533] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:32:45.324] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:32
+[19:32:46.531] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:32:47.325] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR18 00:34
+[19:32:48.531] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:32:49.324] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR18 00:36
+[19:32:51.326] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=3/3 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR18 00:38
+[19:32:53.325] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:40
+[19:32:54.533] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:32:55.325] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:42
+[19:32:56.524] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:32:57.323] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:44
+[19:32:58.530] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:32:59.312] [STAT] poll15=4 disp13(my)=3 disp13(3B)=0 ping12(my)=0 btn=0 break=5/4 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD12 TR18 00:46
+[19:33:00.529] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:01.327] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:48
+[19:33:02.525] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:03.326] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:50
+[19:33:05.321] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:52
+[19:33:07.320] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:54
+[19:33:08.527] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:09.318] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:56
+[19:33:10.528] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:11.322] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 00:58
+[19:33:12.525] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:13.312] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:00
+[19:33:14.533] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:15.320] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:02
+[19:33:16.532] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:17.329] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:04
+[19:33:19.325] [STAT] poll15=3 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:06
+[19:33:21.326] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:08
+[19:33:22.531] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:23.325] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:10
+[19:33:24.534] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:25.328] [STAT] poll15=7 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR18 01:12
+[19:33:26.534] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:27.328] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD12 TR18 01:14
+[19:33:28.532] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:29.325] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR18 01:16
+[19:33:30.529] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:31.329] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:18
+[19:33:33.326] [STAT] poll15=3 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:20
+[19:33:35.325] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:22
+[19:33:36.531] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:37.325] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:24
+[19:33:38.534] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:39.323] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:26
+[19:33:40.527] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:41.327] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR18 01:28
+[19:33:42.534] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:43.324] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:30
+[19:33:44.533] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:45.325] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:32
+[19:33:47.325] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:34
+[19:33:49.324] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:36
+[19:33:50.529] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:51.320] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR18 01:38
+[19:33:52.528] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:53.322] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:40
+[19:33:54.527] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:55.318] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:42
+[19:33:56.526] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:57.324] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:44
+[19:33:58.529] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:33:59.321] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:46
+[19:34:01.323] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:48
+[19:34:03.325] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD12 TR18 01:50
+[19:34:04.532] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:34:05.327] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:52
+[19:34:06.534] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:34:07.323] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:54
+[19:34:08.530] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:34:09.324] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 01:56
+[19:34:10.530] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:34:11.326] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR18 01:58
+[19:34:12.532] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:34:13.324] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:00
+[19:34:15.324] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:02
+[19:34:17.324] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:04
+[19:34:18.531] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:34:19.325] [STAT] poll15=4 disp13(my)=3 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:06
+[19:34:20.530] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:34:21.328] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:08
+[19:34:22.532] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:34:23.324] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR18 02:10
+[19:34:24.530] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:34:25.326] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=2 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR18 02:12
+[19:34:26.531] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:34:27.324] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:14
+[19:34:29.324] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR18 02:16
+[19:34:31.325] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:18
+[19:34:32.530] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:34:33.324] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:20
+[19:34:34.534] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:34:35.325] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR18 02:22
+[19:34:36.532] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:34:37.326] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:24
+[19:34:38.536] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:34:39.328] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:26
+[19:34:40.526] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:34:41.324] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:28
+[19:34:43.326] [STAT] poll15=3 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR18 02:30
+[19:34:45.326] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:32
+[19:34:46.527] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:34:47.324] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:34
+[19:34:48.529] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:34:49.324] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:36
+[19:34:50.532] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:34:51.324] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:38
+[19:34:52.530] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:34:53.315] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:40
+[19:34:54.521] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:34:55.326] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR18 02:42
+[19:34:57.324] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=0 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:44
+[19:34:59.317] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:46
+[19:35:00.528] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:01.324] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:48
+[19:35:02.530] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:03.325] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:50
+[19:35:04.523] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:05.310] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:52
+[19:35:06.524] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:07.316] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:54
+[19:35:08.530] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:09.318] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:56
+[19:35:11.330] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 02:58
+[19:35:13.319] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:00
+[19:35:14.527] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:15.324] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:02
+[19:35:16.530] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:17.323] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:04
+[19:35:18.529] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:19.320] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:06
+[19:35:20.526] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:21.316] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:08
+[19:35:22.527] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:23.316] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:10
+[19:35:25.323] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:12
+[19:35:27.318] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=3/3 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR18 03:14
+[19:35:28.533] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:29.319] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:16
+[19:35:30.526] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:31.324] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:18
+[19:35:32.526] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:33.317] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:20
+[19:35:34.525] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:35.327] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:22
+[19:35:36.529] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:37.321] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:24
+[19:35:39.328] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:26
+[19:35:41.324] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:28
+[19:35:42.532] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:43.322] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:30
+[19:35:44.532] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:45.333] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:32
+[19:35:46.533] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:47.322] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:34
+[19:35:48.531] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:49.320] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:36
+[19:35:50.531] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:51.326] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:38
+[19:35:53.326] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:40
+[19:35:55.324] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:42
+[19:35:56.531] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:57.325] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:44
+[19:35:58.530] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:35:59.323] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:46
+[19:36:00.532] >> CD-TEXT wyslany: CD12 TR18 plyta="POLSKIE GK" utwor="Happy End - Jak się masz kochanie"
+[19:36:01.326] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR18 03:48
+[19:36:02.336] [Audio-info] Closing audio file
+[19:36:02.341] [Audio-info] End of file "Happy End - Jak się masz kochanie.mp3"
+[19:36:02.341] [Audio-eof] Koniec utworu: Happy End - Jak się masz kochanie.mp3
+[19:36:02.346] [Audio] DAC XSMT (GPIO 16) -> LOW (Wyciszono)>> AUTO-NEXT: CD12 TR19 (repeat=0, moved=1)
+[19:36:02.349] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:02.404] >>> 40 -> 00 (Playing!)
+[19:36:02.580] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Happy End - Nadaj do mnie SOS.mp3") = OK
+[19:36:02.580] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Happy End - Nadaj do mnie SOS.mp3 (rozpoczęto dekodowanie)
+[19:36:02.701] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[19:36:03.321] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR19 00:00
+[19:36:04.350] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:05.326] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:02
+[19:36:06.346] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:07.326] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:04
+[19:36:08.352] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:09.326] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:06
+[19:36:10.348] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:11.326] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR19 00:08
+[19:36:12.352] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:13.323] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR19 00:10
+[19:36:15.325] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:12
+[19:36:16.404] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:17.325] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:14
+[19:36:18.401] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:19.325] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:16
+[19:36:20.406] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:21.324] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:18
+[19:36:22.405] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:23.326] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:20
+[19:36:24.404] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:25.323] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:22
+[19:36:27.325] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:24
+[19:36:29.325] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:26
+[19:36:30.403] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:31.323] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:28
+[19:36:32.407] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:33.321] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR19 00:30
+[19:36:34.406] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:35.325] [STAT] poll15=5 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR19 00:32
+[19:36:36.402] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:37.323] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR19 00:34
+[19:36:38.402] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:39.322] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR19 00:36
+[19:36:41.323] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:38
+[19:36:43.323] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:40
+[19:36:44.406] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:45.325] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:42
+[19:36:46.402] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:47.332] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:44
+[19:36:48.402] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:49.323] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:46
+[19:36:50.402] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:51.324] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR19 00:48
+[19:36:52.405] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:53.326] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:50
+[19:36:55.324] [STAT] poll15=2 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:52
+[19:36:57.328] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:54
+[19:36:58.406] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:36:59.327] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:56
+[19:37:00.404] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:01.327] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 00:58
+[19:37:02.405] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:03.326] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 01:00
+[19:37:04.403] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:05.327] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD12 TR19 01:02
+[19:37:06.403] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:07.326] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 01:04
+[19:37:09.324] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 01:06
+[19:37:11.311] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 01:08
+[19:37:12.397] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:13.327] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR19 01:10
+[19:37:14.402] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:15.322] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 01:12
+[19:37:16.390] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:17.316] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 01:14
+[19:37:18.403] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:19.321] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 01:16
+[19:37:20.396] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:21.311] [STAT] poll15=5 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 01:18
+[19:37:23.326] [STAT] poll15=2 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 01:20
+[19:37:25.320] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 01:22
+[19:37:26.403] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:27.323] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 01:24
+[19:37:28.404] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:29.323] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 01:26
+[19:37:30.400] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:31.320] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 01:28
+[19:37:32.402] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:33.323] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR19 01:30
+[19:37:34.398] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:35.319] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 01:32
+[19:37:37.323] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR19 01:34
+[19:37:39.325] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 01:36
+[19:37:40.395] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:41.323] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 01:38
+[19:37:42.403] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:43.317] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR19 01:40
+[19:37:44.401] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:45.323] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR19 01:42
+[19:37:46.399] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:47.321] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 01:44
+[19:37:48.398] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:49.323] [STAT] poll15=7 disp13(my)=7 disp13(3B)=0 ping12(my)=0 btn=0 break=7/7 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR19 01:46
+[19:37:51.319] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR19 01:48
+[19:37:53.320] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR19 01:50
+[19:37:54.405] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:55.315] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 01:52
+[19:37:56.401] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:57.323] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 01:54
+[19:37:58.397] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:37:59.319] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 01:56
+[19:38:00.402] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:38:01.315] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR19 01:58
+[19:38:02.400] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:38:03.322] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 02:00
+[19:38:05.325] [STAT] poll15=2 disp13(my)=3 disp13(3B)=0 ping12(my)=2 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR19 02:02
+[19:38:07.323] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 02:04
+[19:38:08.402] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:38:09.324] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 02:06
+[19:38:10.401] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:38:11.324] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 02:08
+[19:38:12.404] >> CD-TEXT wyslany: CD12 TR19 plyta="POLSKIE GK" utwor="Happy End - Nadaj do mnie SOS"
+[19:38:13.324] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR19 02:10
+[19:38:13.943] >> NEXT TRACK: CD12 TR20 (max=99)
+[19:38:13.947] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:38:13.947] [Audio-info] Closing audio file
+[19:38:14.061] >>> 40 -> 00 (Playing!)
+[19:38:14.194] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Irena Jarocka - Beatelmania story.mp3") = OK
+[19:38:14.194] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Irena Jarocka - Beatelmania story.mp3 (rozpoczęto dekodowanie)
+[19:38:14.307] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[19:38:15.326] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=1 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR20 00:01
+[19:38:15.945] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:38:17.323] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR20 00:03
+[19:38:17.945] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:38:19.322] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:05
+[19:38:19.945] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:38:21.318] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:07
+[19:38:21.944] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:38:23.320] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:09
+[19:38:23.947] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:38:25.319] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:11
+[19:38:27.320] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:13
+[19:38:28.058] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:38:29.323] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR20 00:15
+[19:38:30.051] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:38:31.313] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:17
+[19:38:32.049] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:38:33.308] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:19
+[19:38:34.059] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:38:35.322] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR20 00:21
+[19:38:36.059] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:38:37.319] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:23
+[19:38:39.320] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:25
+[19:38:41.326] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:27
+[19:38:42.058] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:38:43.324] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:29
+[19:38:44.051] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:38:45.312] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:31
+[19:38:46.051] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:38:47.323] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:33
+[19:38:48.057] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:38:49.323] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:35
+[19:38:50.060] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:38:51.322] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:37
+[19:38:53.320] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:39
+[19:38:55.325] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:41
+[19:38:56.060] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:38:57.323] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=3/1 | alloc=1 state=0x00 CD12 TR20 00:43
+[19:38:58.056] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:38:59.322] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:45
+[19:39:00.060] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:01.326] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:47
+[19:39:02.061] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:03.321] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:49
+[19:39:04.059] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:05.325] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:51
+[19:39:07.320] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:53
+[19:39:09.322] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:55
+[19:39:10.058] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:11.321] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:57
+[19:39:12.063] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:13.322] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 00:59
+[19:39:14.057] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:15.322] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:01
+[19:39:16.060] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:17.327] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:03
+[19:39:18.059] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:19.323] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR20 01:05
+[19:39:21.324] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:07
+[19:39:23.319] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:09
+[19:39:24.057] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:25.321] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:11
+[19:39:26.058] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:27.324] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:13
+[19:39:28.056] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:29.323] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:15
+[19:39:30.058] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:31.322] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:17
+[19:39:32.057] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:33.322] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:19
+[19:39:35.324] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:21
+[19:39:37.325] [STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR20 01:23
+[19:39:38.063] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:39.321] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:25
+[19:39:40.055] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:41.320] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:27
+[19:39:42.053] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:43.323] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:29
+[19:39:44.051] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:45.320] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:31
+[19:39:46.054] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:47.324] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:33
+[19:39:49.308] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:35
+[19:39:51.318] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:37
+[19:39:52.053] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:53.318] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:39
+[19:39:54.053] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:55.316] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:41
+[19:39:56.061] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:57.316] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:43
+[19:39:58.054] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:39:59.310] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:45
+[19:40:00.052] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:40:01.322] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR20 01:47
+[19:40:03.321] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:49
+[19:40:05.317] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:51
+[19:40:06.056] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:40:07.323] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:53
+[19:40:08.062] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:40:09.319] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:55
+[19:40:10.053] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:40:11.324] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:57
+[19:40:12.057] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:40:13.312] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 01:59
+[19:40:14.057] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:40:15.320] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:01
+[19:40:17.323] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:03
+[19:40:19.319] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:05
+[19:40:20.053] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:40:21.321] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:07
+[19:40:22.055] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:40:23.324] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:09
+[19:40:24.052] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:40:25.318] [STAT] poll15=5 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:11
+[19:40:26.057] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:40:27.320] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:13
+[19:40:28.057] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:40:29.322] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:15
+[19:40:31.321] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR20 02:17
+[19:40:33.324] [STAT] poll15=2 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:19
+[19:40:34.063] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:40:35.322] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:21
+[19:40:36.062] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:40:37.323] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:23
+[19:40:38.059] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:40:39.324] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:25
+[19:40:40.056] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:40:41.323] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:27
+[19:40:42.056] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:40:43.321] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:29
+[19:40:45.321] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:31
+[19:40:47.320] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:33
+[19:40:48.057] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:40:49.324] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:35
+[19:40:50.057] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:40:51.325] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:37
+[19:40:52.058] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:40:53.321] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:39
+[19:40:54.062] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:40:55.325] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:41
+[19:40:55.376] >> ZADANIE 0x84: 31 71 84 D7 FD 70 00 00 00 6D 00
+[19:40:56.732] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:40:57.324] [STAT] poll15=7 disp13(my)=8 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=1 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR20 02:43
+[19:40:59.322] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:45
+[19:41:01.324] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:47
+[19:41:02.060] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:41:03.321] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:49
+[19:41:04.060] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:41:05.318] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR20 02:51
+[19:41:05.344] >> ZADANIE 0x84: 31 71 84 D7 FD 70 00 00 01 6E 00
+[19:41:06.709] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:41:07.323] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=1 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:53
+[19:41:08.709] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:41:09.323] [STAT] poll15=7 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=7/7 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:55
+[19:41:10.712] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:41:11.320] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 02:57
+[19:41:13.320] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD12 TR20 02:59
+[19:41:15.321] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:01
+[19:41:16.057] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:41:17.320] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:03
+[19:41:18.063] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:41:19.322] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD12 TR20 03:05
+[19:41:20.057] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:41:21.316] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:07
+[19:41:22.055] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:41:23.316] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:09
+[19:41:24.056] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:41:25.318] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:11
+[19:41:27.321] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:13
+[19:41:29.310] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:15
+[19:41:30.059] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:41:31.318] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:17
+[19:41:32.055] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:41:33.322] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:19
+[19:41:34.059] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:41:35.320] [STAT] poll15=6 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:21
+[19:41:36.054] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:41:37.321] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR20 03:23
+[19:41:38.057] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:41:39.322] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=0 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:25
+[19:41:41.320] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:27
+[19:41:43.317] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:29
+[19:41:44.060] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:41:45.322] [STAT] poll15=5 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR20 03:31
+[19:41:46.056] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:41:47.318] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:33
+[19:41:48.057] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:41:49.321] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:35
+[19:41:50.060] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:41:51.326] [STAT] poll15=4 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR20 03:37
+[19:41:52.056] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:41:53.319] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:39
+[19:41:55.326] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:41
+[19:41:57.321] [STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR20 03:43
+[19:41:58.058] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:41:59.313] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:45
+[19:42:00.064] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:42:01.329] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:47
+[19:42:02.058] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:42:03.323] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:49
+[19:42:04.057] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:42:05.320] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:51
+[19:42:06.057] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:42:07.323] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:53
+[19:42:09.322] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR20 03:55
+[19:42:11.322] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:57
+[19:42:12.056] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:42:13.318] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 03:59
+[19:42:14.056] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:42:15.320] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 04:01
+[19:42:16.055] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:42:17.323] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 04:03
+[19:42:18.053] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:42:19.322] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 04:05
+[19:42:20.055] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:42:21.320] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 04:07
+[19:42:23.313] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 04:09
+[19:42:25.324] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 04:11
+[19:42:26.053] >> CD-TEXT wyslany: CD12 TR20 plyta="POLSKIE GK" utwor="Irena Jarocka - Beatelmania story"
+[19:42:27.320] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR20 04:13
+[19:42:27.607] [Audio-info] Closing audio file
+[19:42:27.607] [Audio-info] End of file "Irena Jarocka - Beatelmania story.mp3"
+[19:42:27.607] [Audio-eof] Koniec utworu: Irena Jarocka - Beatelmania story.mp3
+[19:42:27.612] [Audio] DAC XSMT (GPIO 16) -> LOW (Wyciszono)>> AUTO-NEXT: CD12 TR21 (repeat=0, moved=1)
+[19:42:27.616] >> CD-TEXT wyslany: CD12 TR21 plyta="POLSKIE GK" utwor="Irena Jarocka - Bliski serc dzień"
+[19:42:27.666] >>> 40 -> 00 (Playing!)
+[19:42:27.852] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Irena Jarocka - Bliski serc dzień.mp3") = OK
+[19:42:27.855] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Irena Jarocka - Bliski serc dzień.mp3 (rozpoczęto dekodowanie)
+[19:42:27.964] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[19:42:29.319] [STAT] poll15=7 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=7/7 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR21 00:01
+[19:42:29.619] >> CD-TEXT wyslany: CD12 TR21 plyta="POLSKIE GK" utwor="Irena Jarocka - Bliski serc dzień"
+[19:42:31.319] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR21 00:03
+[19:42:31.614] >> CD-TEXT wyslany: CD12 TR21 plyta="POLSKIE GK" utwor="Irena Jarocka - Bliski serc dzień"
+[19:42:33.326] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=1 btn=0 break=6/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR21 00:05
+[19:42:33.616] >> CD-TEXT wyslany: CD12 TR21 plyta="POLSKIE GK" utwor="Irena Jarocka - Bliski serc dzień"
+[19:42:35.321] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR21 00:07
+[19:42:35.611] >> CD-TEXT wyslany: CD12 TR21 plyta="POLSKIE GK" utwor="Irena Jarocka - Bliski serc dzień"
+[19:42:37.321] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR21 00:09
+[19:42:37.619] >> CD-TEXT wyslany: CD12 TR21 plyta="POLSKIE GK" utwor="Irena Jarocka - Bliski serc dzień"
+[19:42:39.319] [STAT] poll15=5 disp13(my)=5 disp13(3B)=0 ping12(my)=1 btn=0 break=5/5 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR21 00:11
+[19:42:41.321] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR21 00:13
+[19:42:41.670] >> CD-TEXT wyslany: CD12 TR21 plyta="POLSKIE GK" utwor="Irena Jarocka - Bliski serc dzień"
+[19:42:43.321] [STAT] poll15=5 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=7/6 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR21 00:15
+[19:42:43.670] >> CD-TEXT wyslany: CD12 TR21 plyta="POLSKIE GK" utwor="Irena Jarocka - Bliski serc dzień"
+[19:42:45.935] >> Radio system reset (#1)! Reset deviceAllocated.
+[19:42:45.935] >> resetToAllocated: audio gra, zachowuje Playing 00:17
+[19:42:45.941] == Wykryto CDX-M670 (widziano 3B 10 02 11) ==
+[19:42:45.947] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[19:42:45.947] [STAT] poll15=6 disp13(my)=7 disp13(3B)=0 ping12(my)=0 btn=0 break=5/5 txt=0 seek=0 rxerr=2/0 | alloc=0 state=0x00 CD12 TR21 00:17
+[19:42:46.343] >> [Audio Bus] Radio sygnalizuje audio ON (87 AB)
+[19:42:46.385] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[19:42:47.951] [STAT] poll15=2 disp13(my)=0 disp13(3B)=2 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=1/1 | alloc=0 state=0x00 CD12 TR21 00:19
+[19:42:48.223] >> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+[19:42:48.523] >> Radio system reset (#2) (juz bylem nieprzydzielony)
+[19:42:48.523] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 1ms po DB)
+[19:42:48.523] === BUS_ON = 0 ===
+[19:42:48.527] === SEN: magistrala wylaczona ===
+[19:42:48.535] [NVS] Zapamietano ostatni utwor: CD12 TR21
+[19:42:48.536] [Audio] ⏹ Zatrzymano (zlecone).
+[19:42:48.540] === BUS_ON = 0: Oczekiwanie 4000ms na wylaczenie zasilania ===
+[19:42:48.544] [Audio] DAC XSMT (GPIO 16) -> LOW (Wyciszono)
+[19:42:48.557] === BUS_ON = 1 ===
+[19:42:48.557] [Audio] Głośność: 18/21 (zlecone)
+[19:42:48.561] [Audio-info] Closing audio file
+[19:42:48.580] >> Odpowiadam na ANYONE? device info 0x8C
+[19:42:48.605] >> Adres przydzielony: 0x31 (op2=0x14)! deviceAllocated=true
+[19:42:49.487] >> [Audio Bus] Radio sygnalizuje audio ON (87 2B)
+[19:42:49.507] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[19:42:49.948] [STAT] poll15=3 disp13(my)=0 disp13(3B)=3 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=2/0 | alloc=1 state=0x80 CD12 TR21 00:19
+[19:42:51.942] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR21 00:19
+[19:42:52.150] >>> C0 -> 80 (Idle)
+[19:42:53.811] >> PLAY command received!
+[19:42:53.812] >> CD-TEXT wyslany: CD12 TR21 plyta="POLSKIE GK" utwor="Irena Jarocka - Bliski serc dzień"
+[19:42:53.936] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Irena Jarocka - Bliski serc dzień.mp3") = OK
+[19:42:53.938] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Irena Jarocka - Bliski serc dzień.mp3 (rozpoczęto dekodowanie)
+[19:42:53.947] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=0 btn=0 break=1/0 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x40 CD12 TR21 00:00
+[19:42:54.053] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[19:42:54.207] >>> 40 -> 00 (Playing!)
+[19:42:55.811] >> CD-TEXT wyslany: CD12 TR21 plyta="POLSKIE GK" utwor="Irena Jarocka - Bliski serc dzień"
+[19:42:55.946] [STAT] poll15=6 disp13(my)=6 disp13(3B)=0 ping12(my)=2 btn=0 break=6/6 txt=0 seek=0 rxerr=12/3 | alloc=1 state=0x00 CD12 TR21 00:01
+[19:42:57.428] >> ZADANIE 0x84: 31 71 84 D7 FD 70 00 00 01 6E 00
+[19:42:57.946] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=5/4 txt=1 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR21 00:03
+[19:42:58.432] >> Radio system reset (#1)! Reset deviceAllocated.
+[19:42:58.432] >> resetToAllocated: audio gra, zachowuje Playing 00:04
+[19:42:58.447] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 15ms po DB)
+[19:42:58.495] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 64ms po DB)
+[19:42:59.199] >> [Audio Bus] Radio sygnalizuje audio ON (87 AB)
+[19:42:59.223] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[19:42:59.950] [STAT] poll15=2 disp13(my)=0 disp13(3B)=2 ping12(my)=0 btn=0 break=1/2 txt=0 seek=0 rxerr=1/1 | alloc=0 state=0x00 CD12 TR21 00:05
+[19:43:01.058] >> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+[19:43:01.475] >> Radio system reset (#2) (juz bylem nieprzydzielony)
+[19:43:01.517] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 39ms po DB)
+[19:43:02.228] >> [Audio Bus] Radio sygnalizuje audio ON (87 2B)
+[19:43:02.259] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[19:43:03.936] [STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=1/1 | alloc=0 state=0x00 CD12 TR21 00:09
+[19:43:04.080] >> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+[19:43:04.480] >> Radio system reset (#3) (juz bylem nieprzydzielony)
+[19:43:04.480] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[19:43:04.528] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 37ms po DB)
+[19:43:05.239] >> [Audio Bus] Radio sygnalizuje audio ON (87 2B)
+[19:43:05.281] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[19:43:05.933] [STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=2/1 | alloc=0 state=0x00 CD12 TR21 00:11
+[19:43:07.086] >> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+[19:43:07.527] >> Radio system reset (#4) (juz bylem nieprzydzielony)
+[19:43:07.527] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[19:43:07.537] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 7ms po DB)
+[19:43:08.244] >> [Audio Bus] Radio sygnalizuje audio ON (87 2B)
+[19:43:08.252] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[19:43:09.934] [STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=0 state=0x00 CD12 TR21 00:15
+[19:43:10.214] >> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+[19:43:10.638] >> Radio system reset (#5) (juz bylem nieprzydzielony)
+[19:43:10.649] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[19:43:10.666] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#2, 19ms po DB)
+[19:43:11.373] >> [Audio Bus] Radio sygnalizuje audio ON (87 AB)
+[19:43:13.339] >> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+[19:43:13.785] >> Radio system reset (#6) (juz bylem nieprzydzielony)
+[19:43:13.785] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[19:43:13.945] [STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=2/1 | alloc=0 state=0x00 CD12 TR21 00:19
+[19:43:14.490] >> [Audio Bus] Radio sygnalizuje audio ON (87 AB)
+[19:43:14.507] >> [Audio Bus] Radio sygnalizuje audio ON (87 EB)
+[19:43:15.947] [STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=0 state=0x00 CD12 TR21 00:21
+[19:43:16.411] >> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+[19:43:16.861] >> Radio system reset (#7) (juz bylem nieprzydzielony)
+[19:43:16.861] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[19:43:17.560] >> [Audio Bus] Radio sygnalizuje audio ON (87 AB)
+[19:43:17.608] >> [Audio Bus] Radio sygnalizuje audio ON (87 EB)
+[19:43:19.496] >> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+[19:43:19.977] >> Radio system reset (#8) (juz bylem nieprzydzielony)
+[19:43:19.977] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[19:43:19.977] [STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=7/2 | alloc=0 state=0x00 CD12 TR21 00:25
+[19:43:20.665] >> [Audio Bus] Radio sygnalizuje audio ON (87 AB)
+[19:43:20.697] >> [Audio Bus] Radio sygnalizuje audio ON (87 EB)
+[19:43:21.976] [STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=6/2 | alloc=0 state=0x00 CD12 TR21 00:27
+[19:43:22.569] >> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+[19:43:23.114] >> Radio system reset (#9) (juz bylem nieprzydzielony)
+[19:43:23.114] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[19:43:23.739] >> [Audio Bus] Radio sygnalizuje audio ON (87 AB)
+[19:43:23.755] >> [Audio Bus] Radio sygnalizuje audio ON (87 EB)
+[19:43:25.649] >> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+[19:43:26.216] >> Radio system reset (#10) (juz bylem nieprzydzielony)
+[19:43:26.225] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[19:43:26.225] [STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=2/0 | alloc=0 state=0x00 CD12 TR21 00:31
+[19:43:26.807] >> [Audio Bus] Radio sygnalizuje audio ON (87 AB)
+[19:43:26.856] >> [Audio Bus] Radio sygnalizuje audio ON (87 EB)
+[19:43:28.216] [STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=0 state=0x00 CD12 TR21 00:33
+[19:43:28.742] >> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+[19:43:29.309] >> Radio system reset (#11) (juz bylem nieprzydzielony)
+[19:43:29.907] >> [Audio Bus] Radio sygnalizuje audio ON (87 AB)
+[19:43:29.923] >> [Audio Bus] Radio sygnalizuje audio ON (87 EB)
+[19:43:31.825] >> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+[19:43:32.386] >> Radio system reset (#12) (juz bylem nieprzydzielony)
+[19:43:32.386] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[19:43:32.386] [STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=4/1 | alloc=0 state=0x00 CD12 TR21 00:37
+[19:43:32.979] >> [Audio Bus] Radio sygnalizuje audio ON (87 AB)
+[19:43:33.004] >> [Audio Bus] Radio sygnalizuje audio ON (87 EB)
+[19:43:33.665] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[19:43:34.375] [STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=11/3 | alloc=0 state=0x00 CD12 TR21 00:39
+[19:43:35.076] >> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+[19:43:35.634] >> Radio system reset (#13) (juz bylem nieprzydzielony)
+[19:43:35.634] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[19:43:36.228] >> [Audio Bus] Radio sygnalizuje audio ON (87 2B)
+[19:43:36.243] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[19:43:38.060] >> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+[19:43:38.634] >> Radio system reset (#14) (juz bylem nieprzydzielony)
+[19:43:38.634] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[19:43:38.640] [STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=3/0 | alloc=0 state=0x00 CD12 TR21 00:44
+[19:43:39.208] >> [Audio Bus] Radio sygnalizuje audio ON (87 2B)
+[19:43:39.245] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[19:43:40.631] [STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=1/1 | alloc=0 state=0x00 CD12 TR21 00:46
+[19:43:41.062] >> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+[19:43:41.620] >> Radio system reset (#15) (juz bylem nieprzydzielony)
+[19:43:41.620] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[19:43:42.225] >> [Audio Bus] Radio sygnalizuje audio ON (87 2B)
+[19:43:42.246] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[19:43:42.628] [STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=8/2 | alloc=0 state=0x00 CD12 TR21 00:48
+[19:43:44.109] >> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+[19:43:44.652] >> Radio system reset (#16) (juz bylem nieprzydzielony)
+[19:43:44.652] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[19:43:45.258] >> [Audio Bus] Radio sygnalizuje audio ON (87 2B)
+[19:43:45.287] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[19:43:46.661] [STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=0/2 | alloc=0 state=0x00 CD12 TR21 00:52
+[19:43:47.093] >> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+[19:43:47.637] >> Radio system reset (#17) (juz bylem nieprzydzielony)
+[19:43:47.637] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[19:43:48.243] >> [Audio Bus] Radio sygnalizuje audio ON (87 2B)
+[19:43:48.278] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[19:43:48.664] [STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=3/1 | alloc=0 state=0x00 CD12 TR21 00:54
+[19:43:50.091] >> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery
+[19:43:50.655] >> Radio system reset (#18) (juz bylem nieprzydzielony)
+[19:43:50.655] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[19:43:51.245] >> [Audio Bus] Radio sygnalizuje audio ON (87 2B)
+[19:43:51.267] >> [Audio Bus] Radio sygnalizuje audio ON (87 6B)
+[19:43:52.660] [STAT] poll15=1 disp13(my)=0 disp13(3B)=1 ping12(my)=0 btn=0 break=0/0 txt=0 seek=0 rxerr=0/1 | alloc=0 state=0x00 CD12 TR21 00:58

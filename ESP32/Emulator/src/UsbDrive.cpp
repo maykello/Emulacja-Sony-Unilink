@@ -76,6 +76,8 @@ static uint32_t partitionOffset = 0;     // offset partycji FAT32 (LBA) — 0 dl
 static volatile bool deviceConnected   = false;
 static volatile bool filesystemMounted = false;
 static volatile int  newDevAddr        = -1;  // adres nowego urządzenia (z callbacka)
+static volatile bool devGonePending    = false;
+static bool          s_usbHostRunning  = false;
 
 static FATFS *fatFs = NULL;
 static const char fatDrv[] = "1:";
@@ -384,8 +386,7 @@ static void usbClientEventCb(const usb_host_client_event_msg_t *event, void *arg
             Serial.printf("[%s] Urządzenie USB odłączone!\n", TAG);
             deviceConnected = false;
             filesystemMounted = false;
-            // Uwaga: nie robimy tu cleanup transferów — to wymagałoby synchronizacji
-            // z głównym taskiem. Pendrive po ponownym podpięciu zostanie skonfigurowany od nowa.
+            devGonePending = true;
             break;
     }
 }
@@ -395,6 +396,49 @@ static void usbClientTask(void *arg) {
     while (true) {
         usb_host_client_handle_events(clientHdl, portMAX_DELAY);
     }
+}
+
+// ====================================================================
+//  CZYSZCZENIE ZASOBÓW USB (unmount i zamknięcie urządzenia)
+// ====================================================================
+static void cleanupMscDevice() {
+    Serial.printf("[%s] Czyszczenie zasobów USB (unmount)...\n", TAG);
+    filesystemMounted = false;
+    deviceConnected = false;
+    
+    usbFS.end();
+    
+    if (fatFs) {
+        f_mount(NULL, fatDrv, 0);
+        esp_vfs_fat_unregister_path(USB_MOUNT_POINT);
+        fatFs = NULL;
+    }
+    
+    ff_diskio_unregister(USB_DISKIO_PDRV);
+    
+    if (xferOut) {
+        usb_host_transfer_free(xferOut);
+        xferOut = NULL;
+    }
+    if (xferIn) {
+        usb_host_transfer_free(xferIn);
+        xferIn = NULL;
+    }
+    if (xferSem) {
+        xSemaphoreTake(xferSem, 0);
+    }
+    
+    if (devHdl) {
+        usb_host_device_close(clientHdl, devHdl);
+        devHdl = NULL;
+    }
+    
+    bulkInEp = 0;
+    bulkOutEp = 0;
+    partitionOffset = 0;
+    diskSectorCount = 0;
+    
+    Serial.printf("[%s] Zasoby USB zwolnione (gotowy na ponowny montaż).\n", TAG);
 }
 
 // ====================================================================
@@ -470,8 +514,7 @@ static bool configureMscDevice(uint8_t devAddr) {
     
     if (!foundMsc || bulkInEp == 0 || bulkOutEp == 0) {
         Serial.printf("[%s] BŁĄD: To nie jest urządzenie MSC (brak interfejsu/endpointów)!\n", TAG);
-        usb_host_device_close(clientHdl, devHdl);
-        devHdl = NULL;
+        cleanupMscDevice();
         return false;
     }
     
@@ -479,8 +522,7 @@ static bool configureMscDevice(uint8_t devAddr) {
     err = usb_host_interface_claim(clientHdl, devHdl, ifaceNum, 0);
     if (err != ESP_OK) {
         Serial.printf("[%s] Nie mogę zarezerwować interfejsu: %s\n", TAG, esp_err_to_name(err));
-        usb_host_device_close(clientHdl, devHdl);
-        devHdl = NULL;
+        cleanupMscDevice();
         return false;
     }
     
@@ -491,12 +533,13 @@ static bool configureMscDevice(uint8_t devAddr) {
     err = usb_host_transfer_alloc(USB_XFER_BUF_SIZE, 0, &xferOut);  // Musi pomieścić zapis wielu sektorów
     if (err != ESP_OK) {
         Serial.printf("[%s] Alokacja xferOut nie powiodła się\n", TAG);
+        cleanupMscDevice();
         return false;
     }
     err = usb_host_transfer_alloc(USB_XFER_BUF_SIZE, 0, &xferIn);
     if (err != ESP_OK) {
         Serial.printf("[%s] Alokacja xferIn nie powiodła się\n", TAG);
-        usb_host_transfer_free(xferOut); xferOut = NULL;
+        cleanupMscDevice();
         return false;
     }
     
@@ -687,7 +730,7 @@ static bool configureMscDevice(uint8_t devAddr) {
     err = esp_vfs_fat_register(USB_MOUNT_POINT, fatDrv, 5, &fatFs);
     if (err != ESP_OK) {
         Serial.printf("[%s] esp_vfs_fat_register błąd: %s\n", TAG, esp_err_to_name(err));
-        deviceConnected = false;
+        cleanupMscDevice();
         return false;
     }
     
@@ -695,8 +738,7 @@ static bool configureMscDevice(uint8_t devAddr) {
     FRESULT fres = f_mount(fatFs, fatDrv, 1);
     if (fres != FR_OK) {
         Serial.printf("[%s] f_mount błąd: %d (pendrive musi być FAT32!)\n", TAG, fres);
-        esp_vfs_fat_unregister_path(USB_MOUNT_POINT);
-        deviceConnected = false;
+        cleanupMscDevice();
         return false;
     }
     
@@ -770,17 +812,37 @@ bool usbDriveInit() {
         Serial.printf("[%s] Pendrive jeszcze nie wykryty, czekam na hot-plug.\n", TAG);
     }
     
+    s_usbHostRunning = true;
     return true; // USB Host działa, nawet jeśli pendrive jeszcze nie podpięty
 }
 
-bool usbDriveIsMounted() {
-    // Sprawdź hot-plug: jeśli nowe urządzenie zostało podpięte po init
+static void handleHotplugEvents() {
+    if (devGonePending) {
+        devGonePending = false;
+        cleanupMscDevice();
+    }
     if (newDevAddr >= 0 && !filesystemMounted) {
         int addr = newDevAddr;
         newDevAddr = -1;
+        if (devHdl != NULL || fatFs != NULL) {
+            cleanupMscDevice();
+        }
         configureMscDevice(addr);
     }
+}
+
+bool usbDriveIsMounted() {
+    handleHotplugEvents();
     return filesystemMounted;
+}
+
+bool usbDriveIsConnected() {
+    handleHotplugEvents();
+    return deviceConnected;
+}
+
+bool usbDriveHostIsRunning() {
+    return s_usbHostRunning;
 }
 
 fs::FS& usbDriveGetFS() {

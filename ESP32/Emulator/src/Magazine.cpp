@@ -10,6 +10,8 @@
 #include "Magazine.h"
 #include "AudioPlayer.h"
 #include "Config.h"
+#include "Diagnostics.h"
+#include "CdChanger.h"
 
 namespace Magazine {
 
@@ -33,12 +35,18 @@ static uint32_t cachedDiscId(uint8_t disc) {
 }
 
 uint16_t presenceMap() {
-    // Obecnosc plyty wynika z liczby utworow w jej folderze (CD01..CD10).
+    // Obecnosc plyty wynika z liczby utworow w jej folderze (CD01..CD14).
     uint8_t counts[MAX_DISC];
     for (uint8_t i = 0; i < MAX_DISC; ++i) {
         counts[i] = audioGetTrackCount(static_cast<uint8_t>(i + 1));
     }
-    return presenceMapFrom(counts, MAX_DISC);
+    uint16_t map = presenceMapFrom(counts, MAX_DISC);
+    if (map == 0 && Diagnostics::hasError()) {
+        uint8_t d = CdChanger::disk();
+        if (d < 1 || d > MAX_DISC) d = 1;
+        map = (1u << (d - 1)) | 0x0001;
+    }
+    return map;
 }
 
 void buildDiscInfo(uint8_t disc, uint8_t* d) {
@@ -50,6 +58,10 @@ void buildDiscInfo(uint8_t disc, uint8_t* d) {
     uint8_t minutes = 0, seconds = 0, hundredths = 0;
     discIdToc(cachedDiscId(disc), minutes, seconds, hundredths);
     if (trackCount == 0) {
+        if (Diagnostics::hasError()) {
+            buildDiscInfoData(disc, 1, 99, 10, d);
+            return;
+        }
         // Pusta szuflada: prawdziwa zmieniarka raportuje 99 utworow i czas 00:00.
         buildDiscInfoData(disc, 99, 0, 0, d);
         return;
@@ -61,7 +73,9 @@ void buildDiscId(uint8_t disc, bool discChangeVariant, uint8_t& cmd2, uint8_t* d
     // Stały, cache'owany identyfikator -> ten sam disc daje te same bajty
     // miedzy kolejnymi zadaniami (Wymaganie 7.5).
     uint8_t trackCount = audioGetTrackCount(disc);
-    if (trackCount == 0) trackCount = 99;
+    if (trackCount == 0) {
+        trackCount = Diagnostics::hasError() ? 1 : 99;
+    }
     fillDiscIdData(disc, cachedDiscId(disc), trackCount, discChangeVariant, cmd2, d);
 }
 
