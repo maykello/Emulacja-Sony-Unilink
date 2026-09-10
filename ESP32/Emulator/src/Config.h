@@ -138,15 +138,10 @@ constexpr unsigned long BREAK_BACKOFF_MAX_MS = 3000;
 // odstep i okno BREAK_RECOVERY_MS sa pomijane, bo kilkusekundowe opoznienie
 // numeru plyty czy licznika czasu jest natychmiast widoczne na wyswietlaczu.
 constexpr unsigned long BREAK_URGENT_MIN_MS = 250;
-// Odstep dla Breaka, gdy w kolejce TX ZALEGAJA jeszcze ramki (blok CD-TEXT to
-// 3-4 ramki, a na jeden grant idzie dokladnie jedna). Przy BREAK_RETRY_MS caly
-// blok schodzil ~2 s (log: `poll15=4 break=4/4` w okienku 2 s po zmianie
-// utworu), podczas gdy prawdziwa zmieniarka oddaje go w ~170 ms, bo master
-// prowadzi jej burst Request Pollingu z odstepem ~22 ms.
-// Nie schodzimy do BREAK_URGENT_MIN_MS: dawny sztorm Breakow bral sie z ramek
-// czasu kolejkowanych OKRESOWO (kolejka byla niepusta zawsze). Teraz kolejka
-// zapelnia sie tylko burstami, wiec skrocenie odstepu jest ograniczone w czasie.
-constexpr unsigned long BREAK_QUEUE_MIN_MS = 150;
+// Odstep dla Breaka, gdy w kolejce TX zalegaja jeszcze ramki (blok CD-TEXT).
+// 300ms daje bezpieczny margines chroniacy przed kolizjami z Time Pollem (01 12)
+// i odpytaniami wewnetrznego CD (0x3B) / procesora wyswietlacza (0x71).
+constexpr unsigned long BREAK_QUEUE_MIN_MS = 300;
 
 // Po SYSTEM RESET radio robi discovery (preliminary + ANYONE? + appoint). Caly
 // cykl trwa ~2-3s. W tym czasie NIE WOLNO wyzwalac auto-recovery (`01 11`)
@@ -230,23 +225,17 @@ constexpr int           CRASHLOG_MAX_FILES = 10;    // rotacja: max plikow w /Cr
 constexpr unsigned long PERSIST_FLUSH_IDLE_US = 1500000;  // 1.5 s ciszy
 
 // --- CD-TEXT ---
-// Jak czesto powtarzamy komplet nazw (utwor 0xD2 + plyta 0xDA) z wlasnej
-// inicjatywy. Zrzut prawdziwej zmieniarki pokazuje, ze robi to PRAKTYCZNIE BEZ
-// PRZERWY — komplet nazw leci co ~1-2 s przez cale odtwarzanie:
-//   16:58:32.0, :34.1, :35.1, :37.2, :39.3, :51.2, :53.1, :54.7, :56.6, :57.5
-// CDX-M670 restartuje przewijanie marquee dopiero na kompletnym bloku nazw,
-// wiec przy dawnych 30 s tekst przewijal sie raz i zamieral (a po zmianie
-// zrodla albo utracie sesji ekran zostawal pusty do nastepnego okresu).
-constexpr unsigned long CD_TEXT_REPEAT_MS = 2000;
+// Jak czesto powtarzamy komplet nazw (utwor 0xD2 + plyta 0xDA) w trakcie odtwarzania.
+// 0 = wylaczone powtarzanie w trakcie utworu (OE feel: tekst leci RAZ A DOBRZE
+// przy starcie/zmianie utworu, po seeku i na zadanie radia 84 D7). Dzieki temu
+// magistrala ma pelny spokoj, zegar idzie idealnie 1 Hz i nie ma kolizji.
+constexpr unsigned long CD_TEXT_REPEAT_MS = 0;
 
 // --- CD-TEXT TIME FLASH (okresowe pokazywanie timera zamiast nazwy) ---
-// Podczas odtwarzania z CD-TEXT radio pokazuje nazwe utworu/plyty. Co jakis czas
-// emulator chwilowo wycofuje flage CD-TEXT, zeby radio przeszlo na widok timera
-// (czas odtwarzania) — dokladnie tak, jak robi to prawdziwa zmieniarka.
-// INTERVAL = co ile sekund pojawia sie flash timera.
-// DURATION = jak dlugo timer jest widoczny zanim wroci CD-TEXT.
-// Ustaw INTERVAL na 0, zeby WYLACZYC te funkcje (CD-TEXT widoczny non-stop).
-constexpr unsigned long CDTEXT_TIME_FLASH_INTERVAL_MS = 10000;  // co 10s
+// Podczas odtwarzania z CD-TEXT radio pokazuje nazwe utworu/plyty.
+// Ustaw INTERVAL na 0, zeby WYLACZYC te funkcje (OE feel: radio samo zarzadza widokiem,
+// a klawisz DSPL na radiu przelacza miedzy czasem a tekstem).
+constexpr unsigned long CDTEXT_TIME_FLASH_INTERVAL_MS = 0;  // 0 = wylaczone
 constexpr unsigned long CDTEXT_TIME_FLASH_DURATION_MS = 4000;   // na 4s
 
 // --- PAMIEC NIEULOTNA (NVS) ---

@@ -83,6 +83,12 @@ public:
     bool   isEmpty() const { return count_ == 0; }
     bool   isFull()  const { return count_ == TX_QUEUE_CAPACITY; }
 
+    // Zwraca priorytet ramki o najwyzszym priorytecie (najnizszy numer), lub -1 gdy pusto.
+    int peekPriority() const {
+        int idx = findHighestPriorityIndex();
+        return (idx >= 0) ? slots_[idx].item.priority : -1;
+    }
+
     // Ile ramek o DANYM priorytecie czeka w kolejce. Pozwala zapytac "czy blok
     // nazw juz zszedl" bez mylenia go z ramka statusu czy czasu — samo
     // isEmpty() do tego nie wystarcza i prowadzilo do gubienia zadan CD-TEXT.

@@ -370,15 +370,17 @@ static void openRequestSession() {
 }
 
 static void maybeCloseRequestSession() {
-    // Sesji nie zamykamy, dopoki radio nie dostalo ramki EKRANU z biezacym
-    // stanem. Sama kolejka nie wystarczy: grant obsluzony ramka 0x9C/0xD5
-    // (zmiana plyty) nie odswieza wyswietlacza, wiec bez warunku displayStale
-    // nowy numer plyty czekalby na kolejny tik 1 Hz.
-    if (sessionGrants >= 1 && txQueue.isEmpty() &&
-        !CdChanger::isDisplayDirty() && !displayStale()) {
+    // Zamykamy sesje claim gdy:
+    // - oddalismy co najmniej 1 grant w biezacej sesji
+    // - kolejka TX jest pusta (nie ma zaleglych ramek CD-TEXT)
+    // - sekunda czasu nie jest brudna (ekran jest aktualny)
+    // Dzieki temu master dostaje krotki burst (1-4 granty OE), po czym
+    // przestaje pytac 01 15 i magistrala ma cisze miedzy sekundami.
+    if (sessionGrants >= 1 && txQueue.isEmpty() && !CdChanger::isDisplayDirty()) {
         requestSessionActive = false;
     }
 }
+
 
 void serviceSlaveBreak(bool busPowered) {
     if (!busPowered || !deviceAllocated) {
@@ -1019,14 +1021,9 @@ void servicePositionFrame1Hz(unsigned long now) {
     if ((now - lastPositionUpdateMs) < 1000) return;
     lastPositionUpdateMs = now;
 
-    // [MODEL BURSTOWY] Co sekunde otwieramy nowa sesje claim — to jedyny
-    // mechanizm wyzwalajacy burst. Bez tego emulator milczalby po zamknieciu
-    // sesji (claim `82 00`) i radio nie dostaloby aktualizacji czasu.
-    //
-    // Samej ramki czasu tu NIE kolejkujemy: burst potrafi ruszyc dopiero po
-    // Slave Breaku, wiec pre-kolejkowany tik dojechalby do radia z nieaktualna
-    // sekunda. Ramke buduje sendFreshDisplay dokladnie w chwili grantu `01 13`.
-    openRequestSession();
+    // [ALWAYS-CLAIM] Nie musimy otwierac sesji — w stanie aktywnym zawsze
+    // klejmujemy na 01 15. Zostawiamy funkcje jako punkt synchronizacji timingu.
+    // Swieza ramke 0x90/0xC0 buduje sendFreshDisplay dokladnie w chwili grantu `01 13`.
 }
 
 // ============================================================
@@ -1097,21 +1094,20 @@ void serviceCdText(unsigned long now) {
     bool obdForceUpdate = false;
     bool errorForceUpdate = false;
 
-    // MOCK OBD UPDATE: W trybie OBD wymuszamy odswiezenie, zeby symulowac
-    // strumien danych live. 500ms zatykalo magistrale (3 ramki teksowe zajmuja 
-    // kilkaset ms), wiec uzywamy bezpiecznego interwalu 1500ms.
+    // MOCK OBD UPDATE: W trybie OBD wymuszamy odswiezenie co 2500ms
     static unsigned long s_lastObdUpdateMs = 0;
     if (repeat != CdChanger::RepeatMode::Off) {
-        if (now - s_lastObdUpdateMs >= 1500) {
+        if (now - s_lastObdUpdateMs >= 2500) {
             obdForceUpdate = true;
             s_lastObdUpdateMs = now;
         }
     }
 
-    // ERROR UPDATE: W stanie błędu (gdy Repeat jest Off) wymuszamy ciągłe odświeżanie co 1500ms
+    // ERROR UPDATE: Gdy błąd się pojawi lub zmieni, obsłuży go `changed`.
+    // Okresowe ponawianie tylko jeśli CD_TEXT_REPEAT_MS > 0.
     static unsigned long s_lastErrorUpdateMs = 0;
-    if (currentError != Diagnostics::SystemError::None && repeat == CdChanger::RepeatMode::Off) {
-        if (now - s_lastErrorUpdateMs >= 1500) {
+    if (CD_TEXT_REPEAT_MS > 0 && currentError != Diagnostics::SystemError::None && repeat == CdChanger::RepeatMode::Off) {
+        if (now - s_lastErrorUpdateMs >= CD_TEXT_REPEAT_MS) {
             errorForceUpdate = true;
             s_lastErrorUpdateMs = now;
         }
@@ -1122,8 +1118,14 @@ void serviceCdText(unsigned long now) {
     // UWAGA: Nie robimy tego przy obdForceUpdate ani errorForceUpdate, by radio nie "migalo" tekstem!
     if (changed && s_textFlagState != 0) s_textFlagState = 0;
 
-    // Odswiezenie okresowe normalne lub wymuszone przez OBD / błąd
-    if (!changed && !obdForceUpdate && !errorForceUpdate && (now - s_textSentMs) < CD_TEXT_REPEAT_MS) return;
+    // Odswiezenie: tylko przy realnej zmianie (nowy utwor/plyta/blad), na zadanie OBD,
+    // lub okresowo jesli CD_TEXT_REPEAT_MS > 0. Gdy CD_TEXT_REPEAT_MS == 0,
+    // tekst leci RAZ A DOBRZE przy zmianie, a potem magistrala ma pelny spokoj.
+    if (!changed && !obdForceUpdate && !errorForceUpdate) {
+        if (CD_TEXT_REPEAT_MS == 0 || (now - s_textSentMs) < CD_TEXT_REPEAT_MS) {
+            return;
+        }
+    }
 
     // Znaczniki aktualizujemy DOPIERO gdy blok naprawde wszedl do kolejki — gdy
     // poprzedni komplet nazw jeszcze z niej nie zszedl, sprobujemy w nastepnej
@@ -1385,11 +1387,12 @@ void handlePacket(const uint8_t* buf, int len) {
             breakOkAwaitingPollMs = 0;
         }
         if (!deviceAllocated) {
-            // [FIX: RESET LOOP] Nie odpowiadaj magic, jeśli jesteśmy w oknie
-            // preliminary (radio prowadzi discovery i zaraz wyśle ANYONE?).
-            // Wysłanie magic teraz powoduje SYSTEM RESET, po którym radio
-            // znów robi preliminary → ANYONE? (ignorowane) → 01 11 → magic
-            // → nieskończona pętla resetów.
+            // [FIX: RESET LOOP] Nie odpowiadaj magic w oknie po SYSTEM RESET!
+            // Radio dopiero co zresetowalo sie i prowadzi procedure discovery.
+            // Wyslanie magic w tym oknie powoduje nieskonczona petle resetow (co 3s).
+            if ((millis() - lastSystemResetMs) < POST_RESET_GRACE_MS) {
+                return;
+            }
             if (isCdxM670 && lastPreliminaryTime != 0 &&
                 (millis() - lastPreliminaryTime) < PRELIMINARY_WINDOW_MS) {
                 Serial.println(">> [CDX-M670] 01 11 w oknie preliminary — pomijam magic (zapobiega petli resetow)");
@@ -1476,20 +1479,20 @@ void handlePacket(const uint8_t* buf, int len) {
         // Dopoki nie mamy adresu, nie mamy tez przydzielonego bitu — milczymy,
         // dokladnie tak jak prawdziwa zmieniarka przed appointem.
         if (!deviceAllocated) return;
-        // Gdy nie mamy nic do nadania — MILCZYMY. Prawdziwa zmieniarka nigdy nie
-        // odpowiada `82 00`: w zrzucie CDX-M670 na 103 odpytania `01 15` pada
-        // 94x `82 04` (chce magistrali), 5x sama maska urzadzenia 0x3B i ani
-        // JEDEN raz `82 00`. Brak odpowiedzi = "nikt nie chce", master konczy
-        // Request Polling i wraca do fali idle, a nowa runde budzi Slave Break.
-        //
-        // Nasze `82 00` przy odpytywaniu ~23 Hz oznaczalo ~23 dodatkowe
-        // 11-bajtowe transmisje na sekunde — czysty ruch, ktorego oryginal nie
-        // generuje, a kazda z nich to okazja do kolizji i przekłamanej ramki.
+
+        const CdChanger::MechState ms = CdChanger::mechState();
+        const bool isActive = (ms != CdChanger::MechState::Init && ms != CdChanger::MechState::Idle);
+
+        // Odpowiadamy maska 82 04 TYLKO wtedy, gdy mamy co nadac (ramka w txQueue,
+        // tik sekundy 1 Hz, zmiana utworu/stanu lub trwajaca sesja burstu).
+        // Bezwarunkowy claim (stary always-claim) powodowal nieskonczona petle 14 Hz
+        // (poll15=28/disp13=27 non-stop), ktora po 20s glodzila radio i wywolywala SYSTEM RESET.
         if (!wantsBus()) return;
+
         UnilinkBus::sendMedium(0x10, 0x18, 0x82, claimMask, 0x00, 0x00, 0x00, 0x00);
         if (DEBUG_VERBOSE) {
             Serial.printf(">> 01 15 (arbitraz): zglaszam maske 0x%02X (status=0x%02X)\n",
-                          claimMask, statusByteFromState(CdChanger::mechState()));
+                          claimMask, statusByteFromState(ms));
         }
     }
 
@@ -1510,17 +1513,26 @@ void handlePacket(const uint8_t* buf, int len) {
         sessionGrants++;
         CdChanger::notePolled();
         Tx::TxItem item;
-        if (txQueue.dequeue(item)) {
+        const int nextPrio = txQueue.peekPriority();
+        if (nextPrio >= 0 && nextPrio < Tx::PRIO_CD_TEXT) {
+            // Pilne odpowiedzi na zapytania radia (status 0xC0, disc ID, magazynek)
+            if (txQueue.dequeue(item)) {
+                UnilinkBus::sendRaw(item.bytes, item.len);
+            }
+        } else if (CdChanger::isDisplayDirty()) {
+            // Swiezy tik czasu (1 Hz) ma pierwszenstwo przed tekstem — brak opoznien i przeskoskow
+            sendFreshDisplay();
+            CdChanger::clearDisplayDirty();
+        } else if (txQueue.dequeue(item)) {
+            // Ramki CD-TEXT lub inne oczekujace w kolejce
             UnilinkBus::sendRaw(item.bytes, item.len);
         } else {
+            // Rutynowe odswiezenie ekranu
             sendFreshDisplay();
+            CdChanger::clearDisplayDirty();
         }
-        // Ekran oddany — kasujemy flage w OBU sciezkach. Gdyby kasowal ja tylko
-        // sendFreshDisplay, kazdy grant obsluzony z kolejki zostawialby dirty=1,
-        // sesja claim nigdy by sie nie zamknela i model burstowy zamienilby sie
-        // z powrotem w always-claim.
-        CdChanger::clearDisplayDirty();
-        // Zamknij burst — kolejne `01 15` dostana `82 00` (krotkie serie OE).
+        // Zamknij burst gdy kolejka pusta i ekran aktualny — kolejne 01 15 nie dostana
+        // claimu, master przejdzie do ciszy (dokladnie tak jak w sniffie prawdziwej zmieniarki).
         maybeCloseRequestSession();
     }
 
@@ -1938,10 +1950,16 @@ static void sendFreshDisplay() {
     // 0x90 tick (11 bajtow) — to wystarczy do interpolacji czasu na radiu.
     // Pelny 0xC0 co sekunde (stary kod) generowal ciezkie 16-bajtowe TX,
     // ktore powodowaly wiecej RESYNCow i SYSTEM RESETow.
-    // Okresowy 0xC0 idzie z serviceFullStatusFrame (co 5s z kolejki).
-    if (changed || ms == CdChanger::MechState::Seeking ||
+    static unsigned long s_lastC0TimeMs = 0;
+    const unsigned long nowDisplayMs = millis();
+    // Okresowy 0xC0 co 5s — budowany SWIEZO w miejscu, aby radio mialo pelny status
+    // bez kolejkowania przeterminowanych ramek czasu w txQueue.
+    const bool periodicC0 = (nowDisplayMs - s_lastC0TimeMs >= 5000);
+
+    if (changed || periodicC0 || ms == CdChanger::MechState::Seeking ||
         ms == CdChanger::MechState::LoadingTrack ||
         ms == CdChanger::MechState::ChangedCd) {
+        s_lastC0TimeMs = nowDisplayMs;
         if (ms == CdChanger::MechState::Playing || ms == CdChanger::MechState::Seeking) {
             s_lastC0Min = min;
             s_lastC0Sec = sec;
@@ -1971,20 +1989,11 @@ void enqueueFullStatusFrame() {
     enqueueStatusC0(Tx::PRIO_STATUS);
 }
 
-// [NAPRAWA ZASTYGANIA] Harmonogram ramki 0xC0 — co ~5s w stanie Playing
-// kolejkujemy pelny status. To uzupelnia lekki tik 0x90 i gwarantuje, ze
-// radio okresowo dostaje kompletna informacje (numer plyty, utworu, czas).
-// 5s to kompromis: nie zasmiecamy kolejki (jak przy 1s), a radio nie czeka
-// zbyt dlugo na pelna aktualizacje.
-static unsigned long lastFullStatusMs = 0;
 void serviceFullStatusFrame(unsigned long now) {
-    if (CdChanger::mechState() != CdChanger::MechState::Playing) {
-        lastFullStatusMs = now;
-        return;
-    }
-    if ((now - lastFullStatusMs) < 5000) return;
-    lastFullStatusMs = now;
-    enqueueStatusC0(Tx::PRIO_TIME);  // niski priorytet — nie wypycha wazniejszych ramek
+    // Ramka 0xC0 jest budowana i wysylana SWIEZO bezposrednio w sendFreshDisplay()
+    // co 5s. Nie kolejkujemy przeterminowanych ramek w txQueue, by nie powodowac
+    // sztormu Slave Break i skokow zegara.
+    (void)now;
 }
 
 // Natychmiastowe wysłanie pełnego statusu (poprawna ramka 0xC0 z markerem 0x30).
