@@ -560,19 +560,21 @@ constexpr int D2_MAX_CHARS  = CDTEXT_D2_MAX_CHARS;
 constexpr int D2_SLOT_COUNT = 8;   // CMD2 + D1..D7
 
 // Zbuduj 8 slotow jednego segmentu nazwy (CMD2, D1..D7) wg ukladu ze sniffu (sniff 165726):
-//   segment NIEOSTATNI : 6 znakow w slotach 0..5, slot6 = 0x02 ("ciag dalszy"),
+//   segment NIEOSTATNI : do 6 znakow w slotach 0..5, slot6 = 0x02 ("ciag dalszy"),
 //                        slot7 = 0x00
-//   segment OSTATNI    : do 7 znakow w slotach 0..6, slot7 = 0x01 ("koniec nazwy")
+//   segment OSTATNI    : do 6 znakow w slotach 0..5, slot6 = 0x00 (NUL terminator),
+//                        slot7 = 0x01 ("koniec nazwy")
 // Zwraca liczbe znakow zuzytych z `name`.
 static int buildTextSegment(const char* name, int offset, bool last, uint8_t* slots) {
     for (int i = 0; i < D2_SLOT_COUNT; ++i) slots[i] = 0x00;
-    const int capacity = last ? 7 : 6;  // ostatni segment miesci 7 znakow (sloty 0..6)
+    const int capacity = 6;  // OBU segmentow uzywamy max 6 znakow (sloty 0..5)
     int used = 0;
     while (used < capacity && name[offset + used] != '\0') {
         slots[used] = (uint8_t)name[offset + used];
         used++;
     }
     if (last) {
+        slots[6] = 0x00;   // Gwarancja: NUL terminator dla procesora 0x71 (brak wycieku w marquee)
         slots[7] = 0x01;   // 0x01 = ostatnia ramka nazwy (w slocie 7)
     } else {
         slots[6] = 0x02;   // 0x02 = kontynuacja
@@ -637,12 +639,12 @@ static void enqueueTextName(uint8_t cmd1, const char* rawName, uint8_t d8) {
 
     // Nazwa ZAWSZE schodzi jako co najmniej DWA segmenty:
     // Segment 1 (nieostatni, do 6 znakow, slot6 = 0x02 "ciag dalszy")
-    // Segment 2 (ostatni, do 7 znakow, slot7 = 0x01 "koniec nazwy")
+    // Segment 2 (ostatni, do 6 znakow, slot6 = 0x00 NUL, slot7 = 0x01 "koniec nazwy")
     int offset = 0;
     offset += buildTextSegment(sane, offset, /*last=*/false, slots);
     enqueueTextFrame(cmd1, slots, d8);
 
-    while ((total - offset) > 7) {
+    while ((total - offset) > 6) {
         offset += buildTextSegment(sane, offset, /*last=*/false, slots);
         enqueueTextFrame(cmd1, slots, d8);
     }

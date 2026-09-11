@@ -226,8 +226,10 @@ constexpr unsigned long PERSIST_FLUSH_IDLE_US = 1500000;  // 1.5 s ciszy
 constexpr unsigned long CD_TEXT_REPEAT_MS = 0;
 
 // Maksymalna dlugosc tekstu CD-TEXT w wariancie 0xD2 (Sony CDX-M670).
-// Dokladnie 13 znakow (segment 1: 6 znakow + separator 0x02; segment 2: do 7 znakow + marker 0x01 w slocie 7).
-constexpr int CDTEXT_D2_MAX_CHARS = 13;
+// Dokladnie 12 znakow (2 segmenty po max 6 znakow). Gwarantuje, ze w ostatnim segmencie
+// slot6 zawsze wynosi 0x00 (NUL terminator w buforze procesora 0x71).
+// Zapobiega to wyciekowi pamieci podczas przewijania (marquee) i umozliwia plynne zapetlenie.
+constexpr int CDTEXT_D2_MAX_CHARS = 12;
 
 // --- CYKL WYŚWIETLANIA: CZAS <-> CD-TEXT ---
 // Wyłączony (0) dla 100% stabilności i pełnej zgodności z fabryczną zmieniarką Sony CDX-805.
