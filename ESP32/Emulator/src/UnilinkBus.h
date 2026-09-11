@@ -90,6 +90,8 @@ void cancelSlaveBreak();
 uint16_t takeBreakCompleted();
 // true przez BREAK_RECOVERY_MS po udanym Hold — nie uzbrajac ponownie.
 bool breakRecoveryActive(unsigned long nowMs);
+// Czas (ms) od zakonczenia ostatniego impulsu Hold na magistrali.
+unsigned long timeSinceBreakDone(unsigned long nowMs);
 
 } // namespace UnilinkBus
 

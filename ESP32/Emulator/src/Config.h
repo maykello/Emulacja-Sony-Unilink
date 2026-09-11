@@ -231,12 +231,23 @@ constexpr unsigned long PERSIST_FLUSH_IDLE_US = 1500000;  // 1.5 s ciszy
 // magistrala ma pelny spokoj, zegar idzie idealnie 1 Hz i nie ma kolizji.
 constexpr unsigned long CD_TEXT_REPEAT_MS = 0;
 
-// --- CD-TEXT TIME FLASH (okresowe pokazywanie timera zamiast nazwy) ---
-// Podczas odtwarzania z CD-TEXT radio pokazuje nazwe utworu/plyty.
-// Ustaw INTERVAL na 0, zeby WYLACZYC te funkcje (OE feel: radio samo zarzadza widokiem,
-// a klawisz DSPL na radiu przelacza miedzy czasem a tekstem).
-constexpr unsigned long CDTEXT_TIME_FLASH_INTERVAL_MS = 0;  // 0 = wylaczone
-constexpr unsigned long CDTEXT_TIME_FLASH_DURATION_MS = 4000;   // na 4s
+// --- CYKL WYŚWIETLANIA: CZAS <-> CD-TEXT (Config: 10s timer, 5s CD-TEXT) ---
+// Podczas odtwarzania radio naprzemiennie pokazuje czas odtwarzania i nazwę utworu.
+// Przełączanie odbywa się w 100% bezpiecznie wewnątrz ramki 1 Hz (0x90),
+// bez żadnych dodatkowych impulsów Slave Break i bez zaśmiecania magistrali.
+// W trakcie przewijania (FF/REW) radio zawsze pokazuje wyłącznie timer.
+// Ustaw CDTEXT_TIMER_DURATION_MS na 0, aby wyłączyć cykl (ciągły widok CD-TEXT).
+constexpr unsigned long CDTEXT_TIMER_DURATION_MS = 10000; // 10s widok timera
+constexpr unsigned long CDTEXT_TEXT_DURATION_MS  = 5000;  // 5s widok nazwy utworu
+
+// Kompatybilność wsteczna dla starych nazw
+constexpr unsigned long CDTEXT_TIME_FLASH_INTERVAL_MS = CDTEXT_TEXT_DURATION_MS;
+constexpr unsigned long CDTEXT_TIME_FLASH_DURATION_MS = CDTEXT_TIMER_DURATION_MS;
+
+// --- TRYB OBD: INTERWAŁ ODŚWIEŻANIA TELEMETRII ---
+// W trybie OBD (Repeat One/All) dane na ekranie radia odświeżają się z tą częstotliwością.
+// 1000 ms (1 Hz) daje szybki, responsywny podgląd czujników bez dublowania Breaków.
+constexpr unsigned long OBD_UPDATE_INTERVAL_MS = 1000;
 
 // --- PAMIEC NIEULOTNA (NVS) ---
 constexpr const char* PREFS_NAMESPACE = "unilink";

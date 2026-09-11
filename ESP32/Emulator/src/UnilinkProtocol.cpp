@@ -132,65 +132,66 @@ static uint8_t s_lastC0Sec      = 0xFF;
 // zapytac (licznik `txt=0` w kazdym [STAT]).
 static uint8_t s_textFlagState = 0;   // 0 = nazwy niewyslane, 1 = swiezo wyslane, 2 = ustalone
 
-// --- OKRESOWY FLASH TIMERA (Config: CDTEXT_TIME_FLASH_*) ---
-// Co INTERVAL ms wycofujemy flage CD-TEXT na DURATION ms, zeby radio pokazalo
-// czas odtwarzania zamiast nazwy. Mechanizm identyczny jak przy seeking:
-// discFlagsNibble() zwraca 0x08 (brak tekstu), serviceCdText() milczy.
-// Po zakonczeniu flashu resetujemy cache — radio wraca do widoku tekstowego.
-static unsigned long s_timeFlashStartMs  = 0;   // 0 = flash nieaktywny
-static unsigned long s_lastTimeFlashEndMs = 0;  // koniec ostatniego flashu
-static bool          s_timeFlashWasActive = false;
+// --- CYKL WYŚWIETLANIA: CZAS <-> CD-TEXT (Config: CDTEXT_TIMER_DURATION_MS / CDTEXT_TEXT_DURATION_MS) ---
+// Co CDTEXT_TEXT_DURATION_MS (5s) nazwy utworu, wycofujemy flage CD-TEXT na
+// CDTEXT_TIMER_DURATION_MS (10s), zeby radio pokazalo czas odtwarzania (timer).
+// Odbywa sie to w 100% bezpiecznie — tylko poprzez flage w ramce 1 Hz (0x90).
+// Nie wstawiamy zadnych nowych ramek do kolejki TX i nie robimy dodatkowych Breakow.
+// W trakcie przewijania (isSeeking()) radio zawsze pokazuje wylacznie timer (0x08).
+static unsigned long s_timeFlashStartMs   = 0;   // czas rozpoczecia fazy timera (0 = faza tekstu)
+static unsigned long s_lastTextPhaseEndMs = 0;   // czas zakonczenia ostatniej fazy tekstu
 
-// Czy flash timera jest wlasnie aktywny? Zwraca true w oknie DURATION ms.
 static bool isTimeFlashActive() {
     return s_timeFlashStartMs != 0;
 }
 
-// Serwis stanu flashu — wolany z serviceCdText (raz na iteracje petli).
-// Otwiera/zamyka okno flashu wg konfiguracji. Zwraca true, jesli flash
-// jest aktywny (blokada CD-TEXT).
+static void resetDisplayCycle(unsigned long now) {
+    s_timeFlashStartMs = 0;
+    s_lastTextPhaseEndMs = now; // nowy utwor/wznowienie startuje od Fazy 1 (CD-TEXT)
+}
+
 static bool serviceTimeFlash(unsigned long now) {
-    // Funkcja wylaczona, aktywny błąd albo tryb OBD (Repeat)? W błędzie i OBD pokazujemy tekst sztywno.
-    if (CDTEXT_TIME_FLASH_INTERVAL_MS == 0 || Diagnostics::hasError() || CdChanger::repeatMode() != CdChanger::RepeatMode::Off) return false;
-    // Flash aktywny tylko w Playing z wyslana nazwa (s_textFlagState >= 1).
-    if (CdChanger::mechState() != CdChanger::MechState::Playing) {
+    if (CDTEXT_TIMER_DURATION_MS == 0 || Diagnostics::hasError() || CdChanger::repeatMode() != CdChanger::RepeatMode::Off) {
         s_timeFlashStartMs = 0;
-        s_lastTimeFlashEndMs = now;  // restart cyklu po wyjsciu z Playing
         return false;
     }
-    // Czy flash jest w toku?
+    if (CdChanger::mechState() != CdChanger::MechState::Playing) {
+        s_timeFlashStartMs = 0;
+        s_lastTextPhaseEndMs = now;
+        return false;
+    }
+
+    // Faza TIMERA (10s) w toku:
     if (s_timeFlashStartMs != 0) {
-        if ((now - s_timeFlashStartMs) >= CDTEXT_TIME_FLASH_DURATION_MS) {
-            // Koniec flashu — radio wróci do CD-TEXT.
+        if ((now - s_timeFlashStartMs) >= CDTEXT_TIMER_DURATION_MS) {
+            // Koniec fazy timera -> powrot do fazy CD-TEXT (5s)
             s_timeFlashStartMs = 0;
-            s_lastTimeFlashEndMs = now;
-            s_timeFlashWasActive = true;  // sygnalizuj reset cache w serviceCdText
+            s_lastTextPhaseEndMs = now;
+            // Podnosimy s_textFlagState na 1, by w nastepnym tiku 1Hz poszla flaga 0x0B
+            // ("tekst swiezo zmieniony") — budzi radio do ponownego pokazania nazwy
+            if (s_textFlagState == 2) s_textFlagState = 1;
             return false;
         }
-        return true;  // flash trwa
+        return true;  // faza timera trwa
     }
-    // Czy czas na nowy flash?
-    if (s_textFlagState >= 1 &&
-        (now - s_lastTimeFlashEndMs) >= CDTEXT_TIME_FLASH_INTERVAL_MS) {
+
+    // Faza CD-TEXT (5s) w toku:
+    if (s_textFlagState >= 1 && (now - s_lastTextPhaseEndMs) >= CDTEXT_TEXT_DURATION_MS) {
         s_timeFlashStartMs = now;
-        return true;  // wlasnie startujemy
+        return true;  // przejscie w faze timera
     }
     return false;
 }
 
 static uint8_t discFlagsNibble() {
     if (audioGetTrackCount(CdChanger::disk()) == 0 && !Diagnostics::hasError()) return 0x00;   // pusty slot
-    // Podczas seeking (FF/REW) kasujemy flage CD-TEXT — radio przełącza się na
-    // widok zwykły z timerem, bez nazw. Prawdziwa zmieniarka robi to samo:
-    // w sniffie CDX-M670 podczas cue/review nibbel spada do 0x8 (brak flagi
-    // 0x02/0x01), a po powrocie do Playing wraca na 0xA/0xB. Dzieki temu radio
-    // wie, ze w tej chwili tekst jest niedostepny i pokazuje timer zamiast nazwy.
+    // Podczas seeking (FF/REW) kasujemy flage CD-TEXT — radio natychmiast pokazuje timer
     if (CdChanger::isSeeking()) return 0x08;    // plyta obecna, tekst niedostepny
-    // Okresowy flash timera — ten sam efekt co seeking.
+    // Faza timera w cyklu wyswietlacza — ukryj tekst, pokaz czas
     if (isTimeFlashActive()) return 0x08;
     uint8_t flags = 0x08;                       // plyta obecna
-    if (s_textFlagState >= 1) flags |= 0x02;    // CD-TEXT dostepny
-    if (s_textFlagState == 1) flags |= 0x01;    // tekst wlasnie sie zmienil
+    if (s_textFlagState >= 1) flags |= 0x02;    // CD-TEXT dostepny (0x0A)
+    if (s_textFlagState == 1) flags |= 0x01;    // tekst wlasnie sie zmienil (0x0B)
     return flags;
 }
 
@@ -360,7 +361,10 @@ static bool wantsBus() {
     if (ms == CdChanger::MechState::Init || ms == CdChanger::MechState::Idle) {
         return false;
     }
-    if (!txQueue.isEmpty() || CdChanger::isDisplayDirty() || displayStale()) return true;
+    // W trybie OBD dane telemetrii w txQueue odswiezaja sie z czestotliwoscia 1 Hz.
+    // Nie zglaszamy dodatkowego wantsBus z tiku czasu (isDisplayDirty), by nie dublowac Breakow!
+    const bool isObd = (CdChanger::repeatMode() != CdChanger::RepeatMode::Off);
+    if (!txQueue.isEmpty() || (!isObd && CdChanger::isDisplayDirty()) || displayStale()) return true;
     return requestSessionActive;
 }
 
@@ -404,31 +408,21 @@ void serviceSlaveBreak(bool busPowered) {
         statBreakOk += justDone;
         openRequestSession();
         breakOkAwaitingPollMs = nowMs;
+        lastBreakTime = nowMs;  // Zaktualizuj znacznik w chwili gdy Hold FIZYCZNIE zakonczyl sie na linii!
     }
 
     if (UnilinkBus::slaveBreakPending()) return;
 
-    // Break uzbrajamy, gdy mamy co nadac, a Request Polling stoi. To jedyny
-    // przewidziany przez protokol sposob, w jaki slave prosi o magistrale.
+    // Nie uzbrajaj nowego Breaka, dopoki czekamy na 01 15 po poprzednim Breaku!
+    if (breakOkAwaitingPollMs != 0) {
+        if ((nowMs - breakOkAwaitingPollMs) < BREAK_RECOVERY_MS) return;
+        breakOkAwaitingPollMs = 0;
+    }
 
     // [GRACE PERIOD] Tuz po SYSTEM RESET radio robi discovery — w tym czasie
     // naturalnie nie ma `01 15`. Nie uzbrajaj Break, bo wyzwoli kolizje.
     if ((nowMs - lastSystemResetMs) < POST_RESET_GRACE_MS) return;
 
-    // W kolejce zalegaja jeszcze ramki bloku (CD-TEXT to 3-4 ramki, a na jeden
-    // grant idzie dokladnie jedna). Prawdziwej zmieniarce master sam prowadzi
-    // wtedy burst Request Pollingu z odstepem ~22 ms i caly blok schodzi w
-    // ~170 ms; nam nie prowadzi, wiec kazda ramka czekala pelne okno ciszy plus
-    // BREAK_RETRY_MS (~325 ms/ramke w logu). Podczas oprozniania kolejki
-    // czekamy na wlasny poll mastera krocej i szybciej ponawiamy Break.
-    const bool draining = !txQueue.isEmpty();
-
-    // Polling zywy — nie potrzebujemy Break.
-    //
-    // Nie ma tu juz warunku na Time Poll (`01 12`). Radio pinguje nim co ~600 ms
-    // NIEZALEZNIE od Request Pollingu, wiec warunek "nie rob Break, dopoki radio
-    // nas pinguje" blokowal Break na zawsze: po zamknieciu `01 15` emulator
-    // milczal, a ekran zastygal na stale (log 20:31: poll15=0, break=0/0,
     // Polling zywy — nie potrzebujemy Break.
     if ((nowMs - lastPoll15Ms) < POLL15_QUIET_BREAK_MS) {
         breakBackoffMs = BREAK_RETRY_MS;
@@ -436,29 +430,26 @@ void serviceSlaveBreak(bool busPowered) {
         return;
     }
 
-    // Plaski retry zamiast eksponencjalnego backoffu.
-    if (breakOkAwaitingPollMs != 0 &&
-        (nowMs - breakOkAwaitingPollMs) >= BREAK_RECOVERY_MS) {
-        breakOkAwaitingPollMs = 0;
-    }
-
-    // Ekran radia rozjechany ze stanem zmieniarki => prosba PILNA: pomijamy
-    // okno po poprzednim Breaku i skracamy odstep do BREAK_URGENT_MIN_MS.
     // Okno kolizyjne po odpytaniu obcego urzadzenia (suppressBreakUntil)
-    // zostaje — ono chroni cudza odpowiedz, nie nasz rytm.
-    const bool urgent = displayStale();
-    if (!urgent && !draining && UnilinkBus::breakRecoveryActive(nowMs)) return;
     if (nowMs < suppressBreakUntil) return;
+
+    const bool draining = !txQueue.isEmpty();
+    const bool urgent   = displayStale();
+
+    // BEZWZGLEDNY FIZYCZNY ODSTEP OD OSTATNIEGO HOLDA:
+    // Nigdy nie wolno wystawic kolejnego Holda wczesniej niz po min. 250-300 ms!
+    // Poprzedni kod pomijal ten warunek przy draining=true i wystrzelil 2 Break w odstepie 16 ms,
+    // co zresetowalo i zawiesilo radio.
     const unsigned long minBreakGap = urgent   ? BREAK_URGENT_MIN_MS
                                     : draining ? BREAK_QUEUE_MIN_MS
                                                : breakBackoffMs;
+    if (UnilinkBus::timeSinceBreakDone(nowMs) < minBreakGap) return;
     if (nowMs - lastBreakTime < minBreakGap) return;
     if (!wantsBus()) return;
 
     // Uzbrojenie Breaka jest teraz RUTYNA (raz na ~sekunde, gdy master spi), a
     // nie objawem awarii — stad brak zrzutu czarnej skrzynki i logu na kazde
-    // wystapienie. Zrzut 128 ramek co 10 s blokowal petle na tyle, ze sam
-    // wywolywal kolizje. Licznik `break=N/M` widac w [STAT].
+    // wystapienie. Licznik `break=N/M` widac w [STAT].
     UnilinkBus::requestSlaveBreak();
     lastBreakTime = nowMs;
     statBreak++;
@@ -723,6 +714,45 @@ static void enqueueCdTextDiscName(uint8_t disc) {
         audioGetDiscName(disc, raw, sizeof(raw));
     }
     enqueueTextName(0xDA, raw, (uint8_t)(disc & 0x0F));
+}
+
+static bool enqueueCdTextTrackOnly(bool withEndMarker, bool force) {
+    const uint8_t disc  = CdChanger::disk();
+    const uint8_t track = CdChanger::track();
+
+    if (txQueue.countPriority(Tx::PRIO_CD_TEXT) > 0) {
+        if (!force) return false;
+        txQueue.dropPriority(Tx::PRIO_CD_TEXT);
+    }
+
+    char raw[64];
+    if (Diagnostics::hasError() && CdChanger::repeatMode() == CdChanger::RepeatMode::Off) {
+        snprintf(raw, sizeof(raw), "%s", Diagnostics::getErrorString());
+    } else if (CdChanger::repeatMode() == CdChanger::RepeatMode::One) {
+        unsigned long mockPressure = 1500 + ((millis() / 500) % 11) * 100;
+        snprintf(raw, sizeof(raw), "%lu mBar", mockPressure);
+    } else if (CdChanger::repeatMode() == CdChanger::RepeatMode::All) {
+        unsigned long mockFuel = ((millis() / 500) % 54);
+        snprintf(raw, sizeof(raw), "%lu mg", mockFuel);
+    } else {
+        audioGetTrackName(disc, track, raw, sizeof(raw));
+    }
+    enqueueTextName(0xD2, raw, UnilinkFrame::encodeBcdFpad(track));
+    if (withEndMarker) enqueueTextEnd();
+    return true;
+}
+
+static bool enqueueCdTextDiscOnly(bool withEndMarker, bool force, uint8_t disc = 0) {
+    if (disc == 0) disc = CdChanger::disk();
+
+    if (txQueue.countPriority(Tx::PRIO_CD_TEXT) > 0) {
+        if (!force) return false;
+        txQueue.dropPriority(Tx::PRIO_CD_TEXT);
+    }
+
+    enqueueCdTextDiscName(disc);
+    if (withEndMarker) enqueueTextEnd();
+    return true;
 }
 
 // Odpowiedz na `84 D7`: nazwa biezacego utworu (0xD2), a po niej nazwa plyty
@@ -1058,31 +1088,28 @@ void serviceCdText(unsigned long now) {
     const CdChanger::MechState ms = CdChanger::mechState();
     if (ms == CdChanger::MechState::Init || ms == CdChanger::MechState::Idle) return;
 
-    // Podczas seeking nie wysylamy nazw CD-TEXT — radio jest w widoku timera.
-    // Prawdziwa zmieniarka tez milczy z nazwami podczas cue/review.
-    if (ms == CdChanger::MechState::Seeking) {
-        s_wasSeekingLastCdText = true;
+    // Podczas szukania, ladowania utworu lub zmiany plyty NIE wysylamy jeszcze CD-TEXT.
+    // Czekamy na pelne wejscie w Playing, aby najpierw poszedl status Playing C0 00,
+    // a zaraz za nim kompletny pakiet CD-TEXT (D2 + DA + D7).
+    if (ms == CdChanger::MechState::Seeking ||
+        ms == CdChanger::MechState::LoadingTrack ||
+        ms == CdChanger::MechState::ChangedCd) {
+        if (ms == CdChanger::MechState::Seeking) {
+            s_wasSeekingLastCdText = true;
+        }
         return;
     }
 
-    // Po zakonczeniu seeking (powrot do Playing): reset cache, zeby nazwy
-    // zostaly ponownie wyslane. Radio zobaczy nibbel 0xB ("tekst swiezo
-    // zmieniony") i wroci do widoku CD-TEXT.
+    // Po zakonczeniu seeking (powrot do Playing): reset cache i cyklu,
+    // zeby nazwy zostaly ponownie wyslane i radio wrocilo do widoku CD-TEXT.
     if (s_wasSeekingLastCdText) {
         s_wasSeekingLastCdText = false;
         resetCdTextCache();
+        resetDisplayCycle(now);
     }
 
-    // --- OKRESOWY FLASH TIMERA ---
-    // Wycofaj flage CD-TEXT na chwile, zeby radio pokazalo timer.
-    if (serviceTimeFlash(now)) {
-        return;   // flash aktywny — nie wysylamy nazw
-    }
-    // Po zakonczeniu flashu: reset cache, zeby nazwy wrocily.
-    if (s_timeFlashWasActive) {
-        s_timeFlashWasActive = false;
-        resetCdTextCache();
-    }
+    // Cykl wyswietlacza (10s timer <-> 5s CD-TEXT w ramce 1Hz)
+    serviceTimeFlash(now);
 
     const uint8_t disc   = CdChanger::disk();
     const uint8_t track  = CdChanger::track();
@@ -1094,10 +1121,10 @@ void serviceCdText(unsigned long now) {
     bool obdForceUpdate = false;
     bool errorForceUpdate = false;
 
-    // MOCK OBD UPDATE: W trybie OBD wymuszamy odswiezenie co 2500ms
+    // OBD UPDATE: W trybie OBD (Repeat One/All) odswiezamy dane telemetrii z czestotliwoscia 1 Hz (Config: OBD_UPDATE_INTERVAL_MS)
     static unsigned long s_lastObdUpdateMs = 0;
     if (repeat != CdChanger::RepeatMode::Off) {
-        if (now - s_lastObdUpdateMs >= 2500) {
+        if (now - s_lastObdUpdateMs >= OBD_UPDATE_INTERVAL_MS) {
             obdForceUpdate = true;
             s_lastObdUpdateMs = now;
         }
@@ -1113,9 +1140,7 @@ void serviceCdText(unsigned long now) {
         }
     }
 
-    // Zmiana utworu lub błędu kasuje flage "mam nazwy" — radio ma najpierw zobaczyc, ze
-    // tekst zniknal (nibbel 0x8), a dopiero potem, ze pojawil sie nowy (0xB).
-    // UWAGA: Nie robimy tego przy obdForceUpdate ani errorForceUpdate, by radio nie "migalo" tekstem!
+    // Zmiana utworu lub błędu kasuje flage "mam nazwy" przed wyslaniem nowego
     if (changed && s_textFlagState != 0) s_textFlagState = 0;
 
     // Odswiezenie: tylko przy realnej zmianie (nowy utwor/plyta/blad), na zadanie OBD,
@@ -1127,22 +1152,33 @@ void serviceCdText(unsigned long now) {
         }
     }
 
-    // Znaczniki aktualizujemy DOPIERO gdy blok naprawde wszedl do kolejki — gdy
-    // poprzedni komplet nazw jeszcze z niej nie zszedl, sprobujemy w nastepnej
-    // iteracji petli. Nie ma tu warunku na CALA kolejke: nazwy musza wchodzic
-    // takze obok ramki statusu, inaczej przy jednej ramce na grant nigdy nie
-    // trafialyby w okno "kolejka pusta".
-    if (!enqueueCdTextD2Track(/*withEndMarker=*/false, /*force=*/false)) return;
+    // Gdy zmienia sie utwor/plyta w stanie Playing:
+    // 1. Zaczynamy cykl wyswietlacza od nowa (5s CD-TEXT)
+    // 2. Podnosimy flage s_textFlagState = 1 (nibbel 0x0B w ramce)
+    // 3. Wrzucamy najpierw pelny status C0 00 (Playing) o najwyzszym priorytecie PRIO_STATUS
+    // 4. Wrzucamy kompletny pakiet CD-TEXT (D2 utwor + DA plyta + D7 end marker)
+    if (changed) {
+        resetDisplayCycle(now);
+        s_textFlagState = 1;
+        if (txQueue.countPriority(Tx::PRIO_STATUS) > 0) {
+            txQueue.dropPriority(Tx::PRIO_STATUS);
+        }
+        enqueueStatusC0(Tx::PRIO_STATUS);
+    } else if (s_textFlagState == 0) {
+        s_textFlagState = 1;
+    }
+
+    const bool forceText = changed || obdForceUpdate || errorForceUpdate;
+    if (obdForceUpdate && !changed) {
+        if (!enqueueCdTextTrackOnly(/*withEndMarker=*/true, /*force=*/true)) return;
+    } else {
+        if (!enqueueCdTextD2Track(/*withEndMarker=*/true, /*force=*/forceText)) return;
+    }
     s_textSentDisc   = disc;
     s_textSentTrack  = track;
     s_textSentRepeat = repeat;
     s_textSentError  = currentError;
     s_textSentMs     = now;
-
-    // Nibbel 0xB ("tekst dostepny + swiezo zmieniony") podnosimy tylko przy
-    // realnej zmianie plyty/utworu/błędu albo gdy radio jeszcze nie wie, ze mamy
-    // nazwy. Samo odswiezenie okresowe zostawia 0xA ("tekst dostepny").
-    if (changed || s_textFlagState == 0) s_textFlagState = 1;
 
     char name[64];
     char discName[64];
@@ -1513,21 +1549,20 @@ void handlePacket(const uint8_t* buf, int len) {
         sessionGrants++;
         CdChanger::notePolled();
         Tx::TxItem item;
-        const int nextPrio = txQueue.peekPriority();
-        if (nextPrio >= 0 && nextPrio < Tx::PRIO_CD_TEXT) {
-            // Pilne odpowiedzi na zapytania radia (status 0xC0, disc ID, magazynek)
-            if (txQueue.dequeue(item)) {
-                UnilinkBus::sendRaw(item.bytes, item.len);
-            }
-        } else if (CdChanger::isDisplayDirty()) {
-            // Swiezy tik czasu (1 Hz) ma pierwszenstwo przed tekstem — brak opoznien i przeskoskow
-            sendFreshDisplay();
-            CdChanger::clearDisplayDirty();
-        } else if (txQueue.dequeue(item)) {
-            // Ramki CD-TEXT lub inne oczekujace w kolejce
+        if (txQueue.dequeue(item)) {
+            // Ramki z kolejki TX (odpowiedzi statusowe, disc ID, magazynek, CD-TEXT).
+            // Schodza w jednym spojnym ciagu — nie wtracamy ramki czasu w srodek transferu nazw!
             UnilinkBus::sendRaw(item.bytes, item.len);
+            if (item.len >= 3 && item.bytes[2] == 0xC0) {
+                // Gdy ramka C0 schodzi z kolejki, aktualizujemy stan ostatnio nadanego ekranu
+                s_lastShownDisc  = CdChanger::disk();
+                s_lastShownTrack = CdChanger::track();
+                s_lastShownState = statusByteFromState(CdChanger::mechState());
+                settleTextFlag();
+                CdChanger::clearDisplayDirty();
+            }
         } else {
-            // Rutynowe odswiezenie ekranu
+            // Gdy kolejka jest pusta — budujemy swiezy ekran (0xC0 przy zmianie / 0x90 lekki tik 1Hz).
             sendFreshDisplay();
             CdChanger::clearDisplayDirty();
         }
@@ -1625,42 +1660,39 @@ void handlePacket(const uint8_t* buf, int len) {
     }
 
     // ===== 8b. Zadanie CD-TEXT — wariant CDX-M670 (3X .. 84 D7) =====
-    // Realny CDX-M670 prosi o nazwe utworu komenda op2=0xD7 (sniff), a NIE 0xD9,
-    // i oczekuje odpowiedzi w formacie 0xD2 (6 znakow, 1. znak w CMD2). Radio nie
-    // podaje numeru pola — strumieniujemy kolejne pola sami (enqueueCdTextD2Track).
-    // [WARIANT_PROTOKOLU §10.3] Wczesniej obslugiwalismy tylko 0xD9/0xDD, przez co
-    // CDX-M670 nie dostawal odpowiedzi i CD-TEXT sie nie pokazywal.
+    // Realny CDX-M670 prosi o nazwy komenda op2=0xD7.
+    // Bajt D4 (buf[8]) w ramce middle 84 D7 okresla zadane pole:
+    //   0x00 -> DISC NAME (zadanie nazwy plyty, odpowiedz 0xDA + marker 0xD7)
+    //   0x01 -> TRACK NAME (zadanie nazwy utworu, odpowiedz 0xD2 + 0xDA + marker 0xD7)
+    // Kazda odpowiedz na 84 D7 musi konczyc sie ramka 0xD7 (enqueueTextEnd).
+    // Ramka middle (11B): RAD TAD CMD1 CMD2 P1 D1 D2 D3 D4 P2 END
+    //   => D4 = buf[8]. UWAGA: buf[9] to P2 (parzystosc), NIE bajt danych!
+    //
+    // [ZGODNOSC Z OE] Sniff prawdziwej zmieniarki po zadaniu 84 D7 D4=0x01:
+    //   70 31 D2 ... (track name seg 1)
+    //   70 31 D2 ... (track name seg 2)
+    //   70 31 DA ... (disc name — nawet pusta)
+    //   70 31 D7 ... (end marker)
+    // Zmieniarka ZAWSZE wysyla track+disc+end, nie sam track. Wczesniejszy kod
+    // wywolywal enqueueCdTextTrackOnly, gubiąc nazwe plyty — dlatego na jednych
+    // utworach widac bylo track name a na innych cd name (zalezalo od tego, czy
+    // radio pytalo o track czy disc, a nie od samych nazw).
     else if (rad == myAddr && op1 == 0x84 && op2 == 0xD7) {
+        Serial.println(">> 84 D7: Zadanie CD-TEXT -> wysylam D2 + DA + D7");
         enqueueCdTextD2Track(/*withEndMarker=*/true, /*force=*/true);
     }
 
-    // ===== 8c. Zadanie CD-TEXT — radio nazywa ZADANA ODPOWIEDZ (84 D2 / 84 DA) =====
-    // Po pierwszym `84 D7` CDX-M670 przechodzi na `84 D2` i dopytuje nim co
-    // ~15-30 s. W logu 20260903_222727 zadania z 22:28:10, 22:28:24, 22:29:10,
-    // 22:29:27, 22:30:59 i 22:32:45 zostaly BEZ odpowiedzi, bo lancuch konczyl
-    // sie na 0xD7/0xD9/0xDD — stad tekst pojawiajacy sie z opoznieniem i
-    // "wybiorczo". Konwencja zadan 0x84 jest konsekwentna: w CMD2 radio wpisuje
-    // CMD1, ktore chce dostac w odpowiedzi (`84 D7` -> blok konczony 0xD7,
-    // `84 D9` -> pola 0xD9, `84 DD` -> pola 0xDD), wiec `84 D2` znaczy
-    // "przyslij ramki nazwy utworu 0xD2", a `84 DA` — "przyslij nazwe plyty".
-    //
-    // Ramke zamykajaca 0xD7 doklada TYLKO sciezka `84 D7`: prawdziwa zmieniarka
-    // we wszystkich pozostalych przypadkach konczy blok na nazwie plyty.
+    // ===== 8c. Zadanie CD-TEXT — radio nazywa ZADANA ODPOWIEDZ (84 D2 / 84 DA / 84 DD) =====
+    // 84 D2 -> zadanie nazwy utworu (D2 + DA gwarantuje spojnosc obu nazw w pamieci radia).
+    // 84 DA / 84 DD -> zadanie nazwy plyty (0xDA).
     else if (rad == myAddr && op1 == 0x84 && op2 == 0xD2) {
+        Serial.println(">> 84 D2: Zadanie TRACK NAME -> wysylam D2 + DA");
         enqueueCdTextD2Track(/*withEndMarker=*/false, /*force=*/true);
     }
-    else if (rad == myAddr && op1 == 0x84 && op2 == 0xDA) {
-        enqueueCdTextDiscName(discFromRequest(buf, len));
-    }
-
-    // ===== 9. Zadanie CD-TEXT — nazwa plyty (3X .. 84 DD) =====
-    // Odpowiadamy w formacie 0xDA, bo to jego CDX-M670 realnie akceptuje (na
-    // nim dziala juz nazwa utworu w 0xD2). Numer plyty bierzemy z D1, gdy radio
-    // go poda — lista plyt musi moc odpytac o KAZDY slot, nie tylko o biezacy.
-    // Wariant §10.2 (0xCD/0xDD, 8 znakow na pole) zostaje dla radii, ktore
-    // podaja numer pola, a nie numer plyty.
-    else if (rad == myAddr && op1 == 0x84 && op2 == 0xDD) {
-        enqueueCdTextDiscName(discFromRequest(buf, len));
+    else if (rad == myAddr && op1 == 0x84 && (op2 == 0xDA || op2 == 0xDD)) {
+        uint8_t disc = discFromRequest(buf, len);
+        Serial.printf(">> 84 %02X: Zadanie DISC NAME CD%d -> wysylam 0xDA\n", op2, disc);
+        enqueueCdTextDiscOnly(/*withEndMarker=*/false, /*force=*/true, disc);
     }
 
     // ===== 10. Zadanie mapy magazynka (3X .. 84 95) =====
@@ -1924,10 +1956,9 @@ static void sendFreshDisplay() {
     uint8_t sec   = CdChanger::seconds();
     CdChanger::MechState ms = CdChanger::mechState();
 
-    // Czy od ostatniej oddanej ramki zmienila sie plyta albo utwor? Musimy to
-    // policzyc PRZED aktualizacja s_lastShown*, bo od tego zalezy wybor miedzy
-    // pelnym 0xC0 a lekkim tikiem 0x90.
-    const bool changed = (disc != s_lastShownDisc || track != s_lastShownTrack);
+    const uint8_t curStateByte = statusByteFromState(ms);
+    const bool changed = (disc != s_lastShownDisc || track != s_lastShownTrack ||
+                          curStateByte != s_lastShownState);
 
     // Cokolwiek zaraz nadamy, radio bedzie mialo na ekranie TEN stan. Zapis musi
     // objac KAZDA sciezke (takze 0x8E i lekki 0x90), bo na tych trzech polach
@@ -1935,7 +1966,7 @@ static void sendFreshDisplay() {
     // Break powtarzalby sie w kolko po kazdej zmianie plyty.
     s_lastShownDisc  = disc;
     s_lastShownTrack = track;
-    s_lastShownState = statusByteFromState(ms);
+    s_lastShownState = curStateByte;
 
     // Mechanizm stoi (Init/Idle/Ejecting) — nie ma czasu do pokazania.
     if (ms == CdChanger::MechState::Idle || ms == CdChanger::MechState::Init) {
@@ -1945,21 +1976,14 @@ static void sendFreshDisplay() {
         return;
     }
 
-    // [NAPRAWA SYSTEM RESET] Pelny 0xC0 (16 bajtow) TYLKO przy zmianie plyty/
-    // utworu lub w stanach przejsciowych. W normalnym Playing wysylamy lekki
-    // 0x90 tick (11 bajtow) — to wystarczy do interpolacji czasu na radiu.
-    // Pelny 0xC0 co sekunde (stary kod) generowal ciezkie 16-bajtowe TX,
-    // ktore powodowaly wiecej RESYNCow i SYSTEM RESETow.
-    static unsigned long s_lastC0TimeMs = 0;
-    const unsigned long nowDisplayMs = millis();
-    // Okresowy 0xC0 co 5s — budowany SWIEZO w miejscu, aby radio mialo pelny status
-    // bez kolejkowania przeterminowanych ramek czasu w txQueue.
-    const bool periodicC0 = (nowDisplayMs - s_lastC0TimeMs >= 5000);
-
-    if (changed || periodicC0 || ms == CdChanger::MechState::Seeking ||
+    // Pelny 0xC0 (16 bajtow) przy zmianie plyty/utworu, wejsciu w Playing (curStateByte != s_lastShownState)
+    // lub w stanach przejsciowych (Seeking, LoadingTrack, ChangedCd).
+    // W normalnym Playing (ta sama plyta, ten sam utwor) NIE WYSYLAMY okresowego 0xC0,
+    // poniewaz 0xC0 powoduje przeladowanie calego ekranu radia i przerywa plynacy napis CD-TEXT (marquee)!
+    // W trakcie Playing wysylamy wylacznie lekki tik 0x90 (11 bajtow) — dokladnie tak jak prawdziwa zmieniarka.
+    if (changed || ms == CdChanger::MechState::Seeking ||
         ms == CdChanger::MechState::LoadingTrack ||
         ms == CdChanger::MechState::ChangedCd) {
-        s_lastC0TimeMs = nowDisplayMs;
         if (ms == CdChanger::MechState::Playing || ms == CdChanger::MechState::Seeking) {
             s_lastC0Min = min;
             s_lastC0Sec = sec;

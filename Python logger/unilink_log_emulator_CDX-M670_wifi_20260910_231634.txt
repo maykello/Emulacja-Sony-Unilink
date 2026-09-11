@@ -1,0 +1,54 @@
+[23:16:41.640] === SONY UNILINK ESP32 LOG STREAM (unilink.local) ===
+[23:16:43.347] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:02
+[23:16:45.339] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:04
+[23:16:45.547] >> ZADANIE 0x84: 31 71 84 D7 FD 70 00 00 00 6D 00
+[23:16:45.547] >> 84 D7: Zadanie TRACK NAME (0x6D) -> wysylam 0xD2 + 0xD7
+[23:16:47.351] [STAT] poll15=5 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=1 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:06
+[23:16:49.347] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=6/1 | alloc=1 state=0x00 CD12 TR34 00:08
+[23:16:51.342] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:10
+[23:16:53.337] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR34 00:12
+[23:16:55.347] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:14
+[23:16:57.342] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:16
+[23:16:59.336] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:18
+[23:17:01.348] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR34 00:20
+[23:17:03.340] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:22
+[23:17:05.337] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:24
+[23:17:07.346] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR34 00:26
+[23:17:09.341] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:28
+[23:17:11.348] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:30
+[23:17:13.347] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:32
+[23:17:15.342] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:34
+[23:17:17.340] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:36
+[23:17:19.347] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:38
+[23:17:21.342] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:40
+[23:17:23.351] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:42
+[23:17:25.348] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:44
+[23:17:27.342] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:46
+[23:17:29.081] >> NEXT TRACK: CD12 TR35 (max=99)
+[23:17:29.081] >> CD-TEXT wyslany: CD12 TR35 plyta="POLSKIE GK" utwor="Irena Jarocka - Zawsze pójdę z tobą"
+[23:17:29.112] [Audio-info] Closing audio file
+[23:17:29.160] >>> 40 -> 00 (Playing!)
+[23:17:29.352] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=1 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR35 00:00
+[23:17:29.384] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Irena Jarocka - Zawsze pójdę z tobą.mp3") = OK
+[23:17:29.384] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Irena Jarocka - Zawsze pójdę z tobą.mp3 (rozpoczęto dekodowanie)
+[23:17:29.496] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[23:17:31.347] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR35 00:02
+[23:17:33.343] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR35 00:04
+[23:17:35.335] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR35 00:06
+[23:17:37.349] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR35 00:08
+[23:17:39.344] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR35 00:10
+[23:17:41.334] [STAT] poll15=2 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR35 00:12
+[23:17:43.347] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR35 00:14
+[23:17:45.342] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR35 00:16
+[23:17:47.338] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR35 00:18
+[23:17:49.341] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR35 00:20
+[23:17:49.612] >> [Audio Bus] Radio sygnalizuje audio OFF (87 6A)
+[23:17:49.613] [NVS] Zapamietano ostatni utwor: CD12 TR35
+[23:17:49.613] [Audio] ⏹ Zatrzymano (zlecone).
+[23:17:49.629] >> [Audio Bus] Radio sygnalizuje audio OFF (87 2A)
+[23:17:49.629] [Audio] ⏹ Zatrzymano (zlecone).[Audio] DAC XSMT (GPIO 16) -> LOW (Wyciszono)
+[23:17:49.649] [Audio-info] Closing audio file
+[23:17:51.341] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR35 00:20
+[23:17:51.533] >>> C0 -> 80 (Idle)
+[23:17:53.334] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR35 00:20
+[23:17:57.341] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR35 00:20

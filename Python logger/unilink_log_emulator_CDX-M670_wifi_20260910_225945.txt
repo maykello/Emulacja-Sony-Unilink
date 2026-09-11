@@ -1,0 +1,97 @@
+[22:59:52.841] === SONY UNILINK ESP32 LOG STREAM (unilink.local) ===
+[22:59:53.491] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/2 | alloc=1 state=0x00 CD12 TR33 00:01
+[22:59:55.534] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:03
+[22:59:57.487] [STAT] poll15=4 disp13(my)=4 disp13(3B)=0 ping12(my)=0 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:05
+[22:59:58.521] >> ZADANIE 0x84: 31 71 84 D7 FD 70 00 00 00 6D 00
+[22:59:59.489] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=1 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:07
+[23:00:01.489] [STAT] poll15=4 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR33 00:09
+[23:00:03.488] [STAT] poll15=3 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:11
+[23:00:05.489] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:13
+[23:00:07.489] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:15
+[23:00:09.488] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:17
+[23:00:11.490] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:19
+[23:00:13.488] [STAT] poll15=2 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR33 00:21
+[23:00:15.517] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:23
+[23:00:17.488] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:25
+[23:00:19.487] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:27
+[23:00:21.487] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD12 TR33 00:29
+[23:00:23.489] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:31
+[23:00:25.486] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:33
+[23:00:27.485] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:35
+[23:00:29.487] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:37
+[23:00:31.490] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:39
+[23:00:33.487] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:41
+[23:00:35.496] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:43
+[23:00:37.500] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:45
+[23:00:39.493] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:47
+[23:00:41.485] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:49
+[23:00:43.489] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=5/1 | alloc=1 state=0x00 CD12 TR33 00:51
+[23:00:45.488] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:53
+[23:00:47.491] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:55
+[23:00:49.489] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:57
+[23:00:51.487] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 00:59
+[23:00:53.487] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 01:01
+[23:00:55.490] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 01:03
+[23:00:57.487] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 01:05
+[23:00:59.489] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 01:07
+[23:01:01.487] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 01:09
+[23:01:03.492] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR33 01:11
+[23:01:04.580] >> NEXT TRACK: CD12 TR34 (max=99)
+[23:01:04.580] >> CD-TEXT wyslany: CD12 TR34 plyta="POLSKIE GK" utwor="Irena Jarocka - Wymyslilam cie"
+[23:01:04.585] [Audio-info] Closing audio file
+[23:01:04.853] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Irena Jarocka - Wymyslilam cie.mp3") = OK
+[23:01:04.858] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Irena Jarocka - Wymyslilam cie.mp3 (rozpoczęto dekodowanie)
+[23:01:04.976] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[23:01:05.026] >>> 40 -> 00 (Playing!)
+[23:01:05.488] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=1 break=2/2 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD12 TR34 00:00
+[23:01:07.485] [STAT] poll15=4 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:02
+[23:01:09.487] [STAT] poll15=2 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:04
+[23:01:11.493] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:06
+[23:01:13.487] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:08
+[23:01:15.487] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:10
+[23:01:17.488] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:12
+[23:01:19.487] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:14
+[23:01:21.490] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:16
+[23:01:23.491] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:18
+[23:01:25.488] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:20
+[23:01:27.490] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:22
+[23:01:29.487] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:24
+[23:01:31.486] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:26
+[23:01:33.501] [STAT] poll15=2 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:28
+[23:01:35.486] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=0 btn=0 break=3/3 txt=0 seek=0 rxerr=2/1 | alloc=1 state=0x00 CD12 TR34 00:30
+[23:01:37.490] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:32
+[23:01:39.486] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:34
+[23:01:41.487] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:36
+[23:01:43.486] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:38
+[23:01:45.488] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:40
+[23:01:47.493] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:42
+[23:01:49.505] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:44
+[23:01:51.496] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:46
+[23:01:53.492] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:48
+[23:01:55.489] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:50
+[23:01:57.486] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:52
+[23:01:59.487] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:54
+[23:02:01.487] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:56
+[23:02:03.486] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR34 00:58
+[23:02:05.487] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR34 01:00
+[23:02:05.871] >> [Audio Bus] Radio sygnalizuje audio OFF (87 6A)
+[23:02:05.879] [NVS] Zapamietano ostatni utwor: CD12 TR34
+[23:02:05.884] [Audio] ⏹ Zatrzymano (zlecone).
+[23:02:05.893] >> [Audio Bus] Radio sygnalizuje audio OFF (87 2A)
+[23:02:05.896] [Audio] ⏹ Zatrzymano (zlecone).
+[23:02:05.903] [Audio] DAC XSMT (GPIO 16) -> LOW (Wyciszono)
+[23:02:05.917] [Audio-info] Closing audio file
+[23:02:08.700] >>> C0 -> 80 (Idle)
+[23:02:09.490] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR34 01:00
+[23:02:11.486] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR34 01:00
+[23:02:13.488] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR34 01:00
+[23:02:15.486] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR34 01:00
+[23:02:16.743] >> [Audio Bus] Radio sygnalizuje audio OFF (87 22)
+[23:02:16.745] [Audio] ⏹ Zatrzymano (zlecone).
+[23:02:16.766] === BUS_ON = 0 ===
+[23:02:16.782] === SEN: magistrala wylaczona ===
+[23:02:16.796] [Audio] ⏹ Zatrzymano (zlecone).
+[23:02:16.805] === BUS_ON = 0: Oczekiwanie 4000ms na wylaczenie zasilania ===
+[23:02:20.799] === BUS_ON nieaktywny przez 4s: Wylaczam zasilanie (commitSuicide) ===
+[23:02:20.802] === ROZPOCZYNAM PROCEDURĘ WYŁĄCZANIA ZASILANIA ===
+[23:02:20.956] === ODCINAM PRĄD. DOBRANOC. ===

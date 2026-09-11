@@ -478,6 +478,11 @@ bool breakRecoveryActive(unsigned long nowMs) {
     return (nowMs - s_breakDoneMs) < BREAK_RECOVERY_MS;
 }
 
+unsigned long timeSinceBreakDone(unsigned long nowMs) {
+    if (s_breakDoneMs == 0) return 999999;
+    return (nowMs >= s_breakDoneMs) ? (nowMs - s_breakDoneMs) : 0;
+}
+
 void serviceSlaveBreak() {
     if (s_breakState == BreakState::Idle) return;
 

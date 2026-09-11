@@ -1,0 +1,18 @@
+[11:32:17.208] === SONY UNILINK ESP32 LOG STREAM (unilink.local) ===
+[11:32:17.848] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR38 02:40
+[11:32:19.846] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR38 02:42
+[11:32:21.839] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR38 02:44
+[11:32:22.815] >> NEXT TRACK: CD12 TR39 (max=99)
+[11:32:22.815] >> CD-TEXT wyslany: CD12 TR39 plyta="POLSKIE GK" utwor="Irena Jarocka&Budka suflera  - Nie odchodz jeszcze"
+[11:32:22.815] [Audio-info] Closing audio file
+[11:32:22.943] >>> 40 -> 00 (Playing!)
+[11:32:23.087] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Irena Jarocka&Budka suflera  - Nie odchodz jeszcze.mp3") = OK
+[11:32:23.087] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Irena Jarocka&Budka suflera  - Nie odchodz jeszcze.mp3 (rozpoczęto dekodowanie)
+[11:32:23.200] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[11:32:23.838] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=0 btn=1 break=3/3 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR39 00:00
+[11:32:25.845] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR39 00:02
+[11:32:27.842] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR39 00:04
+[11:32:29.836] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD12 TR39 00:06
+[11:32:31.846] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR39 00:08
+[11:32:33.842] [STAT] poll15=2 disp13(my)=3 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR39 00:10
+[11:32:35.839] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR39 00:12
