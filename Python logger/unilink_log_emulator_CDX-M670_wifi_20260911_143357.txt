@@ -1,0 +1,90 @@
+[14:34:04.765] === SONY UNILINK ESP32 LOG STREAM (unilink.local) ===
+[14:34:04.829] [STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:04
+[14:34:06.827] [STAT] poll15=1 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD12 TR8 00:06
+[14:34:08.823] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:08
+[14:34:10.821] [STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:10
+[14:34:12.817] [STAT] poll15=1 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:12
+[14:34:14.880] [STAT] poll15=2 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:14
+[14:34:16.828] [STAT] poll15=2 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:16
+[14:34:18.826] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:18
+[14:34:20.827] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:20
+[14:34:22.818] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:22
+[14:34:24.830] [STAT] poll15=2 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR8 00:24
+[14:34:24.990] >> NEXT TRACK: CD12 TR9 (max=99)
+[14:34:24.990] >> CD-TEXT wyslany: CD12 TR9 plyta="POLSKIE GK" utwor="Halina Frąckowiak - Przeżyłam  z  Tobą  Tyle  Lat"
+[14:34:24.990] [Audio-info] Closing audio file
+[14:34:25.054] >>> 40 -> 00 (Playing!)
+[14:34:25.215] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Frąckowiak - Przeżyłam  z  Tobą  Tyle  Lat.mp3") = OK
+[14:34:25.215] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Frąckowiak - Przeżyłam  z  Tobą  Tyle  Lat.mp3 (rozpoczęto dekodowanie)
+[14:34:25.336] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[14:34:26.832] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=1 break=3/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR9 00:01
+[14:34:28.829] [STAT] poll15=3 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=2/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR9 00:03
+[14:34:30.829] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR9 00:05
+[14:34:32.829] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR9 00:07
+[14:34:34.829] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR9 00:09
+[14:34:36.830] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR9 00:11
+[14:34:38.829] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR9 00:13
+[14:34:40.825] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR9 00:15
+[14:34:42.821] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR9 00:17
+[14:34:44.833] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR9 00:19
+[14:34:46.493] >> PREV TRACK (Restart utworu): CD12 TR9
+[14:34:46.509] [Audio-info] Closing audio file
+[14:34:46.748] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Frąckowiak - Przeżyłam  z  Tobą  Tyle  Lat.mp3") = OK
+[14:34:46.748] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Frąckowiak - Przeżyłam  z  Tobą  Tyle  Lat.mp3 (rozpoczęto dekodowanie)
+[14:34:46.828] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=1 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x40 CD12 TR9 00:00
+[14:34:46.866] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[14:34:47.099] >>> 40 -> 00 (Playing!)
+[14:34:48.825] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR9 00:01
+[14:34:48.999] >> NEXT TRACK: CD12 TR10 (max=99)
+[14:34:48.999] >> CD-TEXT wyslany: CD12 TR10 plyta="POLSKIE GK" utwor="Halina Kunicka - Cyganka"
+[14:34:49.015] [Audio-info] Closing audio file
+[14:34:49.238] [Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Kunicka - Cyganka.mp3") = OK
+[14:34:49.238] [Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Kunicka - Cyganka.mp3 (rozpoczęto dekodowanie)
+[14:34:49.350] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[14:34:49.607] >>> 40 -> 00 (Playing!)
+[14:34:50.820] [STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=1 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR10 00:01
+[14:34:52.819] [STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR10 00:03
+[14:34:54.819] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR10 00:05
+[14:34:56.829] [STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR10 00:07
+[14:34:58.829] [STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR10 00:09
+[14:35:00.828] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR10 00:11
+[14:35:02.839] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR10 00:13
+[14:35:04.817] [STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR10 00:15
+[14:35:06.831] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR10 00:17
+[14:35:08.821] [STAT] poll15=2 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR10 00:19
+[14:35:10.830] [STAT] poll15=2 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR10 00:21
+[14:35:12.826] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR10 00:23
+[14:35:14.820] [STAT] poll15=2 disp13(my)=3 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR10 00:25
+[14:35:16.821] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR10 00:27
+[14:35:18.825] [STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR10 00:29
+[14:35:20.829] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR10 00:31
+[14:35:22.827] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR10 00:33
+[14:35:24.817] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR10 00:35
+[14:35:26.816] [STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR10 00:37
+[14:35:28.815] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR10 00:39
+[14:35:30.828] [STAT] poll15=2 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR10 00:41
+[14:35:32.821] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR10 00:43
+[14:35:34.829] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR10 00:45
+[14:35:36.828] [STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR10 00:47
+[14:35:38.291] >> [Audio Bus] Radio sygnalizuje audio OFF (87 6A)
+[14:35:38.291] [NVS] Zapamietano ostatni utwor: CD12 TR10
+[14:35:38.303] [Audio] ⏹ Zatrzymano (zlecone).
+[14:35:38.319] >> [Audio Bus] Radio sygnalizuje audio OFF (87 2A)
+[14:35:38.327] [Audio] ⏹ Zatrzymano (zlecone).
+[14:35:38.331] [Audio] DAC XSMT (GPIO 16) -> LOW (Wyciszono)
+[14:35:38.335] [Audio-info] Closing audio file
+[14:35:38.826] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR10 00:48
+[14:35:40.485] >>> C0 -> 80 (Idle)
+[14:35:40.829] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR10 00:48
+[14:35:42.833] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR10 00:48
+[14:35:44.828] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD12 TR10 00:48
+[14:35:48.506] >> [Audio Bus] Radio sygnalizuje audio OFF (87 22)
+[14:35:48.506] [Audio] ⏹ Zatrzymano (zlecone).
+[14:35:48.538] === BUS_ON = 0 ===
+[14:35:48.554] === SEN: magistrala wylaczona ===
+[14:35:48.570] [Audio] ⏹ Zatrzymano (zlecone).
+[14:35:48.586] === BUS_ON = 0: Oczekiwanie 4000ms na wylaczenie zasilania ===
+[14:35:48.814] [STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=0 state=0x80 CD12 TR10 00:48
+[14:35:52.578] === BUS_ON nieaktywny przez 4s: Wylaczam zasilanie (commitSuicide) ===
+[14:35:52.584] === ROZPOCZYNAM PROCEDURĘ WYŁĄCZANIA ZASILANIA ===
+[14:35:52.735] === ODCINAM PRĄD. DOBRANOC. ===

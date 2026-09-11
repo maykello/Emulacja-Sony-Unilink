@@ -130,18 +130,20 @@ constexpr unsigned long POLL15_QUIET_DRAIN_MS = 80;
 // magistrali, wiec im ich wiecej, tym wieksza szansa wejscia w cudza ramke.
 // 500 ms wystarcza na sekundnik (potrzebny jeden Break na sekunde) i schodzi
 // najwyzej do dwoch Breakow na sekunde przy oproznianiu kolejki CD-TEXT.
-constexpr unsigned long BREAK_RETRY_MS     = 500;
-constexpr unsigned long BREAK_RECOVERY_MS  = 600;
+constexpr unsigned long BREAK_RETRY_MS     = 1500;
+constexpr unsigned long BREAK_RECOVERY_MS  = 800;
 constexpr unsigned long BREAK_BACKOFF_MAX_MS = 3000;
+// Odstep dla Breaka sekundnika 1 Hz w stanie Playing (OE style: dokladnie 1 Break na sekunde)
+constexpr unsigned long BREAK_TICK_MIN_MS   = 700;
 // Odstep dla Breaka PILNEGO — gdy ekran radia pokazuje nieaktualna plyte/utwor/
 // stan (uzytkownik wlasnie nacisnal klawisz i czeka na reakcje). Wtedy zwykly
 // odstep i okno BREAK_RECOVERY_MS sa pomijane, bo kilkusekundowe opoznienie
 // numeru plyty czy licznika czasu jest natychmiast widoczne na wyswietlaczu.
 constexpr unsigned long BREAK_URGENT_MIN_MS = 250;
 // Odstep dla Breaka, gdy w kolejce TX zalegaja jeszcze ramki (blok CD-TEXT).
-// 300ms daje bezpieczny margines chroniacy przed kolizjami z Time Pollem (01 12)
-// i odpytaniami wewnetrznego CD (0x3B) / procesora wyswietlacza (0x71).
-constexpr unsigned long BREAK_QUEUE_MIN_MS = 300;
+// Zwiekszony z 300ms do 1500ms, aby uniknac serii szybkich Breakow (sztorm 7 Breakow w 4s)
+// ktory doprowadzal do kolizji z pingami urzadzen wewnetrznych i RADIO SYSTEM RESET.
+constexpr unsigned long BREAK_QUEUE_MIN_MS = 1500;
 
 // Po SYSTEM RESET radio robi discovery (preliminary + ANYONE? + appoint). Caly
 // cykl trwa ~2-3s. W tym czasie NIE WOLNO wyzwalac auto-recovery (`01 11`)
@@ -193,10 +195,10 @@ constexpr unsigned long BREAK_ARM_TIMEOUT_US = 2500000;
 // Radio odpytuje swoje urzadzenia (0x3B = CD radia, 0x71 = kontroler), ktore
 // odpowiadaja z opoznieniem ~9-12ms. Gdy zobaczymy poll do INNEGO urzadzenia,
 // blokujemy break na to okno, az tamto zdazy odpowiedziec.
-// [STABILNOSC] Przywrocone 30 ms (chwilowo bylo 15). Krotsze okno przepuszczalo
-// wiecej breakow tuz po odpytaniu obcego urzadzenia, zwiekszajac ryzyko kolizji
-// (obce urzadzenia odpowiadaja ~9-12 ms). 30 ms daje pewny zapas.
-constexpr unsigned long FOREIGN_POLL_GUARD_MS = 30;
+// [STABILNOSC] Zwiekszone z 30 ms do 350 ms. Gdy Master odpytuje procesor panelu (0x71)
+// lub wewnetrzne CD (0x3B), zapobiega to wbijaniu Slave Breaka w trakcie oczekiwania
+// lub ponawiania pingu przez Mastera (co prowadzilo do SYSTEM RESET 18 10 01 00).
+constexpr unsigned long FOREIGN_POLL_GUARD_MS = 350;
 
 // --- DETEKCJA CDX-M670 ---
 // Po markerze preliminary (3B/DB) ignorujemy ANYONE? przez to okno, by radio
@@ -231,14 +233,18 @@ constexpr unsigned long PERSIST_FLUSH_IDLE_US = 1500000;  // 1.5 s ciszy
 // magistrala ma pelny spokoj, zegar idzie idealnie 1 Hz i nie ma kolizji.
 constexpr unsigned long CD_TEXT_REPEAT_MS = 0;
 
-// --- CYKL WYŚWIETLANIA: CZAS <-> CD-TEXT (Config: 10s timer, 5s CD-TEXT) ---
-// Podczas odtwarzania radio naprzemiennie pokazuje czas odtwarzania i nazwę utworu.
-// Przełączanie odbywa się w 100% bezpiecznie wewnątrz ramki 1 Hz (0x90),
-// bez żadnych dodatkowych impulsów Slave Break i bez zaśmiecania magistrali.
-// W trakcie przewijania (FF/REW) radio zawsze pokazuje wyłącznie timer.
-// Ustaw CDTEXT_TIMER_DURATION_MS na 0, aby wyłączyć cykl (ciągły widok CD-TEXT).
-constexpr unsigned long CDTEXT_TIMER_DURATION_MS = 10000; // 10s widok timera
-constexpr unsigned long CDTEXT_TEXT_DURATION_MS  = 5000;  // 5s widok nazwy utworu
+// Maksymalna dlugosc tekstu CD-TEXT w wariancie 0xD2 (Sony CDX-M670).
+// Dokladnie 12 znakow (2 segmenty po max 6 znakow). Gwarantuje, ze w ostatnim segmencie
+// slot6 zawsze wynosi 0x00 (NUL terminator w buforze procesora 0x71).
+// Zapobiega to wyciekowi pamieci podczas przewijania (marquee) i umozliwia plynne zapetlenie.
+constexpr int CDTEXT_D2_MAX_CHARS = 12;
+
+// --- CYKL WYŚWIETLANIA: CZAS <-> CD-TEXT ---
+// Wyłączony (0) dla 100% stabilności i pełnej zgodności z fabryczną zmieniarką Sony CDX-805.
+// Zmieniarka wysyła CD-TEXT jednorazowo przy starcie utworu. Wybór widoku (Czas / Tytuł / Płyta)
+// należy do użytkownika za pomocą fabrycznego przycisku DSPL na panelu radia.
+constexpr unsigned long CDTEXT_TIMER_DURATION_MS = 0;
+constexpr unsigned long CDTEXT_TEXT_DURATION_MS  = 0;
 
 // Kompatybilność wsteczna dla starych nazw
 constexpr unsigned long CDTEXT_TIME_FLASH_INTERVAL_MS = CDTEXT_TEXT_DURATION_MS;

@@ -59,66 +59,144 @@ int buildFieldWidth(const char* name, int field, int width, uint8_t* outChars) {
     return count;
 }
 
+inline bool isExtEqual(const char* ext, size_t len, const char* target) {
+    size_t tLen = 0;
+    while (target[tLen] != '\0') tLen++;
+    if (len != tLen) return false;
+    for (size_t i = 0; i < len; ++i) {
+        char c = ext[i];
+        if (c >= 'A' && c <= 'Z') c = static_cast<char>(c + 32);
+        if (c != target[i]) return false;
+    }
+    return true;
+}
+
 } // namespace
 
 size_t sanitizeAscii(const char* in, char* out, size_t maxLen) {
     if (out == nullptr || maxLen == 0) {
         return 0;
     }
+    if (in == nullptr || in[0] == '\0') {
+        out[0] = '\0';
+        return 0;
+    }
+
+    size_t totalInLen = 0;
+    while (in[totalInLen] != '\0') totalInLen++;
+
+    // 1. Wykryj ewentualne rozszerzenie pliku audio (.mp3, .wav, .flac itp.) na koncu
+    size_t endLimit = totalInLen;
+    for (size_t k = totalInLen; k > 0; --k) {
+        if (in[k - 1] == '.') {
+            const char* ext = &in[k];
+            size_t extLen = totalInLen - k;
+            if (isExtEqual(ext, extLen, "mp3") || isExtEqual(ext, extLen, "wav") ||
+                isExtEqual(ext, extLen, "flac") || isExtEqual(ext, extLen, "m4a") ||
+                isExtEqual(ext, extLen, "aac") || isExtEqual(ext, extLen, "ogg") ||
+                isExtEqual(ext, extLen, "wma")) {
+                endLimit = k - 1; // odetnij kropke i rozszerzenie
+            }
+            break;
+        }
+    }
+
+    // 2. Pomin ewentualny prefiks numeryczny utworu (np. "01. ", "01 - ", "01_ ", "01 ")
+    size_t start = 0;
+    size_t digits = 0;
+    while ((start + digits) < endLimit && in[start + digits] >= '0' && in[start + digits] <= '9') {
+        digits++;
+    }
+    if (digits >= 1 && digits <= 3) {
+        size_t afterDigits = start + digits;
+        if (afterDigits < endLimit && (in[afterDigits] == '.' || in[afterDigits] == '-' || in[afterDigits] == '_')) {
+            afterDigits++;
+            while (afterDigits < endLimit && (in[afterDigits] == ' ' || in[afterDigits] == '-' || in[afterDigits] == '_')) {
+                afterDigits++;
+            }
+            // Uzyj prefiksu tylko jesli po nim zostaje jeszcze jakis tekst
+            if (afterDigits < endLimit) {
+                start = afterDigits;
+            }
+        } else if (afterDigits < endLimit && in[afterDigits] == ' ') {
+            while (afterDigits < endLimit && in[afterDigits] == ' ') {
+                afterDigits++;
+            }
+            if (afterDigits < endLimit) {
+                start = afterDigits;
+            }
+        }
+    }
+
+    // 3. Kopiowanie z zamiana polskich znakow UTF-8, podkreslen i redukcja podwojnych spacji
     size_t written = 0;
-    if (in != nullptr) {
-        // Zostaw miejsce na terminator (maxLen liczy terminator).
-        for (size_t i = 0; in[i] != '\0' && written + 1 < maxLen; ) {
-            unsigned char c1 = static_cast<unsigned char>(in[i]);
+    bool lastWasSpace = true; // zapobiega poczatkowym spacjom
+
+    for (size_t i = start; i < endLimit && in[i] != '\0' && written + 1 < maxLen; ) {
+        unsigned char c1 = static_cast<unsigned char>(in[i]);
+        
+        // Obsługa UTF-8 (polskie znaki diakrytyczne)
+        if (c1 >= 0xC0 && (i + 1) < endLimit && in[i+1] != '\0') {
+            unsigned char c2 = static_cast<unsigned char>(in[i+1]);
+            char replacement = 0;
             
-            // Obsługa UTF-8 (polskie znaki)
-            if (c1 >= 0xC0 && in[i+1] != '\0') {
-                unsigned char c2 = static_cast<unsigned char>(in[i+1]);
-                char replacement = 0;
-                
-                if (c1 == 0xC3) {
-                    if (c2 == 0xB3) replacement = 'o'; // ó
-                    else if (c2 == 0x93) replacement = 'O'; // Ó
-                } else if (c1 == 0xC4) {
-                    if (c2 == 0x85) replacement = 'a'; // ą
-                    else if (c2 == 0x84) replacement = 'A'; // Ą
-                    else if (c2 == 0x87) replacement = 'c'; // ć
-                    else if (c2 == 0x86) replacement = 'C'; // Ć
-                    else if (c2 == 0x99) replacement = 'e'; // ę
-                    else if (c2 == 0x98) replacement = 'E'; // Ę
-                } else if (c1 == 0xC5) {
-                    if (c2 == 0x82) replacement = 'l'; // ł
-                    else if (c2 == 0x81) replacement = 'L'; // Ł
-                    else if (c2 == 0x84) replacement = 'n'; // ń
-                    else if (c2 == 0x83) replacement = 'N'; // Ń
-                    else if (c2 == 0x9B) replacement = 's'; // ś
-                    else if (c2 == 0x9A) replacement = 'S'; // Ś
-                    else if (c2 == 0xBA) replacement = 'z'; // ź
-                    else if (c2 == 0xB9) replacement = 'Z'; // Ź
-                    else if (c2 == 0xBC) replacement = 'z'; // ż
-                    else if (c2 == 0xBB) replacement = 'Z'; // Ż
-                }
-                
-                if (replacement != 0) {
-                    out[written++] = replacement;
-                    i += 2;
-                    continue;
-                }
-                
-                // Jeśli to inny znak UTF-8, pomiń go całościowo (żeby nie zostawiać krzaków)
-                if ((c1 & 0xE0) == 0xC0) i += 2;
-                else if ((c1 & 0xF0) == 0xE0) i += 3;
-                else if ((c1 & 0xF8) == 0xF0) i += 4;
-                else i += 1;
+            if (c1 == 0xC3) {
+                if (c2 == 0xB3) replacement = 'o';      // ó
+                else if (c2 == 0x93) replacement = 'O'; // Ó
+            } else if (c1 == 0xC4) {
+                if (c2 == 0x85) replacement = 'a';      // ą
+                else if (c2 == 0x84) replacement = 'A'; // Ą
+                else if (c2 == 0x87) replacement = 'c'; // ć
+                else if (c2 == 0x86) replacement = 'C'; // Ć
+                else if (c2 == 0x99) replacement = 'e'; // ę
+                else if (c2 == 0x98) replacement = 'E'; // Ę
+            } else if (c1 == 0xC5) {
+                if (c2 == 0x82) replacement = 'l';      // ł
+                else if (c2 == 0x81) replacement = 'L'; // Ł
+                else if (c2 == 0x84) replacement = 'n'; // ń
+                else if (c2 == 0x83) replacement = 'N'; // Ń
+                else if (c2 == 0x9B) replacement = 's'; // ś
+                else if (c2 == 0x9A) replacement = 'S'; // Ś
+                else if (c2 == 0xBA) replacement = 'z'; // ź
+                else if (c2 == 0xB9) replacement = 'Z'; // Ź
+                else if (c2 == 0xBC) replacement = 'z'; // ż
+                else if (c2 == 0xBB) replacement = 'Z'; // Ż
+            }
+            
+            if (replacement != 0) {
+                out[written++] = replacement;
+                lastWasSpace = false;
+                i += 2;
                 continue;
             }
             
-            if (isPrintableAscii(c1)) {
-                out[written++] = static_cast<char>(c1);
-            }
-            i++;
+            // Pomiń inne wielobajtowe znaki UTF-8
+            if ((c1 & 0xE0) == 0xC0) i += 2;
+            else if ((c1 & 0xF0) == 0xE0) i += 3;
+            else if ((c1 & 0xF8) == 0xF0) i += 4;
+            else i += 1;
+            continue;
         }
+
+        // Zwykly znak ASCII
+        char ch = static_cast<char>(c1);
+        if (ch == '_' || ch == ' ') {
+            if (!lastWasSpace && written + 1 < maxLen) {
+                out[written++] = ' ';
+                lastWasSpace = true;
+            }
+        } else if (isPrintableAscii(c1)) {
+            out[written++] = ch;
+            lastWasSpace = false;
+        }
+        i++;
     }
+
+    // 4. Usun ewentualna spacje na koncu (trailing space)
+    while (written > 0 && out[written - 1] == ' ') {
+        written--;
+    }
+
     out[written] = '\0';
     return written;
 }

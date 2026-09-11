@@ -132,63 +132,10 @@ static uint8_t s_lastC0Sec      = 0xFF;
 // zapytac (licznik `txt=0` w kazdym [STAT]).
 static uint8_t s_textFlagState = 0;   // 0 = nazwy niewyslane, 1 = swiezo wyslane, 2 = ustalone
 
-// --- CYKL WYŚWIETLANIA: CZAS <-> CD-TEXT (Config: CDTEXT_TIMER_DURATION_MS / CDTEXT_TEXT_DURATION_MS) ---
-// Co CDTEXT_TEXT_DURATION_MS (5s) nazwy utworu, wycofujemy flage CD-TEXT na
-// CDTEXT_TIMER_DURATION_MS (10s), zeby radio pokazalo czas odtwarzania (timer).
-// Odbywa sie to w 100% bezpiecznie — tylko poprzez flage w ramce 1 Hz (0x90).
-// Nie wstawiamy zadnych nowych ramek do kolejki TX i nie robimy dodatkowych Breakow.
-// W trakcie przewijania (isSeeking()) radio zawsze pokazuje wylacznie timer (0x08).
-static unsigned long s_timeFlashStartMs   = 0;   // czas rozpoczecia fazy timera (0 = faza tekstu)
-static unsigned long s_lastTextPhaseEndMs = 0;   // czas zakonczenia ostatniej fazy tekstu
-
-static bool isTimeFlashActive() {
-    return s_timeFlashStartMs != 0;
-}
-
-static void resetDisplayCycle(unsigned long now) {
-    s_timeFlashStartMs = 0;
-    s_lastTextPhaseEndMs = now; // nowy utwor/wznowienie startuje od Fazy 1 (CD-TEXT)
-}
-
-static bool serviceTimeFlash(unsigned long now) {
-    if (CDTEXT_TIMER_DURATION_MS == 0 || Diagnostics::hasError() || CdChanger::repeatMode() != CdChanger::RepeatMode::Off) {
-        s_timeFlashStartMs = 0;
-        return false;
-    }
-    if (CdChanger::mechState() != CdChanger::MechState::Playing) {
-        s_timeFlashStartMs = 0;
-        s_lastTextPhaseEndMs = now;
-        return false;
-    }
-
-    // Faza TIMERA (10s) w toku:
-    if (s_timeFlashStartMs != 0) {
-        if ((now - s_timeFlashStartMs) >= CDTEXT_TIMER_DURATION_MS) {
-            // Koniec fazy timera -> powrot do fazy CD-TEXT (5s)
-            s_timeFlashStartMs = 0;
-            s_lastTextPhaseEndMs = now;
-            // Podnosimy s_textFlagState na 1, by w nastepnym tiku 1Hz poszla flaga 0x0B
-            // ("tekst swiezo zmieniony") — budzi radio do ponownego pokazania nazwy
-            if (s_textFlagState == 2) s_textFlagState = 1;
-            return false;
-        }
-        return true;  // faza timera trwa
-    }
-
-    // Faza CD-TEXT (5s) w toku:
-    if (s_textFlagState >= 1 && (now - s_lastTextPhaseEndMs) >= CDTEXT_TEXT_DURATION_MS) {
-        s_timeFlashStartMs = now;
-        return true;  // przejscie w faze timera
-    }
-    return false;
-}
-
 static uint8_t discFlagsNibble() {
     if (audioGetTrackCount(CdChanger::disk()) == 0 && !Diagnostics::hasError()) return 0x00;   // pusty slot
     // Podczas seeking (FF/REW) kasujemy flage CD-TEXT — radio natychmiast pokazuje timer
     if (CdChanger::isSeeking()) return 0x08;    // plyta obecna, tekst niedostepny
-    // Faza timera w cyklu wyswietlacza — ukryj tekst, pokaz czas
-    if (isTimeFlashActive()) return 0x08;
     uint8_t flags = 0x08;                       // plyta obecna
     if (s_textFlagState >= 1) flags |= 0x02;    // CD-TEXT dostepny (0x0A)
     if (s_textFlagState == 1) flags |= 0x01;    // tekst wlasnie sie zmienil (0x0B)
@@ -350,9 +297,12 @@ static bool displayStale() {
     if (ms == CdChanger::MechState::Init || ms == CdChanger::MechState::Idle) {
         return false;
     }
-    return CdChanger::disk()  != s_lastShownDisc  ||
-           CdChanger::track() != s_lastShownTrack ||
-           statusByteFromState(ms) != s_lastShownState;
+    if (CdChanger::disk()  != s_lastShownDisc  ||
+        CdChanger::track() != s_lastShownTrack ||
+        statusByteFromState(ms) != s_lastShownState) {
+        return true;
+    }
+    return false;
 }
 
 static bool wantsBus() {
@@ -378,9 +328,10 @@ static void maybeCloseRequestSession() {
     // - oddalismy co najmniej 1 grant w biezacej sesji
     // - kolejka TX jest pusta (nie ma zaleglych ramek CD-TEXT)
     // - sekunda czasu nie jest brudna (ekran jest aktualny)
-    // Dzieki temu master dostaje krotki burst (1-4 granty OE), po czym
-    // przestaje pytac 01 15 i magistrala ma cisze miedzy sekundami.
+    // - lub sesja nie dostala grantu przez ponad 350ms od ostatniego 01 15 (zapobiega petli Breakow)
     if (sessionGrants >= 1 && txQueue.isEmpty() && !CdChanger::isDisplayDirty()) {
+        requestSessionActive = false;
+    } else if (requestSessionActive && lastPoll15Ms != 0 && (millis() - lastPoll15Ms) > 350) {
         requestSessionActive = false;
     }
 }
@@ -435,13 +386,21 @@ void serviceSlaveBreak(bool busPowered) {
 
     const bool draining = !txQueue.isEmpty();
     const bool urgent   = displayStale();
+    const bool isObd    = (CdChanger::repeatMode() != CdChanger::RepeatMode::Off);
+    const bool tick     = (ms == CdChanger::MechState::Playing && !isObd && CdChanger::isDisplayDirty());
+
+    // Break wyzwalamy tylko gdy:
+    // 1. txQueue wymaga oproznienia (draining),
+    // 2. nastapila pilna zmiana utworu/plyty/stanu (urgent),
+    // 3. minal kolejny 1-sekundowy tik czasu w Playing (tick — OE style 1Hz).
+    const bool needsBreak = draining || urgent || tick;
+    if (!needsBreak) return;
 
     // BEZWZGLEDNY FIZYCZNY ODSTEP OD OSTATNIEGO HOLDA:
     // Nigdy nie wolno wystawic kolejnego Holda wczesniej niz po min. 250-300 ms!
-    // Poprzedni kod pomijal ten warunek przy draining=true i wystrzelil 2 Break w odstepie 16 ms,
-    // co zresetowalo i zawiesilo radio.
     const unsigned long minBreakGap = urgent   ? BREAK_URGENT_MIN_MS
                                     : draining ? BREAK_QUEUE_MIN_MS
+                                    : tick     ? BREAK_TICK_MIN_MS
                                                : breakBackoffMs;
     if (UnilinkBus::timeSinceBreakDone(nowMs) < minBreakGap) return;
     if (nowMs - lastBreakTime < minBreakGap) return;
@@ -583,25 +542,25 @@ static void enqueueCdTextField(bool isDisc, int field) {
 // Maksymalna dlugosc nazwy przesylanej w tym wariancie. Prawdziwa zmieniarka
 // obcina KAZDA nazwe do 13 znakow (wszystkie zaobserwowane nazwy: "Kapitanskie t",
 // "Do zakochania", "Staruszek Swi" — dokladnie 13 znakow, dwie ramki 6+7).
-constexpr int D2_MAX_CHARS  = 13;
+constexpr int D2_MAX_CHARS  = CDTEXT_D2_MAX_CHARS;
 constexpr int D2_SLOT_COUNT = 8;   // CMD2 + D1..D7
 
 // Zbuduj 8 slotow jednego segmentu nazwy (CMD2, D1..D7) wg ukladu ze sniffu:
 //   segment NIEOSTATNI : 6 znakow w slotach 0..5, slot6 = 0x02 ("ciag dalszy"),
 //                        slot7 = 0x00
-//   segment OSTATNI    : do 7 znakow w slotach 0..6 (reszta 0x00),
+//   segment OSTATNI    : do 6 znakow w slotach 0..5, slot6 = 0x00 (NUL terminator),
 //                        slot7 = 0x01 ("koniec nazwy")
 // Zwraca liczbe znakow zuzytych z `name`.
 static int buildTextSegment(const char* name, int offset, bool last, uint8_t* slots) {
     for (int i = 0; i < D2_SLOT_COUNT; ++i) slots[i] = 0x00;
-    const int capacity = last ? 7 : 6;
+    const int capacity = 6;  // stala pojemnosc 6 znakow (sloty 0..5)
     int used = 0;
     while (used < capacity && name[offset + used] != '\0') {
         slots[used] = (uint8_t)name[offset + used];
         used++;
     }
-    slots[6] = last ? slots[6] : 0x02;   // marker kontynuacji tuz za tekstem
-    slots[7] = last ? 0x01 : 0x00;       // 0x01 = ostatnia ramka nazwy
+    slots[6] = last ? 0x00 : 0x02;   // 0x02 = kontynuacja, 0x00 = NUL terminator dla bufora wyswietlacza 0x71!
+    slots[7] = last ? 0x01 : 0x00;   // 0x01 = ostatnia ramka nazwy
     return used;
 }
 
@@ -661,23 +620,16 @@ static void enqueueTextName(uint8_t cmd1, const char* rawName, uint8_t d8) {
     }
 
     // Nazwa ZAWSZE schodzi jako co najmniej DWA segmenty: nieostatni (do 6
-    // znakow, slot6 = 0x02 "ciag dalszy") i ostatni (do 7 znakow, slot7 = 0x01
-    // "koniec nazwy"). Tak wygladaja WSZYSTKIE nazwy w zrzucie prawdziwej
-    // zmieniarki — "Kapita"+"nskie t", "Mary A"+"nn", "Staruszek"+" Swi" —
-    // wariantu jednoramkowego nie ma tam ani razu.
-    //
-    // Dawna petla ustawiala `last` juz na pierwszym segmencie, gdy nazwa miala
-    // do 7 znakow. Nazwa utworu (obcinana do 13 znakow) zawsze schodzila wiec
-    // poprawnie w dwoch ramkach i dzialala, a krotka nazwa PLYTY ("CD05",
-    // "ABBA") szla w JEDNEJ ramce od razu oznaczonej jako ostatnia — i radio
-    // jej nie skladalo, pokazujac puste pole "DISC".
+    // znakow, slot6 = 0x02 "ciag dalszy") i ostatni (do 6 znakow, slot6 = 0x00
+    // "NUL terminator", slot7 = 0x01 "koniec nazwy"). Tak wygladaja nazwy
+    // w zrzucie prawdziwej zmieniarki.
     int offset = 0;
     offset += buildTextSegment(sane, offset, /*last=*/false, slots);
     enqueueTextFrame(cmd1, slots, d8);
 
     // Segmenty srodkowe — dopoki po tym segmencie zostanie wiecej, niz zmiesci
-    // sie w ramce ostatniej (7 znakow).
-    while ((total - offset) > 7) {
+    // sie w ramce ostatniej (6 znakow).
+    while ((total - offset) > 6) {
         offset += buildTextSegment(sane, offset, /*last=*/false, slots);
         enqueueTextFrame(cmd1, slots, d8);
     }
@@ -1088,28 +1040,23 @@ void serviceCdText(unsigned long now) {
     const CdChanger::MechState ms = CdChanger::mechState();
     if (ms == CdChanger::MechState::Init || ms == CdChanger::MechState::Idle) return;
 
-    // Podczas szukania, ladowania utworu lub zmiany plyty NIE wysylamy jeszcze CD-TEXT.
-    // Czekamy na pelne wejscie w Playing, aby najpierw poszedl status Playing C0 00,
-    // a zaraz za nim kompletny pakiet CD-TEXT (D2 + DA + D7).
-    if (ms == CdChanger::MechState::Seeking ||
-        ms == CdChanger::MechState::LoadingTrack ||
-        ms == CdChanger::MechState::ChangedCd) {
-        if (ms == CdChanger::MechState::Seeking) {
-            s_wasSeekingLastCdText = true;
-        }
+    // Podczas przewijania klawiszem FF/REW (Seeking) nie wysylamy CD-TEXT —
+    // radio w tym czasie pokazuje szybko plynacy licznik czasu.
+    // W stanach LoadingTrack i ChangedCd (ladowanie/zmiana utworu) CD-TEXT
+    // wysylamy NATYCHMIAST (wzorzec Sony OE: ramki C0 40 -> D2 -> DA -> D7
+    // schodza w 350ms, zanim dekoder wejdzie w Playing). Dzieki temu radio
+    // od pierwszej milisekundy ma tytul nowego utworu i nie ma pustego ekranu (blank CD-TEXT).
+    if (ms == CdChanger::MechState::Seeking) {
+        s_wasSeekingLastCdText = true;
         return;
     }
 
-    // Po zakonczeniu seeking (powrot do Playing): reset cache i cyklu,
+    // Po zakonczeniu seeking (powrot do Playing): reset cache,
     // zeby nazwy zostaly ponownie wyslane i radio wrocilo do widoku CD-TEXT.
     if (s_wasSeekingLastCdText) {
         s_wasSeekingLastCdText = false;
         resetCdTextCache();
-        resetDisplayCycle(now);
     }
-
-    // Cykl wyswietlacza (10s timer <-> 5s CD-TEXT w ramce 1Hz)
-    serviceTimeFlash(now);
 
     const uint8_t disc   = CdChanger::disk();
     const uint8_t track  = CdChanger::track();
@@ -1153,12 +1100,10 @@ void serviceCdText(unsigned long now) {
     }
 
     // Gdy zmienia sie utwor/plyta w stanie Playing:
-    // 1. Zaczynamy cykl wyswietlacza od nowa (5s CD-TEXT)
-    // 2. Podnosimy flage s_textFlagState = 1 (nibbel 0x0B w ramce)
-    // 3. Wrzucamy najpierw pelny status C0 00 (Playing) o najwyzszym priorytecie PRIO_STATUS
-    // 4. Wrzucamy kompletny pakiet CD-TEXT (D2 utwor + DA plyta + D7 end marker)
+    // 1. Podnosimy flage s_textFlagState = 1 (nibbel 0x0B w ramce)
+    // 2. Wrzucamy najpierw pelny status C0 00 (Playing) o najwyzszym priorytecie PRIO_STATUS
+    // 3. Wrzucamy kompletny pakiet CD-TEXT (D2 utwor + DA plyta + D7 end marker)
     if (changed) {
-        resetDisplayCycle(now);
         s_textFlagState = 1;
         if (txQueue.countPriority(Tx::PRIO_STATUS) > 0) {
             txQueue.dropPriority(Tx::PRIO_STATUS);
@@ -1307,22 +1252,16 @@ void handlePacket(const uint8_t* buf, int len) {
             isCdxM670 = true;
             Serial.println("== Wykryto CDX-M670 (widziano 3B 10 02 11) ==");
         }
-        // [FIX: RESET LOOP] Po SYSTEM RESET ten pakiet to normalny appoint
-        // wewnętrznego CD w NOWYM discovery — nie blokuj ANYONE? oknem
-        // preliminary, bo ANYONE? po nim jest DLA NAS, nie preliminary.
-        if ((millis() - lastSystemResetMs) > POST_RESET_PRELIMINARY_SKIP_MS) {
+        // Respektujemy okno preliminary (250ms) TYLKO przy zimnym starcie (cold boot).
+        // Po SYSTEM RESET radio pyta o nas natychmiast — nie wolno blokowac re-discovery!
+        if (lastSystemResetMs == 0 || (millis() - lastSystemResetMs) > POST_RESET_GRACE_MS) {
             lastPreliminaryTime = millis();
-        } else {
-            Serial.println(">> [CDX-M670] 3B appoint po SYSTEM RESET — pomijam okno preliminary");
         }
         return;
     }
     if (rad == 0xDB && tad == ADDR_MASTER && op1 == 0x02 && op2 == 0x12) {
-        // [FIX: RESET LOOP] Analogicznie jak dla 3B — nie blokuj po SYSTEM RESET.
-        if ((millis() - lastSystemResetMs) > POST_RESET_PRELIMINARY_SKIP_MS) {
+        if (lastSystemResetMs == 0 || (millis() - lastSystemResetMs) > POST_RESET_GRACE_MS) {
             lastPreliminaryTime = millis();
-        } else {
-            Serial.println(">> [CDX-M670] DB appoint po SYSTEM RESET — pomijam okno preliminary");
         }
         return;
     }
@@ -1357,7 +1296,9 @@ void handlePacket(const uint8_t* buf, int len) {
             // [WARIANT_PROTOKOLU / DEVIATION §6 (R12)] Kwirk CDX-M670: ignoruj
             // ANYONE? w oknie preliminary — to faza dla wewnetrznych urzadzen
             // radia, nie dla nas. Wariant discovery, NIE sprzeczny z adopcja 0x3X.
-            if (isCdxM670 && lastPreliminaryTime != 0 &&
+            // Po SYSTEM RESET ignorowanie ANYONE? jest zabronione — to jedyna szansa na ponowny appoint!
+            const bool isPostReset = (lastSystemResetMs != 0 && (millis() - lastSystemResetMs) <= POST_RESET_GRACE_MS);
+            if (!isPostReset && isCdxM670 && lastPreliminaryTime != 0 &&
                 (millis() - lastPreliminaryTime) < PRELIMINARY_WINDOW_MS) {
                 anyoneIgnoredCount++;
                 Serial.printf(">> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#%d, %lums po DB)\n",
@@ -1423,20 +1364,26 @@ void handlePacket(const uint8_t* buf, int len) {
             breakOkAwaitingPollMs = 0;
         }
         if (!deviceAllocated) {
-            // [FIX: RESET LOOP] Nie odpowiadaj magic w oknie po SYSTEM RESET!
-            // Radio dopiero co zresetowalo sie i prowadzi procedure discovery.
-            // Wyslanie magic w tym oknie powoduje nieskonczona petle resetow (co 3s).
+            // [BEZPIECZENSTWO: STANDBY CRASH PREVENTION]
+            // NIGDY nie wysylaj magic 10 18 04 00 po SYSTEM RESET (lastSystemResetMs != 0) ani gdy radio dziala!
+            // Radio po resecie prowadzi normalna prace. Wyslanie 10 18 04 00 w trakcie pracy wywoluje
+            // kolejny SYSTEM RESET, po ktorym radio sie wylacza (BUS_ON=0 / Standby).
+            // Magic dopuszczalny jest wylacznie przy pierwszym zimnym starcie (bootup ESP) i tylko raz!
+            static bool s_magicSentBoot = false;
+            if (lastSystemResetMs != 0 || resetLoopCount > 0 || s_magicSentBoot) {
+                return;
+            }
             if ((millis() - lastSystemResetMs) < POST_RESET_GRACE_MS) {
                 return;
             }
             if (isCdxM670 && lastPreliminaryTime != 0 &&
                 (millis() - lastPreliminaryTime) < PRELIMINARY_WINDOW_MS) {
-                Serial.println(">> [CDX-M670] 01 11 w oknie preliminary — pomijam magic (zapobiega petli resetow)");
                 return;
             }
+            s_magicSentBoot = true;
             const uint8_t magic[] = {0x10, 0x18, 0x04, 0x00, 0x2C, 0x00};
             UnilinkBus::sendRaw(magic, sizeof(magic));
-            Serial.println(">> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery");
+            Serial.println(">> Odpowiadam na 01 11: magic 10 18 04 00 -> nowe discovery (cold boot)");
         }
     }
 
@@ -1557,7 +1504,7 @@ void handlePacket(const uint8_t* buf, int len) {
                 // Gdy ramka C0 schodzi z kolejki, aktualizujemy stan ostatnio nadanego ekranu
                 s_lastShownDisc  = CdChanger::disk();
                 s_lastShownTrack = CdChanger::track();
-                s_lastShownState = statusByteFromState(CdChanger::mechState());
+                s_lastShownState = (item.len >= 4) ? item.bytes[3] : statusByteFromState(CdChanger::mechState());
                 settleTextFlag();
                 CdChanger::clearDisplayDirty();
             }
@@ -1677,22 +1624,36 @@ void handlePacket(const uint8_t* buf, int len) {
     // wywolywal enqueueCdTextTrackOnly, gubiąc nazwe plyty — dlatego na jednych
     // utworach widac bylo track name a na innych cd name (zalezalo od tego, czy
     // radio pytalo o track czy disc, a nie od samych nazw).
+    // ===== 8b. Zadanie CD-TEXT — wariant CDX-M670 (3X .. 84 D7) =====
+    // Realny CDX-M670 prosi o nazwy komenda op2=0xD7.
+    // Bajt D4 (buf[8]) w ramce middle 84 D7 okresla zadane pole:
+    //   0x00 -> DISC NAME (zadanie nazwy plyty, odpowiedz 0xDA + marker 0xD7)
+    //   0x01 -> TRACK NAME (zadanie nazwy utworu, odpowiedz 0xD2 + 0xDA + marker 0xD7)
+    // Kazda odpowiedz na 84 D7 musi konczyc sie ramka 0xD7 (enqueueTextEnd).
+    // Ramka middle (11B): RAD TAD CMD1 CMD2 P1 D1 D2 D3 D4 P2 END
+    //   => D4 = buf[8]. UWAGA: buf[9] to P2 (parzystosc), NIE bajt danych!
     else if (rad == myAddr && op1 == 0x84 && op2 == 0xD7) {
-        Serial.println(">> 84 D7: Zadanie CD-TEXT -> wysylam D2 + DA + D7");
-        enqueueCdTextD2Track(/*withEndMarker=*/true, /*force=*/true);
+        uint8_t field = (len >= 9) ? buf[8] : 0x01;
+        if (field == 0x00) {
+            Serial.println(">> 84 D7 (D4=0): Zadanie DISC NAME -> wysylam DA + D7");
+            enqueueCdTextDiscOnly(/*withEndMarker=*/true, /*force=*/true);
+        } else {
+            Serial.println(">> 84 D7 (D4=1): Zadanie TRACK NAME -> wysylam D2 + DA + D7");
+            enqueueCdTextD2Track(/*withEndMarker=*/true, /*force=*/true);
+        }
     }
 
     // ===== 8c. Zadanie CD-TEXT — radio nazywa ZADANA ODPOWIEDZ (84 D2 / 84 DA / 84 DD) =====
-    // 84 D2 -> zadanie nazwy utworu (D2 + DA gwarantuje spojnosc obu nazw w pamieci radia).
-    // 84 DA / 84 DD -> zadanie nazwy plyty (0xDA).
+    // 84 D2 -> zadanie nazwy utworu (D2 + DA + D7 gwarantuje spojnosc obu nazw w pamieci radia).
+    // 84 DA / 84 DD -> zadanie nazwy plyty (0xDA + D7).
     else if (rad == myAddr && op1 == 0x84 && op2 == 0xD2) {
-        Serial.println(">> 84 D2: Zadanie TRACK NAME -> wysylam D2 + DA");
-        enqueueCdTextD2Track(/*withEndMarker=*/false, /*force=*/true);
+        Serial.println(">> 84 D2: Zadanie TRACK NAME -> wysylam D2 + DA + D7");
+        enqueueCdTextD2Track(/*withEndMarker=*/true, /*force=*/true);
     }
     else if (rad == myAddr && op1 == 0x84 && (op2 == 0xDA || op2 == 0xDD)) {
         uint8_t disc = discFromRequest(buf, len);
-        Serial.printf(">> 84 %02X: Zadanie DISC NAME CD%d -> wysylam 0xDA\n", op2, disc);
-        enqueueCdTextDiscOnly(/*withEndMarker=*/false, /*force=*/true, disc);
+        Serial.printf(">> 84 %02X: Zadanie DISC NAME CD%d -> wysylam 0xDA + D7\n", op2, disc);
+        enqueueCdTextDiscOnly(/*withEndMarker=*/true, /*force=*/true, disc);
     }
 
     // ===== 10. Zadanie mapy magazynka (3X .. 84 95) =====

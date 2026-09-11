@@ -107,7 +107,7 @@ static bool loadDiscChanged = false;
 
 static void enterSeek(bool discChanged = false) {
     loadDiscChanged = discChanged;
-    enterState(MechState::LoadingTrack);
+    enterState(discChanged ? MechState::LoadingTrack : MechState::Playing);
     seekStartTime = millis();
     playSeconds = 0;
     playMinutes = 0;

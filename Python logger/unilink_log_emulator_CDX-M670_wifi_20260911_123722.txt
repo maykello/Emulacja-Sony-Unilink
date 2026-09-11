@@ -1,0 +1,81 @@
+[12:37:29.380] === SONY UNILINK ESP32 LOG STREAM (unilink.local) ===
+[12:37:31.091] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:03
+[12:37:33.101] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=0 btn=0 break=3/3 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD12 TR42 00:05
+[12:37:35.099] [STAT] poll15=2 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:07
+[12:37:37.095] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:09
+[12:37:39.092] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:11
+[12:37:41.087] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR42 00:13
+[12:37:42.971] >> CD-TEXT wyslany: CD12 TR42 plyta="POLSKIE GK" utwor="Irena Santor - Najpiękniejsze Warszawianki to przyjezdne"
+[12:37:43.083] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:15
+[12:37:45.096] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:17
+[12:37:47.091] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=2/2 | alloc=1 state=0x00 CD12 TR42 00:19
+[12:37:49.087] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:21
+[12:37:51.099] [STAT] poll15=2 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:23
+[12:37:53.097] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:25
+[12:37:55.095] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:27
+[12:37:57.092] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:29
+[12:37:57.970] >> CD-TEXT wyslany: CD12 TR42 plyta="POLSKIE GK" utwor="Irena Santor - Najpiękniejsze Warszawianki to przyjezdne"
+[12:37:59.088] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD12 TR42 00:31
+[12:38:01.086] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=4/3 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR42 00:33
+[12:38:03.084] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:35
+[12:38:05.097] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:37
+[12:38:07.095] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR42 00:39
+[12:38:09.092] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:41
+[12:38:11.086] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:43
+[12:38:12.972] >> CD-TEXT wyslany: CD12 TR42 plyta="POLSKIE GK" utwor="Irena Santor - Najpiękniejsze Warszawianki to przyjezdne"
+[12:38:13.083] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:45
+[12:38:15.085] [STAT] poll15=4 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=4/4 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:47
+[12:38:17.099] [STAT] poll15=3 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:49
+[12:38:19.099] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:51
+[12:38:21.099] [STAT] poll15=2 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:53
+[12:38:23.096] [STAT] poll15=1 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:55
+[12:38:25.094] [STAT] poll15=2 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:57
+[12:38:27.094] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 00:59
+[12:38:27.971] >> CD-TEXT wyslany: CD12 TR42 plyta="POLSKIE GK" utwor="Irena Santor - Najpiękniejsze Warszawianki to przyjezdne"
+[12:38:29.090] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=0 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:01
+[12:38:31.087] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=4/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:03
+[12:38:33.084] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=2/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:05
+[12:38:35.081] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:07
+[12:38:37.082] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:09
+[12:38:39.092] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:11
+[12:38:41.086] [STAT] poll15=2 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:13
+[12:38:42.970] >> CD-TEXT wyslany: CD12 TR42 plyta="POLSKIE GK" utwor="Irena Santor - Najpiękniejsze Warszawianki to przyjezdne"
+[12:38:43.083] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:15
+[12:38:45.094] [STAT] poll15=3 disp13(my)=4 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR42 01:17
+[12:38:47.089] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:19
+[12:38:49.086] [STAT] poll15=2 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:21
+[12:38:51.087] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:23
+[12:38:53.093] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:25
+[12:38:55.093] [STAT] poll15=1 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR42 01:27
+[12:38:57.096] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:29
+[12:38:57.970] >> CD-TEXT wyslany: CD12 TR42 plyta="POLSKIE GK" utwor="Irena Santor - Najpiękniejsze Warszawianki to przyjezdne"
+[12:38:59.098] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=0 btn=0 break=3/3 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR42 01:31
+[12:39:01.096] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=4/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:33
+[12:39:03.097] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=2/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:35
+[12:39:05.092] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:37
+[12:39:07.098] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:39
+[12:39:09.098] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:41
+[12:39:11.098] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:43
+[12:39:12.974] >> CD-TEXT wyslany: CD12 TR42 plyta="POLSKIE GK" utwor="Irena Santor - Najpiękniejsze Warszawianki to przyjezdne"
+[12:39:13.097] [STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:45
+[12:39:15.095] [STAT] poll15=3 disp13(my)=3 disp13(3B)=0 ping12(my)=1 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:47
+[12:39:17.098] [STAT] poll15=3 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=3/3 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR42 01:49
+[12:39:19.390] >> Radio system reset (#1)! Reset deviceAllocated.
+[12:39:19.394] >> resetToAllocated: audio gra, zachowuje Playing 01:48
+[12:39:19.396] == Wykryto CDX-M670 (widziano 3B 10 02 11) ==
+[12:39:19.396] >> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#1, 0ms po DB)
+[12:39:34.449] >> [Audio Bus] Radio sygnalizuje audio OFF (87 6A)
+[12:39:34.452] [Audio] ⏹ Zatrzymano (zlecone).
+[12:39:34.465] [Audio] DAC XSMT (GPIO 16) -> LOW (Wyciszono)
+[12:39:34.476] >> [Audio Bus] Radio sygnalizuje audio OFF (87 2A)
+[12:39:34.476] [Audio] ⏹ Zatrzymano (zlecone).
+[12:39:34.481] [Audio-info] Closing audio file
+[12:39:44.666] >> [Audio Bus] Radio sygnalizuje audio OFF (87 22)
+[12:39:44.670] [Audio] ⏹ Zatrzymano (zlecone).
+[12:39:44.693] === BUS_ON = 0 ===
+[12:39:44.714] === SEN: magistrala wylaczona ===
+[12:39:44.730] [Audio] ⏹ Zatrzymano (zlecone).
+[12:39:44.740] === BUS_ON = 0: Oczekiwanie 4000ms na wylaczenie zasilania ===
+[12:39:48.735] === BUS_ON nieaktywny przez 4s: Wylaczam zasilanie (commitSuicide) ===
+[12:39:48.735] === ROZPOCZYNAM PROCEDURĘ WYŁĄCZANIA ZASILANIA ===
+[12:39:48.889] === ODCINAM PRĄD. DOBRANOC. ===
