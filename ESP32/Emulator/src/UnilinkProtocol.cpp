@@ -174,12 +174,14 @@ static uint16_t statBreak = 0;    // ile breakow UZBROJONO
 static uint16_t statBreakOk = 0;  // ile Hold ukonczono (wykrywalny break)
 static uint16_t statText = 0;     // 0x84 — zadanie tekstu (nazwy) do nas
 static uint16_t statSeek = 0;     // 0x24/0x25 — FF/REW do nas
+static unsigned long lastBtnCommandMs = 0; // Znacznik ostatniej komendy klawisza/uzytkownika
 
 // ============================================================
 // API
 // ============================================================
 void begin() {
     lastPingTime = millis();
+    lastBtnCommandMs = 0;
     myAddr = AddressManager::ADDR_GROUP_CD;
     deviceAllocated = false;
     claimMask = CLAIM_MASK_DEFAULT;
@@ -244,6 +246,7 @@ void onBusOff() {
     anyoneIgnoredCount = 0;
     resetLoopCount = 0;
     resetCdTextCache();   // nowa sesja => nazwy trzeba wyslac od nowa
+    lastBtnCommandMs = 0;
     requestSessionActive = false;
     txQueue.clear();
     UnilinkBus::cancelSlaveBreak();
@@ -373,6 +376,17 @@ void serviceSlaveBreak(bool busPowered) {
     // [GRACE PERIOD] Tuz po SYSTEM RESET radio robi discovery — w tym czasie
     // naturalnie nie ma `01 15`. Nie uzbrajaj Break, bo wyzwoli kolizje.
     if ((nowMs - lastSystemResetMs) < POST_RESET_GRACE_MS) return;
+
+    // [BEZPIECZNIK NAWIGACJI] Podczas obslugi klawiszy uzytkownika (Next/Prev Track,
+    // CD+/-, Seek, Mode, Key-off), radio master SAM z siebie natychmiast rozpoczyna
+    // cykl Request Polling (01 15) i wymienia ramki z panelem (18 10 08, 71 10 01 itd.).
+    // Wyzwolenie Slave Break w tym oknie powoduje kolizje na magistrali (RESYNC/RXFLUSH)
+    // i awaryjny restart radia (RADIO SYSTEM RESET 18 10 01 00).
+    // Bezwzglednie blokujemy Break przez 1.5s po kazdej akcji klawisza!
+    if ((nowMs - lastBtnCommandMs) < 1500) {
+        UnilinkBus::cancelSlaveBreak();
+        return;
+    }
 
     // Polling zywy — nie potrzebujemy Break.
     if ((nowMs - lastPoll15Ms) < POLL15_QUIET_BREAK_MS) {
@@ -545,22 +559,25 @@ static void enqueueCdTextField(bool isDisc, int field) {
 constexpr int D2_MAX_CHARS  = CDTEXT_D2_MAX_CHARS;
 constexpr int D2_SLOT_COUNT = 8;   // CMD2 + D1..D7
 
-// Zbuduj 8 slotow jednego segmentu nazwy (CMD2, D1..D7) wg ukladu ze sniffu:
+// Zbuduj 8 slotow jednego segmentu nazwy (CMD2, D1..D7) wg ukladu ze sniffu (sniff 165726):
 //   segment NIEOSTATNI : 6 znakow w slotach 0..5, slot6 = 0x02 ("ciag dalszy"),
 //                        slot7 = 0x00
-//   segment OSTATNI    : do 6 znakow w slotach 0..5, slot6 = 0x00 (NUL terminator),
-//                        slot7 = 0x01 ("koniec nazwy")
+//   segment OSTATNI    : do 7 znakow w slotach 0..6, slot7 = 0x01 ("koniec nazwy")
 // Zwraca liczbe znakow zuzytych z `name`.
 static int buildTextSegment(const char* name, int offset, bool last, uint8_t* slots) {
     for (int i = 0; i < D2_SLOT_COUNT; ++i) slots[i] = 0x00;
-    const int capacity = 6;  // stala pojemnosc 6 znakow (sloty 0..5)
+    const int capacity = last ? 7 : 6;  // ostatni segment miesci 7 znakow (sloty 0..6)
     int used = 0;
     while (used < capacity && name[offset + used] != '\0') {
         slots[used] = (uint8_t)name[offset + used];
         used++;
     }
-    slots[6] = last ? 0x00 : 0x02;   // 0x02 = kontynuacja, 0x00 = NUL terminator dla bufora wyswietlacza 0x71!
-    slots[7] = last ? 0x01 : 0x00;   // 0x01 = ostatnia ramka nazwy
+    if (last) {
+        slots[7] = 0x01;   // 0x01 = ostatnia ramka nazwy (w slocie 7)
+    } else {
+        slots[6] = 0x02;   // 0x02 = kontynuacja
+        slots[7] = 0x00;
+    }
     return used;
 }
 
@@ -612,30 +629,25 @@ static void enqueueTextName(uint8_t cmd1, const char* rawName, uint8_t d8) {
 
     uint8_t slots[D2_SLOT_COUNT];
     if (total == 0) {
-        // Pusta nazwa: zmieniarka i tak wysyla jedna ramke-placeholder z
-        // markerem kontynuacji (sniff: `70 31 DA 00 7B 00 00 00 00 00 02 00 ...`).
+        // Pusta nazwa: pojedyncza ramka z markerem 0x02 (sniff: 70 31 DA 00 7B 00 00 00 00 00 02 00 ...)
         buildTextSegment(sane, 0, /*last=*/false, slots);
         enqueueTextFrame(cmd1, slots, d8);
         return;
     }
 
-    // Nazwa ZAWSZE schodzi jako co najmniej DWA segmenty: nieostatni (do 6
-    // znakow, slot6 = 0x02 "ciag dalszy") i ostatni (do 6 znakow, slot6 = 0x00
-    // "NUL terminator", slot7 = 0x01 "koniec nazwy"). Tak wygladaja nazwy
-    // w zrzucie prawdziwej zmieniarki.
+    // Nazwa ZAWSZE schodzi jako co najmniej DWA segmenty:
+    // Segment 1 (nieostatni, do 6 znakow, slot6 = 0x02 "ciag dalszy")
+    // Segment 2 (ostatni, do 7 znakow, slot7 = 0x01 "koniec nazwy")
     int offset = 0;
     offset += buildTextSegment(sane, offset, /*last=*/false, slots);
     enqueueTextFrame(cmd1, slots, d8);
 
-    // Segmenty srodkowe — dopoki po tym segmencie zostanie wiecej, niz zmiesci
-    // sie w ramce ostatniej (6 znakow).
-    while ((total - offset) > 6) {
+    while ((total - offset) > 7) {
         offset += buildTextSegment(sane, offset, /*last=*/false, slots);
         enqueueTextFrame(cmd1, slots, d8);
     }
 
-    // Segment ostatni. Dla nazw do 6 znakow jest pusty i pelni role czystego
-    // terminatora — dokladnie tak, jak ramka konczaca blok 0xD7.
+    // Segment ostatni
     buildTextSegment(sane, offset, /*last=*/true, slots);
     enqueueTextFrame(cmd1, slots, d8);
 }
@@ -654,6 +666,36 @@ static uint8_t discFromRequest(const uint8_t* buf, int len) {
         if (cand >= 1 && cand <= MAX_DISC) disc = cand;
     }
     return disc;
+}
+
+// Ramka WSKAZNIKA PLYTY (CMD1 = 0xDA) wysylana w sekwencji tytulu utworu.
+// [ZGODNOSC Z OE] W sekwencji utworu (C0 + D2 + D2 + DA) wysylamy DOKLADNIE JEDNA ramke 0xDA.
+// Zawiera ona nazwe plyty obcieta do 1 segmentu (do 7 znakow z markerem 0x01 konca tekstu),
+// co daje lacznie dokladnie 4 ramki w kolejce — idealnie mieszczace sie w 4-grantowym
+// burscie radia CDX-M670. Dzieki temu w pamieci radia zapisuje sie ZAROWNO tytul utworu,
+// JAK I nazwa plyty (CD name), a kolejka nie ma zadnych zaleglosci.
+// Gdy nazwa jest pusta, wysylamy pusta ramke z markerem 0x02 tak jak w OE sniffie 165726.
+static void enqueueCdTextDiscIndicator(uint8_t disc) {
+    char raw[64];
+    if (Diagnostics::hasError() && CdChanger::repeatMode() == CdChanger::RepeatMode::Off) {
+        snprintf(raw, sizeof(raw), "%s", Diagnostics::getErrorDiscName());
+    } else if (CdChanger::repeatMode() != CdChanger::RepeatMode::Off) {
+        snprintf(raw, sizeof(raw), "OBD");
+    } else {
+        audioGetDiscName(disc, raw, sizeof(raw));
+    }
+    char sane[64];
+    CdText::sanitizeAscii(raw, sane, sizeof(sane));
+
+    uint8_t slots[D2_SLOT_COUNT];
+    if (sane[0] == '\0') {
+        for (int i = 0; i < D2_SLOT_COUNT; ++i) slots[i] = 0x00;
+        slots[6] = 0x02;
+        slots[7] = 0x00;
+    } else {
+        buildTextSegment(sane, 0, /*last=*/true, slots);
+    }
+    enqueueTextFrame(0xDA, slots, (uint8_t)(disc & 0x0F), 0x10);
 }
 
 static void enqueueCdTextDiscName(uint8_t disc) {
@@ -746,9 +788,9 @@ static bool enqueueCdTextD2Track(bool withEndMarker, bool force) {
     }
     enqueueTextName(0xD2, raw, UnilinkFrame::encodeBcdFpad(track));
 
-    enqueueCdTextDiscName(disc);
+    enqueueCdTextDiscIndicator(disc);
 
-    // Blok wysylany SAM Z SIEBIE prawdziwa zmieniarka konczy na nazwie plyty;
+    // Blok wysylany SAM Z SIEBIE prawdziwa zmieniarka konczy na wskazniku plyty;
     // ramke 0xD7 doklada tylko jako odpowiedz na zadanie `84 D7`.
     if (withEndMarker) enqueueTextEnd();
     return true;
@@ -1117,7 +1159,9 @@ void serviceCdText(unsigned long now) {
     if (obdForceUpdate && !changed) {
         if (!enqueueCdTextTrackOnly(/*withEndMarker=*/true, /*force=*/true)) return;
     } else {
-        if (!enqueueCdTextD2Track(/*withEndMarker=*/true, /*force=*/forceText)) return;
+        // Spontaniczna zmiana utworu/plyty (sniff OE 165726):
+        // Zmieniarka wysyla D2 + D2 + DA bez koncowej ramki D7 (D7 leci tylko na zapytanie 84 D7).
+        if (!enqueueCdTextD2Track(/*withEndMarker=*/false, /*force=*/forceText)) return;
     }
     s_textSentDisc   = disc;
     s_textSentTrack  = track;
@@ -1210,6 +1254,19 @@ void handlePacket(const uint8_t* buf, int len) {
         Serial.println();
     }
     if (rad == myAddr && (op1 == 0x24 || op1 == 0x25))        statSeek++;
+
+    // ===== Ochrona przed kolizja: aktywne komendy klawiszy uzytkownika =====
+    // Rejestrujemy kazda komende nawigacji i zwalniania klawisza, blokujac Slave Break
+    // na 1.5s, poniewaz radio master samo prowadzi wtedy aktywny Request Polling.
+    const bool isBtnCommand = (rad == myAddr && tad == 0x11) ||
+                              (rad == myAddr && (op1 >= 0x24 && op1 <= 0x29)) ||
+                              (rad == myAddr && (op1 >= 0x34 && op1 <= 0x36)) ||
+                              (rad == myAddr && op1 == 0xB0) ||
+                              (rad == ADDR_BROADCAST && tad == ADDR_MASTER && op1 == 0x08 && op2 == 0x00);
+    if (isBtnCommand) {
+        lastBtnCommandMs = millis();
+        UnilinkBus::cancelSlaveBreak();
+    }
 
     // ===== Okno ochronne: poll do INNEGO urzadzenia =====
     // Radio odpytalo swoje wewnetrzne urzadzenie (0x3B/0x71/...), ktore za chwile
@@ -1584,18 +1641,26 @@ void handlePacket(const uint8_t* buf, int len) {
     // radia (lub inne tryby) potrafia uzyc innego TAD/op2. Wczesniejszy warunek
     // `tad==0x11 && op2==0x10` gubil wtedy Track+/- (objaw: "track+ nie dziala").
     else if (rad == myAddr && op1 == 0x26) {
+        openRequestSession();
         CdChanger::nextTrack();
+        serviceCdText(millis());
     }
     else if (rad == myAddr && op1 == 0x27) {
+        openRequestSession();
         CdChanger::prevTrack();
+        serviceCdText(millis());
     }
     else if (rad == myAddr && op1 == 0x28) {
+        openRequestSession();
         CdChanger::nextDisc();
         onDiscChanged(CdChanger::disk());   // R7.3: 0x9C + disc ID
+        serviceCdText(millis());
     }
     else if (rad == myAddr && op1 == 0x29) {
+        openRequestSession();
         CdChanger::prevDisc();
         onDiscChanged(CdChanger::disk());   // R7.3: 0x9C + disc ID
+        serviceCdText(millis());
     }
 
     // ===== 8. Zadanie CD-TEXT — nazwa utworu (3X .. 84 D9) =====
@@ -1608,39 +1673,22 @@ void handlePacket(const uint8_t* buf, int len) {
 
     // ===== 8b. Zadanie CD-TEXT — wariant CDX-M670 (3X .. 84 D7) =====
     // Realny CDX-M670 prosi o nazwy komenda op2=0xD7.
-    // Bajt D4 (buf[8]) w ramce middle 84 D7 okresla zadane pole:
-    //   0x00 -> DISC NAME (zadanie nazwy plyty, odpowiedz 0xDA + marker 0xD7)
-    //   0x01 -> TRACK NAME (zadanie nazwy utworu, odpowiedz 0xD2 + 0xDA + marker 0xD7)
-    // Kazda odpowiedz na 84 D7 musi konczyc sie ramka 0xD7 (enqueueTextEnd).
-    // Ramka middle (11B): RAD TAD CMD1 CMD2 P1 D1 D2 D3 D4 P2 END
-    //   => D4 = buf[8]. UWAGA: buf[9] to P2 (parzystosc), NIE bajt danych!
-    //
-    // [ZGODNOSC Z OE] Sniff prawdziwej zmieniarki po zadaniu 84 D7 D4=0x01:
-    //   70 31 D2 ... (track name seg 1)
-    //   70 31 D2 ... (track name seg 2)
-    //   70 31 DA ... (disc name — nawet pusta)
-    //   70 31 D7 ... (end marker)
-    // Zmieniarka ZAWSZE wysyla track+disc+end, nie sam track. Wczesniejszy kod
-    // wywolywal enqueueCdTextTrackOnly, gubiąc nazwe plyty — dlatego na jednych
-    // utworach widac bylo track name a na innych cd name (zalezalo od tego, czy
-    // radio pytalo o track czy disc, a nie od samych nazw).
-    // ===== 8b. Zadanie CD-TEXT — wariant CDX-M670 (3X .. 84 D7) =====
-    // Realny CDX-M670 prosi o nazwy komenda op2=0xD7.
-    // Bajt D4 (buf[8]) w ramce middle 84 D7 okresla zadane pole:
-    //   0x00 -> DISC NAME (zadanie nazwy plyty, odpowiedz 0xDA + marker 0xD7)
-    //   0x01 -> TRACK NAME (zadanie nazwy utworu, odpowiedz 0xD2 + 0xDA + marker 0xD7)
-    // Kazda odpowiedz na 84 D7 musi konczyc sie ramka 0xD7 (enqueueTextEnd).
-    // Ramka middle (11B): RAD TAD CMD1 CMD2 P1 D1 D2 D3 D4 P2 END
-    //   => D4 = buf[8]. UWAGA: buf[9] to P2 (parzystosc), NIE bajt danych!
+    // Bajt D4 (buf[8]) okresla czego radio oczekuje:
+    //   D4 == 0x00 : Zadanie nazwy PLYTY (DISC NAME, np. po przelaczeniu DSPL na panelu)
+    //                -> Odsylamy pelna wielosegmentowa nazwe plyty (DA) + marker konca (D7).
+    //   D4 == 0x01 : Zadanie nazwy UTWORU (TRACK NAME)
+    //                -> Odsylamy utwor (D2) + wskaznik plyty (DA) + marker konca (D7).
     else if (rad == myAddr && op1 == 0x84 && op2 == 0xD7) {
-        uint8_t field = (len >= 9) ? buf[8] : 0x01;
-        if (field == 0x00) {
-            Serial.println(">> 84 D7 (D4=0): Zadanie DISC NAME -> wysylam DA + D7");
-            enqueueCdTextDiscOnly(/*withEndMarker=*/true, /*force=*/true);
+        const uint8_t d4 = (len >= 9) ? buf[8] : 0x01;
+        if (d4 == 0x00) {
+            uint8_t disc = discFromRequest(buf, len);
+            Serial.printf(">> 84 D7 (D4=0): Zadanie DISC NAME CD%d -> wysylam DA + D7\n", disc);
+            enqueueCdTextDiscOnly(/*withEndMarker=*/true, /*force=*/true, disc);
         } else {
             Serial.println(">> 84 D7 (D4=1): Zadanie TRACK NAME -> wysylam D2 + DA + D7");
             enqueueCdTextD2Track(/*withEndMarker=*/true, /*force=*/true);
         }
+        openRequestSession();
     }
 
     // ===== 8c. Zadanie CD-TEXT — radio nazywa ZADANA ODPOWIEDZ (84 D2 / 84 DA / 84 DD) =====
@@ -1649,11 +1697,13 @@ void handlePacket(const uint8_t* buf, int len) {
     else if (rad == myAddr && op1 == 0x84 && op2 == 0xD2) {
         Serial.println(">> 84 D2: Zadanie TRACK NAME -> wysylam D2 + DA + D7");
         enqueueCdTextD2Track(/*withEndMarker=*/true, /*force=*/true);
+        openRequestSession();
     }
     else if (rad == myAddr && op1 == 0x84 && (op2 == 0xDA || op2 == 0xDD)) {
         uint8_t disc = discFromRequest(buf, len);
         Serial.printf(">> 84 %02X: Zadanie DISC NAME CD%d -> wysylam 0xDA + D7\n", op2, disc);
         enqueueCdTextDiscOnly(/*withEndMarker=*/true, /*force=*/true, disc);
+        openRequestSession();
     }
 
     // ===== 10. Zadanie mapy magazynka (3X .. 84 95) =====
@@ -1706,8 +1756,10 @@ void handlePacket(const uint8_t* buf, int len) {
 
         if (discValid && trackValid) {
             // Zmiana plyty/utworu — wejdz w SEEK i zakolejkuj status
+            openRequestSession();
             CdChanger::selectDiscTrack(disc, track);
             onDiscChanged(disc);
+            serviceCdText(millis());
             Serial.printf(">> 0xB0: CD%d TR%d (zakres OK)\n", disc, track);
         } else {
             // Zdarzenie rzadkie, wiec logujemy CALA ramke — bez niej nie da sie
@@ -1804,7 +1856,9 @@ static void buildStatusC0(uint8_t* frame) {
     // — patrz discFlagsNibble.
     const uint8_t discB = UnilinkFrame::discHighNibble(disc, discFlagsNibble());
 
-    frame[0]  = 0x70;                      // RAD = display
+    // W zrzucie prawdziwej zmieniarki Sony CDX-805 przy zmianie utworu w stanie ChangedCd (0x20)
+    // ramka C0 20 adresowana jest do RAD = 0x77 (broadcast do obu procesorow panela 0x70 i 0x71).
+    frame[0]  = (ms == CdChanger::MechState::ChangedCd) ? 0x77 : 0x70; // RAD = display
     frame[1]  = myAddr;                    // TAD = nasz adres
     frame[2]  = 0xC0;                      // CMD1 = 0xC0 (status odtwarzania)
     frame[3]  = st;                        // CMD2 = bajt statusu mechanizmu

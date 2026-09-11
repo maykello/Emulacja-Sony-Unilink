@@ -116,34 +116,29 @@ constexpr unsigned long POLL15_ALIVE_MS    = 3000;
 // nadac, budzimy mastera Slave Breakiem. POLL15_ALIVE_MS (3 s) zostaje dla
 // decyzji "sesja umarla" (auto-recovery), tu potrzeba znacznie krotszego progu,
 // bo ekran odswiezamy ~1 Hz.
-constexpr unsigned long POLL15_QUIET_BREAK_MS = 250;
+constexpr unsigned long POLL15_QUIET_BREAK_MS = 500;
 // To samo okno, ale gdy oprozniamy kolejke TX (patrz BREAK_QUEUE_MIN_MS).
 // Prawdziwej zmieniarce master odpowiada kolejnym `01 15` juz po ~22 ms od jej
 // ramki, wiec brak pollu przez 80 ms znaczy, ze burstu nie bedzie i trzeba go
-// obudzic samemu. Przy pelnych 250 ms kazda ramka bloku nazw czekala tyle
-// niepotrzebnie, zanim w ogole rozwazylismy Break.
+// obudzic samemu.
 constexpr unsigned long POLL15_QUIET_DRAIN_MS = 80;
 // Odstep miedzy kolejnymi Breakami. Kompromis miedzy plynnoscia ekranu a
 // ryzykiem kolizji: przy 1000 ms (i BREAK_RECOVERY_MS 1500) ekran odswiezal sie
 // z czestotliwoscia 0.3-0.5 Hz, przy 250/400 ms wskaznik [STAT] pokazywal juz
 // 4-5 Breakow na 2 s i wrocily SYSTEM RESETy — kazdy Break to 3 ms trzymania
 // magistrali, wiec im ich wiecej, tym wieksza szansa wejscia w cudza ramke.
-// 500 ms wystarcza na sekundnik (potrzebny jeden Break na sekunde) i schodzi
-// najwyzej do dwoch Breakow na sekunde przy oproznianiu kolejki CD-TEXT.
+// 500-700 ms wystarcza na sekundnik (potrzebny jeden Break na sekunde) i zapobiega
+// sztormom Breakow przy szybkiej nawigacji uzytkownika.
 constexpr unsigned long BREAK_RETRY_MS     = 1500;
-constexpr unsigned long BREAK_RECOVERY_MS  = 800;
+constexpr unsigned long BREAK_RECOVERY_MS  = 400;
 constexpr unsigned long BREAK_BACKOFF_MAX_MS = 3000;
 // Odstep dla Breaka sekundnika 1 Hz w stanie Playing (OE style: dokladnie 1 Break na sekunde)
 constexpr unsigned long BREAK_TICK_MIN_MS   = 700;
 // Odstep dla Breaka PILNEGO — gdy ekran radia pokazuje nieaktualna plyte/utwor/
-// stan (uzytkownik wlasnie nacisnal klawisz i czeka na reakcje). Wtedy zwykly
-// odstep i okno BREAK_RECOVERY_MS sa pomijane, bo kilkusekundowe opoznienie
-// numeru plyty czy licznika czasu jest natychmiast widoczne na wyswietlaczu.
-constexpr unsigned long BREAK_URGENT_MIN_MS = 250;
+// stan (uzytkownik wlasnie nacisnal klawisz i czeka na reakcje).
+constexpr unsigned long BREAK_URGENT_MIN_MS = 700;
 // Odstep dla Breaka, gdy w kolejce TX zalegaja jeszcze ramki (blok CD-TEXT).
-// Zwiekszony z 300ms do 1500ms, aby uniknac serii szybkich Breakow (sztorm 7 Breakow w 4s)
-// ktory doprowadzal do kolizji z pingami urzadzen wewnetrznych i RADIO SYSTEM RESET.
-constexpr unsigned long BREAK_QUEUE_MIN_MS = 1500;
+constexpr unsigned long BREAK_QUEUE_MIN_MS = 700;
 
 // Po SYSTEM RESET radio robi discovery (preliminary + ANYONE? + appoint). Caly
 // cykl trwa ~2-3s. W tym czasie NIE WOLNO wyzwalac auto-recovery (`01 11`)
@@ -194,11 +189,8 @@ constexpr unsigned long BREAK_ARM_TIMEOUT_US = 2500000;
 // --- OCHRONA PRZED KOLIZJA Z URZADZENIAMI WEWNETRZNYMI RADIA ---
 // Radio odpytuje swoje urzadzenia (0x3B = CD radia, 0x71 = kontroler), ktore
 // odpowiadaja z opoznieniem ~9-12ms. Gdy zobaczymy poll do INNEGO urzadzenia,
-// blokujemy break na to okno, az tamto zdazy odpowiedziec.
-// [STABILNOSC] Zwiekszone z 30 ms do 350 ms. Gdy Master odpytuje procesor panelu (0x71)
-// lub wewnetrzne CD (0x3B), zapobiega to wbijaniu Slave Breaka w trakcie oczekiwania
-// lub ponawiania pingu przez Mastera (co prowadzilo do SYSTEM RESET 18 10 01 00).
-constexpr unsigned long FOREIGN_POLL_GUARD_MS = 350;
+// blokujemy break na to okno, az tamto zdazy odpowiedziec (40 ms w pelni wystarcza).
+constexpr unsigned long FOREIGN_POLL_GUARD_MS = 150;
 
 // --- DETEKCJA CDX-M670 ---
 // Po markerze preliminary (3B/DB) ignorujemy ANYONE? przez to okno, by radio
@@ -234,10 +226,8 @@ constexpr unsigned long PERSIST_FLUSH_IDLE_US = 1500000;  // 1.5 s ciszy
 constexpr unsigned long CD_TEXT_REPEAT_MS = 0;
 
 // Maksymalna dlugosc tekstu CD-TEXT w wariancie 0xD2 (Sony CDX-M670).
-// Dokladnie 12 znakow (2 segmenty po max 6 znakow). Gwarantuje, ze w ostatnim segmencie
-// slot6 zawsze wynosi 0x00 (NUL terminator w buforze procesora 0x71).
-// Zapobiega to wyciekowi pamieci podczas przewijania (marquee) i umozliwia plynne zapetlenie.
-constexpr int CDTEXT_D2_MAX_CHARS = 12;
+// Dokladnie 13 znakow (segment 1: 6 znakow + separator 0x02; segment 2: do 7 znakow + marker 0x01 w slocie 7).
+constexpr int CDTEXT_D2_MAX_CHARS = 13;
 
 // --- CYKL WYŚWIETLANIA: CZAS <-> CD-TEXT ---
 // Wyłączony (0) dla 100% stabilności i pełnej zgodności z fabryczną zmieniarką Sony CDX-805.

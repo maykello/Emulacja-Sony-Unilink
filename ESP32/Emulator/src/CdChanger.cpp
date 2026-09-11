@@ -99,15 +99,15 @@ static void loadLast() {
 // ============================================================
 // Wejscie w faze ladowania/szukania + start odtwarzania pliku
 // ============================================================
-// `discChanged` = wjezdzamy na INNA plyte. Tylko wtedy mechanizm przechodzi
-// przez stan ChangedCd (0x20) — realna zmiana plyty, ktora radio pokazuje.
-// Przy zmianie samego utworu ten etap jest zbedny i tylko opoznial start
-// licznika o kolejny cykl odpytania (~150-400 ms).
+// `discChanged` = wjezdzamy na INNA plyte (stan LoadingTrack 0x40 -> ChangedCd 0x20 -> Playing 0x00).
+// Przy zmianie samego utworu wchodzimy w ChangedCd (0x20) na krotka chwile (SEEK_DURATION_MS),
+// co powoduje wyslanie ramki 77 31 C0 20 (czas FF:FF) oraz natychmiastowe wyslanie tytulu nowego utworu,
+// dokladnie wedlug wzorca z fabrycznej zmieniarki Sony CDX-805.
 static bool loadDiscChanged = false;
 
 static void enterSeek(bool discChanged = false) {
     loadDiscChanged = discChanged;
-    enterState(discChanged ? MechState::LoadingTrack : MechState::Playing);
+    enterState(discChanged ? MechState::LoadingTrack : MechState::ChangedCd);
     seekStartTime = millis();
     playSeconds = 0;
     playMinutes = 0;
