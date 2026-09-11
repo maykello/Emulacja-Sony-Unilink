@@ -188,9 +188,10 @@ constexpr unsigned long BREAK_ARM_TIMEOUT_US = 2500000;
 
 // --- OCHRONA PRZED KOLIZJA Z URZADZENIAMI WEWNETRZNYMI RADIA ---
 // Radio odpytuje swoje urzadzenia (0x3B = CD radia, 0x71 = kontroler), ktore
-// odpowiadaja z opoznieniem ~9-12ms. Gdy zobaczymy poll do INNEGO urzadzenia,
-// blokujemy break na to okno, az tamto zdazy odpowiedziec (40 ms w pelni wystarcza).
-constexpr unsigned long FOREIGN_POLL_GUARD_MS = 150;
+// odpowiadaja z opoznieniem ~9-12ms, a w razie braku odpowiedzi master ponawia
+// probe po ~500-600ms. Gdy zobaczymy poll do INNEGO urzadzenia, blokujemy break
+// na pelne 750 ms, by nie zderzyc sie z ta wymiana ani z ponowieniem (retry) pingu.
+constexpr unsigned long FOREIGN_POLL_GUARD_MS = 750;
 
 // --- DETEKCJA CDX-M670 ---
 // Po markerze preliminary (3B/DB) ignorujemy ANYONE? przez to okno, by radio

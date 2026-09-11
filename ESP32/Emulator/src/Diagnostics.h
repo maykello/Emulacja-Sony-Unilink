@@ -32,6 +32,12 @@ void dump(const char* reason);
 // Uzycie: Diagnostics::dumpToFile(crashFile) w WiFiLogger::dumpCrashLog().
 void dumpToFile(fs::File& f);
 
+// Migawka w RAM (czarna skrzynka zamrozona w chwili zdarzenia bez blokowania I/O)
+void captureSnapshot();
+bool hasSnapshot();
+void clearSnapshot();
+void dumpSnapshotToFile(fs::File& f);
+
 // --- SYSTEM ERROR MANAGEMENT (DLA CD-TEXT) ---
 enum class SystemError : uint8_t {
     None = 0,

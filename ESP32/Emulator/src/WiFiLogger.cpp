@@ -218,6 +218,43 @@ static void deleteOldestCrashLog(fs::FS& fs) {
     }
 }
 
+// --- MIGAWEK RAM DLA ODROCZONEGO ZRZUTU ---
+static char snapshotTextBuf[WiFiLoggerClass::BLACKBOX_SIZE];
+static size_t snapshotHead = 0;
+static size_t snapshotTail = 0;
+static bool snapshotFull = false;
+static unsigned long snapshotUptime = 0;
+static char snapshotReason[64] = "";
+static bool s_hasCrashSnapshot = false;
+
+void WiFiLoggerClass::captureCrashSnapshot(const char* reason) {
+    if (s_hasCrashSnapshot) return; // zachowaj pierwszy reset z danej trasy
+    s_hasCrashSnapshot = true;
+    snapshotUptime = millis();
+    if (reason) {
+        strncpy(snapshotReason, reason, sizeof(snapshotReason) - 1);
+        snapshotReason[sizeof(snapshotReason) - 1] = '\0';
+    } else {
+        strncpy(snapshotReason, "UNKNOWN", sizeof(snapshotReason) - 1);
+    }
+    // Błyskawiczny memcpy (8KB text + 3.5KB ramek) — zajmuje ~14 mikrosekund!
+    memcpy(snapshotTextBuf, blackboxBuf, sizeof(blackboxBuf));
+    snapshotHead = blackboxHead;
+    snapshotTail = blackboxTail;
+    snapshotFull = blackboxFull;
+
+    Diagnostics::captureSnapshot();
+}
+
+bool WiFiLoggerClass::hasCrashSnapshot() const {
+    return s_hasCrashSnapshot;
+}
+
+void WiFiLoggerClass::clearCrashSnapshot() {
+    s_hasCrashSnapshot = false;
+    Diagnostics::clearSnapshot();
+}
+
 void WiFiLoggerClass::dumpCrashLog(const char* reason) {
     // Zapobiegaj rekursji logowania w trakcie zrzutu
     static bool dumping = false;
@@ -229,6 +266,10 @@ void WiFiLoggerClass::dumpCrashLog(const char* reason) {
         dumping = false;
         return;
     }
+
+    const bool fromSnapshot = s_hasCrashSnapshot;
+    const char* effReason = fromSnapshot ? snapshotReason : (reason ? reason : "UNKNOWN");
+    const unsigned long effUptime = fromSnapshot ? snapshotUptime : millis();
 
     fs::FS& fs = usbDriveGetFS();
     if (!fs.exists("/CrashLogs")) {
@@ -248,7 +289,8 @@ void WiFiLoggerClass::dumpCrashLog(const char* reason) {
     char filename[64];
     snprintf(filename, sizeof(filename), "/CrashLogs/crash_%05d.txt", nextNum);
 
-    ::Serial.printf("\n[CrashLog] Zapisuję crash log: %s (reason: %s)\n", filename, reason);
+    ::Serial.printf("\n[CrashLog] Zapisuję crash log: %s (reason: %s%s)\n",
+                    filename, effReason, fromSnapshot ? " [ODROCZONY Z RAM]" : "");
 
     File f = fs.open(filename, FILE_WRITE);
     if (!f) {
@@ -259,27 +301,34 @@ void WiFiLoggerClass::dumpCrashLog(const char* reason) {
 
     // === NAGŁÓWEK ===
     f.println("===== CRASH LOG =====");
-    f.printf("Reason:    %s\n", reason);
-    f.printf("Uptime:    %lu ms\n", millis());
+    f.printf("Reason:    %s\n", effReason);
+    f.printf("Uptime:    %lu ms\n", effUptime);
     f.printf("ESP Reset: %s\n", espResetReasonName());
     f.printf("File:      %s\n", filename);
     f.println("=====================");
     f.println();
 
     // === SUROWE RAMKI MAGISTRALI ===
-    Diagnostics::dumpToFile(f);
+    if (fromSnapshot) {
+        Diagnostics::dumpSnapshotToFile(f);
+    } else {
+        Diagnostics::dumpToFile(f);
+    }
     f.println();
 
     // === LOGI TEKSTOWE (bufor kołowy) ===
     f.printf("===== TEXT LOG (last ~%d bytes) =====\n", BLACKBOX_SIZE);
     size_t count = 0;
-    size_t pos = blackboxFull ? blackboxHead : blackboxTail;
-    size_t end = blackboxHead;
-    bool hasData = blackboxFull || (blackboxTail != blackboxHead);
+    const char* srcBuf = fromSnapshot ? snapshotTextBuf : blackboxBuf;
+    size_t pos = fromSnapshot ? (snapshotFull ? snapshotHead : snapshotTail)
+                              : (blackboxFull ? blackboxHead : blackboxTail);
+    size_t end = fromSnapshot ? snapshotHead : blackboxHead;
+    bool hasData = fromSnapshot ? (snapshotFull || (snapshotTail != snapshotHead))
+                                : (blackboxFull || (blackboxTail != blackboxHead));
 
     if (hasData) {
         do {
-            f.write((uint8_t)blackboxBuf[pos]);
+            f.write((uint8_t)srcBuf[pos]);
             pos = (pos + 1) % BLACKBOX_SIZE;
             count++;
         } while (pos != end);
@@ -288,7 +337,11 @@ void WiFiLoggerClass::dumpCrashLog(const char* reason) {
 
     f.close();
 
-    ::Serial.printf("[CrashLog] Zapisano %s (%d B ramek + %d B logów)\n",
-                    filename, 0, count);
+    ::Serial.printf("[CrashLog] Zapisano %s (%d B logów)\n", filename, count);
+
+    if (fromSnapshot) {
+        s_hasCrashSnapshot = false;
+        Diagnostics::clearSnapshot();
+    }
     dumping = false;
 }

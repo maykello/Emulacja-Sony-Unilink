@@ -27,9 +27,13 @@
 static bool busPoweredLast = false;
 static bool powerLatchActive = false;
 static unsigned long busOffStartTime = 0;
+static bool busOffSleepDone = false;
 
 void commitSuicide() {
   if (powerLatchActive) {
+    if (Serial.hasCrashSnapshot()) {
+      Serial.dumpCrashLog();
+    }
     Serial.println("=== ROZPOCZYNAM PROCEDURĘ WYŁĄCZANIA ZASILANIA ===");
     Serial.flush();
     delay(50); // daj czas klientowi TCP na odebranie pakietu
@@ -170,6 +174,7 @@ void loop() {
     }
     // Kazde pojawienie sie HIGH natychmiast anuluje odliczanie do wylaczenia zasilania
     busOffStartTime = 0;
+    busOffSleepDone = false;
 
     if (!busPoweredLast) {
       busPoweredLast = true;
@@ -181,21 +186,32 @@ void loop() {
     if (busPoweredLast) {
       busPoweredLast = false;
       Serial.println("=== BUS_ON = 0 ===");
-      Serial.println("=== SEN: magistrala wylaczona ===");
-      CdChanger::sleep();
       UnilinkProtocol::onBusOff();
       UnilinkBus::resetRx(); // bajty z fazy BUS=0 sa "obce"
     }
 
-    // Odliczanie do procedury samobojczej (commitSuicide po ciaglych 4s braku BUS_ON)
+    // Odliczanie do procedury uśpienia audio i samobojczej
     if (busOffStartTime == 0) {
       busOffStartTime = millis() ? millis() : 1;
       Serial.printf("=== BUS_ON = 0: Oczekiwanie %lums na wylaczenie zasilania ===\n",
                     BUS_OFF_SUICIDE_DELAY_MS);
-    } else if (millis() - busOffStartTime >= BUS_OFF_SUICIDE_DELAY_MS) {
-      Serial.println("=== BUS_ON nieaktywny przez 4s: Wylaczam zasilanie (commitSuicide) ===");
-      commitSuicide();
-      busOffStartTime = 0; // nie powtarzaj procedury jesli plytka jest nadal zasilana (np. z USB)
+    } else {
+      // Dopiero po 500ms ciaglego braku BUS_ON uznajemy, ze to rzeczywiste wylaczenie radia
+      // (chwilowy spadek ~200ms podczas SYSTEM RESET radia CDX-M670 nie zatrzymuje muzyki!).
+      if (!busOffSleepDone && (millis() - busOffStartTime >= 500)) {
+        busOffSleepDone = true;
+        Serial.println("=== SEN: magistrala wylaczona > 500ms (audio STOP) ===");
+        CdChanger::sleep();
+        // Jezeli podczas trasy wystapil SYSTEM RESET, zrzucamy zamrozona migawke (128 ramek + STAT) na pendrive
+        if (Serial.hasCrashSnapshot()) {
+          Serial.dumpCrashLog();
+        }
+      }
+      if (millis() - busOffStartTime >= BUS_OFF_SUICIDE_DELAY_MS) {
+        Serial.println("=== BUS_ON nieaktywny przez 4s: Wylaczam zasilanie (commitSuicide) ===");
+        commitSuicide();
+        busOffStartTime = 0; // nie powtarzaj procedury jesli plytka jest nadal zasilana (np. z USB)
+      }
     }
   }
 

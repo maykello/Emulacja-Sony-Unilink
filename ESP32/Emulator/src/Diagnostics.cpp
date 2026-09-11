@@ -69,6 +69,46 @@ void dumpToFile(fs::File& f) {
     f.println("=====================================");
 }
 
+// --- MIGAWEK RAM DLA ODROCZONEGO ZRZUTU ---
+static Entry snapshotRing[RING_SIZE];
+static int   snapshotHead = 0;
+static int   snapshotCount = 0;
+static unsigned long snapshotNow = 0;
+static bool  s_hasSnapshot = false;
+
+void captureSnapshot() {
+    if (s_hasSnapshot) return; // zachowaj pierwszy reset z sesji
+    s_hasSnapshot = true;
+    snapshotNow = millis();
+    snapshotHead = head;
+    snapshotCount = count;
+    memcpy(snapshotRing, ring, sizeof(ring));
+}
+
+bool hasSnapshot() {
+    return s_hasSnapshot;
+}
+
+void clearSnapshot() {
+    s_hasSnapshot = false;
+    snapshotCount = 0;
+}
+
+void dumpSnapshotToFile(fs::File& f) {
+    f.printf("===== BUS FRAMES (last %d) =====\n", snapshotCount);
+    int idx = (snapshotHead - snapshotCount + RING_SIZE) % RING_SIZE;
+    for (int i = 0; i < snapshotCount; i++) {
+        Entry& e = snapshotRing[idx];
+        f.printf("[-%5lums] %-8s", snapshotNow - e.timeMs, e.label);
+        for (int b = 0; b < e.len; b++) {
+            f.printf(" %02X", e.data[b]);
+        }
+        f.print('\n');
+        idx = (idx + 1) % RING_SIZE;
+    }
+    f.println("=====================================");
+}
+
 static SystemError currentError = SystemError::None;
 static int errorDetail = 0;
 static char errorStr[32] = "";

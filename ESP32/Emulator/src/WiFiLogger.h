@@ -24,7 +24,14 @@ public:
 
     // Zapisz crash log na pendrive (surowe ramki + logi tekstowe).
     // reason: krotki opis powodu zrzutu (np. "RADIO TIMEOUT", "SYSTEM RESET").
-    void dumpCrashLog(const char* reason);
+    void dumpCrashLog(const char* reason = nullptr);
+
+    // Błyskawiczna migawka w RAM (128 ramek magistrali + 8KB logów ze STAT)
+    // bez blokowania pętli głównej i zapisu na dysk
+    void captureCrashSnapshot(const char* reason);
+    bool hasCrashSnapshot() const;
+    void clearCrashSnapshot();
+    static constexpr size_t BLACKBOX_SIZE = 8192;
 
 private:
     WiFiServer server{WIFI_LOGGER_PORT};
@@ -33,8 +40,7 @@ private:
     bool clientConnected = false;
     unsigned long lastReconnectAttempt = 0;
 
-    // Bufor kołowy (czarna skrzynka) przechowujący ostatnie ~4KB logów
-    static constexpr size_t BLACKBOX_SIZE = 8192;
+    // Bufor kołowy (czarna skrzynka) przechowujący ostatnie ~8KB logów
     char blackboxBuf[BLACKBOX_SIZE];
     size_t blackboxHead = 0;
     size_t blackboxTail = 0;

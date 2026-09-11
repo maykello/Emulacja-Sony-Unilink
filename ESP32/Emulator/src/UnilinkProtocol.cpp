@@ -82,6 +82,7 @@ static inline uint8_t statusByteFromState(CdChanger::MechState s) {
 // glownej. Odpowiedz w fazie preliminary => zly slot => nieskonczona petla RESET.
 static bool          isCdxM670         = false;
 static unsigned long lastPreliminaryTime = 0;
+static bool          s_preliminaryActive = false;
 static int           anyoneIgnoredCount  = 0;   // tylko do logowania
 static int           resetLoopCount      = 0;   // licznik resetow w petli
 static unsigned long lastSystemResetMs   = 0;   // millis() ostatniego SYSTEM RESET (grace period)
@@ -1305,23 +1306,32 @@ void handlePacket(const uint8_t* buf, int len) {
     // ===== Detekcja CDX-M670 + okno preliminary =====
     // 3B 10 02 11 = appoint wewnetrznego CD radia (TYLKO CDX-M670).
     // DB 10 02 12 = appoint wewnetrznego pomocniczego (TYLKO CDX-M670).
-    // Po tych pakietach ignorujemy ANYONE? przez PRELIMINARY_WINDOW_MS.
+    // Po tych pakietach ignorujemy ANYONE? przez faze preliminary.
     if (rad == 0x3B && tad == ADDR_MASTER && op1 == 0x02 && op2 == 0x11) {
         if (!isCdxM670) {
             isCdxM670 = true;
             Serial.println("== Wykryto CDX-M670 (widziano 3B 10 02 11) ==");
         }
-        // Respektujemy okno preliminary (250ms) TYLKO przy zimnym starcie (cold boot).
-        // Po SYSTEM RESET radio pyta o nas natychmiast — nie wolno blokowac re-discovery!
-        if (lastSystemResetMs == 0 || (millis() - lastSystemResetMs) > POST_RESET_GRACE_MS) {
-            lastPreliminaryTime = millis();
-        }
+        s_preliminaryActive = true;
+        lastPreliminaryTime = millis();
         return;
     }
     if (rad == 0xDB && tad == ADDR_MASTER && op1 == 0x02 && op2 == 0x12) {
-        if (lastSystemResetMs == 0 || (millis() - lastSystemResetMs) > POST_RESET_GRACE_MS) {
-            lastPreliminaryTime = millis();
-        }
+        s_preliminaryActive = true;
+        lastPreliminaryTime = millis();
+        return;
+    }
+
+    // Appoint panelu 0x71 konczy faze konfiguracji wyswietlacza radia
+    if (rad == 0x71 && tad == ADDR_MASTER && op1 == 0x02) {
+        s_preliminaryActive = false;
+        lastPreliminaryTime = 0;
+    }
+
+    // Ramka 18 10 01 04 = oficjalny znacznik konca etapu discovery od Mastera
+    if (rad == ADDR_BROADCAST && tad == ADDR_MASTER && op1 == 0x01 && op2 == 0x04) {
+        s_preliminaryActive = false;
+        lastPreliminaryTime = 0;
         return;
     }
 
@@ -1352,15 +1362,18 @@ void handlePacket(const uint8_t* buf, int len) {
     // radio przydzieliloby nam drugi/trzeci adres, biorac nas za nowe urzadzenie.
     if (rad == ADDR_BROADCAST && tad == ADDR_MASTER && op1 == 0x01 && op2 == 0x02) {
         if (AddressManager::shouldSendDeviceInfo(addrState(), AddressManager::Event::Anyone)) {
-            // [WARIANT_PROTOKOLU / DEVIATION §6 (R12)] Kwirk CDX-M670: ignoruj
-            // ANYONE? w oknie preliminary — to faza dla wewnetrznych urzadzen
-            // radia, nie dla nas. Wariant discovery, NIE sprzeczny z adopcja 0x3X.
-            // Po SYSTEM RESET ignorowanie ANYONE? jest zabronione — to jedyna szansa na ponowny appoint!
-            const bool isPostReset = (lastSystemResetMs != 0 && (millis() - lastSystemResetMs) <= POST_RESET_GRACE_MS);
-            if (!isPostReset && isCdxM670 && lastPreliminaryTime != 0 &&
-                (millis() - lastPreliminaryTime) < PRELIMINARY_WINDOW_MS) {
+            // [CDX-M670 2-FAZOWE DISCOVERY]
+            // Pierwsze ANYONE? po 3B/DB jest przeznaczone WYLACZNIE dla procesora wyswietlacza (0x70).
+            // Prawdziwa zmieniarka odpowiada dopiero na drugie ANYONE? (po zakonczeniu preliminary:
+            // po appoint 71 i ramce 01 04). Ignorujemy ANYONE? dopoki trwa preliminary!
+            // Guard wynosi 200 ms (w sniffie CDX-M670 drugie ANYONE? nadchodzi po 271 ms od resetu
+            // i 207 ms od 3B — wartosc 200 ms gwarantuje odrzucenie ANYONE? #1 o 140 ms i natychmiastowe
+            // odebranie ANYONE? #2 o 271 ms, nawet gdyby ramka 71 lub 01 04 zaginela na magistrali).
+            const bool inPreliminary = isCdxM670 && (s_preliminaryActive || 
+                                       (lastPreliminaryTime != 0 && (millis() - lastPreliminaryTime) < 200));
+            if (inPreliminary) {
                 anyoneIgnoredCount++;
-                Serial.printf(">> [CDX-M670] Ignoruje ANYONE? w oknie preliminary (#%d, %lums po DB)\n",
+                Serial.printf(">> [CDX-M670] Ignoruje ANYONE? w fazie preliminary (#%d, %lums po 3B/DB)\n",
                               anyoneIgnoredCount, millis() - lastPreliminaryTime);
                 return;
             }
@@ -1408,9 +1421,9 @@ void handlePacket(const uint8_t* buf, int len) {
         if (deviceAllocated && graceExpired && !radioStillPingsUs &&
             (nowAR - lastPoll15Ms) > POLL15_ALIVE_MS) {
             Serial.println(">> 01 11 a poll15 nie wraca — reset sesji, ponowne discovery");
-            Diagnostics::dump("AUTO-RECOVERY: 01 11 + dead poll15");
+            Diagnostics::recordNote("AR_0111");
             if (millis() > CRASHLOG_GRACE_MS) {
-                Serial.dumpCrashLog("AUTO-RECOVERY: 01 11 + dead poll15");
+                Serial.captureCrashSnapshot("AUTO-RECOVERY: 01 11 + dead poll15");
             }
             setAddrState(AddressManager::apply(addrState(), AddressManager::Event::Start, 0));
             claimMask = CLAIM_MASK_DEFAULT;
@@ -1449,27 +1462,29 @@ void handlePacket(const uint8_t* buf, int len) {
     // ===== 1b. SYSTEM RESET (18 10 01 00) =====
     // Radio przerywa sesje i zaczyna discovery od nowa. Zapominamy adres.
     else if (rad == ADDR_BROADCAST && tad == ADDR_MASTER && op1 == 0x01 && op2 == 0x00) {
-        // Zrzuc czarna skrzynke ZANIM zresetujemy stan — pokaze ramki, ktore
-        // doprowadzily do resetu radia.
-        Diagnostics::dump("RADIO SYSTEM RESET 18 10 01 00");
+        // [AUTO-RECOVERY FIX] Błyskawiczna migawka w RAM (14 µs) bez blokowania USB/UART!
+        // Radio CDX-M670 po 18 10 01 00 odpytuje magistrale (discovery) w ciagu ~270 ms.
+        // Odroczony zrzut na pendrive nastapi bezpiecznie przy wylaczeniu radia (BUS_ON=0).
+        Diagnostics::recordNote("RESET");
         if (millis() > CRASHLOG_GRACE_MS) {
-            Serial.dumpCrashLog("RADIO SYSTEM RESET 18 10 01 00");
+            Serial.captureCrashSnapshot("RADIO SYSTEM RESET 18 10 01 00");
         }
         resetLoopCount++;
         lastSystemResetMs = millis();  // grace period dla auto-recovery i Slave Break
         if (deviceAllocated) {
-            Serial.printf(">> Radio system reset (#%d)! Reset deviceAllocated.\n", resetLoopCount);
+            Serial.printf(">> Radio system reset (#%d)! Szybkie re-discovery...\n", resetLoopCount);
             // [NAPRAWA CZASU] Uzywamy resetToAllocated() zamiast resetToInit():
             // jezeli audio nadal gra, zachowujemy stan Playing i czas. Prawdziwa
             // zmieniarka po SYSTEM RESET wraca z zachowanym stanem odtwarzania.
             CdChanger::resetToAllocated();
             CdChanger::clearDisplayDirty();
         } else {
-            Serial.printf(">> Radio system reset (#%d) (juz bylem nieprzydzielony)\n", resetLoopCount);
+            Serial.printf(">> Radio system reset (#%d) (juz nieprzydzielony)\n", resetLoopCount);
         }
         // Bus reset -> {0x30, false} (R4.4). Nastepny przydzial moze byc inny.
         setAddrState(AddressManager::apply(addrState(), AddressManager::Event::BusReset, rad));
-        lastPreliminaryTime = 0;
+        s_preliminaryActive = isCdxM670;
+        lastPreliminaryTime = millis();
         anyoneIgnoredCount = 0;
         txQueue.clear();  // stara kolejka nieaktualna po resecie sesji
         resetCdTextCache();
@@ -1500,7 +1515,7 @@ void handlePacket(const uint8_t* buf, int len) {
         openRequestSession();
         breakBackoffMs = BREAK_RETRY_MS;
         resetCdTextCache();   // radio zaczyna od pustego ekranu — nazwy lecą ponownie
-        CdChanger::resetToInit();
+        CdChanger::resetToAllocated();  // zachowaj stan Playing i licznik audio jesli gra!
         // POTWIERDZENIE device info 0x8C, TAD = myAddr (R4.3). Atrybuty zgodne z
         // prawdziwa zmieniarka (sniff, adres 0x31):
         //   10 31 8C D0 | 9D | 04 A8 1F A3 | 0B 00
