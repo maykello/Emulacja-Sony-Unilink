@@ -333,6 +333,14 @@ static void maybeCloseRequestSession() {
     // - kolejka TX jest pusta (nie ma zaleglych ramek CD-TEXT)
     // - sekunda czasu nie jest brudna (ekran jest aktualny)
     // - lub sesja nie dostala grantu przez ponad 350ms od ostatniego 01 15 (zapobiega petli Breakow)
+    //
+    // [FIX CD-TEXT DELAY] NIE zamykaj sesji, gdy w kolejce stoja jeszcze ramki
+    // CD-TEXT (D2/DA/D7). Po zmianie utworu musimy wypchnac caly komplet nazw
+    // na kolejnych grantach — jezeli zamkniemy sesje przedwczesnie, radio
+    // przestaje pollowac i musimy budzic je Slave Breakiem (co trwa +700ms).
+    // Dopoki trzymamy claim, radio daje nam granty w ciagu ~22ms od poprzedniego.
+    if (txQueue.countPriority(Tx::PRIO_CD_TEXT) > 0) return;
+
     if (sessionGrants >= 1 && txQueue.isEmpty() && !CdChanger::isDisplayDirty()) {
         requestSessionActive = false;
     } else if (requestSessionActive && lastPoll15Ms != 0 && (millis() - lastPoll15Ms) > 350) {
@@ -383,8 +391,15 @@ void serviceSlaveBreak(bool busPowered) {
     // cykl Request Polling (01 15) i wymienia ramki z panelem (18 10 08, 71 10 01 itd.).
     // Wyzwolenie Slave Break w tym oknie powoduje kolizje na magistrali (RESYNC/RXFLUSH)
     // i awaryjny restart radia (RADIO SYSTEM RESET 18 10 01 00).
-    // Bezwzglednie blokujemy Break przez 1.5s po kazdej akcji klawisza!
-    if ((nowMs - lastBtnCommandMs) < 1500) {
+    //
+    // [FIX CD-TEXT DELAY] Gdy w kolejce stoja ramki CD-TEXT (po zmianie utworu),
+    // uzywamy krotszego cooldownu (350ms). Radio konczy przetwarzanie komendy
+    // Track+/- w ~200ms — po 350ms magistrala jest juz bezczynna i Break jest
+    // bezpieczny. Pelny 1500ms cooldown zostaje tylko dla seek (FF/REW), gdzie
+    // radio aktywnie wymienia ramki z panelem przez caly czas trzymania klawisza.
+    const unsigned long btnCooldownMs = (txQueue.countPriority(Tx::PRIO_CD_TEXT) > 0)
+                                            ? 350 : 1500;
+    if ((nowMs - lastBtnCommandMs) < btnCooldownMs) {
         UnilinkBus::cancelSlaveBreak();
         return;
     }

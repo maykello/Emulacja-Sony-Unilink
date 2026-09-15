@@ -138,7 +138,10 @@ constexpr unsigned long BREAK_TICK_MIN_MS   = 700;
 // stan (uzytkownik wlasnie nacisnal klawisz i czeka na reakcje).
 constexpr unsigned long BREAK_URGENT_MIN_MS = 700;
 // Odstep dla Breaka, gdy w kolejce TX zalegaja jeszcze ramki (blok CD-TEXT).
-constexpr unsigned long BREAK_QUEUE_MIN_MS = 700;
+// [FIX CD-TEXT DELAY] Zmniejszony z 700 na 400ms — po zmianie utworu 4 ramki
+// nazw musza zejsc na kolejnych grantach. Przy 700ms caly blok zajmowal ~3-4s;
+// przy 400ms spada do ~1.5-2s, co jest blizsze zachowaniu prawdziwej zmieniarki.
+constexpr unsigned long BREAK_QUEUE_MIN_MS = 400;
 
 // Po SYSTEM RESET radio robi discovery (preliminary + ANYONE? + appoint). Caly
 // cykl trwa ~2-3s. W tym czasie NIE WOLNO wyzwalac auto-recovery (`01 11`)
