@@ -3,10 +3,18 @@
 
 #include <Arduino.h>
 #include <WiFi.h>
-#include <ESPmDNS.h>
+// Flaga globalna: włącz/wyłącz moduł bezprzewodowy WiFi oraz serwer logów TCP.
+// 0 = całkowite wyłączenie modułów radiowych WiFi i Bluetooth (WIFI_OFF, btStop),
+//     ESP32 nie nawiązuje żadnych połączeń bezprzewodowych. Logi lecą wyłącznie
+//     przez port szeregowy UART (USB) oraz do pamięci RAM/pendrive (CrashLog).
+// 1 = normalna praca z połączeniem WiFi (STA) i serwerem TCP (port 12345).
+#define ENABLE_WIFI 0
 
+#if ENABLE_WIFI
+#include <ESPmDNS.h>
 constexpr uint16_t WIFI_LOGGER_PORT = 12345;
 constexpr const char* MDNS_HOSTNAME = "unilink";
+#endif
 
 class WiFiLoggerClass : public Print {
 public:
@@ -19,8 +27,21 @@ public:
     virtual size_t write(const uint8_t *buffer, size_t size) override;
     virtual void flush() override;
 
-    bool isWiFiConnected() const { return wifiConnected; }
-    bool hasClient() const { return clientConnected; }
+    bool isWiFiConnected() const {
+#if ENABLE_WIFI
+        return wifiConnected;
+#else
+        return false;
+#endif
+    }
+
+    bool hasClient() const {
+#if ENABLE_WIFI
+        return clientConnected;
+#else
+        return false;
+#endif
+    }
 
     // Zapisz crash log na pendrive (surowe ramki + logi tekstowe).
     // reason: krotki opis powodu zrzutu (np. "RADIO TIMEOUT", "SYSTEM RESET").
@@ -34,8 +55,10 @@ public:
     static constexpr size_t BLACKBOX_SIZE = 8192;
 
 private:
+#if ENABLE_WIFI
     WiFiServer server{WIFI_LOGGER_PORT};
     WiFiClient activeClient;
+#endif
     bool wifiConnected = false;
     bool clientConnected = false;
     unsigned long lastReconnectAttempt = 0;

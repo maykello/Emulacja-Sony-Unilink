@@ -277,6 +277,9 @@ constexpr bool DEBUG_VERBOSE = false;
 // odpowiedzi `01 15` (zamrozony ekran). Wlacz tylko na krotka diagnoze.
 constexpr bool DEBUG_FRAMES = false;
 
+// --- LOGOWANIE I MODUŁY RADIOWE (WiFi / Bluetooth) ---
+// Konfiguracja ENABLE_WIFI (0 = wyłączone, 1 = włączone) znajduje się w WiFiLogger.h.
+// Przy ENABLE_WIFI == 0 radia WiFi i Bluetooth są całkowicie wyłączone (WIFI_OFF, btStop).
 #include "WiFiLogger.h"
 #define Serial WiFiLogger
 

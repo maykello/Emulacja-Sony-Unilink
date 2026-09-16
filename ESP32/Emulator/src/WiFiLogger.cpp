@@ -20,9 +20,10 @@ WiFiLoggerClass WiFiLogger;
 
 void WiFiLoggerClass::begin(unsigned long baud) {
     ::Serial.begin(baud);
+
+#if ENABLE_WIFI
     ::Serial.println("\n[WiFiLogger] Inicjalizacja WiFi STA...");
     ::Serial.printf("[WiFiLogger] Łączenie z siecią: %s\n", WIFI_SSID);
-
 
     WiFi.mode(WIFI_STA);
     WiFi.setAutoReconnect(true);
@@ -53,9 +54,27 @@ void WiFiLoggerClass::begin(unsigned long baud) {
     } else {
         ::Serial.println("[WiFiLogger] Ostrzeżenie: Brak połączenia WiFi przy starcie. Łączenie w tle...");
     }
+#else
+    // Całkowite wyłączenie modułów radiowych WiFi oraz Bluetooth (tryb offline)
+    WiFi.mode(WIFI_OFF);
+    btStop();
+    wifiConnected = false;
+    clientConnected = false;
+    ::Serial.println("\n[WiFiLogger] Moduły radiowe WiFi oraz Bluetooth: WYŁĄCZONE (tryb offline).");
+    ::Serial.println("[WiFiLogger] Logi przesyłane wyłącznie przez port szeregowy UART (USB).");
+
+    // Zachowanie 3-sekundowego oczekiwania startowego (stabilizacja i spójność timingów)
+    unsigned long startMs = millis();
+    while (millis() - startMs < 3000) {
+        delay(100);
+        ::Serial.print(".");
+    }
+    ::Serial.println();
+#endif
 }
 
 void WiFiLoggerClass::loop() {
+#if ENABLE_WIFI
     // 1. Sprawdzanie stanu WiFi
     if (WiFi.status() == WL_CONNECTED) {
         if (!wifiConnected) {
@@ -108,15 +127,18 @@ void WiFiLoggerClass::loop() {
             ::Serial.println("[WiFiLogger] Połączenie WiFi utracone.");
         }
     }
+#endif
 }
 
 
 size_t WiFiLoggerClass::write(uint8_t c) {
     addToBlackbox(c);
     ::Serial.write(c);
+#if ENABLE_WIFI
     if (clientConnected && activeClient.connected()) {
         activeClient.write(c);
     }
+#endif
     return 1;
 }
 
@@ -125,17 +147,21 @@ size_t WiFiLoggerClass::write(const uint8_t *buffer, size_t size) {
         addToBlackbox(buffer[i]);
     }
     ::Serial.write(buffer, size);
+#if ENABLE_WIFI
     if (clientConnected && activeClient.connected()) {
         activeClient.write(buffer, size);
     }
+#endif
     return size;
 }
 
 void WiFiLoggerClass::flush() {
     ::Serial.flush();
+#if ENABLE_WIFI
     if (clientConnected && activeClient.connected()) {
         activeClient.flush();
     }
+#endif
 }
 
 void WiFiLoggerClass::addToBlackbox(uint8_t c) {

@@ -47,12 +47,15 @@ void commitSuicide() {
     Serial.println("=== ODCINAM PRĄD. DOBRANOC. ===");
     Serial.flush();
 
+#if ENABLE_WIFI
     // UWAGA: Serial.flush() dla WiFiClient upewnia się tylko, że dane weszły
     // do stosu TCP (LwIP). Musimy dać modułowi radiowemu ESP32 dodatkowy czas
     // na fizyczne wyemitowanie tych pakietów w eter zanim zgasimy zasilanie.
-    // Bez tego delay'a układ odetnie zasilanie mikrosekundy po zapisaniu do
-    // pamięci, a komputer nigdy nie zobaczy ostatnich linijek loga.
     delay(5000);
+#else
+    // Opóźnienie 2s przed fizycznym zgaszeniem zasilania
+    delay(2000);
+#endif
 
     digitalWrite(PIN_POWER_LATCH, LOW);
     powerLatchActive = false;
