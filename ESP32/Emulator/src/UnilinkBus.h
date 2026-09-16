@@ -68,6 +68,9 @@ void resetRx();
 // chwila slepoty na magistrale; zgubiony w niej Time Poll `01 12` konczy sie
 // SYSTEM RESETem radia, wiec raportujemy je w [STAT].
 void takeRxErrorCounts(uint16_t& resync, uint16_t& flush);
+// Czas (ms) od ostatniego RESYNC/RXFLUSH. Pozwala warstwie protokolu wstrzymac
+// Slave Break po bledzie odbioru (magistrala moze byc jeszcze niestabilna).
+unsigned long timeSinceLastRxError(unsigned long nowMs);
 
 // --- SLAVE BREAK ---
 // Sciagniecie linii DATA w dol, by zasygnalizowac masterowi chec nadawania poza

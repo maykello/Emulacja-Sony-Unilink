@@ -393,16 +393,22 @@ void serviceSlaveBreak(bool busPowered) {
     // i awaryjny restart radia (RADIO SYSTEM RESET 18 10 01 00).
     //
     // [FIX CD-TEXT DELAY] Gdy w kolejce stoja ramki CD-TEXT (po zmianie utworu),
-    // uzywamy krotszego cooldownu (350ms). Radio konczy przetwarzanie komendy
-    // Track+/- w ~200ms — po 350ms magistrala jest juz bezczynna i Break jest
+    // uzywamy krotszego cooldownu (150ms). Radio konczy przetwarzanie komendy
+    // Track+/- w ~100ms — po 150ms magistrala jest juz bezczynna i Break jest
     // bezpieczny. Pelny 1500ms cooldown zostaje tylko dla seek (FF/REW), gdzie
     // radio aktywnie wymienia ramki z panelem przez caly czas trzymania klawisza.
     const unsigned long btnCooldownMs = (txQueue.countPriority(Tx::PRIO_CD_TEXT) > 0)
-                                            ? 350 : 1500;
+                                            ? 150 : 1500;
     if ((nowMs - lastBtnCommandMs) < btnCooldownMs) {
         UnilinkBus::cancelSlaveBreak();
         return;
     }
+
+    // [FIX CRASH] Po RESYNC/RXFLUSH magistrala moze byc niestabilna (szum, kolizja,
+    // niekompletne ramki w buforze). Slave Break w tym oknie ryzukuje kolizje z
+    // ramka, ktorej nie zdazylismy poprawnie odebrac — i nastepny ping moze nie
+    // zostac obsluzony. Crash log: RESYNC -> break -> ping bez odpowiedzi -> RESET.
+    if (UnilinkBus::timeSinceLastRxError(nowMs) < 500) return;
 
     // Polling zywy — nie potrzebujemy Break.
     if ((nowMs - lastPoll15Ms) < POLL15_QUIET_BREAK_MS) {
@@ -1307,6 +1313,14 @@ void handlePacket(const uint8_t* buf, int len) {
     // else-if, aby NIGDY nie byl blokowany przez inne galezie dyspozytora.
     if (rad == myAddr && (tad == ADDR_MASTER || tad == ADDR_DISPLAY) &&
         op1 == 0x01 && op2 == 0x12) {
+        // [FIX CRASH] Anuluj aktywny Slave Break ZANIM odpowiemy na ping.
+        // Jesli break Hold trzyma DATA na poziomie dominujacym, odpowiedz PONG
+        // zostanie znieksztalcona (ISR nadaje bity, a Hold nadal trzyma linie).
+        // Radio nie widzi poprawnego PONG -> retry -> brak -> SYSTEM RESET.
+        // Crash log: [-690ms] RX 31 10 01 12 (ping) -> brak TX -> RESET.
+        if (UnilinkBus::slaveBreakPending()) {
+            UnilinkBus::cancelSlaveBreak();
+        }
         if (tad == ADDR_MASTER) CdChanger::noteFirstPing();
         CdChanger::notePolled();
         lastPing12Ms = millis();  // radio nadal nas widzi — nie robimy auto-recovery

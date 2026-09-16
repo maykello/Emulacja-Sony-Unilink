@@ -132,8 +132,12 @@ constexpr unsigned long POLL15_QUIET_DRAIN_MS = 80;
 constexpr unsigned long BREAK_RETRY_MS     = 1500;
 constexpr unsigned long BREAK_RECOVERY_MS  = 400;
 constexpr unsigned long BREAK_BACKOFF_MAX_MS = 3000;
-// Odstep dla Breaka sekundnika 1 Hz w stanie Playing (OE style: dokladnie 1 Break na sekunde)
-constexpr unsigned long BREAK_TICK_MIN_MS   = 700;
+// Odstep dla Breaka sekundnika w stanie Playing. Radio CDX-M670 SAMO interpoluje
+// czas miedzy ramkami 0x90 (Kompendium §11.1), wiec nie musimy breakowac co
+// sekunde. 2500ms daje ~0.4 Hz synchronizacji — radio liczy sekundy plynnie
+// i koryguje na naszych sync pointach. Poprzednie 700ms powodowalo 2 breaki
+// na sekunde (jitter 0.6-1.4s zamiast stalego 1Hz) i zwiekszalo ryzyko kolizji.
+constexpr unsigned long BREAK_TICK_MIN_MS   = 2500;
 // Odstep dla Breaka PILNEGO — gdy ekran radia pokazuje nieaktualna plyte/utwor/
 // stan (uzytkownik wlasnie nacisnal klawisz i czeka na reakcje).
 constexpr unsigned long BREAK_URGENT_MIN_MS = 700;

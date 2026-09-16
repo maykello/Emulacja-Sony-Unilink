@@ -32,6 +32,7 @@ static volatile unsigned long lastClockTime  = 0;
 // konczy sie SYSTEM RESETem radia, wiec warto miec je na oku.
 static uint16_t rxResyncCount = 0;
 static uint16_t rxFlushCount  = 0;
+static unsigned long lastRxErrorMs = 0;  // millis() ostatniego RESYNC/RXFLUSH
 
 // --- STAN NADAWANIA (TX) ---
 static volatile bool    isAnswering = false;
@@ -283,6 +284,7 @@ int readFrame(uint8_t* out, int maxLen) {
             rxIndex = remaining;
             interrupts();
             rxResyncCount++;
+            lastRxErrorMs = millis();
             Diagnostics::recordNote("RESYNC");
             return 0;
         }
@@ -322,6 +324,7 @@ int readFrame(uint8_t* out, int maxLen) {
         rxIncomingByte = 0;
         interrupts();
         rxFlushCount++;
+        lastRxErrorMs = millis();
         Diagnostics::recordNote("RXFLUSH");
         return 0;
     }
@@ -335,6 +338,11 @@ void takeRxErrorCounts(uint16_t& resync, uint16_t& flush) {
     flush  = rxFlushCount;
     rxResyncCount = 0;
     rxFlushCount  = 0;
+}
+
+unsigned long timeSinceLastRxError(unsigned long nowMs) {
+    if (lastRxErrorMs == 0) return 999999;
+    return (nowMs >= lastRxErrorMs) ? (nowMs - lastRxErrorMs) : 0;
 }
 
 void resetRx() {
