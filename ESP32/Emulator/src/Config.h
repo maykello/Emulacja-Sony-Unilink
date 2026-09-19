@@ -221,10 +221,10 @@ constexpr unsigned long RADIO_TIMEOUT_MS = 5000;   // brak PINGa => radio znikne
 constexpr unsigned long CRASHLOG_GRACE_MS = 60000;  // 60s od startu ESP
 constexpr int           CRASHLOG_MAX_FILES = 10;    // rotacja: max plikow w /CrashLogs/
 
-// Zapis NVS (flash) blokuje petle na ~15-40ms. Robimy go WYLACZNIE gdy magistrala
-// jest bezczynna dluzej niz ten prog (radio nie pollu­je) — nigdy w trakcie
-// aktywnej wymiany, by nie opoznic odpowiedzi na radio.
-constexpr unsigned long PERSIST_FLUSH_IDLE_US = 1500000;  // 1.5 s ciszy
+// Zapis NVS (flash) blokuje petle na ~2-5ms. Robimy go WYLACZNIE gdy magistrala
+// jest bezczynna dluzej niz ten prog (okno ciszy miedzy cyklicznymi pingami radia ~500ms)
+// oraz gdy utwor faktycznie gra i kolejka TX jest pusta.
+constexpr unsigned long PERSIST_FLUSH_IDLE_US = 80000;   // 80 ms ciszy (bezpieczny odstep miedzy pingami)
 
 // --- CD-TEXT ---
 // Jak czesto powtarzamy komplet nazw (utwor 0xD2 + plyta 0xDA) w trakcie odtwarzania.

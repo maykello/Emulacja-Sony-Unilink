@@ -127,6 +127,9 @@ void servicePersist();
 // (zakończenie przewijania) do natychmiastowego odświeżenia ekranu radia.
 void sendDisplayStatus();
 
+// Czy w kolejce TX znajduja sie ramki oczekujace na nadanie lub trwa sesja burstu?
+bool hasPendingTx();
+
 } // namespace UnilinkProtocol
 
 #endif // UNILINK_PROTOCOL_H

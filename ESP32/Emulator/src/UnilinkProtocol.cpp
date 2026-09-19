@@ -183,14 +183,33 @@ static unsigned long lastBtnCommandMs = 0; // Znacznik ostatniej komendy klawisz
 void begin() {
     lastPingTime = millis();
     lastBtnCommandMs = 0;
-    myAddr = AddressManager::ADDR_GROUP_CD;
-    deviceAllocated = false;
-    claimMask = CLAIM_MASK_DEFAULT;
+
+    prefsProto.begin(PREFS_NAMESPACE, false);
+    uint8_t savedAddr = prefsProto.getUChar("myAddr", AddressManager::ADDR_GROUP_CD);
+    bool savedAlloc   = prefsProto.getBool("allocated", false);
+    uint8_t savedMask = prefsProto.getUChar("claimMask", CLAIM_MASK_DEFAULT);
+
+    if (AddressManager::isCdGroup(savedAddr) && savedAlloc) {
+        myAddr = savedAddr;
+        deviceAllocated = true;
+        claimMask = savedMask;
+        Serial.printf("[UnilinkProtocol] Przywrocono z NVS adres: 0x%02X (alloc=1, mask=0x%02X)\n", myAddr, claimMask);
+    } else {
+        myAddr = AddressManager::ADDR_GROUP_CD;
+        deviceAllocated = false;
+        claimMask = CLAIM_MASK_DEFAULT;
+    }
 }
 
 void servicePersist() {
-    // Dynamiczny adres i stan sesji sa przydzielane przez mastera w fazie discovery,
-    // nie ma potrzeby ani sensu utrwalac ich w pamieci nieulotnej.
+    if (persistAddrPending) {
+        persistAddrPending = false;
+        prefsProto.putUChar("myAddr", myAddr);
+        prefsProto.putBool("allocated", deviceAllocated);
+        prefsProto.putUChar("claimMask", claimMask);
+        Serial.printf("[UnilinkProtocol] Zapisano do NVS adres: 0x%02X (alloc=%d, mask=0x%02X)\n",
+                      myAddr, deviceAllocated ? 1 : 0, claimMask);
+    }
 }
 
 bool isAllocated() {
@@ -235,10 +254,10 @@ void serviceStats(unsigned long now) {
 // Pelny reset stanu sesji (wspolny rdzen dla BUS-off).
 // ------------------------------------------------------------
 void onBusOff() {
-    // Zdarzenie Start (cykl zycia) -> {0x30, false} (R4.1, R4.4, R4.5).
-    // Gdy magistrala gasnie, sesja arbitrazowa mastera wygasa. Po ponownym wlaczeniu
-    // master musi przeprowadzic discovery (01 11 -> 01 00 -> 01 02 -> Appoint).
-    setAddrState(AddressManager::apply(addrState(), AddressManager::Event::Start, 0));
+    // Nie resetujemy myAddr/deviceAllocated do 0x30, poniewaz radio w aucie
+    // pamieta przypisana zmieniarke (0x31) w pamieci podtrzymywanej z BATT.
+    // Dzieki temu po powrocie BUS_ON odpowiadamy na pierwszy PING 01 12 bez restartu radia.
+    // Reset adresu nastepuje wylacznie na jawny BUS RESET (18 10 01 00).
     claimMask = CLAIM_MASK_DEFAULT;
 
     // Reset markerow preliminary (ale NIE isCdxM670 — to zostaje po wykryciu,
@@ -2085,6 +2104,10 @@ void serviceFullStatusFrame(unsigned long now) {
 // Używana przy broadcastzie 0x08 (zakończenie przewijania) — R10.2.
 void sendDisplayStatus() {
     enqueueFullStatusFrame();
+}
+
+bool hasPendingTx() {
+    return !txQueue.isEmpty() || requestSessionActive;
 }
 
 } // namespace UnilinkProtocol

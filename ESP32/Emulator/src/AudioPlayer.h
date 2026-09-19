@@ -28,8 +28,9 @@ bool audioInit();
 
 // Rozpocznij odtwarzanie tracka (disc: 1..10, track: 1..99).
 // Jeśli plik nie istnieje — próbuje .mp3, potem .wav, .flac, .aac.
+// Opcjonalny startSec pozwala wznowić od określonej sekundy utworu.
 // Zwraca true jeśli plik znaleziony i odtwarzanie rozpoczęte.
-bool audioPlayTrack(uint8_t disc, uint8_t track);
+bool audioPlayTrack(uint8_t disc, uint8_t track, uint32_t startSec = 0);
 
 // Zatrzymaj odtwarzanie.
 void audioStop();

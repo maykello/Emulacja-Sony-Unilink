@@ -83,18 +83,16 @@ void setup() {
   Serial.println("Obsluga: MEX-BT3800u + CDX-M670 + PCM5102A DAC + USB");
   Serial.println("Oczekuje na radio (Stan C0 - Init)...");
 
-  // Inicjalizacja LittleFS dla pamieci podrecznej (indeks pendrive'a)
-  if (!LittleFS.begin(true)) {
-    Serial.println("[LittleFS] UWAGA: Błąd inicjalizacji partycji LittleFS!");
-  }
-
-  // Pamiec nieulotna — wczytaj ostatnio odtwarzany utwor.
-  CdChanger::begin();
-
   // --- MAGISTRALA STARTUJE JAKO PIERWSZA ---
   // Musimy reagowac na 'Ping' radia od pierwszych milisekund.
   UnilinkBus::begin();
   UnilinkProtocol::begin();
+  CdChanger::begin();
+
+  // Inicjalizacja LittleFS dla pamieci podrecznej (indeks pendrive'a)
+  if (!LittleFS.begin(true)) {
+    Serial.println("[LittleFS] UWAGA: Błąd inicjalizacji partycji LittleFS!");
+  }
 
   // --- AUDIO I USB ---
   // Startuje nieblokujaco w tle.

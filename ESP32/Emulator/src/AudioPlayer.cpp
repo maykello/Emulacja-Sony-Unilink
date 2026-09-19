@@ -53,6 +53,7 @@ static TaskHandle_t audioTaskHandle = NULL;
 // --- Żądania asynchroniczne ---
 static volatile bool playRequestPending = false;
 static char playRequestPath[128];
+static volatile uint32_t playRequestStartSec = 0;
 
 // Sterowanie audio z GLOWNEJ petli (Core 1) NIGDY nie moze blokowac sie na
 // audioMutex — w przeciwnym razie nacisniecie klawisza czeka, az task audio
@@ -91,13 +92,13 @@ static String getBasename(const String &path) {
 }
 
 // ============================================================
-// Proste sortowanie alfabetyczne (insertion sort — wystarczy dla <100 plików)
+// Proste sortowanie alfabetyczne bez rozróżniania wielkości liter (case-insensitive)
 // ============================================================
 static void sortStrings(String arr[], int count) {
     for (int i = 1; i < count; i++) {
         String key = arr[i];
         int j = i - 1;
-        while (j >= 0 && arr[j] > key) {
+        while (j >= 0 && strcasecmp(arr[j].c_str(), key.c_str()) > 0) {
             arr[j + 1] = arr[j];
             j--;
         }
@@ -253,7 +254,7 @@ static bool saveIndexToFile() {
         return false;
     }
     
-    file.printf("UNILINK_INDEX_V2|%lu\n", (unsigned long)fre_clust);
+    file.printf("UNILINK_INDEX_V3|%lu\n", (unsigned long)fre_clust);
     for (int d = 1; d <= MAX_DISCS; d++) {
         if (trackCount[d] == 0) continue;
         
@@ -294,7 +295,7 @@ static bool loadIndexFromFile() {
     String header = file.readStringUntil('\n');
     header.trim();
     int pipeIdx = header.indexOf('|');
-    if (pipeIdx < 0 || header.substring(0, pipeIdx) != "UNILINK_INDEX_V2") {
+    if (pipeIdx < 0 || header.substring(0, pipeIdx) != "UNILINK_INDEX_V3") {
         Serial.println("[Audio] Zła wersja pliku indeksu lub uszkodzony nagłówek.");
         file.close();
         return false;
@@ -408,6 +409,7 @@ static void audioTaskFunc(void *param) {
     unsigned long lastDebugTime = 0;
     unsigned long playStartedMs = 0;
     bool dacUnmuted = false;
+    uint32_t pendingResumeSec = 0;
     
     for (;;) {
         // --- Żądania sterujace z Core 1 (nieblokujace dla glownej petli) ---
@@ -421,6 +423,7 @@ static void audioTaskFunc(void *param) {
             if (audioMutex) xSemaphoreGive(audioMutex);
             isPlaying = false;
             songStarted = false;
+            pendingResumeSec = 0;
         }
         if (volRequestPending) {
             volRequestPending = false;
@@ -443,6 +446,8 @@ static void audioTaskFunc(void *param) {
         // --- Obsługa żądania nowej piosenki ---
         if (playRequestPending) {
             playRequestPending = false;
+            pendingResumeSec = playRequestStartSec;
+            playRequestStartSec = 0;
             audioSetMute(true);
             dacUnmuted = false;
             playStartedMs = 0;
@@ -491,6 +496,16 @@ static void audioTaskFunc(void *param) {
         // Odciszamy dopiero po 100ms stabilnego działania dekodera (audio.isRunning()),
         // gdy bufor I2S DMA jest już stabilnie wypełniony próbkami i zegary są zsynchronizowane.
         if (isPlaying && audio.isRunning()) {
+            if (pendingResumeSec > 0) {
+                int cur = (int)audio.getAudioCurrentTime();
+                int delta = (int)pendingResumeSec - cur;
+                if (delta != 0) {
+                    audio.setTimeOffset(delta);
+                }
+                Serial.printf("[Audio] Wznowiono pozycję odtwarzania od: %lu s (delta=%d)\n",
+                              (unsigned long)pendingResumeSec, delta);
+                pendingResumeSec = 0;
+            }
             if (playStartedMs == 0) {
                 playStartedMs = millis();
             } else if (!dacUnmuted && (millis() - playStartedMs >= 100)) {
@@ -614,7 +629,7 @@ bool audioInit() {
     return true;
 }
 
-bool audioPlayTrack(uint8_t disc, uint8_t track) {
+bool audioPlayTrack(uint8_t disc, uint8_t track, uint32_t startSec) {
     if (!usbDriveIsMounted()) {
         Serial.println("[Audio] Pendrive nie zamontowany — nie mogę odtwarzać.");
         if (!usbDriveIsConnected()) {
@@ -656,6 +671,7 @@ bool audioPlayTrack(uint8_t disc, uint8_t track) {
     // by całkowicie uniknąć blokowania przerwań i timeoutów radia (co powodowało System Reset).
     audioSetMute(true);       // Wycisz sprzętowo DAC na czas zmiany/ładowania utworu
     strlcpy(playRequestPath, path, sizeof(playRequestPath));
+    playRequestStartSec = startSec;
     songFinishedFlag = false;
     trackChanging = true;     // blokuj awaryjny detektor konca utworu
     songStarted = false;      // nowy utwor jeszcze nie ruszyl

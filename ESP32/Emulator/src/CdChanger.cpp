@@ -6,6 +6,7 @@
 #include "AudioPlayer.h"
 #include "Diagnostics.h"
 #include "UnilinkProtocol.h"
+#include "UnilinkBus.h"
 #include <Preferences.h>
 
 namespace CdChanger {
@@ -59,11 +60,13 @@ static uint32_t      seekAnchorSec = 0;  // pozycja w chwili nacisniecia klawisz
 static unsigned long lastAudioSeek = 0;  // ostatni setTimeOffset podczas skanu
 
 // --- PAMIEC NIEULOTNA (NVS) ---
-// Zapamietuje ostatnio odtwarzany utwor, by po wylaczeniu radia (BUS=0) wznowic
-// od tej samej plyty/utworu.
+// Zapamietuje ostatnio odtwarzany utwor i sekunde, by po wylaczeniu radia (BUS=0) wznowic
+// od tej samej plyty/utworu i pozycji czasowej.
 static Preferences prefs;
-static uint8_t lastSavedDisk  = 0;
-static uint8_t lastSavedTrack = 0;
+static uint8_t  lastSavedDisk   = 0;
+static uint8_t  lastSavedTrack  = 0;
+static uint32_t lastSavedSec    = 0;
+static uint32_t resumeSecOnBoot = 0;
 // Zapis NVS (flash) blokuje petle na ~15-40ms, wiec NIE robimy go w hot-path
 // (przy zmianie plyty/utworu). Zamiast tego oznaczamy "do zapisania" i flush
 // nastepuje dopiero gdy magistrala jest bezczynna (servicePersist) albo przy
@@ -73,27 +76,34 @@ static bool persistPending = false;
 // ============================================================
 // NVS
 // ============================================================
-static void doPersist() {
+static void doPersist(uint32_t sec = 0) {
     persistPending = false;
     // Zapis tylko gdy cos sie zmienilo (oszczedzamy zywotnosc NVS).
-    if (currentDisk == lastSavedDisk && currentTrack == lastSavedTrack) return;
+    if (currentDisk == lastSavedDisk && currentTrack == lastSavedTrack && sec == lastSavedSec) return;
     prefs.putUChar("disk", currentDisk);
     prefs.putUChar("track", currentTrack);
+    prefs.putUInt("sec", sec);
     lastSavedDisk  = currentDisk;
     lastSavedTrack = currentTrack;
-    Serial.printf("[NVS] Zapamietano ostatni utwor: CD%d TR%d\n", currentDisk, currentTrack);
+    lastSavedSec   = sec;
+    Serial.printf("[NVS] Zapamietano: CD%d TR%d, sekunda=%lu\n",
+                  currentDisk, currentTrack, (unsigned long)sec);
 }
 
 static void loadLast() {
     uint8_t d = prefs.getUChar("disk", 1);
     uint8_t t = prefs.getUChar("track", 1);
+    uint32_t s = prefs.getUInt("sec", 0);
     if (d < 1 || d > MAX_DISC) d = 1;
     if (t < 1) t = 1;
     currentDisk  = d;
     currentTrack = t;
+    resumeSecOnBoot = s;
     lastSavedDisk  = d;
     lastSavedTrack = t;
-    Serial.printf("[NVS] Wczytano ostatni utwor: CD%d TR%d\n", currentDisk, currentTrack);
+    lastSavedSec   = s;
+    Serial.printf("[NVS] Wczytano ostatni utwor: CD%d TR%d, sekunda=%lu\n",
+                  currentDisk, currentTrack, (unsigned long)resumeSecOnBoot);
 }
 
 // ============================================================
@@ -109,14 +119,18 @@ static void enterSeek(bool discChanged = false) {
     loadDiscChanged = discChanged;
     enterState(discChanged ? MechState::LoadingTrack : MechState::ChangedCd);
     seekStartTime = millis();
-    playSeconds = 0;
-    playMinutes = 0;
-    playBaseMs = millis();
+
+    uint32_t startSec = resumeSecOnBoot;
+    resumeSecOnBoot = 0; // zuzyj tylko raz przy pierwszym rozruchu po starcie
+
+    playSeconds = (uint8_t)(startSec % 60);
+    playMinutes = (uint8_t)((startSec / 60) % 100);
+    playBaseMs  = millis() - (unsigned long)startSec * 1000;
     needDisplayUpdate = true;
 
     persistPending = true;  // zapamietamy wybor, gdy magistrala bedzie bezczynna
 
-    if (!audioPlayTrack(currentDisk, currentTrack)) {
+    if (!audioPlayTrack(currentDisk, currentTrack, startSec)) {
         Serial.printf("[Audio] Brak pliku CD%02d/%02d — szukam nastepnego...\n",
                       currentDisk, currentTrack);
     }
@@ -598,11 +612,12 @@ void notePolled() {
 }
 
 void sleep() {
-    // Radio uspione/wylaczone — zatrzymaj dzwiek i zapamietaj ostatni utwor.
+    // Radio uspione/wylaczone — zatrzymaj dzwiek i zapamietaj ostatni utwor wraz z czasem.
     // Magistrala jest juz wylaczona, wiec blokujacy zapis NVS nikomu nie szkodzi.
     seekScanDir = 0;
     audioSetInfoSquelch(false);
-    doPersist();
+    uint32_t currSec = audioIsPlaying() ? audioGetCurrentTimeSec() : 0;
+    doPersist(currSec);
     audioStop();
     enterState(MechState::Init);
     initWaitTime = 0;
@@ -610,10 +625,26 @@ void sleep() {
 }
 
 void servicePersist(unsigned long microsSinceLastClock) {
-    // Flush tylko gdy magistrala jest naprawde bezczynna — zapis flash blokuje
-    // petle na kilkadziesiat ms, wiec nie moze trafic w aktywna wymiane z radiem.
-    if (persistPending && microsSinceLastClock > PERSIST_FLUSH_IDLE_US) {
-        doPersist();
+    if (!persistPending) return;
+
+    // Jesli plyta i utwor sa juz takie same jak w NVS, nie ma potrzeby ponownego zapisu w trakcie utworu
+    if (currentDisk == lastSavedDisk && currentTrack == lastSavedTrack) {
+        persistPending = false;
+        return;
+    }
+
+    // Flush do NVS gdy utwor faktycznie gra i magistrala jest w oknie bezczynnosci:
+    // 1) Utwor osiagnal stan Playing (nie w trakcie szybkiego przelaczania utworow)
+    // 2) Dekoder audio odtwarza utwor
+    // 3) Magistrala nie nadaje w tej chwili nic (brak TX w toku)
+    // 4) Kolejka TX UnilinkProtocol jest pusta (komplet CD-TEXT zostal juz wyslany)
+    // 5) Zegar magistrali milczy dluzej niz PERSIST_FLUSH_IDLE_US (okno ~500ms miedzy pingami radia)
+    if (cdState == MechState::Playing &&
+        audioIsPlaying() &&
+        !UnilinkBus::isTransmitting() &&
+        !UnilinkProtocol::hasPendingTx() &&
+        microsSinceLastClock > PERSIST_FLUSH_IDLE_US) {
+        doPersist(0);
     }
 }
 
