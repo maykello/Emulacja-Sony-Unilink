@@ -27,6 +27,11 @@ static uint8_t myAddr          = AddressManager::ADDR_GROUP_CD;  // = ADDR_DEFAU
 static bool    deviceAllocated = false;
 static bool    persistAddrPending = false;
 static Preferences prefsProto;
+// Dual-listen: adres przywrocony z NVS po restarcie ESP32. Emulator startuje
+// jako nieprzydzielony (odpowiada na ANYONE), ale rownoczesnie nasluchuje
+// pingow pod tym adresem — gdyby radio nadal go pamietal z poprzedniej sesji.
+// Kasowany przy: Appoint, SYSTEM RESET, onBusOff, lub adopcji przez ping.
+static uint8_t nvsRestoredAddr = 0;
 static unsigned long lastPingTime = 0;
 // Czas ostatniego `01 12` bezposrednio do NAS (nie broadcast). Uzywane do
 // rozroznienia "radio w housekeeping" (pinguje nas, ale nie robi 01 15) od
@@ -187,17 +192,21 @@ void begin() {
     prefsProto.begin(PREFS_NAMESPACE, false);
     uint8_t savedAddr = prefsProto.getUChar("myAddr", AddressManager::ADDR_GROUP_CD);
     bool savedAlloc   = prefsProto.getBool("allocated", false);
-    uint8_t savedMask = prefsProto.getUChar("claimMask", CLAIM_MASK_DEFAULT);
 
-    if (AddressManager::isCdGroup(savedAddr) && savedAlloc) {
-        myAddr = savedAddr;
-        deviceAllocated = true;
-        claimMask = savedMask;
-        Serial.printf("[UnilinkProtocol] Przywrocono z NVS adres: 0x%02X (alloc=1, mask=0x%02X)\n", myAddr, claimMask);
+    // Startujemy ZAWSZE jako nieprzydzieleni — odpowiadamy na ANYONE, bo radio
+    // po wlaczeniu ZAWSZE robi pelne discovery. Ale zapamietujemy stary adres
+    // z NVS w nvsRestoredAddr: jesli radio nadal pinguje pod tym adresem
+    // (scenariusz: ESP restart przy dzialajacym radiu), odpowiemy na ping
+    // i adoptujemy adres natychmiast (dual-listen).
+    myAddr = AddressManager::ADDR_GROUP_CD;
+    deviceAllocated = false;
+    claimMask = CLAIM_MASK_DEFAULT;
+
+    if (AddressManager::isCdGroup(savedAddr) && savedAlloc && savedAddr != AddressManager::ADDR_GROUP_CD) {
+        nvsRestoredAddr = savedAddr;
+        Serial.printf("[UnilinkProtocol] NVS: dual-listen na 0x%02X (czekam na ANYONE lub ping)\n", nvsRestoredAddr);
     } else {
-        myAddr = AddressManager::ADDR_GROUP_CD;
-        deviceAllocated = false;
-        claimMask = CLAIM_MASK_DEFAULT;
+        nvsRestoredAddr = 0;
     }
 }
 
@@ -254,10 +263,12 @@ void serviceStats(unsigned long now) {
 // Pelny reset stanu sesji (wspolny rdzen dla BUS-off).
 // ------------------------------------------------------------
 void onBusOff() {
-    // Nie resetujemy myAddr/deviceAllocated do 0x30, poniewaz radio w aucie
-    // pamieta przypisana zmieniarke (0x31) w pamieci podtrzymywanej z BATT.
-    // Dzieki temu po powrocie BUS_ON odpowiadamy na pierwszy PING 01 12 bez restartu radia.
-    // Reset adresu nastepuje wylacznie na jawny BUS RESET (18 10 01 00).
+    // BUS_OFF = radio sie wylacza. Nastepna sesja wymaga pelnego discovery
+    // (ANYONE -> Appoint), wiec MUSIMY zresetowac stan do {0x30, false}.
+    // Adres zostaje w NVS na wypadek restartu ESP — begin() przywroci go
+    // do dual-listen.
+    setAddrState(AddressManager::apply(addrState(), AddressManager::Event::Start, 0));
+    nvsRestoredAddr = 0;  // nowa sesja BUS — radio zrobi discovery od nowa
     claimMask = CLAIM_MASK_DEFAULT;
 
     // Reset markerow preliminary (ale NIE isCdxM670 — to zostaje po wykryciu,
@@ -1330,8 +1341,18 @@ void handlePacket(const uint8_t* buf, int len) {
     // (tad=0x14): "31 14 01 12". Brak odpowiedzi na nie powodowal SYSTEM RESET.
     // Handler jest BEZWARUNKOWY (if, nie else-if), przed calym lancuchem
     // else-if, aby NIGDY nie byl blokowany przez inne galezie dyspozytora.
-    if (rad == myAddr && (tad == ADDR_MASTER || tad == ADDR_DISPLAY) &&
+    // Dopasowanie: nasz aktualny adres LUB adres z NVS (dual-listen po restarcie ESP)
+    const bool isNvsHit = (nvsRestoredAddr != 0 && rad == nvsRestoredAddr && !deviceAllocated);
+    if ((rad == myAddr || isNvsHit) && (tad == ADDR_MASTER || tad == ADDR_DISPLAY) &&
         op1 == 0x01 && op2 == 0x12) {
+        // [DUAL-LISTEN] Radio pinguje pod adresem z NVS — adoptujemy natychmiast.
+        // Od tego momentu dzialamy jak normalnie przydzielone urzadzenie.
+        if (isNvsHit) {
+            myAddr = nvsRestoredAddr;
+            deviceAllocated = true;
+            nvsRestoredAddr = 0;
+            Serial.printf("[UnilinkProtocol] Ping pod NVS adresem 0x%02X — adopcja natychmiast\n", myAddr);
+        }
         // [FIX CRASH] Anuluj aktywny Slave Break ZANIM odpowiemy na ping.
         // Jesli break Hold trzyma DATA na poziomie dominujacym, odpowiedz PONG
         // zostanie znieksztalcona (ISR nadaje bity, a Hold nadal trzyma linie).
@@ -1534,6 +1555,7 @@ void handlePacket(const uint8_t* buf, int len) {
         s_preliminaryActive = isCdxM670;
         lastPreliminaryTime = millis();
         anyoneIgnoredCount = 0;
+        nvsRestoredAddr = 0;  // radio robi nowe discovery — stary adres nieaktualny
         txQueue.clear();  // stara kolejka nieaktualna po resecie sesji
         resetCdTextCache();
     }
@@ -1543,6 +1565,7 @@ void handlePacket(const uint8_t* buf, int len) {
     // (RAD & 0xF0)==0x30, czyli 0x30..0x3F — nie tylko 0x31..0x3A (R4.3,
     // Kompendium §6.2). op2 i sam adres roznia sie miedzy radiami.
     else if (tad == ADDR_MASTER && op1 == 0x02 && AddressManager::isCdGroup(rad)) {
+        nvsRestoredAddr = 0;  // radio przydzielilo nowy adres — dual-listen niepotrzebny
         setAddrState(AddressManager::apply(addrState(), AddressManager::Event::Appoint, rad));
         // Wraz z adresem master przydziela nam bit w arbitrazu `01 15` — jest to
         // dolny nibbel CMD2 tej ramki (0x14 -> 0x04 w sniffie CDX-M670).
