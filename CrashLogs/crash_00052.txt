@@ -1,0 +1,276 @@
+===== CRASH LOG =====
+Reason:    RADIO TIMEOUT (5s bez pinga)
+Uptime:    1261015 ms
+ESP Reset: POWERON
+File:      /CrashLogs/crash_00052.txt
+=====================
+
+===== BUS FRAMES (last 128) =====
+[-250671ms] RX       18 10 01 11 3A 00
+[-250063ms] RX       3B 10 01 12 5E 00
+[-250052ms] RX       10 3B 00 C0 0B 00
+[-249434ms] RX       71 10 01 12 94 00
+[-249423ms] RX       10 71 00 00 81 00
+[-248805ms] RX       31 10 01 12 54 00
+[-248805ms] TX       10 31 00 00 41 00
+[-248318ms] BREAK   
+[-248304ms] RX       18 10 01 15 3E 00
+[-248304ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[-248277ms] RX       31 10 01 13 55 00
+[-248277ms] TX       70 31 90 30 61 12 F0 33 4A E0 00
+[-248186ms] RX       18 10 01 11 3A 00
+[-247578ms] RX       3B 10 01 12 5E 00
+[-247567ms] RX       10 3B 00 C0 0B 00
+[-246965ms] RX       71 10 01 12 94 00
+[-246954ms] RX       10 71 00 00 81 00
+[-246337ms] RX       31 10 01 12 54 00
+[-246336ms] TX       10 31 00 00 41 00
+[-245802ms] BREAK   
+[-245788ms] RX       18 10 01 15 3E 00
+[-245787ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[-245761ms] RX       31 10 01 13 55 00
+[-245760ms] TX       70 31 90 30 61 12 F0 36 4A E3 00
+[-245718ms] RX       18 10 01 11 3A 00
+[-245110ms] RX       3B 10 01 12 5E 00
+[-245099ms] RX       10 3B 00 C0 0B 00
+[-244481ms] RX       71 10 01 12 94 00
+[-244470ms] RX       10 71 00 00 81 00
+[-243852ms] RX       31 10 01 12 54 00
+[-243852ms] TX       10 31 00 00 41 00
+[-243285ms] BREAK   
+[-243271ms] RX       18 10 01 15 3E 00
+[-243271ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[-243244ms] RX       31 10 01 13 55 00
+[-243244ms] TX       70 31 90 30 61 12 F0 38 4A E5 00
+[-243217ms] RX       18 10 01 11 3A 00
+[-242609ms] RX       3B 10 01 12 5E 00
+[-242598ms] RX       10 3B 00 C0 0B 00
+[-241996ms] RX       71 10 01 12 94 00
+[-241985ms] RX       10 71 00 00 81 00
+[-241367ms] RX       31 10 01 12 54 00
+[-241367ms] TX       10 31 00 00 41 00
+[-240768ms] BREAK   
+[-240754ms] RX       18 10 01 15 3E 00
+[-240754ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[-240727ms] RX       31 10 01 13 55 00
+[-240727ms] TX       70 31 90 30 61 12 F0 41 4A EE 00
+[-240700ms] RX       18 10 01 11 3A 00
+[-240092ms] RX       3B 10 01 12 5E 00
+[-240081ms] RX       10 3B 00 C0 0B 00
+[-239480ms] RX       71 10 01 12 94 00
+[-239469ms] RX       10 71 00 00 81 00
+[-238851ms] RX       31 10 01 12 54 00
+[-238851ms] TX       10 31 00 00 41 00
+[-238252ms] BREAK   
+[-238238ms] RX       18 10 01 15 3E 00
+[-238238ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[-238211ms] RX       31 10 01 13 55 00
+[-238211ms] TX       70 31 90 30 61 12 F0 43 4A F0 00
+[-238184ms] RX       18 10 01 11 3A 00
+[-237576ms] RX       3B 10 01 12 5E 00
+[-237565ms] RX       10 3B 00 C0 0B 00
+[-236963ms] RX       71 10 01 12 94 00
+[-236952ms] RX       10 71 00 00 81 00
+[-236334ms] RX       31 10 01 12 54 00
+[-236334ms] TX       10 31 00 00 41 00
+[-235735ms] BREAK   
+[-235721ms] RX       18 10 01 15 3E 00
+[-235721ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[-235694ms] RX       31 10 01 13 55 00
+[-235694ms] TX       70 31 90 30 61 12 F0 46 4A F3 00
+[-235667ms] RX       18 10 01 11 3A 00
+[-235059ms] RX       3B 10 01 12 5E 00
+[-235048ms] RX       10 3B 00 C0 0B 00
+[-234446ms] RX       71 10 01 12 94 00
+[-234435ms] RX       10 71 00 00 81 00
+[-233817ms] RX       31 10 01 12 54 00
+[-233817ms] TX       10 31 00 00 41 00
+[-233219ms] BREAK   
+[-233204ms] RX       18 10 01 15 3E 00
+[-233204ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[-233177ms] RX       31 10 01 13 55 00
+[-233177ms] TX       70 31 90 30 61 12 F0 48 4A F5 00
+[-233151ms] RX       18 10 01 11 3A 00
+[-232543ms] RX       3B 10 01 12 5E 00
+[-232532ms] RX       10 3B 00 C0 0B 00
+[-231914ms] RX       71 10 01 12 94 00
+[-231903ms] RX       10 71 00 00 81 00
+[-231285ms] RX       31 10 01 12 54 00
+[-231285ms] TX       10 31 00 00 41 00
+[-230702ms] BREAK   
+[-230688ms] RX       18 10 01 15 3E 00
+[-230688ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[-230661ms] RX       31 10 01 13 55 00
+[-230661ms] TX       70 31 90 30 61 12 F0 51 4A FE 00
+[-230634ms] RESYNC  
+[-230629ms] RXFLUSH 
+[-230617ms] RX       18 10 01 11 3A 00
+[-230009ms] RX       3B 10 01 12 5E 00
+[-229998ms] RX       10 3B 00 C0 0B 00
+[-229396ms] RX       71 10 01 12 94 00
+[-229385ms] RX       10 71 00 00 81 00
+[-228767ms] RX       31 10 01 12 54 00
+[-228767ms] TX       10 31 00 00 41 00
+[-228184ms] BREAK   
+[-228170ms] RX       18 10 01 15 3E 00
+[-228170ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[-228143ms] RX       31 10 01 13 55 00
+[-228143ms] TX       70 31 90 30 61 12 F0 53 4A 00 00
+[-228116ms] RX       18 10 01 11 3A 00
+[-227572ms] RESYNC  
+[-227508ms] RX       3B 10 01 12 5E 00
+[-227497ms] RX       10 3B 00 C0 0B 00
+[-226879ms] RX       71 10 01 12 94 00
+[-226868ms] RX       10 71 00 00 81 00
+[-226267ms] RX       31 10 01 12 54 00
+[-225643ms] RX       31 10 01 12 54 00
+[-225577ms] RX       18 10 01 00 29 00
+[-225577ms] RESET   
+[-225306ms] RX       18 10 01 02 2B 00
+[-225306ms] TX       10 30 8C D0 9C 05 A8 1F A3 0B 00
+[-225274ms] RXFLUSH 
+[-225230ms] RX       18 10 01 02 2B 00
+[-225230ms] TX       10 30 8C D0 9C 05 A8 1F A3 0B 00
+[-225203ms] RX       32 10 02 18 5C 00
+[-225203ms] TX       10 32 8C D0 9E 03 A8 1F A3 0B 00
+[-220563ms] BREAK   
+=====================================
+
+===== TEXT LOG (last ~8192 bytes) =====
+=0 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:00
+[STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:02
+[STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:04
+[NVS] Zapamietano: CD4 TR12, sekunda=0
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:06
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:10
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:12
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:14
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:16
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:20
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:22
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD4 TR12 00:24
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:26
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:30
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:32
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:34
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:36
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:38
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:40
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:42
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:44
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:46
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:48
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:50
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD4 TR12 00:52
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:54
+=== BUS_ON = 0 ===
+=== BUS_ON = 0: Oczekiwanie 4000ms na wylaczenie zasilania ===
+[UnilinkProtocol] Zapisano do NVS adres: 0x30 (alloc=0, mask=0x04)
+=== BUS_ON = 1 ===
+[Audio] Głośność: 18/21 (zlecone)
+>> Radio system reset (#1) (juz nieprzydzielony)
+=== BUS_ON = 0 ===
+=== BUS_ON = 0: Oczekiwanie 4000ms na wylaczenie zasilania ===
+=== BUS_ON = 1 ===
+[Audio] Głośność: 18/21 (zlecone)
+>> Odpowiadam na ANYONE? device info 0x8C
+>> Odpowiadam na ANYONE? device info 0x8C
+>> resetToAllocated: audio gra, zachowuje Playing 00:56
+>> Adres przydzielony: 0x32 (op2=0x18)! deviceAllocated=true
+>> CD-TEXT wyslany: CD4 TR12 plyta="Dokladka" utwor="Belle Epoque -Black is Black"
+[UnilinkProtocol] Zapisano do NVS adres: 0x32 (alloc=1, mask=0x08)
+[NVS] Zapamietano: CD4 TR12, sekunda=62
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] DAC XSMT (GPIO 16) -> LOW (Wyciszono)
+[Audio-info] Closing audio file
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=0 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x80 CD4 TR12 01:01
+[NVS] Zapamietano: CD4 TR12, sekunda=0
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+[Audio] ⏹ Zatrzymano (zlecone).
+--- Radio timeout (5s). Reset do C0 + STOP audio ---
+
+=====================================

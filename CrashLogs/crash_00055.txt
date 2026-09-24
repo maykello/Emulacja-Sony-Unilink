@@ -1,0 +1,220 @@
+===== CRASH LOG =====
+Reason:    RADIO SYSTEM RESET 18 10 01 00
+Uptime:    181754 ms
+ESP Reset: POWERON
+File:      /CrashLogs/crash_00055.txt
+=====================
+
+===== BUS FRAMES (last 128) =====
+[- 2428ms] RESYNC  
+[- 2427ms] RESYNC  
+[- 2427ms] RESYNC  
+[- 2427ms] RESYNC  
+[- 2427ms] RESYNC  
+[- 2427ms] RESYNC  
+[- 2427ms] RESYNC  
+[- 2427ms] RESYNC  
+[- 2427ms] RESYNC  
+[- 2427ms] RESYNC  
+[- 2427ms] RESYNC  
+[- 2427ms] RESYNC  
+[- 2427ms] RESYNC  
+[- 2427ms] RESYNC  
+[- 2427ms] RESYNC  
+[- 2427ms] RESYNC  
+[- 2426ms] RESYNC  
+[- 2426ms] RESYNC  
+[- 2418ms] RESYNC  
+[- 2418ms] RESYNC  
+[- 2418ms] RESYNC  
+[- 2418ms] RESYNC  
+[- 2417ms] RESYNC  
+[- 2417ms] RESYNC  
+[- 2417ms] RESYNC  
+[- 2417ms] RESYNC  
+[- 2417ms] RESYNC  
+[- 2417ms] RESYNC  
+[- 2416ms] RESYNC  
+[- 2416ms] RESYNC  
+[- 2416ms] RESYNC  
+[- 2416ms] RESYNC  
+[- 2415ms] RESYNC  
+[- 2415ms] RESYNC  
+[- 2415ms] RESYNC  
+[- 2415ms] RESYNC  
+[- 2415ms] RESYNC  
+[- 2415ms] RESYNC  
+[- 2415ms] RESYNC  
+[- 2414ms] RESYNC  
+[- 2414ms] RESYNC  
+[- 2414ms] RESYNC  
+[- 2414ms] RESYNC  
+[- 2414ms] RESYNC  
+[- 2414ms] RESYNC  
+[- 2414ms] RESYNC  
+[- 2414ms] RESYNC  
+[- 2414ms] RESYNC  
+[- 2414ms] RESYNC  
+[- 2413ms] RESYNC  
+[- 2413ms] RESYNC  
+[- 2413ms] RESYNC  
+[- 2413ms] RESYNC  
+[- 2413ms] RESYNC  
+[- 2408ms] RESYNC  
+[- 2408ms] RESYNC  
+[- 2394ms] RESYNC  
+[- 2378ms] RESYNC  
+[- 2370ms] RESYNC  
+[- 2370ms] RESYNC  
+[- 2370ms] RESYNC  
+[- 2370ms] RESYNC  
+[- 2370ms] RESYNC  
+[- 2369ms] RESYNC  
+[- 2369ms] RESYNC  
+[- 2369ms] RESYNC  
+[- 2369ms] RESYNC  
+[- 2369ms] RESYNC  
+[- 2368ms] RESYNC  
+[- 2368ms] RESYNC  
+[- 2368ms] RESYNC  
+[- 2368ms] RESYNC  
+[- 2368ms] RESYNC  
+[- 2367ms] RESYNC  
+[- 2367ms] RESYNC  
+[- 2367ms] RESYNC  
+[- 2367ms] RESYNC  
+[- 2367ms] RESYNC  
+[- 2367ms] RESYNC  
+[- 2367ms] RESYNC  
+[- 2367ms] RESYNC  
+[- 2367ms] RESYNC  
+[- 2367ms] RESYNC  
+[- 2367ms] RESYNC  
+[- 2367ms] RESYNC  
+[- 2366ms] RESYNC  
+[- 2366ms] RESYNC  
+[- 2366ms] RESYNC  
+[- 2366ms] RESYNC  
+[- 2366ms] RESYNC  
+[- 2366ms] RESYNC  
+[- 2366ms] RESYNC  
+[- 2366ms] RESYNC  
+[- 2366ms] RESYNC  
+[- 2366ms] RESYNC  
+[- 2366ms] RESYNC  
+[- 2365ms] RESYNC  
+[- 2365ms] RESYNC  
+[- 2365ms] RESYNC  
+[- 2365ms] RESYNC  
+[- 2365ms] RESYNC  
+[- 2365ms] RESYNC  
+[- 2365ms] RESYNC  
+[- 2365ms] RESYNC  
+[- 2365ms] RESYNC  
+[- 2364ms] RESYNC  
+[- 2364ms] RESYNC  
+[- 2364ms] RESYNC  
+[- 2364ms] RESYNC  
+[- 2364ms] RESYNC  
+[- 2364ms] RESYNC  
+[- 2363ms] RESYNC  
+[- 2363ms] RESYNC  
+[- 2363ms] RESYNC  
+[- 2363ms] RESYNC  
+[- 2363ms] RESYNC  
+[- 2363ms] RESYNC  
+[- 2362ms] RESYNC  
+[- 2346ms] RESYNC  
+[- 2330ms] RESYNC  
+[- 1947ms] RX       3B 10 01 12 5E 00
+[- 1936ms] RX       10 3B 00 C0 0B 00
+[- 1318ms] RX       71 10 01 12 94 00
+[- 1307ms] RX       10 71 00 00 81 00
+[-  689ms] RX       31 10 01 12 54 00
+[-   81ms] RX       31 10 01 12 54 00
+[-    0ms] RX       18 10 01 00 29 00
+[-    0ms] RESET   
+=====================================
+
+===== TEXT LOG (last ~8192 bytes) =====
+2 00:33
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:35
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:37
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:39
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:41
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:43
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:45
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:47
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:49
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:51
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:53
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:55
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:57
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 00:59
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:01
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:03
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:05
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:07
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:09
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:11
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:13
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:15
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:17
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:19
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:21
+[STAT] poll15=1 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:23
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=1/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:25
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=0/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:27
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:29
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:31
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:33
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:35
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:37
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:39
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:41
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:43
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:45
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:47
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:49
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=0 btn=0 break=1/1 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD4 TR12 01:51
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:53
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:55
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:57
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 01:59
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 02:01
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 02:03
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 02:05
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 02:07
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 02:09
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 02:11
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 02:13
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 02:15
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 02:17
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 02:19
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 02:21
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 02:23
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD4 TR12 02:25
+=== BUS_ON = 0 ===
+=== BUS_ON = 0: Oczekiwanie 4000ms na wylaczenie zasilania ===
+[UnilinkProtocol] Zapisano do NVS adres: 0x30 (alloc=0, mask=0x04)
+=== BUS_ON = 1 ===
+[Audio] Głośność: 18/21 (zlecone)
+=== BUS_ON = 0 ===
+=== BUS_ON = 0: Oczekiwanie 4000ms na wylaczenie zasilania ===
+=== BUS_ON = 1 ===
+[Audio] Głośność: 18/21 (zlecone)
+=== BUS_ON = 0 ===
+=== BUS_ON = 0: Oczekiwanie 4000ms na wylaczenie zasilania ===
+=== BUS_ON = 1 ===
+[Audio] Głośność: 18/21 (zlecone)
+=== BUS_ON = 0 ===
+=== BUS_ON = 0: Oczekiwanie 4000ms na wylaczenie zasilania ===
+=== BUS_ON = 1 ===
+[Audio] Głośność: 18/21 (zlecone)
+=== BUS_ON = 0 ===
+=== BUS_ON = 0: Oczekiwanie 4000ms na wylaczenie zasilania ===
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=996/0 | alloc=0 state=0x00 CD4 TR12 02:27
+=== BUS_ON = 1 ===
+[Audio] Głośność: 18/21 (zlecone)
+
+=====================================
