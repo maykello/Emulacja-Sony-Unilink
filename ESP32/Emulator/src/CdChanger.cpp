@@ -72,6 +72,9 @@ static uint32_t resumeSecOnBoot = 0;
 // nastepuje dopiero gdy magistrala jest bezczynna (servicePersist) albo przy
 // uspieniu (sleep) — wtedy blokada nikomu nie szkodzi.
 static bool persistPending = false;
+static bool alreadyAsleep  = false;  // Faza 1.2: guard idempotentnosci sleep()
+static unsigned long lastPeriodicPersist = 0;  // Faza 2.2: periodyczny zapis pozycji co 30s
+constexpr unsigned long PERIODIC_PERSIST_MS = 30000;  // Faza 2.2: interwał zapisu pozycji (30s)
 
 // ============================================================
 // NVS
@@ -612,6 +615,12 @@ void notePolled() {
 }
 
 void sleep() {
+    // [FAZA 1.2] Idempotentnosc: wielokrotne wywolanie sleep() (np. z petli
+    // serviceTimeout w Emulator.cpp) NIE nadpisuje NVS — tylko pierwsze
+    // wywolanie zapisuje poprawna pozycje i zatrzymuje audio.
+    if (alreadyAsleep) return;
+    alreadyAsleep = true;
+
     // Radio uspione/wylaczone — zatrzymaj dzwiek i zapamietaj ostatni utwor wraz z czasem.
     // Magistrala jest juz wylaczona, wiec blokujacy zapis NVS nikomu nie szkodzi.
     seekScanDir = 0;
@@ -626,31 +635,42 @@ void sleep() {
 }
 
 void servicePersist(unsigned long microsSinceLastClock) {
-    if (!persistPending) return;
-
-    // Jesli plyta i utwor sa juz takie same jak w NVS, nie ma potrzeby ponownego zapisu w trakcie utworu
-    if (currentDisk == lastSavedDisk && currentTrack == lastSavedTrack) {
-        persistPending = false;
-        return;
-    }
-
-    // Flush do NVS gdy utwor faktycznie gra i magistrala jest w oknie bezczynnosci:
-    // 1) Utwor osiagnal stan Playing (nie w trakcie szybkiego przelaczania utworow)
-    // 2) Dekoder audio odtwarza utwor
-    // 3) Magistrala nie nadaje w tej chwili nic (brak TX w toku)
-    // 4) Kolejka TX UnilinkProtocol jest pusta (komplet CD-TEXT zostal juz wyslany)
-    // 5) Zegar magistrali milczy dluzej niz PERSIST_FLUSH_IDLE_US (okno ~500ms miedzy pingami radia)
-    if (cdState == MechState::Playing &&
+    // Flush do NVS gdy magistrala jest w oknie bezczynnosci.
+    // Warunki wspolne: Playing, audio gra, brak TX, pusta kolejka, cichy zegar.
+    const bool idleWindow = (cdState == MechState::Playing &&
         audioIsPlaying() &&
         !UnilinkBus::isTransmitting() &&
         !UnilinkProtocol::hasPendingTx() &&
-        microsSinceLastClock > PERSIST_FLUSH_IDLE_US) {
-        doPersist(0);
+        microsSinceLastClock > PERSIST_FLUSH_IDLE_US);
+
+    // --- Zapis przy zmianie utworu (plyta/track rozni sie od NVS) ---
+    if (persistPending) {
+        if (currentDisk == lastSavedDisk && currentTrack == lastSavedTrack) {
+            persistPending = false;
+        } else if (idleWindow) {
+            // [FAZA 2.1] Zapisujemy AKTUALNA sekunde, nie 0!
+            // Wczesniej doPersist(0) kasowal pozycje przy kazdej zmianie tracku,
+            // przez co po wlaczeniu radia utwor gral od poczatku.
+            uint32_t sec = audioIsPlaying() ? audioGetCurrentTimeSec() : 0;
+            doPersist(sec);
+        }
+    }
+
+    // --- [FAZA 2.2] Periodyczny zapis pozycji co 30s ---
+    // Gwarantuje, ze po naglym odcieciu zasilania strata pozycji wyniesie max 30s.
+    unsigned long now = millis();
+    if (idleWindow && (now - lastPeriodicPersist > PERIODIC_PERSIST_MS)) {
+        uint32_t sec = audioGetCurrentTimeSec();
+        if (sec != lastSavedSec || currentDisk != lastSavedDisk || currentTrack != lastSavedTrack) {
+            doPersist(sec);
+        }
+        lastPeriodicPersist = now;
     }
 }
 
 void wake() {
     // Pobudka — upewnij sie, ze DAC ma docelowa glosnosc.
+    alreadyAsleep = false;  // Faza 1.2: pozwol sleep() na ponowne dzialanie
     audioSetVolume(AUDIO_VOLUME);
 }
 

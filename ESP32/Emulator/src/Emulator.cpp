@@ -28,6 +28,11 @@ static bool busPoweredLast = false;
 static bool powerLatchActive = false;
 static unsigned long busOffStartTime = 0;
 static bool busOffSleepDone = false;
+// [FAZA 4.1] Debounce BUS_ON: opoznij onBusOff() o 100ms, by krotkie glitche
+// (np. ~50ms podczas SYSTEM RESET) nie kasowaly sesji i nie wymuszaly pelnego
+// re-discovery. Prawdziwa zmieniarka tez nie reaguje na mikrosekundowe przerwy.
+static unsigned long busOffEdgeMs = 0;
+static bool busOffProtocolDone = false;  // true = onBusOff() juz zostalo wywolane
 
 void commitSuicide() {
   if (powerLatchActive) {
@@ -200,13 +205,22 @@ void loop() {
       Serial.println("=== BUS_ON = 1 ===");
       CdChanger::wake();
     }
+    // [FAZA 4.1] Reset glitch timer jesli BUS_ON powrocil szybko
+    busOffProtocolDone = false;
   } else {
     // BUS_ON nieaktywny (LOW)
     if (busPoweredLast) {
       busPoweredLast = false;
-      Serial.println("=== BUS_ON = 0 ===");
-      UnilinkProtocol::onBusOff();
-      UnilinkBus::resetRx(); // bajty z fazy BUS=0 sa "obce"
+      Serial.println("=== BUS_ON = 0 (czekam na ew. glitch...) ===");
+      busOffEdgeMs = millis();
+    }
+    
+    // [FAZA 4.1] Opoznienie onBusOff() o 100ms
+    if (!busOffProtocolDone && (millis() - busOffEdgeMs > 100)) {
+        busOffProtocolDone = true;
+        Serial.println("=== BUS_ON = 0 (>100ms) - kasuje sesje! ===");
+        UnilinkProtocol::onBusOff();
+        UnilinkBus::resetRx(); // bajty z fazy BUS=0 sa "obce"
     }
 
     // Odliczanie do procedury uśpienia audio i samobojczej

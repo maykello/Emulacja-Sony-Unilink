@@ -33,6 +33,8 @@ static Preferences prefsProto;
 // Kasowany przy: Appoint, SYSTEM RESET, onBusOff, lub adopcji przez ping.
 static uint8_t nvsRestoredAddr = 0;
 static unsigned long lastPingTime = 0;
+static bool          timeoutFired = false;   // Faza 1.1: jednorazowy timeout (nie powtarzaj sleep/NVS co 5s)
+static unsigned long lastAnyoneResponseMs = 0; // Faza 3.1: debounce odpowiedzi na ANYONE?
 // Czas ostatniego `01 12` bezposrednio do NAS (nie broadcast). Uzywane do
 // rozroznienia "radio w housekeeping" (pinguje nas, ale nie robi 01 15) od
 // "radio nas wyrzucilo" (brak jakiegokolwiek kontaktu). W fazie housekeeping
@@ -257,6 +259,34 @@ void serviceStats(unsigned long now) {
     statPoll15 = statDisp13Us = statDisp13_3B = statPing12Us = statBtn = 0;
     statBreak = statBreakOk = 0;
     statText = statSeek = 0;
+
+    // [FAZA 6.1] Watchdog: jesli jestesmy przydzieleni, muzyka teoretycznie gra (Playing),
+    // ale radio nie odpytalo nas o ekran (poll15) przez 15 sekund — to znaczy ze sesja 
+    // zawisla w martwym punkcie (np. przez konflikt maski/adresu po re-discovery).
+    // Wymuszamy restart sesji.
+    if (deviceAllocated && CdChanger::mechState() == CdChanger::MechState::Playing) {
+        if (lastPoll15Ms != 0 && (now - lastPoll15Ms > 15000)) {
+            Serial.println(">> [WATCHDOG] poll15 martwy przez 15s w trakcie Playing! Wymuszam reset sesji.");
+            Diagnostics::recordNote("WDOG_POLL15");
+            if (millis() > CRASHLOG_GRACE_MS) {
+                Serial.captureCrashSnapshot("WATCHDOG: dead poll15 > 15s");
+            }
+            setAddrState(AddressManager::apply(addrState(), AddressManager::Event::Start, 0));
+            claimMask = CLAIM_MASK_DEFAULT;
+            CdChanger::resetToAllocated();
+            CdChanger::clearDisplayDirty();
+            txQueue.clear();
+            suppressBreakUntil = 0;
+            lastBreakTime = 0;
+            breakBackoffMs = BREAK_RETRY_MS;
+            breakOkAwaitingPollMs = 0;
+            
+            // Wypchniecie magic ramki by obudzic radio (jak w auto-recovery)
+            const uint8_t magic[] = {0x10, 0x18, 0x04, 0x00, 0x2C, 0x00};
+            UnilinkBus::sendRaw(magic, sizeof(magic));
+            Serial.println(">> Watchdog wyslal magic 10 18 04 00 -> nowe discovery");
+        }
+    }
 }
 
 // ------------------------------------------------------------
@@ -276,6 +306,8 @@ void onBusOff() {
     lastPreliminaryTime = 0;
     anyoneIgnoredCount = 0;
     resetLoopCount = 0;
+    timeoutFired = false;          // Faza 1.1: nowa sesja — timeout moze triggernac ponownie
+    lastAnyoneResponseMs = 0;      // Faza 3.1: nowa sesja — debounce resetu
     resetCdTextCache();   // nowa sesja => nazwy trzeba wyslac od nowa
     lastBtnCommandMs = 0;
     requestSessionActive = false;
@@ -289,6 +321,11 @@ void onBusOff() {
 
 bool serviceTimeout(unsigned long now) {
     if (!deviceAllocated) return false;
+    // [FAZA 1.1] Timeout odpala sie JEDNORAZOWO. Kolejne iteracje petli nie
+    // wyzwalaja ponownego sleep()/doPersist(), co zapobiega nieskonczonej petli
+    // timeout -> sleep(sekunda=0) -> timeout -> sleep(sekunda=0) ... ktora
+    // kasowala zapamiętana pozycje w NVS i zawieszala radio.
+    if (timeoutFired) return false;
     // Porownanie ZE ZNAKIEM. `now` moze byc minimalnie starsze od lastPingTime,
     // jesli wywolujacy pobral millis() przed obsluga ramek. Na typie bez znaku
     // taka roznica podwija sie do ~4 mld ms i timeout wywala sesje natychmiast
@@ -300,7 +337,8 @@ bool serviceTimeout(unsigned long now) {
     // ponownego discovery (Appoint), tylko wznawialo odpytywanie znanego adresu.
     // Dlatego ZACHOWUJEMY adres i deviceAllocated, jedynie odswiezamy lastPingTime.
     // CdChanger::sleep() wywolane w Emulator.cpp przeniesie mechanizm do stanu C0 (Init).
-    lastPingTime = now; // nie zglaszaj tego samego timeoutu raz za razem
+    timeoutFired = true;  // NIE powtarzaj — sleep() jest idempotentne
+    lastPingTime = now;
     return true;
 }
 
@@ -1267,6 +1305,7 @@ void handlePacket(const uint8_t* buf, int len) {
     }
 
     lastPingTime = millis();
+    timeoutFired = false;  // Faza 1.1: kazda prawidlowa ramka resetuje jednorazowy timeout
 
     uint8_t rad = buf[0];
     uint8_t tad = buf[1];
@@ -1446,6 +1485,16 @@ void handlePacket(const uint8_t* buf, int len) {
                               anyoneIgnoredCount, millis() - lastPreliminaryTime);
                 return;
             }
+
+            // [FAZA 3.1] Debounce: ignoruj duplikat ANYONE? jesli odpowiedzielismy w ciagu 300ms.
+            // Radio CDX-M670 wysyla czasem ANYONE? dwa razy pod rzad. Podwojna odpowiedz
+            // prowadzila do przydzielenia drugiego adresu (0x32 zamiast 0x31), po czym
+            // radio nie odpytywalo emulatora o status i sesja nigdy sie nie rozpoczynala.
+            if (millis() - lastAnyoneResponseMs < 300) {
+                Serial.println(">> Ignoruje duplikat ANYONE? (cooldown 300ms)");
+                return;
+            }
+            lastAnyoneResponseMs = millis();
 
             // DEVICE INFO 0x8C — atrybuty zgodne z prawdziwa zmieniarka (CDX-M670
             // sniff). TAD = 0x30 = myAddr w stanie nieprzydzielonym (R4.2):
