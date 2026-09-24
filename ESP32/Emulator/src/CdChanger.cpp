@@ -618,6 +618,7 @@ void sleep() {
     audioSetInfoSquelch(false);
     uint32_t currSec = audioIsPlaying() ? audioGetCurrentTimeSec() : 0;
     doPersist(currSec);
+    resumeSecOnBoot = currSec; // Odnów wartość dla kolejnego enterSeek()
     audioStop();
     enterState(MechState::Init);
     initWaitTime = 0;

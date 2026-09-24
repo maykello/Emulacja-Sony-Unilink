@@ -71,6 +71,16 @@ void commitSuicide() {
 }
 
 void setup() {
+  // --- NATYCHMIASTOWE ZABEZPIECZENIE LINII MAGISTRALI ---
+  // ESP32 po resecie ma piny w stanie plywajacym. Jesli INVERT_DATA=true i pin
+  // DATA chwilowo plynie na HIGH, radio widzi poziom dominujacy na magistrali
+  // (wired-OR), co interpretuje jako blad i robi SYSTEM RESET. Wymuszamy INPUT
+  // ZANIM cokolwiek innego ruszy — to gwarantuje stan recesywny (Hi-Z) od
+  // pierwszej mikrosekundy.
+  pinMode(PIN_DATA, INPUT);
+  pinMode(PIN_CLOCK, INPUT);
+  pinMode(PIN_BUS_ON, INPUT);
+
   // --- NATYCHMIASTOWE PRZEJECIE ZASILANIA (Suicide Circuit) ---
   pinMode(PIN_POWER_LATCH, OUTPUT);
   digitalWrite(PIN_POWER_LATCH, HIGH);
@@ -82,6 +92,14 @@ void setup() {
   Serial.println("--- Sony UniLink EMULATOR (10-CD) v9 + AUDIO ---");
   Serial.println("Obsluga: MEX-BT3800u + CDX-M670 + PCM5102A DAC + USB");
   Serial.println("Oczekuje na radio (Stan C0 - Init)...");
+
+  // --- STABILIZACJA MAGISTRALI ---
+  // Krotkie opoznienie daje czas na ustabilizowanie poziomow na liniach DATA
+  // i CLOCK po wlaczeniu zasilania. Bez tego ISR moze odebrac smieci (szum
+  // przejsciowy przetwornicy lub stan nieustalony driverow magistrali), co
+  // prowadzi do falszywych ramek w buforze RX jeszcze PRZED pierwszym prawdziwym
+  // pingiem radia.
+  delay(50);
 
   // --- MAGISTRALA STARTUJE JAKO PIERWSZA ---
   // Musimy reagowac na 'Ping' radia od pierwszych milisekund.
