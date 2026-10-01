@@ -2,6 +2,7 @@
 // Diagnostics.cpp — implementacja "czarnej skrzynki" magistrali
 // =============================================================================
 #include "Diagnostics.h"
+#include "Config.h"   // Serial -> WiFiLogger: komunikaty trafiaja tez do czarnej skrzynki
 
 namespace Diagnostics {
 
@@ -18,18 +19,21 @@ struct Entry {
 static Entry ring[RING_SIZE];
 static int   head  = 0;     // indeks nastepnego wpisu
 static int   count = 0;     // ile wpisow zapisano (do RING_SIZE)
+static portMUX_TYPE s_ringMux = portMUX_INITIALIZER_UNLOCKED;
 
 void recordFrame(const char* label, const uint8_t* data, int len) {
-    Entry& e = ring[head];
-    e.timeMs = millis();
-    e.label  = label;
-    if (len < 0) len = 0;
+    if (len < 0 || data == nullptr) len = 0;
     if (len > MAX_FRAME_LEN) len = MAX_FRAME_LEN;
+    const unsigned long t = millis();
+    portENTER_CRITICAL(&s_ringMux);
+    Entry& e = ring[head];
+    e.timeMs = t;
+    e.label  = label;
     e.len = (uint8_t)len;
     for (int i = 0; i < len; i++) e.data[i] = data[i];
-
     head = (head + 1) % RING_SIZE;
     if (count < RING_SIZE) count++;
+    portEXIT_CRITICAL(&s_ringMux);
 }
 
 void recordNote(const char* note) {
@@ -77,12 +81,22 @@ static unsigned long snapshotNow = 0;
 static bool  s_hasSnapshot = false;
 
 void captureSnapshot() {
-    if (s_hasSnapshot) return; // zachowaj pierwszy reset z sesji
-    s_hasSnapshot = true;
+    if (s_hasSnapshot) return; // zachowaj pierwsze zdarzenie z sesji
     snapshotNow = millis();
+    portENTER_CRITICAL(&s_ringMux);
     snapshotHead = head;
     snapshotCount = count;
-    memcpy(snapshotRing, ring, sizeof(ring));
+    portEXIT_CRITICAL(&s_ringMux);
+    // Porcjami: dluga sekcja krytyczna opoznilaby przerwanie zegara magistrali
+    // (ten sam rdzen) i przeklamala bity.
+    constexpr int CHUNK = 16;
+    static_assert(RING_SIZE % CHUNK == 0, "RING_SIZE musi byc wielokrotnoscia CHUNK");
+    for (int i = 0; i < RING_SIZE; i += CHUNK) {
+        portENTER_CRITICAL(&s_ringMux);
+        memcpy(&snapshotRing[i], &ring[i], CHUNK * sizeof(Entry));
+        portEXIT_CRITICAL(&s_ringMux);
+    }
+    s_hasSnapshot = true;
 }
 
 bool hasSnapshot() {

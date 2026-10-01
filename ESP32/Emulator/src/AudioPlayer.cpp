@@ -2,6 +2,7 @@
 #include "UsbDrive.h"
 #include "Config.h"
 #include "Diagnostics.h"
+#include "UnilinkProtocol.h"
 #include "Audio.h"     // ESP32-audioI2S by schreibfaul1
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -28,6 +29,11 @@ static uint8_t trackCount[MAX_DISCS + 1]; // indeks 1..10, [0] nieużywany
 // płyta), a na ekran radia idzie wyłącznie część po kropce ("ABBA").
 static String discDirName[MAX_DISCS + 1];  // np. "CD01.ABBA"
 static String discLabel[MAX_DISCS + 1];    // np. "ABBA"
+// Indeks czyta zadanie magistrali (rdzen 1, wysoki priorytet), a przebudowuje
+// petla glowna (ten sam rdzen, niski priorytet). Flage zerujemy PRZED pierwsza
+// modyfikacja tablic — czytelnik sprawdza ja na wejsciu i nie moze zostac
+// wywlaszczony przez petle, wiec nigdy nie trafi na przepisywany String.
+static volatile bool s_indexReady = false;
 static volatile bool songFinishedFlag = false;
 static bool isPlaying = false;
 static bool wasUsbMounted = false;   // do wykrywania hot-plug/unplug
@@ -152,6 +158,7 @@ static void performDeepScan() {
 
     fs::FS &fs = usbDriveGetFS();
 
+    s_indexReady = false;
     for (int d = 1; d <= MAX_DISCS; d++) {
         trackCount[d]  = 0;
         discDirName[d] = "";
@@ -225,10 +232,8 @@ static void performDeepScan() {
         
         Serial.printf("[Audio] CD%02d [%s] nazwa=\"%s\": %d track(ów)\n",
                       d, discDirName[d].c_str(), discLabel[d].c_str(), count);
-        for (int t = 0; t < count; t++) {
-            // Serial.printf("[Audio]   TR%02d: %s\n", t + 1, trackFiles[d][t].c_str());
-        }
     }
+    s_indexReady = true;
 }
 
 // ============================================================
@@ -311,6 +316,7 @@ static bool loadIndexFromFile() {
     }
     
     // Wyczyść stare wpisy
+    s_indexReady = false;
     for (int d = 1; d <= MAX_DISCS; d++) {
         trackCount[d]  = 0;
         discDirName[d] = "";
@@ -358,6 +364,7 @@ static bool loadIndexFromFile() {
     }
     
     file.close();
+    s_indexReady = true;
     Serial.println("[Audio] Pomyślnie wczytano indeks z wbudowanej pamięci.");
     
     // Wypisz dla debugowania
@@ -370,11 +377,15 @@ static bool loadIndexFromFile() {
     return true;
 }
 
+// Zapis indeksu to zapis flash (LittleFS) — odkladamy go do okna, w ktorym
+// nie zaklocimy rozmowy z radiem (zwykle tuz po starcie trwa wtedy discovery).
+static bool s_indexSavePending = false;
+
 static void scanDiscs() {
     if (!loadIndexFromFile()) {
         Serial.println("[Audio] Indeks nieaktualny lub brak. Wykonuję głębokie skanowanie...");
         performDeepScan();
-        saveIndexToFile();
+        s_indexSavePending = true;
     }
 }
 
@@ -383,7 +394,7 @@ static void scanDiscs() {
 // track jest 1-based (jak na radiu)
 // ============================================================
 static bool findTrackPath(uint8_t disc, uint8_t track, char* outPath, size_t pathLen) {
-    if (!usbDriveIsMounted()) return false;
+    if (!usbDriveIsMounted() || !s_indexReady) return false;
     if (disc < 1 || disc > MAX_DISCS) return false;
     if (track < 1 || track > trackCount[disc]) return false;
     
@@ -644,6 +655,9 @@ bool audioPlayTrack(uint8_t disc, uint8_t track, uint32_t startSec) {
         Serial.printf("[Audio] Nieprawidłowy disc=%d track=%d\n", disc, track);
         return false;
     }
+
+    // Indeks w trakcie budowy — odtwarzanie wznowi CdChanger::serviceMediaMount.
+    if (!s_indexReady) return false;
     
     if (trackCount[disc] == 0) {
         Serial.printf("[Audio] Pusty dysk CD%02d\n", disc);
@@ -724,11 +738,12 @@ void audioSetInfoSquelch(bool squelch) {
 }
 
 uint8_t audioGetTrackCount(uint8_t disc) {
-    if (disc < 1 || disc > MAX_DISCS) return 0;
+    if (!s_indexReady || disc < 1 || disc > MAX_DISCS) return 0;
     return trackCount[disc];
 }
 
 uint16_t audioGetTotalTrackCount() {
+    if (!s_indexReady) return 0;
     uint16_t total = 0;
     for (int i = 1; i <= MAX_DISCS; i++) {
         total += trackCount[i];
@@ -756,7 +771,7 @@ static size_t copyBounded(const char* src, char* out, size_t maxLen) {
 
 size_t audioGetTrackName(uint8_t disc, uint8_t track, char* out, size_t maxLen) {
     if (out && maxLen > 0) out[0] = '\0';
-    if (disc < 1 || disc > MAX_DISCS) return 0;
+    if (!s_indexReady || disc < 1 || disc > MAX_DISCS) return 0;
     if (track < 1 || track > trackCount[disc]) return 0;
 
     // track jest 1-based, tablica 0-based — nazwa pliku to nazwa utworu.
@@ -780,7 +795,7 @@ size_t audioGetDiscName(uint8_t disc, char* out, size_t maxLen) {
     // po kropce: folder "CD01.ABBA" daje na ekranie "ABBA". Gdy folder nie ma
     // sufiksu (samo "CD01") albo nośnik nie jest zamontowany — zostaje "CDnn",
     // bo puste pole radio pokazuje jako brak nazwy płyty.
-    if (discLabel[disc].length() > 0) {
+    if (s_indexReady && discLabel[disc].length() > 0) {
         return copyBounded(discLabel[disc].c_str(), out, maxLen);
     }
 
@@ -790,6 +805,7 @@ size_t audioGetDiscName(uint8_t disc, char* out, size_t maxLen) {
 }
 
 uint8_t audioFindNextNonEmptyDisc(uint8_t disc) {
+    if (!s_indexReady) return 0;
     for (int i = 1; i <= MAX_DISCS; i++) {
         uint8_t candidate = ((disc - 1 + i) % MAX_DISCS) + 1;
         if (trackCount[candidate] > 0) return candidate;
@@ -798,6 +814,7 @@ uint8_t audioFindNextNonEmptyDisc(uint8_t disc) {
 }
 
 uint8_t audioFindPrevNonEmptyDisc(uint8_t disc) {
+    if (!s_indexReady) return 0;
     for (int i = 1; i <= MAX_DISCS; i++) {
         uint8_t candidate = ((disc - 1 - i + MAX_DISCS) % MAX_DISCS) + 1;
         if (trackCount[candidate] > 0) return candidate;
@@ -841,6 +858,7 @@ void audioLoop() {
         stopRequestPending = true;   // nieblokujaco (task audio wykona stopSong)
         isPlaying = false;
         songFinishedFlag = false;
+        s_indexReady = false;
         for (int i = 1; i <= MAX_DISCS; i++) {
             trackCount[i]  = 0;
             discDirName[i] = "";
@@ -856,6 +874,11 @@ void audioLoop() {
         }
     }
     wasUsbMounted = isMounted;
+
+    if (s_indexSavePending && isMounted && UnilinkProtocol::flashWriteWindow()) {
+        s_indexSavePending = false;
+        saveIndexToFile();
+    }
 
     // Okresowe sprawdzanie stanu USB/plików (jeśli brak błędów sprzętowych DAC)
     Diagnostics::SystemError currErr = Diagnostics::getError();

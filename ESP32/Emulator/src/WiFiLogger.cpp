@@ -18,7 +18,15 @@ static constexpr int CRASHLOG_MAX_FILES_LOCAL = 10;  // musi byc zgodne z CRASHL
 
 WiFiLoggerClass WiFiLogger;
 
+// Logi pisze kilka zadan naraz (magistrala, audio, USB, petla glowna).
+static portMUX_TYPE s_blackboxMux = portMUX_INITIALIZER_UNLOCKED;
+
 void WiFiLoggerClass::begin(unsigned long baud) {
+#if !ARDUINO_USB_CDC_ON_BOOT
+    // Bez bufora nadawczego kazdy printf czeka, az bajty zejda do 128-bajtowego
+    // FIFO UART — zadanie magistrali nie moze na tym stac.
+    ::Serial.setTxBufferSize(8192);
+#endif
     ::Serial.begin(baud);
 
 #if ENABLE_WIFI
@@ -28,14 +36,7 @@ void WiFiLoggerClass::begin(unsigned long baud) {
     WiFi.mode(WIFI_STA);
     WiFi.setAutoReconnect(true);
     WiFi.begin(WIFI_SSID, WIFI_PASS);
-
-    // Non-blocking wait in setup (up to 3 seconds for initial link)
-    unsigned long startMs = millis();
-    while (WiFi.status() != WL_CONNECTED && millis() - startMs < 3000) {
-        delay(100);
-        ::Serial.print(".");
-    }
-    ::Serial.println();
+    // Bez czekania na polaczenie — loop() uruchomi serwer, gdy WiFi wstanie.
 
     if (WiFi.status() == WL_CONNECTED) {
         wifiConnected = true;
@@ -55,21 +56,14 @@ void WiFiLoggerClass::begin(unsigned long baud) {
         ::Serial.println("[WiFiLogger] Ostrzeżenie: Brak połączenia WiFi przy starcie. Łączenie w tle...");
     }
 #else
-    // Całkowite wyłączenie modułów radiowych WiFi oraz Bluetooth (tryb offline)
+    // Całkowite wyłączenie modułów radiowych WiFi oraz Bluetooth (tryb offline).
+    // Bez zadnego czekania: radio robi discovery ~1-2 s po wlaczeniu i
+    // zmieniarka musi juz wtedy sluchac magistrali.
     WiFi.mode(WIFI_OFF);
     btStop();
     wifiConnected = false;
     clientConnected = false;
     ::Serial.println("\n[WiFiLogger] Moduły radiowe WiFi oraz Bluetooth: WYŁĄCZONE (tryb offline).");
-    ::Serial.println("[WiFiLogger] Logi przesyłane wyłącznie przez port szeregowy UART (USB).");
-
-    // Zachowanie 3-sekundowego oczekiwania startowego (stabilizacja i spójność timingów)
-    unsigned long startMs = millis();
-    while (millis() - startMs < 3000) {
-        delay(100);
-        ::Serial.print(".");
-    }
-    ::Serial.println();
 #endif
 }
 
@@ -132,7 +126,9 @@ void WiFiLoggerClass::loop() {
 
 
 size_t WiFiLoggerClass::write(uint8_t c) {
+    portENTER_CRITICAL(&s_blackboxMux);
     addToBlackbox(c);
+    portEXIT_CRITICAL(&s_blackboxMux);
     ::Serial.write(c);
 #if ENABLE_WIFI
     if (clientConnected && activeClient.connected()) {
@@ -143,9 +139,11 @@ size_t WiFiLoggerClass::write(uint8_t c) {
 }
 
 size_t WiFiLoggerClass::write(const uint8_t *buffer, size_t size) {
+    portENTER_CRITICAL(&s_blackboxMux);
     for (size_t i = 0; i < size; i++) {
         addToBlackbox(buffer[i]);
     }
+    portEXIT_CRITICAL(&s_blackboxMux);
     ::Serial.write(buffer, size);
 #if ENABLE_WIFI
     if (clientConnected && activeClient.connected()) {
@@ -254,8 +252,7 @@ static char snapshotReason[64] = "";
 static bool s_hasCrashSnapshot = false;
 
 void WiFiLoggerClass::captureCrashSnapshot(const char* reason) {
-    if (s_hasCrashSnapshot) return; // zachowaj pierwszy reset z danej trasy
-    s_hasCrashSnapshot = true;
+    if (s_hasCrashSnapshot) return; // zachowaj pierwsze zdarzenie z danej trasy
     snapshotUptime = millis();
     if (reason) {
         strncpy(snapshotReason, reason, sizeof(snapshotReason) - 1);
@@ -263,13 +260,23 @@ void WiFiLoggerClass::captureCrashSnapshot(const char* reason) {
     } else {
         strncpy(snapshotReason, "UNKNOWN", sizeof(snapshotReason) - 1);
     }
-    // Błyskawiczny memcpy (8KB text + 3.5KB ramek) — zajmuje ~14 mikrosekund!
-    memcpy(snapshotTextBuf, blackboxBuf, sizeof(blackboxBuf));
+    portENTER_CRITICAL(&s_blackboxMux);
     snapshotHead = blackboxHead;
     snapshotTail = blackboxTail;
     snapshotFull = blackboxFull;
+    portEXIT_CRITICAL(&s_blackboxMux);
+    // Porcjami: dluga sekcja krytyczna opoznilaby przerwanie zegara magistrali
+    // (ten sam rdzen) i przeklamala bity.
+    constexpr size_t CHUNK = 256;
+    for (size_t off = 0; off < sizeof(blackboxBuf); off += CHUNK) {
+        const size_t n = (sizeof(blackboxBuf) - off < CHUNK) ? sizeof(blackboxBuf) - off : CHUNK;
+        portENTER_CRITICAL(&s_blackboxMux);
+        memcpy(snapshotTextBuf + off, blackboxBuf + off, n);
+        portEXIT_CRITICAL(&s_blackboxMux);
+    }
 
     Diagnostics::captureSnapshot();
+    s_hasCrashSnapshot = true;
 }
 
 bool WiFiLoggerClass::hasCrashSnapshot() const {

@@ -1,0 +1,228 @@
+===== CRASH LOG =====
+Reason:    WATCHDOG: dead poll15 > 15s
+Uptime:    157344 ms
+ESP Reset: POWERON
+File:      /CrashLogs/crash_00002.txt
+=====================
+
+===== BUS FRAMES (last 128) =====
+[-18210ms] RX       70 91 DB C0 9C 01 0A 07 04 04 04 05 06 00 C5 00
+[-18183ms] RX       70 91 D0 12 E3 C0 B0 06 07 06 06 15 00 10 91 00
+[-18166ms] RX       10 91 75 4F 65 00
+[-18149ms] RX       18 10 08 00 30 00
+[-18052ms] RX       3B 10 01 12 5E 00
+[-18041ms] RX       10 3B 00 C0 0B 00
+[-17439ms] RX       71 10 01 12 94 00
+[-17428ms] RX       10 71 00 00 81 00
+[-16218ms] RX       31 10 01 12 54 00
+[-16218ms] TX       10 31 00 00 41 00
+[-16099ms] BREAK   
+[-16085ms] RX       18 10 01 15 3E 00
+[-16085ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[-16058ms] RX       31 10 01 13 55 00
+[-16058ms] TX       70 31 90 30 61 15 F0 21 CA 51 00
+[-15599ms] RX       18 10 01 11 3A 00
+[-14991ms] RX       3B 10 01 12 5E 00
+[-14980ms] RX       10 3B 00 C0 0B 00
+[-14949ms] RX       18 10 80 08 B0 0A 00 00 00 BA 00
+[-14927ms] RX       18 10 81 00 A9 00 00 01 01 AB 00
+[-14905ms] RX       70 10 91 00 11 00 00 00 00 11 00
+[-14888ms] RX       18 10 08 00 30 00
+[-14861ms] RX       70 51 C0 03 84 00 30 00 04 11 F9 49 00 FE 09 00
+[-14834ms] RX       70 51 CD 3E CC 20 45 53 4B 41 20 3C 00 FE 6A 00
+[-14807ms] RX       70 51 C1 20 A2 50 6F 70 20 4D 20 20 0A 42 CA 00
+[-14785ms] RX       70 51 92 03 56 00 00 00 00 56 00
+[-14369ms] RX       71 10 01 12 94 00
+[-14358ms] RX       10 71 00 00 81 00
+[-13942ms] RX       18 10 80 08 B0 0A 00 00 00 BA 00
+[-13920ms] RX       18 10 81 05 AE 01 00 01 01 B1 00
+[-13898ms] RX       70 10 91 08 19 30 00 00 00 49 00
+[-13871ms] RX       70 51 C0 03 84 00 30 00 04 11 F9 49 00 FE 09 00
+[-13844ms] RX       70 51 CD 3E CC 20 45 53 4B 41 20 3C 00 FE 6A 00
+[-13818ms] RX       70 51 C1 20 A2 50 6F 70 20 4D 20 20 0A 42 CA 00
+[-13796ms] RX       70 51 92 03 56 00 00 00 00 56 00
+[-13779ms] RX       18 10 08 00 30 00
+[-13746ms] RX       31 10 01 12 54 00
+[-13746ms] TX       10 31 00 00 41 00
+[-13415ms] RX       18 10 81 02 AB 04 00 01 01 B1 00
+[-13393ms] RX       70 10 91 10 21 30 00 00 00 51 00
+[-13376ms] RX       18 10 08 00 30 00
+[-13179ms] RX       18 10 81 01 AA 08 00 01 01 B4 00
+[-13162ms] RX       18 10 08 00 30 00
+[-13113ms] RX       18 10 01 11 3A 00
+[-12505ms] RX       3B 10 01 12 5E 00
+[-12494ms] RX       10 3B 00 C0 0B 00
+[-11876ms] RX       71 10 01 12 94 00
+[-11865ms] RX       10 71 00 00 81 00
+[-11689ms] RX       18 10 80 0C B4 0A 00 00 00 BE 00
+[-11667ms] RX       18 10 81 01 AA 08 00 01 01 B4 00
+[-11640ms] RX       70 51 C0 03 84 00 30 00 04 11 F9 49 00 FE 09 00
+[-11613ms] RX       70 51 CD 3E CC 20 45 53 4B 41 20 3C 00 FE 6A 00
+[-11586ms] RX       70 51 C1 20 A2 50 6F 70 20 4D 20 20 0A 42 CA 00
+[-11564ms] RX       70 51 92 03 56 00 00 00 00 56 00
+[-11547ms] RX       18 10 08 00 30 00
+[-11254ms] RX       18 10 81 01 AA 0D 00 01 01 B9 00
+[-11232ms] RX       70 10 91 90 A1 30 00 00 00 D1 00
+[-11215ms] RX       18 10 08 00 30 00
+[-11198ms] RX       31 10 01 12 54 00
+[-11198ms] TX       10 31 00 00 41 00
+[-10569ms] RX       18 10 01 11 3A 00
+[-10467ms] RX       18 10 81 01 AA 04 00 01 01 B0 00
+[-10450ms] RX       18 10 08 00 30 00
+[- 9954ms] RX       3B 10 01 12 5E 00
+[- 9943ms] RX       10 3B 00 C0 0B 00
+[- 9528ms] RX       18 10 81 01 AA 23 00 01 01 CF 00
+[- 9506ms] RX       70 10 91 10 21 30 00 00 00 51 00
+[- 9489ms] RX       18 10 08 00 30 00
+[- 9344ms] RX       71 10 01 12 94 00
+[- 9333ms] RX       10 71 00 00 81 00
+[- 8934ms] RX       18 10 81 01 AA 28 00 01 01 D4 00
+[- 8912ms] RX       70 10 91 90 A1 30 00 00 00 D1 00
+[- 8895ms] RX       18 10 08 00 30 00
+[- 8734ms] RX       31 10 01 12 54 00
+[- 8734ms] TX       10 31 00 00 41 00
+[- 8105ms] RX       18 10 01 11 3A 00
+[- 7498ms] RX       3B 10 01 12 5E 00
+[- 7487ms] RX       10 3B 00 C0 0B 00
+[- 6885ms] RX       71 10 01 12 94 00
+[- 6874ms] RX       10 71 00 00 81 00
+[- 6698ms] RX       18 10 81 01 AA 23 00 01 01 CF 00
+[- 6676ms] RX       70 10 91 10 21 30 00 01 00 51 00
+[- 6676ms] DROP    
+[- 6659ms] RX       18 10 08 00 30 00
+[- 6461ms] RX       18 10 81 01 AA 04 00 01 01 B0 00
+[- 6439ms] RX       70 10 91 90 A1 30 00 00 00 D1 00
+[- 6422ms] RX       18 10 08 00 30 00
+[- 6262ms] RX       31 10 01 12 54 00
+[- 6262ms] TX       10 31 00 00 41 00
+[- 5740ms] RX       18 10 87 EB 9A 08 00 00 00 A2 00
+[- 5718ms] RX       70 C1 91 11 D3 21 30 11 C0 F5 00
+[- 5653ms] RX       18 10 08 00 30 00
+[- 5636ms] RX       18 10 01 11 3A 00
+[- 5028ms] RX       3B 10 01 12 5E 00
+[- 5017ms] RX       10 3B 00 C0 0B 00
+[- 4761ms] RX       18 10 87 EB 9A 0C 00 00 00 A6 00
+[- 4739ms] RX       70 C1 91 11 D3 21 31 11 C0 F6 00
+[- 4658ms] RX       18 10 08 00 30 00
+[- 4402ms] RX       71 10 01 12 94 00
+[- 4391ms] RX       10 71 00 00 81 00
+[- 4343ms] RX       18 10 87 EB 9A 08 00 00 00 A2 00
+[- 4321ms] RX       70 C1 91 11 D3 21 32 01 C0 E7 00
+[- 4272ms] RX       18 10 08 00 30 00
+[- 3995ms] RX       18 10 87 EB 9A 0C 00 00 00 A6 00
+[- 3973ms] RX       70 C1 91 11 D3 21 32 11 C0 F7 00
+[- 3876ms] RX       18 10 08 00 30 00
+[- 3779ms] RX       31 10 01 12 54 00
+[- 3779ms] TX       10 31 00 00 41 00
+[- 3528ms] RX       18 10 81 01 AA 23 00 01 01 CF 00
+[- 3506ms] RX       70 10 91 10 21 30 00 00 00 51 00
+[- 3490ms] RX       18 10 08 00 30 00
+[- 3153ms] RX       18 10 01 11 3A 00
+[- 2545ms] RX       3B 10 01 12 5E 00
+[- 2534ms] RX       10 3B 00 C0 0B 00
+[- 1932ms] RX       71 10 01 12 94 00
+[- 1921ms] RX       10 71 00 00 81 00
+[- 1346ms] RX       18 10 81 01 AA 28 00 01 01 D4 00
+[- 1324ms] RX       70 10 91 90 A1 30 00 00 00 D1 00
+[- 1307ms] RX       18 10 08 00 30 00
+[- 1290ms] RX       31 10 01 12 54 00
+[- 1290ms] TX       10 31 00 00 41 00
+[-  677ms] RX       18 10 01 11 3A 00
+[-  655ms] RX       18 10 81 01 AA 09 00 01 01 B5 00
+[-  634ms] RX       70 10 91 10 21 30 00 00 00 51 00
+[-  617ms] RX       18 10 08 00 30 00
+[-   56ms] RX       3B 10 01 12 5E 00
+[-   46ms] RX       10 3B 00 C0 0B 00
+[-    0ms] WDOG_POLL15
+=====================================
+
+===== TEXT LOG (last ~8192 bytes) =====
+13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR13 00:51
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR13 00:53
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR13 00:55
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR13 00:57
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR13 00:59
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=2 btn=0 break=1/1 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR13 01:01
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR13 01:03
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR13 01:05
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR13 01:07
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR13 01:09
+[STAT] poll15=1 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR13 01:11
+[STAT] poll15=0 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR13 01:13
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR13 01:15
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR13 01:17
+[NVS] Zapamietano: CD12 TR13, sekunda=78
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR13 01:19
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR13 01:21
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR13 01:23
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=0 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR13 01:25
+>> NEXT TRACK: CD12 TR14 (max=99)
+>> CD-TEXT wyslany: CD12 TR14 plyta="POLSKIE GK" utwor="Halina Kunicka - Na gorąco"
+[Audio-info] Closing audio file
+[Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Kunicka - Na gorąco.mp3") = OK
+[Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Kunicka - Na gorąco.mp3 (rozpoczęto dekodowanie)
+[Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+>>> 20 -> 00 (Playing!)
+[STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=1 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR14 00:01
+[STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR14 00:03
+[NVS] Zapamietano: CD12 TR14, sekunda=5
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR14 00:05
+>> NEXT TRACK: CD12 TR15 (max=99)
+>> CD-TEXT wyslany: CD12 TR15 plyta="POLSKIE GK" utwor="Halina Kunicka - Orkiestry dęte"
+[Audio-info] Closing audio file
+[Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Kunicka - Orkiestry dęte.mp3") = OK
+[Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Kunicka - Orkiestry dęte.mp3 (rozpoczęto dekodowanie)
+[Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+>>> 20 -> 00 (Playing!)
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=1 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR15 00:00
+[STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR15 00:02
+[STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR15 00:04
+[NVS] Zapamietano: CD12 TR15, sekunda=5
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR15 00:06
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR15 00:08
+>> NEXT TRACK: CD12 TR16 (max=99)
+>> CD-TEXT wyslany: CD12 TR16 plyta="POLSKIE GK" utwor="Halina Kunicka - To były piękne dni"
+[Audio-info] Closing audio file
+[Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Kunicka - To były piękne dni.mp3") = OK
+[Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Kunicka - To były piękne dni.mp3 (rozpoczęto dekodowanie)
+[Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+>>> 20 -> 00 (Playing!)
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=1 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:00
+[STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=0 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR16 00:02
+>> PREV TRACK (Restart utworu): CD12 TR16
+[Audio-info] Closing audio file
+>>> 20 -> 00 (Playing!)
+[Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Kunicka - To były piękne dni.mp3") = OK
+[Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Kunicka - To były piękne dni.mp3 (rozpoczęto dekodowanie)
+[Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=1 break=2/2 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR16 00:00
+>> PREV TRACK: CD12 TR15
+>> CD-TEXT wyslany: CD12 TR15 plyta="POLSKIE GK" utwor="Halina Kunicka - Orkiestry dęte"
+[Audio-info] Closing audio file
+>>> 20 -> 00 (Playing!)
+[Audio] Async connecttoFS("/CD12.POLSKIE GK/Halina Kunicka - Orkiestry dęte.mp3") = OK
+[Audio] ▶ Odtwarzam: /CD12.POLSKIE GK/Halina Kunicka - Orkiestry dęte.mp3 (rozpoczęto dekodowanie)
+[Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=1 break=1/1 txt=0 seek=0 rxerr=1/1 | alloc=1 state=0x00 CD12 TR15 00:01
+[STAT] poll15=2 disp13(my)=2 disp13(3B)=0 ping12(my)=1 btn=0 break=2/2 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR15 00:03
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=6/2 | alloc=1 state=0x00 CD12 TR15 00:05
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR15 00:09
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR15 00:11
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/1 | alloc=1 state=0x00 CD12 TR15 00:13
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=7/1 | alloc=1 state=0x00 CD12 TR15 00:17
+[NVS] Zapamietano: CD12 TR15, sekunda=18
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR15 00:19
+[STAT] poll15=1 disp13(my)=1 disp13(3B)=0 ping12(my)=1 btn=0 break=1/1 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR15 00:21
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR15 00:25
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR15 00:27
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR15 00:29
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR15 00:31
+>> [Audio Bus] Radio sygnalizuje audio ON (87 EB)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 EB)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 EB)
+>> [Audio Bus] Radio sygnalizuje audio ON (87 EB)
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR15 00:35
+[STAT] poll15=0 disp13(my)=0 disp13(3B)=0 ping12(my)=1 btn=0 break=0/0 txt=0 seek=0 rxerr=0/0 | alloc=1 state=0x00 CD12 TR15 00:37
+>> [WATCHDOG] poll15 martwy przez 15s w trakcie Playing! Wymuszam reset sesji.
+
+=====================================

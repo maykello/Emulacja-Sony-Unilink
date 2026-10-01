@@ -6,7 +6,6 @@
 #include "AudioPlayer.h"
 #include "Diagnostics.h"
 #include "UnilinkProtocol.h"
-#include "UnilinkBus.h"
 #include <Preferences.h>
 
 namespace CdChanger {
@@ -66,15 +65,16 @@ static Preferences prefs;
 static uint8_t  lastSavedDisk   = 0;
 static uint8_t  lastSavedTrack  = 0;
 static uint32_t lastSavedSec    = 0;
-static uint32_t resumeSecOnBoot = 0;
-// Zapis NVS (flash) blokuje petle na ~15-40ms, wiec NIE robimy go w hot-path
-// (przy zmianie plyty/utworu). Zamiast tego oznaczamy "do zapisania" i flush
-// nastepuje dopiero gdy magistrala jest bezczynna (servicePersist) albo przy
-// uspieniu (sleep) — wtedy blokada nikomu nie szkodzi.
-static bool persistPending = false;
-static bool alreadyAsleep  = false;  // Faza 1.2: guard idempotentnosci sleep()
-static unsigned long lastPeriodicPersist = 0;  // Faza 2.2: periodyczny zapis pozycji co 30s
-constexpr unsigned long PERIODIC_PERSIST_MS = 30000;  // Faza 2.2: interwał zapisu pozycji (30s)
+// Pozycja, od ktorej wznowimy odtwarzanie (po starcie albo po zatrzymaniu przez radio).
+static volatile uint32_t resumeSecOnBoot = 0;
+// Zapis NVS wstrzymuje na czas operacji flash wszystkie zadania (takze zadanie
+// magistrali), wiec robi go WYLACZNIE petla glowna w oknie wskazanym przez
+// UnilinkProtocol::flashWriteWindow(). Logika zmieniarki tylko zaznacza, ze jest
+// cos do zapisania.
+static volatile bool persistPending = false;
+static bool alreadyAsleep  = false;
+static unsigned long lastPeriodicPersist = 0;
+constexpr unsigned long PERIODIC_PERSIST_MS = 30000;
 
 // ============================================================
 // NVS
@@ -119,6 +119,7 @@ static void loadLast() {
 static bool loadDiscChanged = false;
 
 static void enterSeek(bool discChanged = false) {
+    alreadyAsleep = false;   // ponowne zatrzymanie przez radio musi znow zadzialac
     loadDiscChanged = discChanged;
     enterState(discChanged ? MechState::LoadingTrack : MechState::ChangedCd);
     seekStartTime = millis();
@@ -165,11 +166,11 @@ static void enterPlaying(unsigned long now) {
     needDisplayUpdate = true;
 }
 
-void update(unsigned long now, bool radioEngaged) {
-    // Jeśli wystąpił błąd (np. brak pendrive'a) i radio rozmawia z emulatorem,
+void update(unsigned long now, bool radioEngaged, bool selected) {
+    // Jeśli wystąpił błąd (np. brak pendrive'a) i radio ma nas jako zrodlo,
     // wchodzimy w tryb Playing z licznikiem 99:01..99:10, aby nadawać CD-TEXT błędu
     // dokładnie tak jak zwykłą piosenkę.
-    if (radioEngaged && Diagnostics::hasError()) {
+    if (radioEngaged && selected && Diagnostics::hasError()) {
         if (cdState == MechState::Init || cdState == MechState::Idle) {
             enterPlaying(now);
             Serial.println(">>> CdChanger: wejscie w Playing (Error Mode 99:01..99:10)");
@@ -313,11 +314,11 @@ void serviceMediaMount() {
         }
 
         // --- AUTOMATYCZNY POWRÓT DO GRY PO HOT-PLUG USB ---
-        // Jeśli radio jest/było w stanie Playing lub LoadingTrack (czeka na muzykę),
-        // w stanie błędu lub sesja radia jest aktywna — automatycznie startujemy utwór!
+        // Mechanizm czekal na muzyke (Playing/ladowanie, tez w trybie bledu "brak
+        // pendrive'a") albo radio ma nas wybranych jako zrodlo.
         if (cdState == MechState::Playing || cdState == MechState::LoadingTrack ||
-            cdState == MechState::ChangedCd || Diagnostics::hasError() ||
-            UnilinkProtocol::isAllocated()) {
+            cdState == MechState::ChangedCd ||
+            (UnilinkProtocol::isAllocated() && UnilinkProtocol::isSelected())) {
             Serial.println(">>> Hot-plug USB: Wznawiam odtwarzanie (enterSeek)!");
             enterSeek(/*discChanged=*/true);
         }
@@ -615,57 +616,47 @@ void notePolled() {
 }
 
 void sleep() {
-    // [FAZA 1.2] Idempotentnosc: wielokrotne wywolanie sleep() (np. z petli
-    // serviceTimeout w Emulator.cpp) NIE nadpisuje NVS — tylko pierwsze
-    // wywolanie zapisuje poprawna pozycje i zatrzymuje audio.
+    // Wielokrotne wywolanie (BUS_ON=0, 87 xx z bitem 0 = 0, zmiana zrodla) nie
+    // moze nadpisac zapamietanej pozycji zerem.
     if (alreadyAsleep) return;
     alreadyAsleep = true;
 
-    // Radio uspione/wylaczone — zatrzymaj dzwiek i zapamietaj ostatni utwor wraz z czasem.
-    // Magistrala jest juz wylaczona, wiec blokujacy zapis NVS nikomu nie szkodzi.
     seekScanDir = 0;
     audioSetInfoSquelch(false);
-    uint32_t currSec = audioIsPlaying() ? audioGetCurrentTimeSec() : 0;
-    doPersist(currSec);
-    resumeSecOnBoot = currSec; // Odnów wartość dla kolejnego enterSeek()
+    if (audioIsPlaying()) {
+        resumeSecOnBoot = audioGetCurrentTimeSec();
+    }
+    persistPending = true;
     audioStop();
     enterState(MechState::Init);
     initWaitTime = 0;
     needDisplayUpdate = false;
 }
 
-void servicePersist(unsigned long microsSinceLastClock) {
-    // Flush do NVS gdy magistrala jest w oknie bezczynnosci.
-    // Warunki wspolne: Playing, audio gra, brak TX, pusta kolejka, cichy zegar.
-    const bool idleWindow = (cdState == MechState::Playing &&
-        audioIsPlaying() &&
-        !UnilinkBus::isTransmitting() &&
-        !UnilinkProtocol::hasPendingTx() &&
-        microsSinceLastClock > PERSIST_FLUSH_IDLE_US);
+static uint32_t positionToPersist() {
+    return audioIsPlaying() ? audioGetCurrentTimeSec() : resumeSecOnBoot;
+}
 
-    // --- Zapis przy zmianie utworu (plyta/track rozni sie od NVS) ---
+void servicePersist(bool flashWriteAllowed) {
+    if (!flashWriteAllowed) return;
+    const unsigned long now = millis();
     if (persistPending) {
-        if (currentDisk == lastSavedDisk && currentTrack == lastSavedTrack) {
-            persistPending = false;
-        } else if (idleWindow) {
-            // [FAZA 2.1] Zapisujemy AKTUALNA sekunde, nie 0!
-            // Wczesniej doPersist(0) kasowal pozycje przy kazdej zmianie tracku,
-            // przez co po wlaczeniu radia utwor gral od poczatku.
-            uint32_t sec = audioIsPlaying() ? audioGetCurrentTimeSec() : 0;
-            doPersist(sec);
-        }
-    }
-
-    // --- [FAZA 2.2] Periodyczny zapis pozycji co 30s ---
-    // Gwarantuje, ze po naglym odcieciu zasilania strata pozycji wyniesie max 30s.
-    unsigned long now = millis();
-    if (idleWindow && (now - lastPeriodicPersist > PERIODIC_PERSIST_MS)) {
-        uint32_t sec = audioGetCurrentTimeSec();
-        if (sec != lastSavedSec || currentDisk != lastSavedDisk || currentTrack != lastSavedTrack) {
-            doPersist(sec);
-        }
+        persistPending = false;
+        doPersist(positionToPersist());
         lastPeriodicPersist = now;
+        return;
     }
+    // Strata pozycji po naglym zaniku zasilania: najwyzej PERIODIC_PERSIST_MS.
+    if (cdState == MechState::Playing && audioIsPlaying() &&
+        now - lastPeriodicPersist > PERIODIC_PERSIST_MS) {
+        lastPeriodicPersist = now;
+        doPersist(audioGetCurrentTimeSec());
+    }
+}
+
+void persistNow() {
+    persistPending = false;
+    doPersist(positionToPersist());
 }
 
 void wake() {
@@ -771,8 +762,5 @@ NextTrackResult modelNextTrack(PlayModes modes, uint8_t disc, uint8_t track,
     
     return result;
 }
-
-void setSeconds(uint8_t sec) { playSeconds = sec; }
-void setMinutes(uint8_t min) { playMinutes = min; }
 
 } // namespace CdChanger

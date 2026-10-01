@@ -1,586 +1,476 @@
 // =============================================================================
-// UnilinkBus.cpp — implementacja warstwy fizycznej magistrali Sony UniLink
+// UnilinkBus.cpp — warstwa fizyczna magistrali Sony Unilink
 // =============================================================================
 #include "UnilinkBus.h"
 #include "Config.h"
-#include "Diagnostics.h"
-#include "UnilinkFrame.h"  // jedno zrodlo prawdy dla sum kontrolnych (Parity1/Parity2)
+#include "driver/gpio.h"
+#include "esp_intr_alloc.h"
+#include "esp_timer.h"
+#include "soc/gpio_reg.h"
 
 namespace UnilinkBus {
 
-// --- STROJENIE CZASOW (kompatybilne z protokolem §1) ---
-// Okres bitu: ~20 µs (zgodnie z Kompendium §1). Przerwanie onClockEvent() sygnalizuje
-// zbocze zegara i probkuje bit na linii DATA. Zmiana timingu bitu zaklocy komunikacje.
-// Czas bajtu (8 bitów + przerwa): ~1 ms. Parity1/Parity2 sa liczone po odebraniu
-// calych bajtow ramki (UnilinkFrame::parity1/parity2).
-// Slave Break musi trafic w faze HIGH fali idle na linii DATA (patrz sekcja
-// SLAVE BREAK na koncu tego pliku).
-// [HIGH-RISK] Zmiana timingu Slave Break (BREAK_* w Config.h) moze spowodowac
-// kolizje albo brak wykrycia breaka przez radio.
-
-// --- STAN ODBIORU (RX) ---
-static volatile uint8_t       rxBuffer[RX_BUFFER_SIZE];
-static volatile uint8_t       rxIncomingByte = 0;
-static volatile int           rxBitIndex     = 0;
-static volatile int           rxIndex        = 0;
-static volatile unsigned long lastClockTime  = 0;
-
-// --- LICZNIKI BLEDOW ODBIORU (diagnostyka w [STAT]) ---
-// RESYNC = ramka nie zgodzila sie na Parity1 i szukamy poczatku od nowa.
-// RXFLUSH = po ciszy w buforze zostal niekompletny zlepek. Oba znacza, ze
-// przez chwile bylismy sllepi na magistrale — a zgubiony Time Poll `01 12`
-// konczy sie SYSTEM RESETem radia, wiec warto miec je na oku.
-static uint16_t rxResyncCount = 0;
-static uint16_t rxFlushCount  = 0;
-static unsigned long lastRxErrorMs = 0;  // millis() ostatniego RESYNC/RXFLUSH
-
-// --- STAN NADAWANIA (TX) ---
-static volatile bool    isAnswering = false;
-static volatile uint8_t txBuffer[TX_BUFFER_SIZE];
-static volatile int     txIndex     = 0;
-static volatile int     txBitIndex  = 0;
-static volatile int     txLength    = 0;
-
-// Ustawienie bitu na linii DATA (z uwzglednieniem sprzetowego inwertera).
-static inline void setTxData(bool bitVal) {
-    bool outVal = INVERT_DATA ? !bitVal : bitVal;
-    digitalWrite(PIN_DATA, outVal ? HIGH : LOW);
-}
-
-// Odczyt LOGICZNEGO poziomu DATA (z uwzglednieniem sprzetowego inwertera).
-// Uzywane przez maszyne Slave Break do synchronizacji z fala idle (§2.2).
-static inline bool readDataLogic() {
-    bool v = digitalRead(PIN_DATA);
-    return INVERT_DATA ? !v : v;
-}
-
-// Przerwanie zegara: nadaje lub odbiera pojedynczy bit.
-static void IRAM_ATTR onClockEvent() {
-    const unsigned long nowUs = micros();
-    const unsigned long gapUs = nowUs - lastClockTime;
-    lastClockTime = nowUs;
-
-    if (isAnswering) {
-        if (txIndex < txLength) {
-            uint8_t currentByte = txBuffer[txIndex];
-            bool bitVal = (currentByte >> (7 - txBitIndex)) & 0x01;
-            setTxData(bitVal);
-
-            txBitIndex++;
-            if (txBitIndex > 7) {
-                txBitIndex = 0;
-                txIndex++;
-                if (txIndex >= txLength) {
-                    isAnswering = false;
-                    pinMode(PIN_DATA, INPUT);
-                    // --- FLUSH ECHA TX ---
-                    // Podczas nadawania master taktuje, a my ustawiamy DATA na
-                    // magistrali wired-OR. ISR rownoczesnie ODBIERA te same bity
-                    // do rxBuffer — to echo naszej wlasnej transmisji. Bez
-                    // flushowania rxIndex te bajty tworza "widmowe ramki" (np.
-                    // `10 18 82 01 AB ...` odczytane jako odpowiedz obcego
-                    // urzadzenia), ktore zaburzaja dalsze parsowanie i powoduja
-                    // utrate kolejnych ramek (w tym krytycznego Time Poll 01 12).
-                    rxIndex = 0;
-                    rxBitIndex = 0;
-                    rxIncomingByte = 0;
-                }
-            }
-        }
-    } else {
-        // --- RESYNCHRONIZACJA FAZY BITOWEJ NA PRZERWIE MIEDZY RAMKAMI ---
-        // Wewnatrz ramki zbocza zegara ida co ~117 us bez zadnej przerwy miedzy
-        // bajtami (wyliczone ze znacznikow `t=` w sniffie: ramka 16-bajtowa trwa
-        // 14965-15000 us, czyli ~937 us/bajt). Kolejne ramki dzieli natomiast co
-        // najmniej ~5970 us. Przerwa dluzsza niz BYTE_RESYNC_GAP_US oznacza wiec
-        // POCZATEK NOWEJ RAMKI i musi zerowac licznik bitow.
-        //
-        // Bez tego pojedyncze zgubione zbocze (petla robi tez audio, USB host,
-        // Serial 921600 i zapisy NVS) przesuwalo faze na STALE: caly strumien szedl
-        // dalej przesuniety o bit i zamiast `18 10 01 15 3E 00` odbieralismy
-        // `30 20 02 2A 7C`. W logu widac dokladnie takie ramki-widma. Faza wracala
-        // dopiero przy awaryjnym czyszczeniu bufora w readFrame.
-        if (gapUs > BYTE_RESYNC_GAP_US) {
-            rxBitIndex = 0;
-            rxIncomingByte = 0;
-
-            // Zaczyna sie NOWA ramka. Cokolwiek zostalo w buforze, a nie tworzy
-            // kompletnej ramki, jest smieciem: albo ogonem po kolizji, albo
-            // bajtami zebranymi z fali idle (master taktuje ja miedzy ramkami).
-            // Bez tego pierwsza ramka po dluzszej ciszy rozjezdzala sie na
-            // parzystosci — a to wlasnie ona ginela przed kazdym SYSTEM RESET
-            // (czarna skrzynka: cisza ~200-500 ms, RESYNC, RXFLUSH, reset).
-            // Kompletnej ramki NIE ruszamy: petla glowna moze jej jeszcze nie
-            // zdazyc odczytac. Dlugosc liczymy tu recznie (proste porownania),
-            // bo ISR nie powinien wolac kodu spoza IRAM.
-            if (rxIndex > 0) {
-                int expected = 0;
-                if (rxIndex >= 3) {
-                    const uint8_t cmd1 = rxBuffer[2];
-                    expected = (cmd1 < 0x80) ? 6 : ((cmd1 < 0xC0) ? 11 : 16);
-                }
-                if (rxIndex < expected || expected == 0) {
-                    rxIndex = 0;
-                }
-            }
-        }
-
-        bool bitVal = digitalRead(PIN_DATA);
-        if (INVERT_DATA) bitVal = !bitVal;
-
-        if (bitVal) {
-            rxIncomingByte |= (1 << (7 - rxBitIndex));
-        } else {
-            rxIncomingByte &= ~(1 << (7 - rxBitIndex));
-        }
-
-        rxBitIndex++;
-        if (rxBitIndex > 7) {
-            // --- SYNCHRONIZACJA POCZATKU RAMKI ---
-            // Master taktuje po kazdej ramce jeszcze JEDEN pusty slot bajtu
-            // (widoczny w sniffie jako samotne `00` ~6 ms po ramce). Gdyby taki
-            // bajt wypelniacza trafil do bufora jako RAD, cala reszta strumienia
-            // przesunelaby sie o jeden bajt i KAZDA kolejna ramka bylaby
-            // odrzucana na parzystosci — az do najblizszej dluzszej ciszy.
-            // Pierwszym bajtem ramki jest RAD, ktory ZAWSZE ma niezerowy gorny
-            // nibbel (0x10 master, 0x18 broadcast, 0x3X zmieniarki, 0x70 ekran,
-            // 0x9X...). Bajt < 0x10 na pozycji 0 to wiec wypelniacz — gubimy go.
-            // 0xFF odrzucamy z tego samego powodu: taki bajt powstaje, gdy
-            // przerwanie probkuje FALE IDLE w fazie poziomu dominujacego (osiem
-            // jedynek pod rzad). Zaden RAD w protokole nie ma tej wartosci.
-            const bool plausibleAddress = (rxIncomingByte >= 0x10 && rxIncomingByte != 0xFF);
-            if (rxIndex != 0 || plausibleAddress) {
-                if (rxIndex < RX_BUFFER_SIZE) {
-                    rxBuffer[rxIndex++] = rxIncomingByte;
-                }
-            }
-            rxBitIndex = 0;
-            rxIncomingByte = 0;
-        }
-    }
-}
-
-// Rozpoczyna nadawanie gotowego pakietu (wspolny kod dla wszystkich sendXxx).
-static void startTransmit(const uint8_t* pkt, int len) {
-    if (len > TX_BUFFER_SIZE) return;
-    Diagnostics::recordFrame("TX", pkt, len);
-    noInterrupts();
-    for (int i = 0; i < len; i++) txBuffer[i] = pkt[i];
-    txLength    = len;
-    txIndex     = 0;
-    txBitIndex  = 0;
-    isAnswering = true;
-    pinMode(PIN_DATA, OUTPUT);
-    interrupts();
-}
-
-void begin() {
-    pinMode(PIN_BUS_ON, INPUT);
-    pinMode(PIN_CLOCK, INPUT);
-    pinMode(PIN_DATA, INPUT);
-    attachInterrupt(digitalPinToInterrupt(PIN_CLOCK), onClockEvent, CLOCK_EDGE);
-    lastClockTime = micros();
-}
-
-void sendShort(uint8_t rad, uint8_t tad, uint8_t cmd1, uint8_t cmd2) {
-    uint8_t pkt[6] = {
-        rad, tad, cmd1, cmd2,
-        UnilinkFrame::parity1(rad, tad, cmd1, cmd2),  // Parity1
-        0x00                                          // End byte
-    };
-    startTransmit(pkt, sizeof(pkt));
-}
-
-void sendMedium(uint8_t rad, uint8_t tad, uint8_t cmd1, uint8_t cmd2,
-                uint8_t d1, uint8_t d2, uint8_t d3, uint8_t d4) {
-    uint8_t p1   = UnilinkFrame::parity1(rad, tad, cmd1, cmd2);
-    uint8_t data[4] = { d1, d2, d3, d4 };
-    uint8_t p2   = UnilinkFrame::parity2(p1, data, 4);
-    uint8_t pkt[11] = {
-        rad, tad, cmd1, cmd2,
-        p1,                       // Parity1
-        d1, d2, d3, d4,
-        p2,                       // Parity2
-        0x00
-    };
-    startTransmit(pkt, sizeof(pkt));
-}
-
-void sendLong(uint8_t rad, uint8_t tad, uint8_t cmd1, uint8_t cmd2,
-              uint8_t d1, uint8_t d2, uint8_t d3, uint8_t d4,
-              uint8_t d5, uint8_t d6, uint8_t d7, uint8_t d8, uint8_t d9) {
-    uint8_t p1   = UnilinkFrame::parity1(rad, tad, cmd1, cmd2);
-    uint8_t data[9] = { d1, d2, d3, d4, d5, d6, d7, d8, d9 };
-    uint8_t p2   = UnilinkFrame::parity2(p1, data, 9);
-    uint8_t pkt[16] = {
-        rad, tad, cmd1, cmd2, p1,
-        d1, d2, d3, d4, d5, d6, d7, d8, d9,
-        p2, 0x00
-    };
-    startTransmit(pkt, sizeof(pkt));
-}
-
-void sendRaw(const uint8_t* data, int len) {
-    startTransmit(data, len);
-}
-
-bool isTransmitting() {
-    return isAnswering;
-}
-
-unsigned long microsSinceLastClock() {
-    noInterrupts();
-    unsigned long last = lastClockTime;
-    interrupts();
-    return micros() - last;
-}
-
-int readPacketIfIdle(uint8_t* out, int maxLen, unsigned long idleUs) {
-    noInterrupts();
-    bool idle = (micros() - lastClockTime > idleUs);
-    int count = rxIndex;
-    if (!idle || count <= 0) {
-        interrupts();
-        return 0;
-    }
-    if (count > maxLen) count = maxLen;
-    for (int i = 0; i < count; i++) out[i] = rxBuffer[i];
-    rxIndex = 0;
-    rxBitIndex = 0;
-    interrupts();
-    return count;
-}
-
-int readFrame(uint8_t* out, int maxLen) {
-    if (maxLen <= 0) return 0;
-    noInterrupts();
-    int count = rxIndex;
-
-    // --- RESYNCHRONIZACJA PO PARITY1 ---
-    // KAZDY CMD1 ma przypisana dlugosc, wiec sama dlugosc nie wykryje przesuniecia
-    // bajtowego. Robi to Parity1: jest liczona z pierwszych czterech bajtow i
-    // musi sie zgadzac z piatym. Gdy sie nie zgadza, prawie na pewno zaczelismy
-    // skladac ramke od zlego bajtu.
-    //
-    // Szukamy NAJBLIZSZEGO offsetu, na ktorym Parity1 sie zgadza (i pierwszy bajt
-    // wyglada na adres, czyli >= 0x10), i odrzucamy wszystko przed nim JEDNYM
-    // ruchem. Wczesniej gubilismy po jednym bajcie na wywolanie: pojedyncza porcja
-    // smieci kosztowala kilkanascie iteracji petli (log 21:29: 11 RESYNCow po
-    // 1 ms), a przez ten czas nie parsowalismy ramek — wystarczylo, by zgubic
-    // Time Poll `01 12` i sprowokowac SYSTEM RESET radia.
-    if (count >= 5) {
-        const uint8_t p1 = UnilinkFrame::parity1(rxBuffer[0], rxBuffer[1],
-                                                 rxBuffer[2], rxBuffer[3]);
-        if (rxBuffer[4] != p1) {
-            int drop = count - 4;   // brak kandydata: zostaw ogon, moze to poczatek ramki
-            for (int k = 1; k + 4 < count; ++k) {
-                if (rxBuffer[k] < 0x10) continue;   // RAD ma zawsze niezerowy gorny nibbel
-                const uint8_t pk = UnilinkFrame::parity1(rxBuffer[k], rxBuffer[k + 1],
-                                                         rxBuffer[k + 2], rxBuffer[k + 3]);
-                if (rxBuffer[k + 4] == pk) { drop = k; break; }
-            }
-            const int remaining = count - drop;
-            for (int i = 0; i < remaining; i++) rxBuffer[i] = rxBuffer[drop + i];
-            rxIndex = remaining;
-            interrupts();
-            rxResyncCount++;
-            lastRxErrorMs = millis();
-            Diagnostics::recordNote("RESYNC");
-            return 0;
-        }
-    }
-
-    // --- KRYTERIUM PODSTAWOWE: granica ramki wyznaczona przez CMD1 (R3.4/R3.5) ---
-    // Uklad bufora: rxBuffer[0]=RAD, [1]=TAD, [2]=CMD1. Gdy mamy >= 3 bajty,
-    // znamy CMD1 i dlugosc calej ramki. Udostepniamy ja dopiero gdy zebrano
-    // >= expected bajtow; ewentualna nadwyzka to poczatek kolejnej ramki i
-    // zostaje w buforze (ciecie strumienia po granicach z CMD1, nie po ciszy).
-    if (count >= 3) {
-        uint8_t cmd1 = rxBuffer[2];
-        int expected = UnilinkFrame::lengthFromCmd1(cmd1);
-        if (count >= expected) {
-            int n = expected;
-            if (n > maxLen) n = maxLen;
-            for (int i = 0; i < n; i++) out[i] = rxBuffer[i];
-            // przesun nadmiarowe bajty (poczatek nastepnej ramki) na poczatek bufora
-            int remaining = count - expected;
-            for (int i = 0; i < remaining; i++) rxBuffer[i] = rxBuffer[expected + i];
-            rxIndex = remaining;
-            interrupts();
-            return n;
-        }
-    }
-
-    // --- ZABEZPIECZENIE AWARYJNE: resynchronizacja po ciszy (R3.5) ---
-    // Gdy po READ_SILENCE_US w buforze tkwi niekompletny zlepek (count < 3 albo
-    // count < expected), ODRZUCAMY go bez dostarczania do handlePacket.
-    // Wczesniej zwracalismy smieci (np. `10 01 15 3C` zamiast `18 10 01 15 3E 00`)
-    // — len<6 i tak je odrzucal, ale DEBUG_FRAMES logowal je jako RX, a czesc
-    // bajtow mogla byc poczatkiem prawdziwej ramki ucietej przez kolizje.
-    bool idle = (micros() - lastClockTime > READ_SILENCE_US);
-    if (idle && count > 0) {
-        rxIndex = 0;
-        rxBitIndex = 0;
-        rxIncomingByte = 0;
-        interrupts();
-        rxFlushCount++;
-        lastRxErrorMs = millis();
-        Diagnostics::recordNote("RXFLUSH");
-        return 0;
-    }
-
-    interrupts();
-    return 0;
-}
-
-void takeRxErrorCounts(uint16_t& resync, uint16_t& flush) {
-    resync = rxResyncCount;
-    flush  = rxFlushCount;
-    rxResyncCount = 0;
-    rxFlushCount  = 0;
-}
-
-unsigned long timeSinceLastRxError(unsigned long nowMs) {
-    if (lastRxErrorMs == 0) return 999999;
-    return (nowMs >= lastRxErrorMs) ? (nowMs - lastRxErrorMs) : 0;
-}
-
-void resetRx() {
-    noInterrupts();
-    rxIndex = 0;
-    rxBitIndex = 0;
-    rxIncomingByte = 0;
-    interrupts();
-}
-
-// =============================================================================
-// SLAVE BREAK — zsynchronizowany z fala idle linii DATA
-// =============================================================================
-// Gdy magistrala jest bezczynna, master generuje na linii DATA fale prostokatna
-// 8 ms LOW / 8 ms HIGH. Slave zglasza chec nadawania WYLACZNIE wewnatrz fazy
-// HIGH: czeka az zobaczy pelna faze LOW, potem 2 ms po zboczu w gore sciaga DATA
-// do zera na ~2 ms i puszcza. Dzieki temu break miesci sie w oknie, w ktorym
-// zaden inny slave ani master nie nadaje.
-//
-// Poprzednia implementacja IGNOROWALA fale DATA i sciagala linie po samej ciszy
-// zegara. Trafiala wiec w losowa faze — czesto w moment, gdy master zaczynal
-// takt — co niszczylo ramke i konczylo sie petla SYSTEM RESET radia. Dodatkowo
-// blokowala petle glowna na czas trzymania linii.
-//
-// Teraz jest to NIEBLOKUJACA maszyna stanow: `requestSlaveBreak()` ja uzbraja,
-// a `serviceSlaveBreak()` (wolane w kazdej iteracji loop()) przesuwa ja o krok.
-// Kazda aktywnosc zegara natychmiast ja przerywa — nigdy nie kolidujemy.
 namespace {
 
-enum class BreakState : uint8_t {
-    Idle,        // nieuzbrojony
-    WaitLow,     // czekam na poczatek fazy LOW fali idle
-    ConfirmLow,  // faza LOW musi potrwac BREAK_IDLE_LOW_US
-    WaitHigh,    // czekam na zbocze w gore
-    Settle,      // 2 ms w fazie HIGH przed sciagnieciem linii
-    Hold,        // trzymam DATA LOW
-};
+constexpr uint32_t DATA_MASK   = 1UL << PIN_DATA;
+constexpr uint32_t BUS_ON_MASK = 1UL << PIN_BUS_ON;
+constexpr uint32_t RING_SIZE   = 32;   // potega dwojki
+constexpr uint32_t RING_MASK   = RING_SIZE - 1;
 
-BreakState    s_breakState   = BreakState::Idle;
-unsigned long s_breakMark    = 0;   // micros() poczatku biezacej fazy
-unsigned long s_breakArmedAt = 0;   // micros() uzbrojenia (bezpiecznik)
-unsigned long s_breakClockRef = 0;  // lastClockTime w chwili wejscia w faze
-volatile uint16_t s_breakCompleted = 0;  // ile Hold ukonczono (wykrywalny break)
-unsigned long s_breakDoneMs = 0;    // millis() ostatniego udanego Hold
+// Wszystko, czego dotyka przerwanie, lezy w DRAM (zmienne statyczne). Przerwanie
+// nie moze wolac kodu z flash ani czytac stalych z flash — dlatego kopiowanie
+// idzie przez wskazniki volatile (kompilator nie zamieni petli na memcpy), a
+// zamiast tablic lookup sa porownania.
+portMUX_TYPE s_mux  = portMUX_INITIALIZER_UNLOCKED;
+TaskHandle_t s_task = nullptr;
+bool         s_isrIram = false;
 
-// Czy od `ref` nie bylo zadnego zbocza zegara (magistrala nadal bezczynna)?
-inline bool busStillQuiet(unsigned long ref) {
-    noInterrupts();
-    unsigned long lc = lastClockTime;
-    interrupts();
-    return lc == ref;
-}
+volatile uint32_t s_lastEdgeUs = 0;
+volatile uint32_t s_edgeCount  = 0;
 
-// Wejscie w Hold: wystaw na DATA poziom DOMINUJACY — Mictronics 3 ms w fazie
-// HIGH fali idle.
-//
-// Poziomem dominujacym jest LOGICZNA JEDYNKA. Dwa niezalezne dowody z tego
-// samego strumienia, ktory poprawnie dekodujemy:
-//   * maski arbitrazu sumuja sie bitowo (`82 01` od 0x3B i `82 04` od nas daja
-//     `82 05`) — tak zachowuje sie tylko poziom dominujacy = 1,
-//   * pusty slot bajtu, ktory master taktuje po kazdej ramce, czyta sie jako
-//     0x00 — czyli stan RECESYWNY (nikt nie nadaje) to logiczne 0.
-//
-// Wczesniej bylo tu setTxData(false), czyli poziom RECESYWNY — dokladnie ten,
-// ktory linia ma juz w fazie HIGH fali idle. Break nie zmienial wiec NICZEGO na
-// magistrali: maszyna stanow raportowala Hold "OK", master nigdy go nie widzial
-// i Request Polling (`01 15`) nie wracal.
-inline void enterHold(unsigned long now) {
-    pinMode(PIN_DATA, OUTPUT);
-    setTxData(true);
-    Diagnostics::recordNote("BREAK");
-    noInterrupts();
-    s_breakClockRef = lastClockTime;
-    interrupts();
-    s_breakState = BreakState::Hold;
-    s_breakMark  = now;
-}
+// --- odbior ---
+uint8_t s_rxBuf[FRAME_MAX];
+uint8_t s_rxLen      = 0;
+uint8_t s_rxBit      = 0;
+uint8_t s_rxByte     = 0;
+uint8_t s_rxExpected = 0;
+bool    s_rxSkip     = false;   // ignoruj bity do najblizszej przerwy miedzy ramkami
 
-// Po zwolnieniu linii czyscimy CALY bufor RX, nie tylko licznik bitow. Przez
-// czas Holdu sami trzymalismy DATA na poziomie dominujacym, a przerwanie zegara
-// probkowalo ja jak zwykle — kazde zbocze, ktore master zdazyl wystawic, wpadlo
-// do rxBuffer jako nasz wlasny szum. Zostawiony tam ogon rozjezdzal parsowanie
-// nastepnej ramki (RESYNC + RXFLUSH), a w najgorszym razie zjadal Time Poll
-// `01 12` — czyli dokladnie to, po czym radio robi SYSTEM RESET.
-inline void resetRxAfterBreak() {
-    noInterrupts();
-    rxIndex = 0;
-    rxBitIndex = 0;
-    rxIncomingByte = 0;
-    interrupts();
-}
+Frame             s_ring[RING_SIZE];
+volatile uint32_t s_ringHead = 0;   // pisze przerwanie
+volatile uint32_t s_ringTail = 0;   // pisze zadanie
 
-inline void finishHoldSuccess() {
-    pinMode(PIN_DATA, INPUT);
-    s_breakState = BreakState::Idle;
-    s_breakCompleted++;
-    s_breakDoneMs = millis();
-    resetRxAfterBreak();
-}
+// --- nadawanie ---
+uint8_t       s_txBuf[FRAME_MAX];
+uint8_t       s_txLen     = 0;
+uint8_t       s_txByte    = 0;
+uint8_t       s_txBit     = 0;
+volatile bool s_txActive  = false;
+bool          s_txStarted = false;
+uint32_t      s_txArmedUs = 0;
+volatile bool s_breakHolding = false;
 
-inline void finishHoldAbort() {
-    pinMode(PIN_DATA, INPUT);
-    s_breakState = BreakState::Idle;
-    resetRxAfterBreak();
-}
+// --- szybka sciezka ---
+volatile bool     s_fpEnabled   = false;
+volatile uint8_t  s_fpPingAddr  = 0;
+volatile uint8_t  s_fpStatus    = 0x80;
+volatile uint8_t  s_fpMyAddr    = 0;
+uint8_t           s_fpClaim[11];
+volatile uint8_t  s_fpClaimMask = 0;
+uint8_t           s_fpGrant[FRAME_MAX];
+volatile uint8_t  s_fpGrantLen  = 0;
+volatile uint32_t s_grantsServed = 0;
+volatile uint32_t s_claimsSent   = 0;
+volatile uint32_t s_lastClaimUs  = 0;
+
+// --- statystyki ---
+volatile uint32_t s_stFrames = 0, s_stGlitches = 0, s_stBroken = 0, s_stOverflow = 0;
+volatile uint32_t s_stTxDone = 0, s_stTxAborted = 0, s_stTxLate = 0, s_stBreaks = 0;
 
 } // namespace
 
-void requestSlaveBreak() {
-    if (s_breakState != BreakState::Idle) return;
-    s_breakState   = BreakState::WaitLow;
-    s_breakMark    = micros();
-    s_breakArmedAt = s_breakMark;
-    noInterrupts();
-    s_breakClockRef = lastClockTime;
-    interrupts();
-}
+#define UL_NOW_US() ((uint32_t)esp_timer_get_time())
+// Poziom LOGICZNY linii DATA: 1 = dominujacy.
+#define UL_DATA_DOMINANT() ((((REG_READ(GPIO_IN_REG) & DATA_MASK) != 0) ? 1 : 0) != (INVERT_DATA ? 1 : 0))
+#define UL_LATCH_DOMINANT()                                          \
+    do {                                                             \
+        if (INVERT_DATA) REG_WRITE(GPIO_OUT_W1TC_REG, DATA_MASK);    \
+        else             REG_WRITE(GPIO_OUT_W1TS_REG, DATA_MASK);    \
+    } while (0)
+#define UL_LATCH_RECESSIVE()                                         \
+    do {                                                             \
+        if (INVERT_DATA) REG_WRITE(GPIO_OUT_W1TS_REG, DATA_MASK);    \
+        else             REG_WRITE(GPIO_OUT_W1TC_REG, DATA_MASK);    \
+    } while (0)
+#define UL_OUTPUT_ON()  REG_WRITE(GPIO_ENABLE_W1TS_REG, DATA_MASK)
+#define UL_OUTPUT_OFF() REG_WRITE(GPIO_ENABLE_W1TC_REG, DATA_MASK)
+#define UL_COPY(dst, src, n)                                                   \
+    do {                                                                       \
+        volatile uint8_t* _d = (volatile uint8_t*)(dst);                       \
+        const volatile uint8_t* _s = (const volatile uint8_t*)(src);           \
+        for (int _i = 0; _i < (int)(n); ++_i) _d[_i] = _s[_i];                 \
+    } while (0)
+#define UL_RX_RESET()                                                          \
+    do { s_rxLen = 0; s_rxBit = 0; s_rxByte = 0; s_rxExpected = 0; } while (0)
+#define UL_ARM_TX(n, now)                                                      \
+    do {                                                                       \
+        s_txLen = (uint8_t)(n); s_txByte = 0; s_txBit = 0;                     \
+        s_txStarted = false; s_txArmedUs = (now); s_txActive = true;           \
+    } while (0)
+#define UL_TX_RELEASE()                                                        \
+    do { UL_OUTPUT_OFF(); UL_LATCH_RECESSIVE(); s_txActive = false; } while (0)
 
-bool slaveBreakPending() {
-    return s_breakState != BreakState::Idle;
-}
+// Odpowiedzi, ktorych master oczekuje najczesciej i bez ktorych resetuje
+// magistrale. Przygotowane przez zadanie protokolu, wysylane bez jego udzialu.
+static inline uint8_t __attribute__((always_inline)) fastPathReply(uint32_t now)
+{
+    if (!s_fpEnabled || s_txActive || s_breakHolding) return 0;
+    if (s_rxLen != 6 || s_rxBuf[5] != 0x00 || s_rxBuf[2] != 0x01) return 0;
+    if ((uint8_t)(s_rxBuf[0] + s_rxBuf[1] + s_rxBuf[2] + s_rxBuf[3]) != s_rxBuf[4]) return 0;
 
-void cancelSlaveBreak() {
-    if (s_breakState == BreakState::Hold) {
-        pinMode(PIN_DATA, INPUT);
-        resetRxAfterBreak();
+    const uint8_t rad = s_rxBuf[0];
+    const uint8_t tad = s_rxBuf[1];
+    const uint8_t c2  = s_rxBuf[3];
+
+    if (c2 == 0x12) {
+        const uint8_t pa = s_fpPingAddr;
+        if (pa == 0 || rad != pa || (tad != ADDR_MASTER && tad != ADDR_DISPLAY)) return 0;
+        s_txBuf[0] = tad;
+        s_txBuf[1] = rad;
+        s_txBuf[2] = 0x00;
+        s_txBuf[3] = s_fpStatus;
+        s_txBuf[4] = (uint8_t)(s_txBuf[0] + s_txBuf[1] + s_txBuf[2] + s_txBuf[3]);
+        s_txBuf[5] = 0x00;
+        UL_ARM_TX(6, now);
+        return 6;
     }
-    s_breakState = BreakState::Idle;
+    if (c2 == 0x15) {
+        if (rad != ADDR_BROADCAST || tad != ADDR_MASTER) return 0;
+        if (s_fpClaimMask == 0 || s_fpGrantLen == 0) return 0;
+        UL_COPY(s_txBuf, s_fpClaim, 11);
+        UL_ARM_TX(11, now);
+        s_claimsSent++;
+        s_lastClaimUs = now;
+        return 11;
+    }
+    if (c2 == 0x13) {
+        const uint8_t me = s_fpMyAddr;
+        const uint8_t n  = s_fpGrantLen;
+        if (me == 0 || rad != me || tad != ADDR_MASTER || n == 0) return 0;
+        UL_COPY(s_txBuf, s_fpGrant, n);
+        UL_ARM_TX(n, now);
+        s_fpGrantLen = 0;
+        s_grantsServed++;
+        return n;
+    }
+    return 0;
 }
 
-uint16_t takeBreakCompleted() {
-    noInterrupts();
-    uint16_t n = s_breakCompleted;
-    s_breakCompleted = 0;
-    interrupts();
-    return n;
-}
+static inline void __attribute__((always_inline)) frameComplete(uint32_t now)
+{
+    s_stFrames++;
+    const uint8_t replyLen = fastPathReply(now);
 
-bool breakRecoveryActive(unsigned long nowMs) {
-    if (s_breakDoneMs == 0) return false;
-    return (nowMs - s_breakDoneMs) < BREAK_RECOVERY_MS;
-}
-
-unsigned long timeSinceBreakDone(unsigned long nowMs) {
-    if (s_breakDoneMs == 0) return 999999;
-    return (nowMs >= s_breakDoneMs) ? (nowMs - s_breakDoneMs) : 0;
-}
-
-void serviceSlaveBreak() {
-    if (s_breakState == BreakState::Idle) return;
-
-    const unsigned long now = micros();
-
-    if (now - s_breakArmedAt > BREAK_ARM_TIMEOUT_US) {
-        cancelSlaveBreak();
+    const uint32_t head = s_ringHead;
+    const uint32_t next = (head + 1) & RING_MASK;
+    if (next == s_ringTail) {
+        s_stOverflow++;
         return;
     }
+    Frame& f = s_ring[head];
+    UL_COPY(f.data, s_rxBuf, s_rxLen);
+    f.len      = s_rxLen;
+    f.replyLen = replyLen;
+    if (replyLen) UL_COPY(f.reply, s_txBuf, replyLen);
+    f.endUs   = now;
+    f.edgeSeq = s_edgeCount;
+    __asm__ __volatile__("" ::: "memory");
+    s_ringHead = next;
+}
 
-    // Hold — Mictronics: pelne 3 ms LOW w fazie HIGH, potem Hi-Z na reszte HIGH.
-    // SophWiki: w fazie HIGH bywa 8-bitowy filler clock — NIE przerywamy impulsu
-    // na wczesnym zboczu (inaczej master nie wykrywa Break; log: Hold „OK”
-    // bez powrotu `01 15`). Po HOLD_US puszczamy nawet gdy master juz taktuje.
-    if (s_breakState == BreakState::Hold) {
-        if (now - s_breakMark >= BREAK_HOLD_US) {
-            finishHoldSuccess();
-        }
+static void IRAM_ATTR onClockEdge(void*)
+{
+    const uint32_t now = UL_NOW_US();
+    bool notify = false;
+
+    portENTER_CRITICAL_ISR(&s_mux);
+    const uint32_t gap = now - s_lastEdgeUs;
+    if (gap < BUS_CLOCK_GLITCH_US) {
+        // Odbicie/zaklocenie na linii zegara — prawdziwe zbocza dziela ~125 us.
+        s_stGlitches++;
+        portEXIT_CRITICAL_ISR(&s_mux);
         return;
     }
+    s_lastEdgeUs = now;
+    s_edgeCount++;
 
-    // Zegar = magistrala aktywna — tylko pelna fala idle (NIE "fallback" na
-    // ciszy 5 ms: przerwy miedzy ramkami Request Polling sa ~6 ms i fallback
-    // wstrzeliwal Break w srodek wymiany → RESYNC → 18 10 01 00).
-    if (!busStillQuiet(s_breakClockRef)) {
-        noInterrupts();
-        s_breakClockRef = lastClockTime;
-        interrupts();
-        s_breakState = BreakState::WaitLow;
-        s_breakMark  = now;
-        return;
-    }
-
-    switch (s_breakState) {
-        // Ponizej "faza LOW/HIGH" opisuje fale idle tak, jak widzi ja MASTER na
-        // linii DATA. W naszej reprezentacji logicznej (readDataLogic):
-        //   faza LOW  = poziom dominujacy = logiczna 1 = readDataLogic() true,
-        //   faza HIGH = poziom recesywny  = logiczne 0 = readDataLogic() false.
-        // Break wstrzeliwujemy w faze HIGH — tam i tylko tam wystawienie poziomu
-        // dominujacego (enterHold) jest dla mastera widoczna zmiana stanu.
-        case BreakState::WaitLow:
-            if (readDataLogic()) {
-                s_breakState = BreakState::ConfirmLow;
-                s_breakMark  = now;
+    bool handled = false;
+    if (s_txActive) {
+        if (s_txStarted && gap > BUS_FRAME_GAP_US) {
+            // Master przestal taktowac nasza odpowiedz i zaczyna nowa ramke.
+            // Natychmiast zwalniamy linie — inaczej nadalibysmy reszte bitow
+            // w srodek jego ramki.
+            UL_TX_RELEASE();
+            s_stTxAborted++;
+        } else {
+            const uint8_t bit = (uint8_t)((s_txBuf[s_txByte] >> (7 - s_txBit)) & 1u);
+            if (bit) UL_LATCH_DOMINANT();
+            else     UL_LATCH_RECESSIVE();
+            if (!s_txStarted) {
+                // Wyjscie wlaczamy dopiero na pierwszym takcie slotu, z juz
+                // ustawionym poziomem — w przerwie miedzy ramkami linia jest wolna.
+                UL_OUTPUT_ON();
+                s_txStarted = true;
             }
-            break;
-
-        case BreakState::ConfirmLow:
-            if (!readDataLogic()) {
-                // Linia wrocila do HIGH. Sprawdzamy czy faza LOW trwala wystarczajaco dlugo.
-                if (now - s_breakMark >= BREAK_IDLE_LOW_MIN_US) {
-                    // LOW trwalo >= 6ms i wlasnie przeszlo w HIGH. Od razu przechodzimy do Settle!
-                    s_breakState = BreakState::Settle;
-                    s_breakMark  = now;
-                } else {
-                    // Za krotki LOW (zaklocenie), szukamy od nowa.
-                    s_breakState = BreakState::WaitLow;
-                    s_breakMark  = now;
+            if (++s_txBit >= 8) {
+                s_txBit = 0;
+                if (++s_txByte >= s_txLen) {
+                    // Ostatni bajt ramki to zawsze 0x00, wiec zwolnienie linii
+                    // po jego ostatnim bicie nie zmienia odczytu mastera.
+                    UL_TX_RELEASE();
+                    s_stTxDone++;
+                    UL_RX_RESET();
+                    s_rxSkip = true;
                 }
-            } else if (now - s_breakMark >= BREAK_IDLE_LOW_US) {
-                // Linia jest LOW juz pelne 8ms. Czekamy az przejdzie w HIGH.
-                s_breakState = BreakState::WaitHigh;
-                s_breakMark  = now;
             }
-            break;
-
-        case BreakState::WaitHigh:
-            if (!readDataLogic()) {
-                // Przejscie LOW -> HIGH. Odliczamy 2ms.
-                s_breakState = BreakState::Settle;
-                s_breakMark  = now;
-            }
-            break;
-
-        case BreakState::Settle:
-            if (readDataLogic()) {
-                // Linia wrocila do LOW zanim minelo 2ms! To nie jest fala idle.
-                s_breakState = BreakState::WaitLow;
-                s_breakMark  = now;
-            } else if (now - s_breakMark >= BREAK_SETTLE_US) {
-                // Linia jest HIGH przez 2ms. Czas na HOLD (3ms poziomu dominujacego).
-                enterHold(now);
-            }
-            break;
-
-        case BreakState::Hold:
-        case BreakState::Idle:
-        default:
-            break;
+            handled = true;
+        }
     }
+
+    if (!handled) {
+        if (gap > BUS_FRAME_GAP_US) {
+            if (s_rxLen != 0 || s_rxBit != 0) s_stBroken++;
+            UL_RX_RESET();
+            s_rxSkip = false;
+        }
+        if (!s_rxSkip) {
+            s_rxByte = (uint8_t)((s_rxByte << 1) | (uint8_t)UL_DATA_DOMINANT());
+            if (++s_rxBit >= 8) {
+                const uint8_t v = s_rxByte;
+                s_rxBit  = 0;
+                s_rxByte = 0;
+                if (s_rxLen == 0 && (v < 0x10 || v == 0xFF)) {
+                    // Pusty slot odpowiedzi (0x00) albo smiec — to nie poczatek ramki.
+                    s_rxSkip = true;
+                } else {
+                    s_rxBuf[s_rxLen++] = v;
+                    if (s_rxLen == 3) {
+                        const uint8_t c1 = s_rxBuf[2];
+                        s_rxExpected = (c1 < 0x80) ? 6 : ((c1 < 0xC0) ? 11 : 16);
+                    }
+                    if (s_rxLen >= 3 && s_rxLen >= s_rxExpected) {
+                        frameComplete(now);
+                        notify = true;
+                        s_rxLen  = 0;
+                        s_rxSkip = true;
+                    }
+                }
+            }
+        }
+    }
+    portEXIT_CRITICAL_ISR(&s_mux);
+
+    if (notify && s_task != nullptr) {
+        BaseType_t woken = pdFALSE;
+        vTaskNotifyGiveFromISR(s_task, &woken);
+        if (woken == pdTRUE) portYIELD_FROM_ISR();
+    }
+}
+
+bool begin(TaskHandle_t notifyTask)
+{
+    s_task = notifyTask;
+
+    pinMode(PIN_BUS_ON, INPUT);
+    pinMode(PIN_CLOCK, INPUT);
+    // INPUT: funkcja GPIO, wejscie wlaczone, wyjscie wylaczone. Dalej sterujemy
+    // juz tylko bitem "output enable", wiec odczyt linii dziala caly czas.
+    pinMode(PIN_DATA, INPUT);
+    UL_LATCH_RECESSIVE();
+
+    s_lastEdgeUs = UL_NOW_US();
+
+    gpio_set_intr_type((gpio_num_t)PIN_CLOCK,
+                       (CLOCK_EDGE == FALLING) ? GPIO_INTR_NEGEDGE : GPIO_INTR_POSEDGE);
+
+    // Priorytet 3: przerwanie zegara wywlaszcza USB/I2S/tick. IRAM: dziala
+    // w trakcie zapisu flash. Gdy linia 3 jest zajeta, schodzimy nizej.
+    const int flagSets[] = {
+        ESP_INTR_FLAG_IRAM | ESP_INTR_FLAG_LEVEL3,
+        ESP_INTR_FLAG_IRAM | ESP_INTR_FLAG_LEVEL2,
+        ESP_INTR_FLAG_IRAM,
+        0,
+    };
+    esp_err_t err = ESP_FAIL;
+    for (int flags : flagSets) {
+        err = gpio_install_isr_service(flags);
+        if (err == ESP_OK) {
+            s_isrIram = (flags & ESP_INTR_FLAG_IRAM) != 0;
+            break;
+        }
+        if (err == ESP_ERR_INVALID_STATE) break;   // zainstalowany wczesniej
+        gpio_uninstall_isr_service();
+    }
+    if (err != ESP_OK && err != ESP_ERR_INVALID_STATE) return false;
+
+    return gpio_isr_handler_add((gpio_num_t)PIN_CLOCK, onClockEdge, nullptr) == ESP_OK;
+}
+
+bool isrInIram() { return s_isrIram; }
+
+bool popFrame(Frame& out)
+{
+    const uint32_t tail = s_ringTail;
+    if (tail == s_ringHead) return false;
+    __asm__ __volatile__("" ::: "memory");
+    out = s_ring[tail];
+    __asm__ __volatile__("" ::: "memory");
+    s_ringTail = (tail + 1) & RING_MASK;
+    return true;
+}
+
+bool respond(const Frame& f, const uint8_t* bytes, int len)
+{
+    if (bytes == nullptr || len <= 0 || len > FRAME_MAX) return false;
+    bool armed = false;
+    portENTER_CRITICAL(&s_mux);
+    const uint32_t now = UL_NOW_US();
+    if (!s_txActive && !s_breakHolding && s_edgeCount == f.edgeSeq &&
+        (uint32_t)(now - f.endUs) < BUS_RESPONSE_DEADLINE_US) {
+        for (int i = 0; i < len; ++i) s_txBuf[i] = bytes[i];
+        UL_ARM_TX(len, now);
+        armed = true;
+    } else {
+        s_stTxLate++;
+    }
+    portEXIT_CRITICAL(&s_mux);
+    return armed;
+}
+
+bool isTransmitting() { return s_txActive; }
+
+void abortTx()
+{
+    portENTER_CRITICAL(&s_mux);
+    if (s_txActive) {
+        UL_TX_RELEASE();
+        s_stTxAborted++;
+        UL_RX_RESET();
+        s_rxSkip = true;
+    }
+    portEXIT_CRITICAL(&s_mux);
+}
+
+void service()
+{
+    portENTER_CRITICAL(&s_mux);
+    if (s_txActive) {
+        const uint32_t now = UL_NOW_US();
+        const bool noSlot = !s_txStarted && (uint32_t)(now - s_txArmedUs) > BUS_TX_NO_SLOT_TIMEOUT_US;
+        const bool stall  =  s_txStarted && (uint32_t)(now - s_lastEdgeUs) > BUS_TX_STALL_TIMEOUT_US;
+        if (noSlot || stall) {
+            // Master nie taktuje juz naszej odpowiedzi. Linia NIGDY nie moze
+            // zostac trzymana — inaczej radio nie wystartuje magistrali.
+            UL_TX_RELEASE();
+            s_stTxAborted++;
+            UL_RX_RESET();
+            s_rxSkip = true;
+        }
+    }
+    portEXIT_CRITICAL(&s_mux);
+}
+
+void setFastPath(bool enabled, uint8_t pingAddr, uint8_t status, uint8_t myAddr)
+{
+    portENTER_CRITICAL(&s_mux);
+    s_fpEnabled  = enabled;
+    s_fpPingAddr = pingAddr;
+    s_fpStatus   = status;
+    s_fpMyAddr   = myAddr;
+    portEXIT_CRITICAL(&s_mux);
+}
+
+void loadGrant(const uint8_t* bytes, int len, uint8_t claimMask)
+{
+    if (bytes == nullptr || len <= 0 || len > FRAME_MAX || claimMask == 0) return;
+    const uint8_t p1 = (uint8_t)(0x10 + 0x18 + 0x82 + claimMask);
+    const uint8_t claim[11] = { 0x10, 0x18, 0x82, claimMask, p1, 0x00, 0x00, 0x00, 0x00, p1, 0x00 };
+    portENTER_CRITICAL(&s_mux);
+    for (int i = 0; i < len; ++i) s_fpGrant[i] = bytes[i];
+    for (int i = 0; i < 11; ++i) s_fpClaim[i] = claim[i];
+    s_fpClaimMask = claimMask;
+    s_fpGrantLen  = (uint8_t)len;
+    portEXIT_CRITICAL(&s_mux);
+}
+
+void clearGrant()
+{
+    portENTER_CRITICAL(&s_mux);
+    s_fpGrantLen = 0;
+    portEXIT_CRITICAL(&s_mux);
+}
+
+bool     grantLoaded()  { return s_fpGrantLen != 0; }
+uint32_t grantsServed() { return s_grantsServed; }
+uint32_t claimsSent()   { return s_claimsSent; }
+uint32_t lastClaimUs()  { return s_lastClaimUs; }
+
+BreakResult trySlaveBreak()
+{
+    const uint32_t t0 = UL_NOW_US();
+    const uint32_t e0 = s_edgeCount;
+    if (s_txActive || (uint32_t)(t0 - s_lastEdgeUs) < BREAK_QUIET_BEFORE_US) {
+        return BreakResult::Busy;
+    }
+
+    // 0 = czekam na faze dominujaca, 1 = w fazie dominujacej, 2 = w fazie recesywnej
+    uint8_t  phase = 0;
+    uint32_t mark  = t0;
+    for (;;) {
+        const uint32_t t = UL_NOW_US();
+        if (s_edgeCount != e0 || s_txActive) return BreakResult::Busy;
+        if ((REG_READ(GPIO_IN_REG) & BUS_ON_MASK) == 0) return BreakResult::Busy;
+        if ((uint32_t)(t - t0) > BREAK_SEARCH_MAX_US) return BreakResult::NoIdleWave;
+
+        const bool dom = UL_DATA_DOMINANT() != 0;
+        if (phase == 0) {
+            if (dom) { phase = 1; mark = t; }
+        } else if (phase == 1) {
+            if (!dom) {
+                if ((uint32_t)(t - mark) >= BREAK_IDLE_LOW_MIN_US) { phase = 2; mark = t; }
+                else phase = 0;
+            } else if ((uint32_t)(t - mark) > BREAK_IDLE_LOW_MAX_US) {
+                return BreakResult::NoIdleWave;
+            }
+        } else {
+            if (dom) { phase = 1; mark = t; }
+            else if ((uint32_t)(t - mark) >= BREAK_SETTLE_US) break;
+        }
+        delayMicroseconds(20);
+    }
+
+    portENTER_CRITICAL(&s_mux);
+    const bool quiet = (s_edgeCount == e0) && !s_txActive && (UL_DATA_DOMINANT() == 0);
+    if (quiet) {
+        UL_LATCH_DOMINANT();
+        UL_OUTPUT_ON();
+        s_breakHolding = true;
+    }
+    portEXIT_CRITICAL(&s_mux);
+    if (!quiet) return BreakResult::Busy;
+
+    // Pelne 3 ms — krotszy impuls master potrafi przeoczyc.
+    delayMicroseconds(BREAK_HOLD_US);
+
+    portENTER_CRITICAL(&s_mux);
+    UL_OUTPUT_OFF();
+    UL_LATCH_RECESSIVE();
+    s_breakHolding = false;
+    // Przerwanie probkowalo nasz wlasny poziom w trakcie impulsu.
+    UL_RX_RESET();
+    s_rxSkip = true;
+    s_stBreaks++;
+    portEXIT_CRITICAL(&s_mux);
+    return BreakResult::Done;
+}
+
+uint32_t nowUs()           { return UL_NOW_US(); }
+uint32_t usSinceLastEdge() { return UL_NOW_US() - s_lastEdgeUs; }
+uint32_t edgeCount()       { return s_edgeCount; }
+bool     busOnRaw()        { return (REG_READ(GPIO_IN_REG) & BUS_ON_MASK) != 0; }
+
+void takeStats(Stats& out)
+{
+    portENTER_CRITICAL(&s_mux);
+    out.frames    = s_stFrames;    s_stFrames    = 0;
+    out.glitches  = s_stGlitches;  s_stGlitches  = 0;
+    out.broken    = s_stBroken;    s_stBroken    = 0;
+    out.overflow  = s_stOverflow;  s_stOverflow  = 0;
+    out.txDone    = s_stTxDone;    s_stTxDone    = 0;
+    out.txAborted = s_stTxAborted; s_stTxAborted = 0;
+    out.txLate    = s_stTxLate;    s_stTxLate    = 0;
+    out.breaks    = s_stBreaks;    s_stBreaks    = 0;
+    portEXIT_CRITICAL(&s_mux);
 }
 
 } // namespace UnilinkBus

@@ -7,7 +7,10 @@
 // Architektura wątkowa:
 //   - usb_host_lib_task (core 0): obsługa niskopoziomowego stosu USB
 //   - usb_client_task   (core 0): obsługa zdarzeń klienta + callbacki transferów
-//   - main loop         (core 1): odczyt plików przez VFS/FatFs → transfery USB
+//   - usb_mount_task    (core 0): konfiguracja/montowanie po podpięciu pendrive'a
+//     (TEST UNIT READY potrafi czekać kilka sekund — nie może tego robić
+//     pętla ani zadanie magistrali)
+//   - task audio / pętla główna: odczyt plików przez VFS/FatFs → transfery USB
 //
 // Protokół: USB Mass Storage BBB (Bulk-Only Transport) + SCSI READ(10)
 // =============================================================================
@@ -395,6 +398,16 @@ static void usbClientEventCb(const usb_host_client_event_msg_t *event, void *arg
 static void usbClientTask(void *arg) {
     while (true) {
         usb_host_client_handle_events(clientHdl, portMAX_DELAY);
+    }
+}
+
+static void handleHotplugEvents();
+
+// Montowanie/odmontowanie poza pętlą główną i zadaniem magistrali.
+static void usbMountTask(void *arg) {
+    while (true) {
+        handleHotplugEvents();
+        vTaskDelay(pdMS_TO_TICKS(20));
     }
 }
 
@@ -803,6 +816,14 @@ bool usbDriveInit() {
         Serial.printf("[%s] Nie mogę uruchomić tasku usb_cli!\n", TAG);
         return false;
     }
+
+    // 5. Task montowania (blokujące komendy SCSI przy podpięciu pendrive'a)
+    ret = xTaskCreatePinnedToCore(
+        usbMountTask, "usb_mnt", 8192, NULL, 2, NULL, 0);
+    if (ret != pdPASS) {
+        Serial.printf("[%s] Nie mogę uruchomić tasku usb_mnt!\n", TAG);
+        return false;
+    }
     
     Serial.printf("[%s] USB Host gotowy. Działam w trybie nieblokującym...\n", TAG);
     
@@ -832,12 +853,10 @@ static void handleHotplugEvents() {
 }
 
 bool usbDriveIsMounted() {
-    handleHotplugEvents();
     return filesystemMounted;
 }
 
 bool usbDriveIsConnected() {
-    handleHotplugEvents();
     return deviceConnected;
 }
 

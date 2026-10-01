@@ -4,284 +4,128 @@
 #include <Arduino.h>
 
 // =============================================================================
-// Config.h — centralna konfiguracja emulatora zmieniarki Sony UniLink
+// Config.h — konfiguracja emulatora zmieniarki Sony Unilink
 // =============================================================================
-// Wszystkie piny, ustawienia sprzetowe i stale czasowe trzymamy w jednym
-// miejscu, zeby strojenie protokolu nie wymagalo szukania po wielu plikach.
-//
-// UWAGA: wartosci czasowe ponizej sa wynikiem mozolnego strojenia pod radia
-// CDX-M670 / MEX-BT3800u. Zmiana ktorejkolwiek z nich moze wywolac petle
-// SYSTEM RESET. Szczegoly w komentarzach przy poszczegolnych stalych.
+// Wartosci czasowe magistrali pochodza z pomiarow prawdziwej zmieniarki na
+// CDX-M670 ("Python logger/unilink_log_zmieniarka_CDX-M670_*"):
+//   * bit ~125 us, bajty bez przerw (~1 ms na bajt),
+//   * ~5 ms ciszy zegara miedzy ramkami, po kazdej ramce slot odpowiedzi,
+//   * ramka czasu 0x90 co ~1.0 s w trakcie odtwarzania,
+//   * Break -> 18 10 01 15 po ~11-14 ms.
 // =============================================================================
 
-// --- KONFIGURACJA PINOW MAGISTRALI UNILINK ---
-constexpr uint8_t PIN_BUS_ON = 4;   // zasilanie magistrali (HIGH = radio wlaczone)
-constexpr uint8_t PIN_CLOCK  = 5;   // zegar magistrali (przerwanie)
-constexpr uint8_t PIN_DATA   = 6;   // linia danych (dwukierunkowa)
+// --- PINY ---
+constexpr uint8_t PIN_BUS_ON      = 4;   // zasilanie magistrali (HIGH = radio wlaczone)
+constexpr uint8_t PIN_CLOCK       = 5;   // zegar magistrali (przerwanie)
+constexpr uint8_t PIN_DATA        = 6;   // linia danych (dwukierunkowa)
+constexpr uint8_t PIN_POWER_LATCH = 9;   // podtrzymanie przetwornicy (HIGH = wlaczone)
 
-// --- KONFIGURACJA ZASILANIA I USB ---
-constexpr uint8_t PIN_POWER_LATCH = 9; // pin trzymajacy zasilanie przetwornicy (HIGH = wlaczone)
-constexpr unsigned long BUS_OFF_SUICIDE_DELAY_MS = 4000; // czas (ms) ciaglego braku BUS_ON przed odcieciem zasilania
-constexpr const char* INDEX_FILE_PATH = "/unilink_index.dat"; // bufor struktury katalogow
+// --- WARSTWA FIZYCZNA ---
+// Linia DATA jest aktywna stanem niskim: logiczna 1 = poziom dominujacy = LOW na
+// pinie. Pusty slot odpowiedzi czyta sie jako 0x00.
+constexpr bool INVERT_DATA = true;
+constexpr int  CLOCK_EDGE  = RISING;   // zbocze, na ktorym probkujemy i wystawiamy bit
 
-// --- USTAWIENIA SPRZETOWE WARSTWY FIZYCZNEJ ---
-constexpr bool INVERT_DATA = true;     // sprzetowy inwerter na linii DATA
-constexpr int  CLOCK_EDGE  = RISING;   // zbocze zegara, na ktorym probkujemy bit
+constexpr uint32_t BUS_CLOCK_GLITCH_US      = 30;    // zbocza blizej niz to = zaklocenie
+constexpr uint32_t BUS_FRAME_GAP_US         = 1000;  // dluzsza przerwa = nowa ramka
+// Odpowiedz musi byc uzbrojona zanim master zacznie taktowac slot (~5 ms po
+// ostatnim bicie jego ramki). Pozniej juz NIE nadajemy — trafilibysmy w kolejna
+// ramke mastera, co konczy sie resetem magistrali.
+constexpr uint32_t BUS_RESPONSE_DEADLINE_US  = 4000;
+constexpr uint32_t BUS_TX_NO_SLOT_TIMEOUT_US = 9000;  // master nie zaczal slotu
+constexpr uint32_t BUS_TX_STALL_TIMEOUT_US   = 2000;  // master przestal taktowac
 
-// --- ROZMIARY BUFOROW ---
-constexpr int RX_BUFFER_SIZE = 64;
-constexpr int TX_BUFFER_SIZE = 64;
+// --- SLAVE BREAK (fala bezczynnosci ~8 ms dominujaca / ~8 ms recesywna) ---
+constexpr uint32_t BREAK_QUIET_BEFORE_US = 8000;   // po ostatnim zboczu (za slotem odpowiedzi)
+constexpr uint32_t BREAK_SEARCH_MAX_US   = 40000;  // ile maks. czekamy na fale (2.5 okresu)
+constexpr uint32_t BREAK_IDLE_LOW_MIN_US = 6000;   // min. dlugosc fazy dominujacej
+constexpr uint32_t BREAK_IDLE_LOW_MAX_US = 30000;  // linia "przyklejona" — rezygnujemy
+constexpr uint32_t BREAK_SETTLE_US       = 2000;   // opoznienie w fazie recesywnej
+constexpr uint32_t BREAK_HOLD_US         = 3000;   // dlugosc impulsu
 
-// --- LIMITY WIRTUALNEJ ZMIENIARKI (fallback gdy nosnik nie zamontowany) ---
+constexpr unsigned long BREAK_POLL_WAIT_MS    = 60;    // tyle czekamy na 18 10 01 15
+constexpr unsigned long BREAK_RETRY_BUSY_MS   = 5;     // magistrala zajeta ramkami
+constexpr unsigned long BREAK_RETRY_NOWAVE_MS = 30;    // brak fali bezczynnosci
+constexpr unsigned long BREAK_RETRY_FAIL_MS   = 150;   // Break bez 01 15 (dalej x2)
+constexpr unsigned long BREAK_BACKOFF_MAX_MS  = 2000;
+constexpr unsigned long CLAIM_GRANT_WAIT_MS   = 60;    // zgloszenie 82 xx -> grant 01 13
+
+// --- RAMKI EKRANU ---
+// Czas: 0x90 przy kazdej zmianie sekundy (jak oryginal). Minimalny odstep
+// pochlania tylko jitter; przy FF/REW czas zmienia sie szybciej niz 1 Hz.
+constexpr unsigned long TIME_TICK_MIN_MS = 500;
+constexpr unsigned long SEEK_TICK_MIN_MS = 250;
+
+// --- SESJA Z RADIEM ---
+constexpr uint8_t ADDR_GROUP_CD  = 0x30;   // grupa zmieniarek CD (adres przed przydzialem)
+constexpr uint8_t ADDR_BROADCAST = 0x18;
+constexpr uint8_t ADDR_MASTER    = 0x10;
+constexpr uint8_t ADDR_DISPLAY   = 0x14;   // procesor ekranu radia (tez pinguje 01 12)
+
+constexpr unsigned long BUS_ON_DEBOUNCE_MS     = 3;
+// CDX-M670 robi discovery wewnetrznych urzadzen przy BUS_ON=0 przez ~220 ms.
+// Dluzszy zanik = radio wylaczone: stop muzyki (adres zostaje).
+constexpr unsigned long BUS_OFF_AUDIO_STOP_MS  = 500;
+constexpr unsigned long BUS_OFF_SUICIDE_DELAY_MS = 4000;  // potem odciecie zasilania
+
+constexpr unsigned long APPOINT_AFTER_ANYONE_MS = 300;   // appoint idzie ~10 ms po naszym 8C
+constexpr unsigned long MAGIC_MIN_INTERVAL_MS   = 1500;  // 10 18 04 00 najwyzej raz na cykl
+constexpr uint8_t       MAGIC_MAX_ATTEMPTS      = 6;
+constexpr unsigned long MAGIC_BACKOFF_MS        = 30000;
+constexpr unsigned long RADIO_SILENT_MS         = 5000;
+// Ping pod nasz adres przychodzi co ~2.5 s. Brak przez tyle przy aktywnym radiu
+// = radio zapomnialo o zmieniarce bez resetu magistrali.
+constexpr unsigned long RADIO_FORGOT_US_MS      = 15000;
+
+// --- ZAPIS FLASH (NVS/LittleFS) ---
+// Operacja flash zatrzymuje zadania (przerwanie magistrali dziala dalej). Zapis
+// robimy tuz po naszej odpowiedzi na ping — kolejny ping za ~2.5 s.
+constexpr unsigned long FLASH_AFTER_APPOINT_MS         = 3000;
+constexpr unsigned long FLASH_WINDOW_AFTER_PING_MIN_MS = 15;
+constexpr unsigned long FLASH_WINDOW_AFTER_PING_MAX_MS = 400;
+
+// --- ZADANIE MAGISTRALI ---
+constexpr int      UNILINK_TASK_CORE     = 1;
+constexpr unsigned UNILINK_TASK_PRIORITY = 20;
+constexpr uint32_t UNILINK_TASK_STACK    = 8192;
+
+// --- ZMIENIARKA ---
 constexpr uint8_t MAX_TRACK_PER_DISC = 99;
 constexpr uint8_t MAX_DISC           = 14;
+constexpr const char* INDEX_FILE_PATH = "/unilink_index.dat";
 
-// Kierunek przewijania przekazywany do CdChanger::seek (znak, nie dlugosc skoku
-// — od dlugosci jest teraz czas trzymania klawisza, patrz SCAN_RATE* nizej).
-constexpr int SEEK_STEP_SEC = 1;
+constexpr unsigned long INIT_DURATION_MS = 800;  // 0xC0 -> 0x80 po pierwszym pingu
+constexpr unsigned long LOAD_DURATION_MS = 50;   // 0x40 -> 0x20
+constexpr unsigned long SEEK_DURATION_MS = 50;   // 0x20 -> 0x00
 
-// --- STROJENIE CZASOW (kompatybilne z protokolem §1) ---
-// Okres bitu: ~20 µs (zgodnie z Kompendium §1). Zmiana TIMINGU BITU w przerwaniu
-// onClockEvent (UnilinkBus.cpp) moze zaklocic komunikacje z radiem.
-// Czas bajtu (8 bitów + przerwa): ~1 ms. Zmiana w czasie nadawania bajtu
-// moze spowodowac bledy Parity1/Parity2 (Wymaganie 2).
-// Slave Break musi trafic w faze HIGH fali idle (patrz sekcja BREAK_* nizej).
-// Zmiana tych wartosci wymaga ponownego strojenia pod konkretny radio.
-
-// --- SKANOWANIE PRZEWIJANIEM (FF/REW) — CUE/REVIEW JAK W ORYGINALE ---
-// CDX-M670 wysyla JEDNA ramke 0x24/0x25 w chwili WCISNIECIA klawisza, a przy
-// jego PUSZCZENIU broadcast `18 10 08 00`. Czas trzymania odczytujemy wiec jako
-// roznice tych dwoch zdarzen (logi: FF o 21:07:00.3, `08 00` o 21:07:03.6 —
-// dokladnie tyle, ile trwalo przytrzymanie).
-//
-// Prawdziwa zmieniarka nie skacze po rownych porcjach — przewija PLYNNIE i
-// PRZYSPIESZA im dluzej trzymasz klawisz, dzieki czemu krotkie tapniecie pozwala
-// dojechac precyzyjnie, a dluzsze przytrzymanie szybko przelatuje utwor.
-// Modelujemy to trzema etapami predkosci (mnozniki czasu rzeczywistego):
-constexpr unsigned long SCAN_PHASE1_MS = 1500;   // etap 1: precyzyjny
-constexpr unsigned long SCAN_PHASE2_MS = 3000;   // etap 2: sredni (po etapie 1)
-constexpr uint32_t      SCAN_RATE1     = 4;      // x4  materialu na sekunde
-constexpr uint32_t      SCAN_RATE2     = 12;     // x12
-constexpr uint32_t      SCAN_RATE3     = 30;     // x30 (po SCAN_PHASE1+PHASE2)
-//
-// SEEK_AUDIO_MS: jak czesto robimy rzeczywisty setTimeOffset w dekoderze MP3.
-// To wlasnie daje slyszalne "cue": co tyle ms wskakujemy w nowe miejsce utworu.
-// Kazdy skok USB+MP3 generuje lawine audio_info (INVALID_FRAMEHEADER) na Core 0;
-// Serial jest wspoldzielony z Core 1, wiec zbyt czeste skoki blokowaly petle na
-// tyle, ze gubilismy odpowiedzi na `01 15`. Ekran aktualizujemy plynnie (kazda
-// iteracja petli), audio co SEEK_AUDIO_MS (+ finalny sync przy stopie).
-constexpr unsigned long SEEK_AUDIO_MS    = 1200;
-// Bezpiecznik: gdyby `08 00` nie doszlo, konczymy skan sami.
-constexpr unsigned long SEEK_SCAN_MAX_MS = 30000;
-
-// --- ADRESY UNILINK ---
-constexpr uint8_t ADDR_GROUP_CD  = 0x30;   // grupa CD, brak ID (start/reset)
-// [DEVIATION §5/§6] ADDR_DEFAULT zmienia znaczenie: start z adresu grupowego
-// 0x30 (grupa CD, brak ID) wg Kompendium §5/§6, zamiast sztywnego 0x31.
-// Bylo: constexpr uint8_t ADDR_DEFAULT = 0x31;
-constexpr uint8_t ADDR_DEFAULT   = ADDR_GROUP_CD;  // adres zrodlowy przed przydzialem ID
-constexpr uint8_t ADDR_BROADCAST = 0x18;   // adres rozglosza (ANYONE? itp.)
-constexpr uint8_t ADDR_MASTER    = 0x10;   // TAD radia (ramki OD mastera)
-constexpr uint8_t ADDR_DISPLAY   = 0x14;   // TAD procesora ekranu radia
-
-// --- STROJENIE CZASOW MASZYNY STANOW (ms) ---
-constexpr unsigned long INIT_DURATION_MS = 800;  // 0xC0 -> 0x80 (po pierwszym PINGu)
-constexpr unsigned long LOAD_DURATION_MS = 50;   // 0x40 -> 0x20 (krotki, by uniknac migania LOAD)
-constexpr unsigned long SEEK_DURATION_MS = 50;   // 0x20 -> 0x00 (krotki, by uniknac migania LOAD)
-
-// --- SLAVE BREAK + ARBITRAZ (model OE ze sniffu CDX-M670) ---
-// Sniff prawdziwej zmieniarki (103× `01 15`):
-//   * claim przy udziale w sesji: zawsze `82 04` (0× `82 00` w trakcie burstu),
-//   * BURSTY: typowo 1–4 polle, potem przerwa 0.5–9.5 s (35 luk >0.5 s),
-//   * NIE ma ciaglego Request Polling @ ~23 Hz przez 15+ s.
-// Emulator z always-claim non-stop trzymal sesje ~16 s, potem master ja konczyl;
-// Break (Hold 3 ms) nie wznawial `01 15` (log 16:11: break=N/N, poll15=0).
-// Model OE: krotka sesja claim → 1–2 granty/ekran → `82 00` konczy burst →
-// po ~1 s Slave Break budzi nowa sesje.
-//
-constexpr unsigned long DISPLAY_REFRESH_MS = 1000;
-// Break gdy sesja chce nadac, a brak `01 15` / grantu tak dlugo:
-constexpr unsigned long DISPLAY_STARVED_MS = 500;
-// `01 15` w tym oknie = Request Polling zywy → NIGDY Break.
-// Ustawione na 3000ms: po SYSTEM RESET radio potrzebuje ~2s na discovery +
-// preliminary, w tym czasie NATURALNIE nie ma `01 15`. Przy 1000ms emulator
-// wyzwalal auto-recovery zanim radio zdazylo zakonczyc discovery = petla resetow.
-constexpr unsigned long POLL15_ALIVE_MS    = 3000;
-// Prog uzbrojenia Slave Break. Request Polling NIE jest ciagly: master prowadzi
-// go tylko wtedy, gdy ktorys slave o to poprosil, po czym wraca do fali idle
-// (Mictronics/Mathias Adam: "Sendet der Slave keine Slave Breaks, schaltet das
-// Radio den Wechslerbetrieb ab"). CDX-M670 konczy `01 15` po ~20 s odtwarzania,
-// mimo ze dalej pinguje nas Time Pollem `01 12` co ~600 ms. Brak `01 15` przez
-// to okno oznacza wiec NORMALNY stan spoczynku, a nie awarie — jesli mamy co
-// nadac, budzimy mastera Slave Breakiem. POLL15_ALIVE_MS (3 s) zostaje dla
-// decyzji "sesja umarla" (auto-recovery), tu potrzeba znacznie krotszego progu,
-// bo ekran odswiezamy ~1 Hz.
-constexpr unsigned long POLL15_QUIET_BREAK_MS = 500;
-// To samo okno, ale gdy oprozniamy kolejke TX (patrz BREAK_QUEUE_MIN_MS).
-// Prawdziwej zmieniarce master odpowiada kolejnym `01 15` juz po ~22 ms od jej
-// ramki, wiec brak pollu przez 80 ms znaczy, ze burstu nie bedzie i trzeba go
-// obudzic samemu.
-constexpr unsigned long POLL15_QUIET_DRAIN_MS = 80;
-// Odstep miedzy kolejnymi Breakami. Kompromis miedzy plynnoscia ekranu a
-// ryzykiem kolizji: przy 1000 ms (i BREAK_RECOVERY_MS 1500) ekran odswiezal sie
-// z czestotliwoscia 0.3-0.5 Hz, przy 250/400 ms wskaznik [STAT] pokazywal juz
-// 4-5 Breakow na 2 s i wrocily SYSTEM RESETy — kazdy Break to 3 ms trzymania
-// magistrali, wiec im ich wiecej, tym wieksza szansa wejscia w cudza ramke.
-// 500-700 ms wystarcza na sekundnik (potrzebny jeden Break na sekunde) i zapobiega
-// sztormom Breakow przy szybkiej nawigacji uzytkownika.
-constexpr unsigned long BREAK_RETRY_MS     = 1500;
-constexpr unsigned long BREAK_RECOVERY_MS  = 400;
-constexpr unsigned long BREAK_BACKOFF_MAX_MS = 3000;
-// Odstep dla Breaka sekundnika w stanie Playing. Radio CDX-M670 SAMO interpoluje
-// czas miedzy ramkami 0x90 (Kompendium §11.1), wiec nie musimy breakowac co
-// sekunde. 2500ms daje ~0.4 Hz synchronizacji — radio liczy sekundy plynnie
-// i koryguje na naszych sync pointach. Poprzednie 700ms powodowalo 2 breaki
-// na sekunde (jitter 0.6-1.4s zamiast stalego 1Hz) i zwiekszalo ryzyko kolizji.
-constexpr unsigned long BREAK_TICK_MIN_MS   = 2500;
-// Odstep dla Breaka PILNEGO — gdy ekran radia pokazuje nieaktualna plyte/utwor/
-// stan (uzytkownik wlasnie nacisnal klawisz i czeka na reakcje).
-constexpr unsigned long BREAK_URGENT_MIN_MS = 700;
-// Odstep dla Breaka, gdy w kolejce TX zalegaja jeszcze ramki (blok CD-TEXT).
-// [FIX CD-TEXT DELAY] Zmniejszony z 700 na 400ms — po zmianie utworu 4 ramki
-// nazw musza zejsc na kolejnych grantach. Przy 700ms caly blok zajmowal ~3-4s;
-// przy 400ms spada do ~1.5-2s, co jest blizsze zachowaniu prawdziwej zmieniarki.
-constexpr unsigned long BREAK_QUEUE_MIN_MS = 400;
-
-// Po SYSTEM RESET radio robi discovery (preliminary + ANYONE? + appoint). Caly
-// cykl trwa ~2-3s. W tym czasie NIE WOLNO wyzwalac auto-recovery (`01 11`)
-// ani Slave Break — radio jest W TRAKCIE normalnej procedury, nie potrzebuje
-// naszej "pomocy". Grace period = 5s daje pewny zapas.
-constexpr unsigned long POST_RESET_GRACE_MS = 5000;
-
-// Model burstowy odpowiedzi: prawdziwa zmieniarka odpowiada burstami 1-4 grantow
-// z przerwami 0.5-9.5s. Emulator zamyka sesje (claim `82 00`) po oddaniu tylu
-// grantow i czeka na nastepna okazje (servicePositionFrame1Hz otwiera co 1s).
-constexpr unsigned int MAX_BURST_GRANTS = 2;
-// READ_SILENCE_US sluzy juz TYLKO jako awaryjna resynchronizacja bufora RX.
-// Normalne ciecie strumienia na ramki robi UnilinkBus::readFrame po dlugosci
-// wynikajacej z CMD1, wiec ta wartosc nie wplywa juz na czas odpowiedzi.
-constexpr unsigned long READ_SILENCE_US   = 5000;
-
-// --- RESYNCHRONIZACJA FAZY BITOWEJ (ISR odbioru) ---
-// Przerwa miedzy zboczami zegara dluzsza niz ta wartosc oznacza poczatek nowej
-// ramki i zeruje licznik bitow. Wyliczenie ze znacznikow `t=` w sniffie CDX-M670:
-//   * ramka 16-bajtowa trwa 14965-15000 us -> ~937 us/bajt -> ~117 us/bit,
-//     przy czym bity ida ciagiem (brak przerwy miedzy bajtami w ramce),
-//   * najkrotsza zaobserwowana przerwa MIEDZY ramkami to ~5970 us.
-// 1000 us lezy wygodnie miedzy tymi skalami: ~8x wiecej niz okres bitu i ~6x
-// mniej niz najkrotsza przerwa miedzyramkowa.
-constexpr unsigned long BYTE_RESYNC_GAP_US = 1000;
-
-// --- SLAVE BREAK: SYNCHRONIZACJA Z FALA IDLE (§2.2 / Mictronics) ---
-// Przy bezczynnej magistrali master utrzymuje na DATA fale ~8 ms LOW / ~8 ms
-// HIGH. Break jest wazny WYLACZNIE w fazie HIGH, ~2 ms po zboczu w gore:
-//   1) potwierdz ~8 ms LOW (idle),
-//   2) czekaj 2 ms w HIGH,
-//   3) sciagnij DATA LOW na ~3 ms,
-//   4) pusc — reszta fazy HIGH.
-// BREAK_IDLE_LOW_US: Mictronics = pelne ~8 ms LOW przed faza HIGH.
-constexpr unsigned long BREAK_IDLE_LOW_US = 8000;
-// BREAK_IDLE_LOW_MIN_US: spozniona probka juz na HIGH po wystarczajacym LOW.
-constexpr unsigned long BREAK_IDLE_LOW_MIN_US = 6000;
-constexpr unsigned long BREAK_SETTLE_US   = 2000;
-constexpr unsigned long BREAK_HOLD_US     = 3000;
-// Trzymaj pelne 3 ms — nie przerywaj na wczesnym zegarze (wypelniacz idle HIGH
-// SophWiki: 8 bit clock w fazie HIGH). Puszczamy dopiero po HOLD_US.
-constexpr unsigned long BREAK_MIN_VISIBLE_US = 3000;
-// BREAK_ARM_TIMEOUT_US: jak dlugo czekamy na czysta fale idle po uzbrojeniu.
-// Time Poll CDX-M670 ~600 ms — 300 ms bylo za krotkie (log: break=N/0, Hold
-// nigdy nie startowal). 2.5 s obejmuje kilka cykli keepalive.
-constexpr unsigned long BREAK_ARM_TIMEOUT_US = 2500000;
-
-// --- OCHRONA PRZED KOLIZJA Z URZADZENIAMI WEWNETRZNYMI RADIA ---
-// Radio odpytuje swoje urzadzenia (0x3B = CD radia, 0x71 = kontroler), ktore
-// odpowiadaja z opoznieniem ~9-12ms, a w razie braku odpowiedzi master ponawia
-// probe po ~500-600ms. Gdy zobaczymy poll do INNEGO urzadzenia, blokujemy break
-// na pelne 750 ms, by nie zderzyc sie z ta wymiana ani z ponowieniem (retry) pingu.
-constexpr unsigned long FOREIGN_POLL_GUARD_MS = 750;
-
-// --- DETEKCJA CDX-M670 ---
-// Po markerze preliminary (3B/DB) ignorujemy ANYONE? przez to okno, by radio
-// dokonczylo preliminary discovery bez nas (tak robi prawdziwa zmieniarka).
-constexpr unsigned long PRELIMINARY_WINDOW_MS = 250;
-
-// [FIX: RESET LOOP] Po SYSTEM RESET nie otwieraj okna preliminary przez ten czas.
-// Discovery po resecie to NOWY cykl — ANYONE? w nim jest DLA NAS, nie preliminary.
-// Bez tego emulator ignoruje ANYONE?, nie dostaje adresu, odpowiada magic na 01 11,
-// co wywoluje kolejny SYSTEM RESET → nieskonczona petla resetow.
-constexpr unsigned long POST_RESET_PRELIMINARY_SKIP_MS = 2000;
-
-// --- TIMEOUTY ---
-constexpr unsigned long RADIO_TIMEOUT_MS = 5000;   // brak PINGa => radio zniknelo
-
-// --- CRASH LOG (pendrive) ---
-// Crash logi (radio timeout, SYSTEM RESET) sa zapisywane na pendrive dopiero po
-// tym czasie od startu ESP32 — odfiltruje to normalne resety radia przy wlaczaniu.
-// ESP panic/WDT restart ignoruje grace period (bo jest wazniejszy).
-constexpr unsigned long CRASHLOG_GRACE_MS = 60000;  // 60s od startu ESP
-constexpr int           CRASHLOG_MAX_FILES = 10;    // rotacja: max plikow w /CrashLogs/
-
-// Zapis NVS (flash) blokuje petle na ~2-5ms. Robimy go WYLACZNIE gdy magistrala
-// jest bezczynna dluzej niz ten prog (okno ciszy miedzy cyklicznymi pingami radia ~500ms)
-// oraz gdy utwor faktycznie gra i kolejka TX jest pusta.
-constexpr unsigned long PERSIST_FLUSH_IDLE_US = 80000;   // 80 ms ciszy (bezpieczny odstep miedzy pingami)
+// --- PRZEWIJANIE FF/REW ---
+// CDX-M670 wysyla 0x24/0x25 przy WCISNIECIU klawisza, a 18 10 08 00 przy
+// puszczeniu. Pozycja plynie z przyspieszeniem zaleznym od czasu trzymania.
+constexpr int           SEEK_STEP_SEC    = 1;      // kierunek (znak) dla CdChanger::seek
+constexpr unsigned long SCAN_PHASE1_MS   = 1500;
+constexpr unsigned long SCAN_PHASE2_MS   = 3000;
+constexpr uint32_t      SCAN_RATE1       = 4;      // x4 materialu na sekunde
+constexpr uint32_t      SCAN_RATE2       = 12;
+constexpr uint32_t      SCAN_RATE3       = 30;
+constexpr unsigned long SEEK_AUDIO_MS    = 1200;   // co ile skok dekodera (slyszalne cue)
+constexpr unsigned long SEEK_SCAN_MAX_MS = 30000;  // gdyby 08 00 nie doszlo
 
 // --- CD-TEXT ---
-// Jak czesto powtarzamy komplet nazw (utwor 0xD2 + plyta 0xDA) w trakcie odtwarzania.
-// 0 = wylaczone powtarzanie w trakcie utworu (OE feel: tekst leci RAZ A DOBRZE
-// przy starcie/zmianie utworu, po seeku i na zadanie radia 84 D7). Dzieki temu
-// magistrala ma pelny spokoj, zegar idzie idealnie 1 Hz i nie ma kolizji.
-constexpr unsigned long CD_TEXT_REPEAT_MS = 0;
+// CDX-M670 (wariant 0xD2): nazwa w dwoch ramkach po 6 znakow.
+constexpr int           CDTEXT_D2_MAX_CHARS    = 12;
+constexpr unsigned long OBD_UPDATE_INTERVAL_MS = 1000;   // tryb OBD (Repeat One/All)
 
-// Maksymalna dlugosc tekstu CD-TEXT w wariancie 0xD2 (Sony CDX-M670).
-// Dokladnie 12 znakow (2 segmenty po max 6 znakow). Gwarantuje, ze w ostatnim segmencie
-// slot6 zawsze wynosi 0x00 (NUL terminator w buforze procesora 0x71).
-// Zapobiega to wyciekowi pamieci podczas przewijania (marquee) i umozliwia plynne zapetlenie.
-constexpr int CDTEXT_D2_MAX_CHARS = 12;
+// --- CRASH LOG (pendrive) ---
+constexpr unsigned long CRASHLOG_GRACE_MS              = 60000;  // nie zapisuj startu radia
+constexpr unsigned long CRASHLOG_DUMP_AFTER_BUS_OFF_MS = 600;
+constexpr int           CRASHLOG_MAX_FILES             = 10;
 
-// --- CYKL WYŚWIETLANIA: CZAS <-> CD-TEXT ---
-// Wyłączony (0) dla 100% stabilności i pełnej zgodności z fabryczną zmieniarką Sony CDX-805.
-// Zmieniarka wysyła CD-TEXT jednorazowo przy starcie utworu. Wybór widoku (Czas / Tytuł / Płyta)
-// należy do użytkownika za pomocą fabrycznego przycisku DSPL na panelu radia.
-constexpr unsigned long CDTEXT_TIMER_DURATION_MS = 0;
-constexpr unsigned long CDTEXT_TEXT_DURATION_MS  = 0;
-
-// Kompatybilność wsteczna dla starych nazw
-constexpr unsigned long CDTEXT_TIME_FLASH_INTERVAL_MS = CDTEXT_TEXT_DURATION_MS;
-constexpr unsigned long CDTEXT_TIME_FLASH_DURATION_MS = CDTEXT_TIMER_DURATION_MS;
-
-// --- TRYB OBD: INTERWAŁ ODŚWIEŻANIA TELEMETRII ---
-// W trybie OBD (Repeat One/All) dane na ekranie radia odświeżają się z tą częstotliwością.
-// 1000 ms (1 Hz) daje szybki, responsywny podgląd czujników bez dublowania Breaków.
-constexpr unsigned long OBD_UPDATE_INTERVAL_MS = 1000;
-
-// --- PAMIEC NIEULOTNA (NVS) ---
 constexpr const char* PREFS_NAMESPACE = "unilink";
 
-// --- LOGOWANIE ---
-// Logowanie szczegolowe: zrzut KAZDEJ ramki RX oraz rutynowe odpowiedzi
-// (Slave Poll 01 15, PING 01 12, DISPLAY 01 13, diagnostyka audio).
-// DOMYSLNIE WYLACZONE: w trakcie odtwarzania radio odpytuje wyswietlacz ~10x/s,
-// co przy wlaczonym logowaniu zalewa konsole i — co wazniejsze — intensywne
-// Serial.printf w petli glownej moze ja blokowac na tyle, by spowodowac
-// kolizje na magistrali i SYSTEM RESET radia. Wlacz tylko do debugowania
-// discovery/przydzialu adresu. Wazne, rzadkie zdarzenia loguja sie zawsze.
 constexpr bool DEBUG_VERBOSE = false;
 
-// --- LOGOWANIE RAMEK (RX / TX / BREAK) — diagnostyka magistrali ---
-// Lzejsze niz DEBUG_VERBOSE: loguje tylko ramki (jedna krotka linia na ramke),
-// breaki i odpowiedzi na grant 0x13. Pozwala zobaczyc kadencje odpytywania
-// radia i korelacje break->grant (diagnoza "czemu zegar odswieza sie co 4s").
-// WYLACZONE domyslnie: przy ~23 pollach/s Serial.printf w petli glownej
-// konkuruje z taskiem audio o UART i w trakcie seeku powodowal gubienie
-// odpowiedzi `01 15` (zamrozony ekran). Wlacz tylko na krotka diagnoze.
-constexpr bool DEBUG_FRAMES = false;
-
-// --- LOGOWANIE I MODUŁY RADIOWE (WiFi / Bluetooth) ---
-// Konfiguracja ENABLE_WIFI (0 = wyłączone, 1 = włączone) znajduje się w WiFiLogger.h.
-// Przy ENABLE_WIFI == 0 radia WiFi i Bluetooth są całkowicie wyłączone (WIFI_OFF, btStop).
+// Konfiguracja ENABLE_WIFI (0 = WiFi/BT wylaczone) znajduje sie w WiFiLogger.h.
 #include "WiFiLogger.h"
 #define Serial WiFiLogger
 
 #endif // CONFIG_H
-

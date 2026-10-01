@@ -4,97 +4,101 @@
 #include <Arduino.h>
 
 // =============================================================================
-// UnilinkBus — warstwa fizyczna / lacza magistrali Sony UniLink
+// UnilinkBus — warstwa fizyczna magistrali Sony Unilink
 // =============================================================================
-// Odpowiada WYLACZNIE za bit-banging: probkowanie bitow w przerwaniu zegara,
-// skladanie bajtow do bufora RX, nadawanie ramek z bufora TX oraz Slave Break.
-// Nie zna pojecia "zmieniarka", "utwor" ani protokolu aplikacyjnego — operuje
-// tylko na surowych bajtach. Dzieki temu logike protokolu mozna testowac i
-// rozwijac niezaleznie od sprzetu.
+// Master (radio) generuje zegar dla KAZDEGO bitu, rowniez dla odpowiedzi slave'a.
+// Pomiary ze sniffow prawdziwej zmieniarki na CDX-M670:
+//   * bit ~125 us, bajty ida jeden za drugim (~1 ms na bajt),
+//   * miedzy ramkami ~5 ms ciszy zegara,
+//   * po kazdej ramce master taktuje "slot odpowiedzi"; gdy nikt nie odpowiada,
+//     czyta w nim pojedynczy bajt 0x00.
+// Odpowiedz musi wiec byc uzbrojona ZANIM master zacznie taktowac slot. Spozniona
+// odpowiedz nadana w srodek kolejnej ramki mastera niszczy ja i konczy sie
+// SYSTEM RESETem radia — dlatego respond() sprawdza okno czasowe.
+//
+// Przerwanie zegara dziala w IRAM (ESP_INTR_FLAG_IRAM), wiec bity sa odbierane
+// i nadawane takze podczas zapisu do flash (NVS/LittleFS), kiedy zwykle zadania
+// stoja. Najczestsze odpowiedzi (ping 01 12, zgloszenie na 01 15, ramka na grant
+// 01 13) przerwanie wysyla samo z danych przygotowanych przez zadanie protokolu.
+//
+// Funkcje "zadaniowe" wolac wylacznie z rdzenia 1 (zadanie protokolu / loop).
 // =============================================================================
 
 namespace UnilinkBus {
 
-// Inicjalizacja pinow i podlaczenie przerwania zegara. Wywolac w setup().
-void begin();
+constexpr int FRAME_MAX = 16;
 
-// --- NADAWANIE RAMEK ---
-// Ramki UniLink: [RAD TAD CMD1 CMD2 PARITY1 (dane...) (PARITY2) END=0x00].
-// Parzystosc liczona jest jako suma poprzedzajacych bajtow (& 0xFF).
+struct Frame {
+    uint8_t  data[FRAME_MAX];
+    uint8_t  len;
+    uint8_t  replyLen;             // > 0: przerwanie juz odpowiedzialo ramka `reply`
+    uint8_t  reply[FRAME_MAX];
+    uint32_t endUs;                // czas ostatniego zbocza ramki (esp_timer, us)
+    uint32_t edgeSeq;              // licznik zboczy w chwili konca ramki
+};
 
-// Short: 6 bajtow [RAD TAD CMD1 CMD2 PARITY 0x00].
-void sendShort(uint8_t rad, uint8_t tad, uint8_t cmd1, uint8_t cmd2);
+// Konfiguruje piny i przerwanie zegara. `notifyTask` jest budzone po kazdej
+// odebranej ramce. Zwraca false, gdy nie udalo sie zainstalowac przerwania.
+bool begin(TaskHandle_t notifyTask);
 
-// Medium: 11 bajtow z 4 bajtami danych i druga parzystoscia.
-void sendMedium(uint8_t rad, uint8_t tad, uint8_t cmd1, uint8_t cmd2,
-                uint8_t d1, uint8_t d2, uint8_t d3, uint8_t d4);
+// Czy przerwanie dziala w IRAM (odporne na zapisy flash)?
+bool isrInIram();
 
-// Long: 16 bajtow z 9 bajtami danych i druga parzystoscia.
-void sendLong(uint8_t rad, uint8_t tad, uint8_t cmd1, uint8_t cmd2,
-              uint8_t d1, uint8_t d2, uint8_t d3, uint8_t d4,
-              uint8_t d5, uint8_t d6, uint8_t d7, uint8_t d8, uint8_t d9);
+// Kolejna kompletna ramka odebrana przez przerwanie.
+bool popFrame(Frame& out);
 
-// Surowy pakiet z gotowymi checksumami (uzywany przy atrybutach/magic).
-void sendRaw(const uint8_t* data, int len);
+// Uzbraja odpowiedz na ramke `f`, o ile master nie zaczal jeszcze slotu
+// odpowiedzi. Zwraca false, gdy jest za pozno (odpowiedz NIE zostanie nadana).
+bool respond(const Frame& f, const uint8_t* bytes, int len);
 
-// Czy trwa nadawanie odpowiedzi? (nie przerywaj wlasnej transmisji)
 bool isTransmitting();
+void abortTx();
 
-// --- ODBIOR ---
-// Mikrosekundy od ostatniego zbocza zegara (do wykrywania ciszy na magistrali).
-// Odczyt atomowy (z wylaczonymi przerwaniami).
-unsigned long microsSinceLastClock();
+// Straznik nadawania — wolac w kazdej iteracji zadania protokolu.
+void service();
 
-// Jesli magistrala jest cicho co najmniej `idleUs` i w buforze sa bajty,
-// kopiuje je do `out` (max `maxLen`), czysci bufor RX i zwraca ich liczbe.
-// W przeciwnym razie zwraca 0. Caly odczyt/reset wykonywany atomowo.
-int readPacketIfIdle(uint8_t* out, int maxLen, unsigned long idleUs);
+// --- SZYBKA SCIEZKA W PRZERWANIU ---
+// enabled  : wolno odpowiadac (BUS_ON stabilnie wysoki),
+// pingAddr : adres, pod ktorym odpowiadamy na 01 12 (0 = nie odpowiadamy),
+// status   : bajt statusu mechanizmu w odpowiedzi na ping,
+// myAddr   : przydzielony adres (granty 01 13), 0 gdy brak.
+void setFastPath(bool enabled, uint8_t pingAddr, uint8_t status, uint8_t myAddr);
 
-// Odczyt kompletnej ramki z granica wyznaczona przez CMD1 (Kompendium §3,
-// Wymaganie 3.4/3.5). KRYTERIUM PODSTAWOWE: gdy w buforze sa >= 3 bajty,
-// czytamy CMD1 (rxBuffer[2]) i wyznaczamy oczekiwana dlugosc przez
-// UnilinkFrame::lengthFromCmd1; po zgromadzeniu tylu bajtow udostepniamy
-// dokladnie tyle (reszta — poczatek kolejnej ramki — zostaje w buforze).
-// Cisza (READ_SILENCE_US) sluzy WYLACZNIE jako zabezpieczenie awaryjne:
-// gdy po ciszy w buforze tkwi niekompletny/nadmiarowy zlepek, bufor jest
-// oprozniany (resynchronizacja), by uniknac zakleszczenia. Zwraca liczbe
-// bajtow udostepnionej ramki lub 0. Caly odczyt/przesuw wykonywany atomowo.
-int readFrame(uint8_t* out, int maxLen);
-
-// Wyzeruj bufor odbiorczy (np. gdy BUS=0 — bajty z tej fazy sa "obce").
-void resetRx();
-
-// Pobierz i wyzeruj liczniki bledow odbioru (RESYNC / RXFLUSH). Kazdy z nich to
-// chwila slepoty na magistrale; zgubiony w niej Time Poll `01 12` konczy sie
-// SYSTEM RESETem radia, wiec raportujemy je w [STAT].
-void takeRxErrorCounts(uint16_t& resync, uint16_t& flush);
-// Czas (ms) od ostatniego RESYNC/RXFLUSH. Pozwala warstwie protokolu wstrzymac
-// Slave Break po bledzie odbioru (magistrala moze byc jeszcze niestabilna).
-unsigned long timeSinceLastRxError(unsigned long nowMs);
+// Ramka, ktora przerwanie wysle na najblizszy grant 01 13. Dopoki jest
+// zaladowana, na kazde 18 10 01 15 zglaszamy sie maska `claimMask`.
+void loadGrant(const uint8_t* bytes, int len, uint8_t claimMask);
+void clearGrant();
+bool grantLoaded();
+uint32_t grantsServed();
+uint32_t claimsSent();
+uint32_t lastClaimUs();
 
 // --- SLAVE BREAK ---
-// Sciagniecie linii DATA w dol, by zasygnalizowac masterowi chec nadawania poza
-// kolejnoscia. Musi trafic w faze HIGH fali idle (8 ms LOW / 8 ms HIGH), ktora
-// master generuje na DATA przy bezczynnej magistrali — stad NIEBLOKUJACA
-// maszyna stanow zamiast jednorazowego szarpniecia linii.
-//
-// Typowe uzycie: requestSlaveBreak() uzbraja, serviceSlaveBreak() wolane w
-// KAZDEJ iteracji loop() przesuwa maszyne o krok i sama zwalnia linie.
-// Aktywnosc zegara przed Hold resetuje obserwacje fali idle. W Hold: pelny
-// impuls BREAK_HOLD_US (Mictronics 3 ms) — nie przerywamy na filler clock
-// w fazie HIGH (wczesny release = Break „OK” bez powrotu `01 15`).
-void requestSlaveBreak();
-void serviceSlaveBreak();
-bool slaveBreakPending();
-void cancelSlaveBreak();
-// Ile udanych impulsow break od ostatniego odczytu — diagnostyka:
-// armed bez completed = abort przed wykryciem; completed bez poll15 =
-// Hold korumowal odpowiedz mastera (naprawione wczesnym release).
-uint16_t takeBreakCompleted();
-// true przez BREAK_RECOVERY_MS po udanym Hold — nie uzbrajac ponownie.
-bool breakRecoveryActive(unsigned long nowMs);
-// Czas (ms) od zakonczenia ostatniego impulsu Hold na magistrali.
-unsigned long timeSinceBreakDone(unsigned long nowMs);
+// Gdy magistrala jest bezczynna, master trzyma na DATA fale ~8 ms poziomu
+// dominujacego / ~8 ms recesywnego. Slave zglasza chec nadawania, sciagajac
+// linie na ~3 ms w fazie recesywnej, ~2 ms po jej poczatku. Master odpowiada
+// wtedy `18 10 01 15`. Funkcja czeka na fale aktywnie (ograniczony czas) i
+// natychmiast rezygnuje, gdy na zegarze pojawi sie ruch.
+enum class BreakResult : uint8_t { Done, Busy, NoIdleWave };
+BreakResult trySlaveBreak();
+
+uint32_t nowUs();
+uint32_t usSinceLastEdge();
+uint32_t edgeCount();
+bool busOnRaw();
+
+struct Stats {
+    uint32_t frames;
+    uint32_t glitches;     // zbocza odrzucone jako zaklocenia
+    uint32_t broken;       // niekompletne ramki ucięte przerwa
+    uint32_t overflow;     // ramki zgubione przez pelny bufor
+    uint32_t txDone;
+    uint32_t txAborted;    // nadawanie przerwane (master przestal taktowac)
+    uint32_t txLate;       // odpowiedzi odrzucone, bo slot juz minal
+    uint32_t breaks;
+};
+// Zwraca liczniki od poprzedniego wywolania i je zeruje.
+void takeStats(Stats& out);
 
 } // namespace UnilinkBus
 

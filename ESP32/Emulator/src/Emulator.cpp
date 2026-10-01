@@ -1,17 +1,18 @@
 // =============================================================================
-// Emulator.ino — emulator zmieniarki CD Sony UniLink (10-CD) + audio z USB
+// Emulator.cpp — emulator zmieniarki CD Sony Unilink + odtwarzanie z pendrive'a
 // =============================================================================
-// Obsluga radia: MEX-BT3800u + CDX-M670. Wyjscie audio: PCM5102A (I2S).
-// Nosnik: pendrive USB (foldery CD01..CD10).
+// Radio: Sony CDX-M670. Wyjscie audio: PCM5102A (I2S). Nosnik: pendrive USB
+// (foldery CD01..CD14).
 //
-// Architektura (warstwy):
-//   Config.h          — piny, ustawienia sprzetowe, stale czasowe
-//   UnilinkBus        — warstwa fizyczna: bit-banging ISR, ramki, Slave Break
-//   CdChanger         — model zmieniarki: stan, czas, NVS, nawigacja, audio
-//   UnilinkProtocol   — interpretacja ramek, discovery, kwirki CDX-M670
-//   AudioPlayer       — dekodowanie i odtwarzanie plikow (I2S/PCM5102A)
-//   UsbDrive          — USB Host MSC (FAT32)
-//   Emulator.ino      — spiecie warstw (setup + loop)
+// Watki:
+//   przerwanie zegara (IRAM, poziom 3)  — bity magistrali, ping/claim/grant
+//   zadanie "unilink" (rdzen 1, prio 20) — protokol i logika zmieniarki
+//                                          (UnilinkProtocol + CdChanger)
+//   zadanie audio (rdzen 0)             — dekodowanie -> I2S
+//   zadania USB (rdzen 0)               — stos USB Host, montowanie pendrive'a
+//   loop() (rdzen 1, prio 1)            — zasilanie, skan pendrive'a, zapis NVS
+//                                          w bezpiecznym oknie, crash logi
+// Nic, co robi loop(), nie wplywa na czas odpowiedzi na magistrali.
 // =============================================================================
 
 #include "AudioPlayer.h"
@@ -23,298 +24,117 @@
 #include <LittleFS.h>
 #include <esp_system.h>
 
-// Stan zasilania magistrali (do wykrywania zboczy BUS_ON).
-static bool busPoweredLast = false;
-static bool powerLatchActive = false;
-static unsigned long busOffStartTime = 0;
-static bool busOffSleepDone = false;
-// [FAZA 4.1] Debounce BUS_ON: opoznij onBusOff() o 100ms, by krotkie glitche
-// (np. ~50ms podczas SYSTEM RESET) nie kasowaly sesji i nie wymuszaly pelnego
-// re-discovery. Prawdziwa zmieniarka tez nie reaguje na mikrosekundowe przerwy.
-static unsigned long busOffEdgeMs = 0;
-static bool busOffProtocolDone = false;  // true = onBusOff() juz zostalo wywolane
+static bool          powerLatchActive = false;
+static unsigned long busOffSinceMs    = 0;
 
-void commitSuicide() {
-  if (powerLatchActive) {
-    if (Serial.hasCrashSnapshot()) {
-      Serial.dumpCrashLog();
+static const char* resetReasonName(esp_reset_reason_t r)
+{
+    switch (r) {
+        case ESP_RST_PANIC:    return "PANIC";
+        case ESP_RST_INT_WDT:  return "INT_WDT";
+        case ESP_RST_TASK_WDT: return "TASK_WDT";
+        case ESP_RST_WDT:      return "WDT";
+        case ESP_RST_BROWNOUT: return "BROWNOUT";
+        default:               return "OTHER";
     }
-    Serial.println("=== ROZPOCZYNAM PROCEDURĘ WYŁĄCZANIA ZASILANIA ===");
+}
+
+// Radio wylaczone na stale: zapis stanu i odciecie wlasnego zasilania
+// (przetwornica trzymana pinem PIN_POWER_LATCH).
+static void powerOff()
+{
+    Serial.println("=== BUS_ON=0 przez 4 s: zapis stanu i odciecie zasilania ===");
+    CdChanger::persistNow();
+    UnilinkProtocol::persistNow();
+    if (Serial.hasCrashSnapshot()) Serial.dumpCrashLog();
     Serial.flush();
-    delay(50); // daj czas klientowi TCP na odebranie pakietu
-
-    // Normalne wyłączenie — NIE zapisujemy crash logu (to nie crash).
-
-    // Czekaj chwile, zeby logi dotarly przez UART i NVS sie zapisal
-    delay(100);
-
-    // Odcięcie zasilania
-    Serial.println("=== ODCINAM PRĄD. DOBRANOC. ===");
-    Serial.flush();
-
 #if ENABLE_WIFI
-    // UWAGA: Serial.flush() dla WiFiClient upewnia się tylko, że dane weszły
-    // do stosu TCP (LwIP). Musimy dać modułowi radiowemu ESP32 dodatkowy czas
-    // na fizyczne wyemitowanie tych pakietów w eter zanim zgasimy zasilanie.
-    delay(5000);
+    delay(5000);   // pakiety TCP musza fizycznie wyjsc w eter
 #else
-    // Opóźnienie 2s przed fizycznym zgaszeniem zasilania
-    delay(2000);
+    delay(200);
 #endif
-
+    if (UnilinkBus::busOnRaw()) {   // radio wrocilo w miedzyczasie
+        busOffSinceMs = 0;
+        return;
+    }
     digitalWrite(PIN_POWER_LATCH, LOW);
     powerLatchActive = false;
-
-    // W tym miejscu w realnym ukladzie ESP32 zgasnie (odciecie zasilania).
-    // Jesli plytka jest podpieta pod USB z PC lub kondensatory jeszcze trzymaja napiecie,
-    // czekamy pasywnie na calkowity zanik zasilania lub na powrot BUS_ON = HIGH.
-    while (digitalRead(PIN_BUS_ON) == LOW) {
-      delay(50);
+    // Gdy plytka jest dalej zasilana (USB z PC, kondensatory), czekamy na radio.
+    while (!UnilinkBus::busOnRaw()) {
+        delay(20);
     }
-    busOffStartTime = 0;
-  }
+    busOffSinceMs = 0;
 }
 
-void setup() {
-  // --- NATYCHMIASTOWE ZABEZPIECZENIE LINII MAGISTRALI ---
-  // ESP32 po resecie ma piny w stanie plywajacym. Jesli INVERT_DATA=true i pin
-  // DATA chwilowo plynie na HIGH, radio widzi poziom dominujacy na magistrali
-  // (wired-OR), co interpretuje jako blad i robi SYSTEM RESET. Wymuszamy INPUT
-  // ZANIM cokolwiek innego ruszy — to gwarantuje stan recesywny (Hi-Z) od
-  // pierwszej mikrosekundy.
-  pinMode(PIN_DATA, INPUT);
-  pinMode(PIN_CLOCK, INPUT);
-  pinMode(PIN_BUS_ON, INPUT);
+void setup()
+{
+    // Linie magistrali od pierwszej chwili w stanie wysokiej impedancji.
+    pinMode(PIN_DATA, INPUT);
+    pinMode(PIN_CLOCK, INPUT);
+    pinMode(PIN_BUS_ON, INPUT);
 
-  // --- NATYCHMIASTOWE PRZEJECIE ZASILANIA (Suicide Circuit) ---
-  pinMode(PIN_POWER_LATCH, OUTPUT);
-  digitalWrite(PIN_POWER_LATCH, HIGH);
-  powerLatchActive = true;
+    pinMode(PIN_POWER_LATCH, OUTPUT);
+    digitalWrite(PIN_POWER_LATCH, HIGH);
+    powerLatchActive = true;
 
-  Serial.begin(921600); // wyzszy baud: pelne logowanie ramek (DEBUG_FRAMES)
-                        // nie obciaza petli (przy 115200 ~12% czasu = ryzyko
-                        // kolizji). Logger musi uzywac tego samego baudu.
-  Serial.println("--- Sony UniLink EMULATOR (10-CD) v9 + AUDIO ---");
-  Serial.println("Obsluga: MEX-BT3800u + CDX-M670 + PCM5102A DAC + USB");
-  Serial.println("Oczekuje na radio (Stan C0 - Init)...");
+    Serial.begin(921600);
+    Serial.println("--- Sony Unilink: emulator zmieniarki CD + audio z USB ---");
 
-  // --- STABILIZACJA MAGISTRALI ---
-  // Krotkie opoznienie daje czas na ustabilizowanie poziomow na liniach DATA
-  // i CLOCK po wlaczeniu zasilania. Bez tego ISR moze odebrac smieci (szum
-  // przejsciowy przetwornicy lub stan nieustalony driverow magistrali), co
-  // prowadzi do falszywych ramek w buforze RX jeszcze PRZED pierwszym prawdziwym
-  // pingiem radia.
-  delay(50);
+    // Magistrala startuje zanim ruszy cokolwiek wolnego: radio robi discovery
+    // ~1-2 s po wlaczeniu i zmieniarka musi juz wtedy odpowiadac.
+    CdChanger::begin();
+    UnilinkProtocol::begin();
 
-  // --- MAGISTRALA STARTUJE JAKO PIERWSZA ---
-  // Musimy reagowac na 'Ping' radia od pierwszych milisekund.
-  UnilinkBus::begin();
-  UnilinkProtocol::begin();
-  CdChanger::begin();
-
-  // Inicjalizacja LittleFS dla pamieci podrecznej (indeks pendrive'a)
-  if (!LittleFS.begin(true)) {
-    Serial.println("[LittleFS] UWAGA: Błąd inicjalizacji partycji LittleFS!");
-  }
-
-  // --- AUDIO I USB ---
-  // Startuje nieblokujaco w tle.
-  if (audioInit()) {
-    Serial.println("[Audio] Inicjalizacja zlecona (dziala w tle).");
-  } else {
-    Serial.println("[Audio] UWAGA: Inicjalizacja I2S nie powiodła się.");
-  }
-
-  // --- DETEKCJA RESTARTU ESP32 (panic/watchdog) ---
-  // Jesli ESP zresetowalo sie z panic lub WDT, zapisz crash log od razu
-  // (ignoruje grace period — to jest poważny błąd wart zapisania).
-  esp_reset_reason_t resetReason = esp_reset_reason();
-  if (resetReason == ESP_RST_PANIC || resetReason == ESP_RST_INT_WDT ||
-      resetReason == ESP_RST_TASK_WDT || resetReason == ESP_RST_WDT) {
-    Serial.printf("[CrashLog] ESP zrestartowalo sie z powodu: %d — zapisuje crash log!\n", (int)resetReason);
-    // Pendrive moze nie byc jeszcze zamontowany w tym momencie,
-    // ale dumpCrashLog() sam to sprawdza i zaloguje brak USB.
-    Serial.dumpCrashLog("ESP RESTART (panic/WDT)");
-  }
-}
-
-// ===== ODBIOR I PRZETWARZANIE RAMEK =====
-// Master wymaga odpowiedzi w scisle okreslonym oknie (w sniffie kolejne ramki
-// dziela ~6 ms, a odpowiedz slave'a pada w nastepnym slocie). Dlatego:
-//   * tniemy strumien po DLUGOSCI Z CMD1 (UnilinkBus::readFrame), a nie po
-//     ciszy — ramka jest gotowa do obsluzenia w chwili odebrania ostatniego
-//     bajtu, a nie 5 ms pozniej,
-//   * oprozniamy CALY bufor w jednej iteracji, bo w jednym przebiegu petli
-//     potrafi sie zebrac kilka ramek (poll -> grant -> komenda),
-//   * wolamy to KILKA RAZY w petli, przeplatajac z reszta obowiazkow.
-// Poprzednia wersja uzywala readPacketIfIdle(5 ms) i brala tylko jedna porcje
-// na iteracje: krotkie ramki sklejaly sie z bajtem wypelniacza, dlugie byly
-// ciete w polowie, a odpowiedzi spozialy sie na tyle, ze radio resetowalo
-// magistrale.
-static void pumpBus(bool busPowered) {
-  static uint8_t packet[RX_BUFFER_SIZE];
-  for (int guard = 0; guard < 8; ++guard) {
-    if (UnilinkBus::isTransmitting())
-      return;
-    int count = UnilinkBus::readFrame(packet, sizeof(packet));
-    if (count <= 0)
-      return;
-    if (!busPowered)
-      continue; // przy BUS=0 pochlaniamy bez odpowiedzi
-
-    if (DEBUG_FRAMES) {
-      static unsigned long lastRxMs = 0;
-      unsigned long nowRx = millis();
-      Serial.printf("[+%4lums] RX ", lastRxMs ? (nowRx - lastRxMs) : 0);
-      lastRxMs = nowRx;
-      for (int i = 0; i < count; i++) {
-        if (packet[i] < 0x10)
-          Serial.print("0");
-        Serial.print(packet[i], HEX);
-        Serial.print(" ");
-      }
-      Serial.println();
+    if (!LittleFS.begin(true)) {
+        Serial.println("[LittleFS] UWAGA: blad inicjalizacji partycji LittleFS!");
     }
-
-    UnilinkProtocol::handlePacket(packet, count);
-  }
-}
-
-void loop() {
-  // Magistrala ma bezwzgledne pierwszenstwo przed cala reszta obowiazkow.
-  bool busPoweredNow = (digitalRead(PIN_BUS_ON) == HIGH);
-  pumpBus(busPoweredNow);
-
-  // ===== Detekcja zasilania magistrali (BUS_ON) =====
-  // Prawdziwa zmieniarka jest zasilana z magistrali: gdy BUS=0, jest WYLACZONA
-  // i nie odpowiada. CDX-M670 wykorzystuje fazy BUS=0/1 do dyskryminacji
-  // urzadzen wewnetrznych od zewnetrznych — odpowiedz przy BUS=0 = petla RESET.
-  if (busPoweredNow) {
-    // BUS_ON aktywny — upewnij sie, ze pin podtrzymania zasilania jest HIGH
-    if (!powerLatchActive) {
-      digitalWrite(PIN_POWER_LATCH, HIGH);
-      powerLatchActive = true;
-      Serial.println("=== BUS_ON aktywny: Podtrzymanie zasilania aktywne (HIGH) ===");
-    }
-    // Kazde pojawienie sie HIGH natychmiast anuluje odliczanie do wylaczenia zasilania
-    busOffStartTime = 0;
-    busOffSleepDone = false;
-
-    if (!busPoweredLast) {
-      busPoweredLast = true;
-      Serial.println("=== BUS_ON = 1 ===");
-      CdChanger::wake();
-    }
-    // [FAZA 4.1] Reset glitch timer jesli BUS_ON powrocil szybko
-    busOffProtocolDone = false;
-  } else {
-    // BUS_ON nieaktywny (LOW)
-    if (busPoweredLast) {
-      busPoweredLast = false;
-      Serial.println("=== BUS_ON = 0 (czekam na ew. glitch...) ===");
-      busOffEdgeMs = millis();
-    }
-    
-    // [FAZA 4.1] Opoznienie onBusOff() o 100ms
-    if (!busOffProtocolDone && (millis() - busOffEdgeMs > 100)) {
-        busOffProtocolDone = true;
-        Serial.println("=== BUS_ON = 0 (>100ms) - kasuje sesje! ===");
-        UnilinkProtocol::onBusOff();
-        UnilinkBus::resetRx(); // bajty z fazy BUS=0 sa "obce"
-    }
-
-    // Odliczanie do procedury uśpienia audio i samobojczej
-    if (busOffStartTime == 0) {
-      busOffStartTime = millis() ? millis() : 1;
-      Serial.printf("=== BUS_ON = 0: Oczekiwanie %lums na wylaczenie zasilania ===\n",
-                    BUS_OFF_SUICIDE_DELAY_MS);
+    if (audioInit()) {
+        Serial.println("[Audio] Inicjalizacja zlecona (dziala w tle).");
     } else {
-      // Dopiero po 500ms ciaglego braku BUS_ON uznajemy, ze to rzeczywiste wylaczenie radia
-      // (chwilowy spadek ~200ms podczas SYSTEM RESET radia CDX-M670 nie zatrzymuje muzyki!).
-      if (!busOffSleepDone && (millis() - busOffStartTime >= 500)) {
-        busOffSleepDone = true;
-        Serial.println("=== SEN: magistrala wylaczona > 500ms (audio STOP) ===");
-        CdChanger::sleep();
-        // Jezeli podczas trasy wystapil SYSTEM RESET, zrzucamy zamrozona migawke (128 ramek + STAT) na pendrive
-        if (Serial.hasCrashSnapshot()) {
-          Serial.dumpCrashLog();
+        Serial.println("[Audio] UWAGA: inicjalizacja I2S nie powiodla sie.");
+    }
+
+    const esp_reset_reason_t rr = esp_reset_reason();
+    if (rr == ESP_RST_PANIC || rr == ESP_RST_INT_WDT || rr == ESP_RST_TASK_WDT ||
+        rr == ESP_RST_WDT || rr == ESP_RST_BROWNOUT) {
+        Serial.printf("[CrashLog] Restart ESP32: %s\n", resetReasonName(rr));
+        char reason[48];
+        snprintf(reason, sizeof(reason), "ESP RESTART: %s", resetReasonName(rr));
+        // Zrzut na pendrive nastapi po wylaczeniu radia (pendrive nie jest
+        // jeszcze zamontowany).
+        Serial.captureCrashSnapshot(reason);
+    }
+}
+
+void loop()
+{
+    const unsigned long now = millis();
+
+    if (UnilinkBus::busOnRaw()) {
+        busOffSinceMs = 0;
+        if (!powerLatchActive) {
+            digitalWrite(PIN_POWER_LATCH, HIGH);
+            powerLatchActive = true;
         }
-      }
-      if (millis() - busOffStartTime >= BUS_OFF_SUICIDE_DELAY_MS) {
-        Serial.println("=== BUS_ON nieaktywny przez 4s: Wylaczam zasilanie (commitSuicide) ===");
-        commitSuicide();
-        busOffStartTime = 0; // nie powtarzaj procedury jesli plytka jest nadal zasilana (np. z USB)
-      }
+    } else {
+        if (busOffSinceMs == 0) busOffSinceMs = now ? now : 1;
+        const unsigned long off = now - busOffSinceMs;
+        // Radio wylaczone (dluzej niz faza BUS_ON=0 jego discovery) — teraz
+        // zapis na pendrive niczego nie zakloci.
+        if (off >= CRASHLOG_DUMP_AFTER_BUS_OFF_MS && Serial.hasCrashSnapshot()) {
+            Serial.dumpCrashLog();
+        }
+        if (off >= BUS_OFF_SUICIDE_DELAY_MS) {
+            powerOff();
+        }
     }
-  }
 
-  bool busPowered = busPoweredNow;
+    audioLoop();
 
-  pumpBus(busPowered);
+    const bool flashOk = UnilinkProtocol::flashWriteWindow();
+    CdChanger::servicePersist(flashOk);
+    UnilinkProtocol::servicePersist(flashOk);
 
-  // ===== Wykrycie nosnika USB (wznowienie zapamietanej plyty) =====
-  CdChanger::serviceMediaMount();
-
-  // ZNACZNIK CZASU BIERZEMY DOPIERO TERAZ — PO OBSLUDZE MAGISTRALI.
-  // handlePacket() zapisuje wlasne znaczniki przez millis() (lastPingTime w
-  // UnilinkProtocol, initWaitTime/seekStartTime w CdChanger). Gdyby `now`
-  // pochodzilo z POCZATKU petli, byloby STARSZE od tych znacznikow, a roznica
-  // `now - znacznik` na typie bez znaku podwinelaby sie do ~4 mld ms. Kazdy
-  // warunek "minelo juz X ms" spelnialby sie wtedy NATYCHMIAST: timeout radia
-  // kasowal przydzielony adres w 3 ms po jego otrzymaniu (radio pytalo potem
-  // `31 10 01 12`, my milczelismy jako 0x30 i radio szlo w SYSTEM RESET), a
-  // maszyna mechanizmu przeskakiwala stany bez czekania.
-  unsigned long now = millis();
-
-  // ===== Timeout: radio zniknelo =====
-  if (UnilinkProtocol::serviceTimeout(now)) {
-    // Radio przestało z nami gadać
-    // ... (już zalogowane wewnątrz UnilinkProtocol)
-    // Zrzucamy crash log na pendrive (po grace period)
-    if (millis() > CRASHLOG_GRACE_MS) {
-      Serial.dumpCrashLog("RADIO TIMEOUT (5s bez pinga)");
-    }
-    CdChanger::sleep();
-    Serial.println("--- Radio timeout (5s). Reset do C0 + STOP audio ---");
-  }
-
-  // ===== Maszyna stanow + sekundnik =====
-  CdChanger::update(now, UnilinkProtocol::isAllocated());
-
-  // ===== Harmonogram ramki pozycji 0x90 (1Hz w stanie Playing) =====
-  UnilinkProtocol::servicePositionFrame1Hz(now);
-
-  // ===== Harmonogram ramki pelnego statusu 0xC0 (co ~30s w stanie Playing)
-  // =====
-  UnilinkProtocol::serviceFullStatusFrame(now);
-
-  // ===== CD-TEXT wypychany po zmianie utworu/plyty (bez zadania radia) =====
-  UnilinkProtocol::serviceCdText(now);
-
-  // ===== Auto-next po koncu utworu =====
-  CdChanger::serviceAutoAdvance();
-
-  // ===== Auto-powtarzanie przewijania przy przytrzymanym FF/REW =====
-  CdChanger::serviceSeekRepeat(now);
-
-  // ===== Slave Break (OE: wakeup Request Polling na tik ~1 Hz) =====
-  UnilinkProtocol::serviceSlaveBreak(busPowered);
-
-  pumpBus(busPowered);
-
-  // ===== Dekodowanie audio (hot-plug + wykrywanie konca utworu) =====
-  audioLoop();
-
-  pumpBus(busPowered);
-
-  // ===== Odroczony zapis NVS — tylko gdy magistrala bezczynna =====
-  CdChanger::servicePersist(UnilinkBus::microsSinceLastClock());
-  UnilinkProtocol::servicePersist();
-
-  // ===== Lekka diagnostyka (1 linia / 2s): czy radio nas pollu­je o ekran
-  // =====
-  UnilinkProtocol::serviceStats(now);
-
-  // ===== Obsługa połączeń WiFi i klienta logów TCP =====
-  WiFiLogger.loop();
+    WiFiLogger.loop();
+    delay(2);
 }

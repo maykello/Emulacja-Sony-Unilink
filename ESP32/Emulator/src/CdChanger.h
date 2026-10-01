@@ -49,22 +49,27 @@ void enqueueModeIcons();
 // Inicjalizacja: NVS (wczytanie ostatniego utworu). Wywolac w setup().
 void begin();
 
-// Maszyna stanow + sekundnik. Wywolywac w kazdej iteracji loop().
-// `radioEngaged` = radio przydzielilo nam adres (potrzebne do przejscia
-// INIT -> IDLE, ktore modeluje rozgrzanie mechanizmu po nawiazaniu sesji).
-void update(unsigned long now, bool radioEngaged);
+// WATKI: cala logika zmieniarki (update, komendy, service*) dziala w zadaniu
+// protokolu Unilink. Petla glowna wola wylacznie servicePersist/persistNow.
 
-// Bezpieczny, odroczony zapis NVS. Wywolywac w loop() z czasem ciszy magistrali
-// (mikrosekundy od ostatniego zbocza zegara). Zapis wykona sie tylko gdy
-// magistrala jest bezczynna, by nie blokowac odpowiedzi na radio.
-void servicePersist(unsigned long microsSinceLastClock);
+// Maszyna stanow + sekundnik. `radioEngaged` = radio przydzielilo nam adres
+// (potrzebne do przejscia INIT -> IDLE), `selected` = radio ma nas jako zrodlo
+// (tylko wtedy pokazujemy bledy nosnika jako "utwor" 99:xx).
+void update(unsigned long now, bool radioEngaged, bool selected);
+
+// Odroczony zapis ostatniej plyty/utworu/pozycji do NVS. Wolac z petli glownej;
+// zapis nastepuje tylko gdy `flashWriteAllowed` (patrz
+// UnilinkProtocol::flashWriteWindow), bo operacja flash zatrzymuje zadania.
+void servicePersist(bool flashWriteAllowed);
+// Natychmiastowy zapis (przed odcieciem zasilania, gdy radio jest wylaczone).
+void persistNow();
 
 // Obsluga zdarzen z modulu audio (auto-next po koncu utworu) oraz wykrycia
-// nosnika USB (wznowienie zapamietanej plyty). Wywolywac w kazdej iteracji.
+// nosnika USB (wznowienie zapamietanej plyty).
 void serviceAutoAdvance();
 void serviceMediaMount();
 
-// Skanowanie przewijaniem (FF/REW). Wywolywac w kazdej iteracji loop().
+// Skanowanie przewijaniem (FF/REW).
 // Przesuwa pozycje plynnie (z przyspieszeniem wg czasu trzymania klawisza) i
 // co SEEK_AUDIO_MS dociaga dekoder MP3, dajac slyszalne cue.
 void serviceSeekRepeat(unsigned long now);
@@ -109,7 +114,9 @@ void noteFirstPing();       // pierwszy PING w stanie INIT startuje licznik 0xC0
 // Maszyna stanow mechanizmu opuszcza stan przejsciowy dopiero, gdy radio zdazylo
 // go zobaczyc — inaczej wirtualny mechanizm przeskakiwalby etapy niezauwazenie.
 void notePolled();
-void sleep();               // BUS=0 / timeout: zatrzymaj audio + zapisz NVS
+// Zatrzymanie przez radio (wylaczenie, zmiana zrodla, BUS_ON=0): stop audio,
+// zapamietanie pozycji do wznowienia; zapis NVS wykona petla glowna.
+void sleep();
 void wake();                // BUS=1: przywroc docelowa glosnosc
 
 // --- DOSTEP DO STANU (dla protokolu) ---
@@ -150,11 +157,6 @@ struct NextTrackResult {
 // Zwraca NextTrackResult z nowa pozycja. Uzywane przez serviceAutoAdvance (zadanie 11.6).
 NextTrackResult modelNextTrack(PlayModes modes, uint8_t disc, uint8_t track,
                                uint8_t maxDisc, uint8_t maxTrack);
-
-// Ustawianie licznika czasu - dla harmonogramu 1Hz w protokole.
-// Wywolywane przez UnilinkProtocol::servicePositionFrame1Hz.
-void setSeconds(uint8_t sec);
-void setMinutes(uint8_t min);
 
 } // namespace CdChanger
 
