@@ -62,7 +62,7 @@ constexpr uint8_t ADDR_BROADCAST = 0x18;
 constexpr uint8_t ADDR_MASTER    = 0x10;
 constexpr uint8_t ADDR_DISPLAY   = 0x14;   // procesor ekranu radia (tez pinguje 01 12)
 
-constexpr unsigned long BUS_ON_DEBOUNCE_MS     = 3;
+constexpr unsigned long BUS_ON_DEBOUNCE_MS     = 12;
 // CDX-M670 robi discovery wewnetrznych urzadzen przy BUS_ON=0 przez ~220 ms.
 // Dluzszy zanik = radio wylaczone: stop muzyki (adres zostaje).
 constexpr unsigned long BUS_OFF_AUDIO_STOP_MS  = 500;
@@ -95,8 +95,8 @@ constexpr uint8_t MAX_DISC           = 14;
 constexpr const char* INDEX_FILE_PATH = "/unilink_index.dat";
 
 constexpr unsigned long INIT_DURATION_MS = 800;  // 0xC0 -> 0x80 po pierwszym pingu
-constexpr unsigned long LOAD_DURATION_MS = 50;   // 0x40 -> 0x20
-constexpr unsigned long SEEK_DURATION_MS = 50;   // 0x20 -> 0x00
+constexpr unsigned long LOAD_DURATION_MS = 80;   // 0x40 -> 0x20
+constexpr unsigned long SEEK_DURATION_MS = 250;  // 0x20 -> 0x00; radio musi zobaczyc --:--
 
 // --- PRZEWIJANIE FF/REW ---
 // CDX-M670 wysyla 0x24/0x25 przy WCISNIECIU klawisza, a 18 10 08 00 przy
@@ -117,7 +117,9 @@ constexpr unsigned long OBD_UPDATE_INTERVAL_MS = 1000;   // tryb OBD (Repeat One
 
 // --- CRASH LOG (pendrive) ---
 constexpr unsigned long CRASHLOG_GRACE_MS              = 60000;  // nie zapisuj startu radia
+constexpr unsigned long CRASHLOG_BUS_ON_GRACE_MS       = 3000;   // 01 00 po BUS_ON = discovery
 constexpr unsigned long CRASHLOG_DUMP_AFTER_BUS_OFF_MS = 600;
+constexpr unsigned long USB_ERROR_GRACE_MS             = 8000;   // zanim "NO PENDRIVE"
 constexpr int           CRASHLOG_MAX_FILES             = 10;
 
 constexpr const char* PREFS_NAMESPACE = "unilink";

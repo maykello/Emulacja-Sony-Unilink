@@ -59,6 +59,7 @@ void audioSetInfoSquelch(bool squelch);
 
 uint8_t audioGetTrackCount(uint8_t disc);
 uint16_t audioGetTotalTrackCount();
+bool audioIndexReady();
 
 // --- INTERFEJS NAZW (źródło dla CD-TEXT) ---
 // Zwraca nazwę utworu (źródło: nazwa pliku) dla danego dysku/utworu.

@@ -113,9 +113,10 @@ static void loadLast() {
 // Wejscie w faze ladowania/szukania + start odtwarzania pliku
 // ============================================================
 // `discChanged` = wjezdzamy na INNA plyte (stan LoadingTrack 0x40 -> ChangedCd 0x20 -> Playing 0x00).
-// Przy zmianie samego utworu wchodzimy w ChangedCd (0x20) na krotka chwile (SEEK_DURATION_MS),
-// co powoduje wyslanie ramki 77 31 C0 20 (czas FF:FF) oraz natychmiastowe wyslanie tytulu nowego utworu,
-// dokladnie wedlug wzorca z fabrycznej zmieniarki Sony CDX-805.
+// Przy zmianie samego utworu wchodzimy w ChangedCd (0x20) na SEEK_DURATION_MS:
+// radio dostaje 77 31 C0 20 z czasem FF:FF ("--:--"), potem C0 00 z licznikiem.
+// CD-TEXT idzie DOPIERO po pokazaniu Playing — C0 00 przeladowuje ekran i
+// zmazaloby nazwe wyslana w trakcie --:--.
 static bool loadDiscChanged = false;
 
 static void enterSeek(bool discChanged = false) {
@@ -170,7 +171,8 @@ void update(unsigned long now, bool radioEngaged, bool selected) {
     // Jeśli wystąpił błąd (np. brak pendrive'a) i radio ma nas jako zrodlo,
     // wchodzimy w tryb Playing z licznikiem 99:01..99:10, aby nadawać CD-TEXT błędu
     // dokładnie tak jak zwykłą piosenkę.
-    if (radioEngaged && selected && Diagnostics::hasError()) {
+    if (radioEngaged && selected && Diagnostics::hasError() &&
+        millis() >= USB_ERROR_GRACE_MS) {
         if (cdState == MechState::Init || cdState == MechState::Idle) {
             enterPlaying(now);
             Serial.println(">>> CdChanger: wejscie w Playing (Error Mode 99:01..99:10)");
@@ -351,6 +353,7 @@ void handlePlayCommand() {
 }
 
 void nextTrack() {
+    stopSeekScan();
     uint8_t maxTr = audioGetTrackCount(currentDisk);
     if (maxTr == 0) maxTr = MAX_TRACK_PER_DISC;  // fallback bez nosnika
     if (currentTrack < maxTr) {
@@ -363,6 +366,7 @@ void nextTrack() {
 }
 
 void prevTrack() {
+    stopSeekScan();
     // Uzywamy NASZEGO licznika czasu (nie pozycji dekodera, ktora jest
     // niewiarygodna w trakcie zmiany utworu). Dzieki temu zachowanie jest
     // deterministyczne: w srodku utworu track- restartuje biezacy utwor, a
@@ -385,6 +389,7 @@ void prevTrack() {
 }
 
 void nextDisc() {
+    stopSeekScan();
     uint8_t nextNonEmpty = audioFindNextNonEmptyDisc(currentDisk);
     if (nextNonEmpty != 0) {
         currentDisk = nextNonEmpty;
@@ -398,6 +403,7 @@ void nextDisc() {
 }
 
 void prevDisc() {
+    stopSeekScan();
     uint8_t prevNonEmpty = audioFindPrevNonEmptyDisc(currentDisk);
     if (prevNonEmpty != 0) {
         currentDisk = prevNonEmpty;
@@ -538,6 +544,7 @@ void stopSeekScan() {
 
 // --- BEZPOŚREDNI WYBÓR PŁYTY/UTWORU (0xB0) ---
 void selectDiscTrack(uint8_t disc, uint8_t track) {
+    stopSeekScan();
     const bool discChanged = (disc != currentDisk);
     currentDisk  = disc;
     currentTrack = track;

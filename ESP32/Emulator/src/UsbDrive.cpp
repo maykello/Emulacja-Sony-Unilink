@@ -81,6 +81,9 @@ static volatile bool filesystemMounted = false;
 static volatile int  newDevAddr        = -1;  // adres nowego urządzenia (z callbacka)
 static volatile bool devGonePending    = false;
 static bool          s_usbHostRunning  = false;
+static int           s_mountRetryAddr  = -1;
+static uint8_t       s_mountAttempts   = 0;
+static unsigned long s_mountRetryAtMs  = 0;
 
 static FATFS *fatFs = NULL;
 static const char fatDrv[] = "1:";
@@ -840,6 +843,8 @@ bool usbDriveInit() {
 static void handleHotplugEvents() {
     if (devGonePending) {
         devGonePending = false;
+        s_mountRetryAddr = -1;
+        s_mountAttempts  = 0;
         cleanupMscDevice();
     }
     if (newDevAddr >= 0 && !filesystemMounted) {
@@ -848,7 +853,36 @@ static void handleHotplugEvents() {
         if (devHdl != NULL || fatFs != NULL) {
             cleanupMscDevice();
         }
-        configureMscDevice(addr);
+        if (configureMscDevice((uint8_t)addr)) {
+            s_mountRetryAddr = -1;
+            s_mountAttempts  = 0;
+        } else {
+            s_mountAttempts = (s_mountAttempts < 5) ? (uint8_t)(s_mountAttempts + 1) : 5;
+            s_mountRetryAddr = addr;
+            s_mountRetryAtMs = millis() + (500UL * s_mountAttempts);
+            Serial.printf("[%s] Montowanie nieudane, retry %u za %lums\n",
+                          TAG, s_mountAttempts, (unsigned long)(500UL * s_mountAttempts));
+        }
+        return;
+    }
+    if (s_mountRetryAddr >= 0 && !filesystemMounted && !devGonePending &&
+        (long)(millis() - s_mountRetryAtMs) >= 0) {
+        int addr = s_mountRetryAddr;
+        if (s_mountAttempts >= 5) {
+            s_mountRetryAddr = -1;
+            Serial.printf("[%s] Montowanie: koniec retry (addr=%d)\n", TAG, addr);
+            return;
+        }
+        if (devHdl != NULL || fatFs != NULL) {
+            cleanupMscDevice();
+        }
+        if (configureMscDevice((uint8_t)addr)) {
+            s_mountRetryAddr = -1;
+            s_mountAttempts  = 0;
+        } else {
+            s_mountAttempts = (s_mountAttempts < 5) ? (uint8_t)(s_mountAttempts + 1) : 5;
+            s_mountRetryAtMs = millis() + (500UL * s_mountAttempts);
+        }
     }
 }
 

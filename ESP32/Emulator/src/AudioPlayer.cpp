@@ -158,16 +158,10 @@ static void performDeepScan() {
 
     fs::FS &fs = usbDriveGetFS();
 
-    s_indexReady = false;
-    for (int d = 1; d <= MAX_DISCS; d++) {
-        trackCount[d]  = 0;
-        discDirName[d] = "";
-        discLabel[d]   = "";
-        // Wyczyść stare wpisy
-        for (int t = 0; t < MAX_TRACKS_STORED; t++) {
-            trackFiles[d][t] = "";
-        }
-    }
+    // Nie zerujemy s_indexReady ani starych trackCount na starcie skanu:
+    // radio w tym oknie widzialoby pusty magazynek i "NO PENDRIVE".
+    String foundDir[MAX_DISCS + 1];
+    String foundLabel[MAX_DISCS + 1];
 
     // --- Krok 1: przypisz katalogi z nośnika do slotów płyt ---
     // Katalogu nie da się już otworzyć "po numerze", bo nazwa może mieć dowolny
@@ -181,9 +175,9 @@ static void performDeepScan() {
                 String label;
                 const uint8_t d = parseDiscDir(name, label);
                 // Przy dwóch folderach na ten sam numer wygrywa pierwszy.
-                if (d != 0 && discDirName[d].length() == 0) {
-                    discDirName[d] = name;
-                    discLabel[d]   = label;
+                if (d != 0 && foundDir[d].length() == 0) {
+                    foundDir[d]   = name;
+                    foundLabel[d] = label;
                 }
             }
             entry.close();
@@ -193,13 +187,22 @@ static void performDeepScan() {
 
     // --- Krok 2: zbierz pliki audio z każdego znalezionego katalogu ---
     for (int d = 1; d <= MAX_DISCS; d++) {
-        if (discDirName[d].length() == 0) continue;
+        if (foundDir[d].length() == 0) {
+            trackCount[d]  = 0;
+            discDirName[d] = "";
+            discLabel[d]   = "";
+            for (int t = 0; t < MAX_TRACKS_STORED; t++) trackFiles[d][t] = "";
+            continue;
+        }
 
+        discDirName[d] = foundDir[d];
+        discLabel[d]   = foundLabel[d];
         const String dirPath = String("/") + discDirName[d];
 
         File dir = fs.open(dirPath.c_str());
         if (!dir || !dir.isDirectory()) {
             if (dir) dir.close();
+            trackCount[d] = 0;
             continue;
         }
         
@@ -224,11 +227,15 @@ static void performDeepScan() {
         }
         dir.close();
         
-        if (count == 0) continue;
-        
+        if (count == 0) {
+            trackCount[d] = 0;
+            continue;
+        }
+
         // Sortuj alfabetycznie — kolejność plików = numery tracków
         sortStrings(trackFiles[d], count);
         trackCount[d] = count;
+        s_indexReady = true;
         
         Serial.printf("[Audio] CD%02d [%s] nazwa=\"%s\": %d track(ów)\n",
                       d, discDirName[d].c_str(), discLabel[d].c_str(), count);
@@ -742,6 +749,10 @@ uint8_t audioGetTrackCount(uint8_t disc) {
     return trackCount[disc];
 }
 
+bool audioIndexReady() {
+    return s_indexReady;
+}
+
 uint16_t audioGetTotalTrackCount() {
     if (!s_indexReady) return 0;
     uint16_t total = 0;
@@ -888,12 +899,16 @@ void audioLoop() {
         if (!usbDriveHostIsRunning()) {
             Diagnostics::setError(Diagnostics::SystemError::UsbHostErr);
         } else if (!isMounted) {
-            if (!usbDriveIsConnected()) {
-                Diagnostics::setError(Diagnostics::SystemError::NoUsb);
-            } else {
+            // Boot i montowanie FAT trwaja sekundy. "NO PENDRIVE" w tym oknie
+            // klamie — pendrive jest, tylko jeszcze nie gotowy.
+            if (millis() < USB_ERROR_GRACE_MS) {
+                // czekamy
+            } else if (usbDriveIsConnected()) {
                 Diagnostics::setError(Diagnostics::SystemError::UsbFsErr);
+            } else {
+                Diagnostics::setError(Diagnostics::SystemError::NoUsb);
             }
-        } else if (audioGetTotalTrackCount() == 0) {
+        } else if (s_indexReady && audioGetTotalTrackCount() == 0) {
             Diagnostics::setError(Diagnostics::SystemError::NoTracks);
         }
     }

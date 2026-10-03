@@ -12,6 +12,7 @@
 #include "Config.h"
 #include "Diagnostics.h"
 #include "CdChanger.h"
+#include "UsbDrive.h"
 
 namespace Magazine {
 
@@ -41,7 +42,9 @@ uint16_t presenceMap() {
         counts[i] = audioGetTrackCount(static_cast<uint8_t>(i + 1));
     }
     uint16_t map = presenceMapFrom(counts, MAX_DISC);
-    if (map == 0 && Diagnostics::hasError()) {
+    // Pendrive podlaczony / skan w toku: nie raportuj pustego magazynka.
+    if (map == 0 && (Diagnostics::hasError() || usbDriveIsConnected() ||
+                     usbDriveIsMounted() || !audioIndexReady())) {
         uint8_t d = CdChanger::disk();
         if (d < 1 || d > MAX_DISC) d = 1;
         map = (1u << (d - 1)) | 0x0001;

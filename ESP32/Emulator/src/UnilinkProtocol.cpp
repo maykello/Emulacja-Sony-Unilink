@@ -73,6 +73,7 @@ volatile bool s_busActive     = false;
 bool          s_busRawLast    = false;
 unsigned long s_busEdgeMs     = 0;
 unsigned long s_busOffSinceMs = 0;
+unsigned long s_busOnSinceMs  = 0;
 bool          s_busOffStopped = false;
 
 // Aktywnosc radia
@@ -252,9 +253,9 @@ int buildDisplayFrame(uint8_t* f, DisplayKey& key)
         return 11;
     }
     // Pelny 0xC0 przy zmianie plyty/utworu/stanu i w stanach przejsciowych.
-    // W zwyklym odtwarzaniu tylko 0x90 — 0xC0 przeladowuje ekran radia i
-    // przerywa przewijany napis CD-TEXT.
-    if (screenChanged(key) || ms == MechState::Seeking ||
+    // FF/REW: tylko 0x90 (czas plynie, ekran sie nie przeladowuje).
+    // 0xC0 w Playing przeladowuje ekran i zmazuje CD-TEXT.
+    if (screenChanged(key) ||
         ms == MechState::LoadingTrack || ms == MechState::ChangedCd) {
         buildStatusC0(f);
         key = keyFromC0(f);
@@ -512,15 +513,20 @@ void serviceCdText(unsigned long now)
     if (!s_appointed) return;
     const MechState ms = CdChanger::mechState();
     if (ms == MechState::Init || ms == MechState::Idle) return;
-    // W trakcie FF/REW radio pokazuje szybko plynacy czas — bez nazw.
+    // FF/REW: tylko plynacy czas. Ten sam utwor — nie wysylamy nazw od nowa.
     if (ms == MechState::Seeking) {
         s_wasSeeking = true;
         return;
     }
     if (s_wasSeeking) {
         s_wasSeeking = false;
-        resetCdTextCache();
     }
+
+    // C0 20 / C0 00 przeladowuje ekran. Nazwy przed Playing znikaja w tej samej
+    // chwili, w ktorej licznik rusza. Czekamy az radio dostanie Playing z czasem.
+    if (ms != MechState::Playing) return;
+    if (!s_shown.valid || s_shown.status != 0x00 || s_shown.seconds == 0xFF) return;
+    if (s_shown.disc != CdChanger::disk() || s_shown.track != CdChanger::track()) return;
 
     const uint8_t disc   = CdChanger::disk();
     const uint8_t track  = CdChanger::track();
@@ -537,10 +543,7 @@ void serviceCdText(unsigned long now)
     if (!changed && !obdRefresh) return;
 
     if (changed) {
-        // Nowe nazwy: najpierw pelny status (sniff OE: C0 -> D2 -> D2 -> DA).
         s_textFlagState = 1;
-        s_txQueue.dropPriority(Tx::PRIO_STATUS);
-        enqueueStatusC0();
         if (!enqueueTrackTextBlock(false, true)) return;
     } else {
         if (!enqueueTrackTextOnly()) return;
@@ -659,7 +662,8 @@ void adoptAddress(uint8_t addr, uint8_t appointCmd2, unsigned long now, const ch
 void onBusReset(unsigned long now)
 {
     const bool wasAppointed = s_appointed;
-    const bool expected     = (now - s_magicSentMs) < 2000;
+    const bool expected     = (now - s_magicSentMs) < 2000 ||
+                              (s_busOnSinceMs != 0 && (now - s_busOnSinceMs) < CRASHLOG_BUS_ON_GRACE_MS);
     s_appointed        = false;
     s_myAddr           = ADDR_GROUP_CD;
     s_nvsAddr          = 0;
@@ -963,6 +967,14 @@ void loadNextSlot(unsigned long now)
 {
     Tx::TxItem item;
     if (s_txQueue.dequeue(item)) {
+        if (item.len == 16 && item.bytes[2] == 0xC0) {
+            const DisplayKey qk = keyFromC0(item.bytes);
+            const DisplayKey nk = keyNow();
+            if (qk.disc != nk.disc || qk.track != nk.track || qk.status != nk.status) {
+                loadNextSlot(now);
+                return;
+            }
+        }
         s_slotClaimBase = UnilinkBus::claimsSent();
         UnilinkBus::loadGrant(item.bytes, item.len, s_claimMask);
         s_slotKind = SlotKind::Queued;
@@ -982,6 +994,7 @@ bool displaySlotStale()
 {
     const DisplayKey k = keyNow();
     if (k.disc != s_slotKey.disc || k.track != s_slotKey.track || k.status != s_slotKey.status) return true;
+    if (s_slotKey.seconds == 0xFF && k.seconds != 0xFF) return true;
     if (s_slotKey.seconds == 0xFF) return false;
     return k.minutes != s_slotKey.minutes || k.seconds != s_slotKey.seconds;
 }
@@ -1058,7 +1071,13 @@ void scheduleTx(unsigned long now)
     if (!claimInFlight) {
         if (s_slotKind == SlotKind::None ||
             (s_slotKind == SlotKind::Display && !s_txQueue.isEmpty())) {
-            loadNextSlot(now);
+            // Czas ma pierwszenstwo przed CD-TEXT: inaczej --:-- zostaje na
+            // czas bloku nazw, a radio nigdy nie dostaje 0x90.
+            const bool timeDue = needDisplayFrame(now) &&
+                                 CdChanger::mechState() == MechState::Playing &&
+                                 s_txQueue.countPriority(Tx::PRIO_STATUS) == 0;
+            if (timeDue && !s_txQueue.isEmpty()) loadDisplaySlot(now);
+            else loadNextSlot(now);
         } else if (s_slotKind == SlotKind::Display) {
             if (CdChanger::mechState() == MechState::Init) {
                 UnilinkBus::clearGrant();
@@ -1085,6 +1104,7 @@ void updateBusOn(unsigned long now)
         s_busActive = raw;
         if (raw) {
             s_busOffSinceMs = 0;
+            s_busOnSinceMs  = now;
             s_busOffStopped = false;
             s_lastFrameMs   = now;
             s_lastOwnPingMs = now;
@@ -1198,9 +1218,9 @@ void busTask(void*)
 
         CdChanger::serviceMediaMount();
         CdChanger::update(now, s_appointed, s_selected);
-        serviceCdText(now);
         CdChanger::serviceAutoAdvance();
         CdChanger::serviceSeekRepeat(now);
+        serviceCdText(now);
 
         updateFastPath();
         scheduleTx(millis());
