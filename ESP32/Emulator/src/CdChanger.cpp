@@ -190,9 +190,8 @@ void update(unsigned long now, bool radioEngaged, bool selected) {
                 Serial.println(">>> C0 -> 80 (Idle)");
             }
         } else if (cdState == MechState::Idle && radioEngaged && selected &&
-                   !alreadyAsleep && audioIndexReady() && initWaitTime != 0 &&
-                   (now - initWaitTime > INIT_DURATION_MS)) {
-            Serial.println(">>> Idle + selected=true -> auto-start odtwarzania!");
+                   !alreadyAsleep && audioIndexReady()) {
+            Serial.println(">>> Idle + selected=true + audioIndexReady -> auto-start odtwarzania!");
             enterSeek(false);
         }
     }
@@ -501,6 +500,7 @@ static void endSeekScan() {
     needDisplayUpdate = true;
     syncAudioToDisplayClock();
     audioSetInfoSquelch(false);
+    audioSetSeekMute(false);
 }
 
 void seek(int deltaSec) {
@@ -518,6 +518,7 @@ void seek(int deltaSec) {
     if (cdState != MechState::Seeking) {
         enterState(MechState::Seeking);
         audioSetInfoSquelch(true);
+        audioSetSeekMute(true);
     }
 
     // Natychmiast przesun licznik o pierwsza sekunde, aby ekran zareagowal bez zwloki
@@ -571,10 +572,8 @@ void serviceSeekRepeat(unsigned long now) {
     }
     setPlayPosition((uint32_t)target);
 
-    // Slyszalne cue co SEEK_AUDIO_MS
-    if (now - lastAudioSeek >= SEEK_AUDIO_MS) {
-        syncAudioToDisplayClock();
-    }
+    // Audio pozostaje wyciszone podczas trzymania klawisza (brak szarpania i trzaskow).
+    // Pojedynczy, czysty skok nastapi w endSeekScan() po puszczeniu klawisza.
 }
 
 void stopSeekScan() {
@@ -644,7 +643,7 @@ void toggleIntro() {
 }
 
 void noteFirstPing() {
-    if (cdState == MechState::Init && initWaitTime == 0) {
+    if (initWaitTime == 0) {
         initWaitTime = millis();
     }
 }

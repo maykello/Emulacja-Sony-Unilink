@@ -48,13 +48,14 @@ constexpr unsigned long BREAK_RETRY_BUSY_MS   = 5;     // magistrala zajeta ramk
 constexpr unsigned long BREAK_RETRY_NOWAVE_MS = 30;    // brak fali bezczynnosci
 constexpr unsigned long BREAK_RETRY_FAIL_MS   = 150;   // Break bez 01 15 (dalej x2)
 constexpr unsigned long BREAK_BACKOFF_MAX_MS  = 2000;
+constexpr unsigned long BREAK_MASTER_POLL_TIMEOUT_MS = 2500;  // Nie uzywaj Slave Break gdy master pinguje 01 15
 constexpr unsigned long CLAIM_GRANT_WAIT_MS   = 60;    // zgloszenie 82 xx -> grant 01 13
 
 // --- RAMKI EKRANU ---
 // Czas: 0x90 przy kazdej zmianie sekundy (jak oryginal). Minimalny odstep
 // pochlania tylko jitter; przy FF/REW czas zmienia sie szybciej niz 1 Hz.
 constexpr unsigned long TIME_TICK_MIN_MS = 250;
-constexpr unsigned long SEEK_TICK_MIN_MS = 100;
+constexpr unsigned long SEEK_TICK_MIN_MS = 250;
 
 // --- SESJA Z RADIEM ---
 constexpr uint8_t ADDR_GROUP_CD  = 0x30;   // grupa zmieniarek CD (adres przed przydzialem)
@@ -102,11 +103,11 @@ constexpr unsigned long SEEK_DURATION_MS = 250;  // 0x20 -> 0x00; radio musi zob
 // CDX-M670 wysyla 0x24/0x25 przy WCISNIECIU klawisza, a 18 10 08 00 przy
 // puszczeniu. Pozycja plynie z przyspieszeniem zaleznym od czasu trzymania.
 constexpr int           SEEK_STEP_SEC    = 1;      // kierunek (znak) dla CdChanger::seek
-constexpr unsigned long SCAN_PHASE1_MS   = 1500;
-constexpr unsigned long SCAN_PHASE2_MS   = 3000;
-constexpr uint32_t      SCAN_RATE1       = 4;      // x4 materialu na sekunde
-constexpr uint32_t      SCAN_RATE2       = 12;
-constexpr uint32_t      SCAN_RATE3       = 30;
+constexpr unsigned long SCAN_PHASE1_MS   = 2000;
+constexpr unsigned long SCAN_PHASE2_MS   = 5000;
+constexpr uint32_t      SCAN_RATE1       = 3;      // x3 na poczatku
+constexpr uint32_t      SCAN_RATE2       = 8;      // x8 po 2s
+constexpr uint32_t      SCAN_RATE3       = 16;     // x16 po 5s
 constexpr unsigned long SEEK_AUDIO_MS    = 1200;   // co ile skok dekodera (slyszalne cue)
 constexpr unsigned long SEEK_SCAN_MAX_MS = 30000;  // gdyby 08 00 nie doszlo
 

@@ -61,7 +61,7 @@ unsigned long s_appointMs        = 0;
 unsigned long s_anyoneAnsweredMs = 0;
 unsigned long s_magicSentMs      = 0;
 uint8_t       s_magicStreak      = 0;
-bool          s_selected         = true;    // radio wybralo nas jako zrodlo
+bool          s_selected         = false;   // radio wybralo nas jako zrodlo (startujemy false, czekamy na F0 31, 87 ON lub komende)
 bool          s_displayYielded   = false;   // inne urzadzenie (np. Tuner TA/ekran) przejelo 0x70
 
 volatile bool s_persistAddrPending = false;
@@ -110,6 +110,8 @@ uint32_t      s_claimsSeen   = 0;
 unsigned long s_lastClaimMs  = 0;
 unsigned long s_lastTimeFrameMs = 0;
 bool          s_justEndedSeek   = false;
+
+unsigned long s_lastPoll15Ms      = 0;
 
 // Slave Break
 unsigned long s_nextBreakMs       = 0;
@@ -285,8 +287,8 @@ bool needDisplayFrame(unsigned long now)
     const MechState ms = CdChanger::mechState();
     if (ms == MechState::Init) return false;
     if (ms == MechState::Idle) {
-        // Jednorazowa ramka 0x8E przy wejsciu w Idle (np. koniec plyty przy Repeat Off)
-        return s_shown.valid && s_shown.status != 0x80;
+        // Jednorazowa ramka 0x8E przy wejsciu w Idle (lub na starcie, aby ekran nie byl pusty)
+        return !s_shown.valid || s_shown.status != 0x80;
     }
     const DisplayKey k = keyNow();
     if (!CdChanger::isSeeking() && screenChanged(k)) return true;
@@ -882,6 +884,7 @@ void handleFrame(const Frame& f, unsigned long now)
     // --- Request polling 18 10 01 15 (zglasza nas przerwanie) ---
     if (rad == ADDR_BROADCAST && fromMaster && c1 == 0x01 && c2 == 0x15) {
         s_stat.poll15++;
+        s_lastPoll15Ms      = now;
         s_breakAwaitingPoll = false;
         s_breakFailStreak   = 0;
         s_noWaveStreak      = 0;
@@ -892,6 +895,11 @@ void handleFrame(const Frame& f, unsigned long now)
 
     // --- Grant 3X 10 01 13 (ramke wysyla przerwanie) ---
     if (s_appointed && rad == s_myAddr && fromMaster && c1 == 0x01 && c2 == 0x13) {
+        if (!s_selected) {
+            s_selected       = true;
+            s_displayYielded = false;
+            s_shown.valid    = false;
+        }
         if (!f.replyLen) {
             uint8_t fr[16];
             DisplayKey key;
@@ -909,6 +917,13 @@ void handleFrame(const Frame& f, unsigned long now)
 
     // --- ANYONE? 18 10 01 02 ---
     if (rad == ADDR_BROADCAST && fromMaster && c1 == 0x01 && c2 == 0x02) {
+        // Jezeli master rozpoczyna re-enumeracje magistrali (>2 s od ostatniego appoint),
+        // resetujemy sesje i bierzemy udzial w discovery.
+        if (s_appointed && (now - s_appointMs) > 2000) {
+            s_nvsAddr   = s_myAddr;
+            s_appointed = false;
+            s_selected  = false;
+        }
         if (s_appointed) return;
         uint8_t info[11];
         buildDeviceInfo(ADDR_GROUP_CD, info);
@@ -996,8 +1011,9 @@ void handleFrame(const Frame& f, unsigned long now)
             CdChanger::stopSeekScan();   // puszczenie klawisza FF/REW
         } else if (c1 == 0x87 && (tad == ADDR_MASTER || tad == 0x11)) {
             if ((c2 & 0x01) == 0) {
-                s_selected = false;
-                stopByRadio("87 audio off");
+                // Ramka 87 z bitem 0=0 to soft-mute/wyciszenie audio w przedwzmacniaczu radia (np. przy starcie radia 87 2A).
+                // Zgodnie ze specyfikacja Sony i logami OE zmieniarka nie zatrzymuje wtedy mechanizmu i nie zeruje s_selected!
+                Serial.printf(">> [Audio Bus] Radio sygnalizuje audio MUTE (87 %02X)\n", c2);
             } else {
                 const bool wasSelected = s_selected;
                 s_selected       = true;
@@ -1147,6 +1163,13 @@ void maybeBreak(unsigned long now)
         s_breakAwaitingPoll = false;
         return;
     }
+    // Master cyklicznie rozglasza 18 10 01 15 (tak jak w oryginalnym radiu OE).
+    // Gdy master aktywnie odpytuje 01 15, NIE wolno zwierac linii DATA do masy przez Slave Break,
+    // bo niszczy to ramki na magistrali i powoduje wywalenie radia (18 10 01 00 Reset).
+    if (s_lastPoll15Ms != 0 && (now - s_lastPoll15Ms) < BREAK_MASTER_POLL_TIMEOUT_MS) {
+        s_breakAwaitingPoll = false;
+        return;
+    }
     if (s_breakAwaitingPoll) {
         if (now - s_breakDoneMs < BREAK_POLL_WAIT_MS) return;
         s_breakAwaitingPoll = false;
@@ -1258,6 +1281,7 @@ void updateBusOn(unsigned long now)
             s_busOnSinceMs   = now;
             s_busOffStopped  = false;
             s_displayYielded = false;
+            s_selected       = false; // Czekamy na F0 31, 87 ON lub komende do 0x31 (radio moze wlaczyc sie na FM Tuner)
             s_lastFrameMs    = now;
             s_lastOwnPingMs  = now;
             CdChanger::wake();
@@ -1265,6 +1289,10 @@ void updateBusOn(unsigned long now)
         } else {
             s_busOffSinceMs = now;
             s_selected      = false;
+            if (s_appointed) {
+                s_nvsAddr   = s_myAddr;
+                s_appointed = false;
+            }
             UnilinkBus::abortTx();
             UnilinkBus::clearGrant();
             s_slotKind          = SlotKind::None;

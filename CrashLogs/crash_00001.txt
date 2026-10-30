@@ -1,219 +1,189 @@
 ===== CRASH LOG =====
-Reason:    RADIO BUS RESET 18 10 01 00
-Uptime:    255606 ms
+Reason:    RADIO STOPPED PINGING US
+Uptime:    20551 ms
 ESP Reset: POWERON
 File:      /CrashLogs/crash_00001.txt
 =====================
 
 ===== BUS FRAMES (last 128) =====
-[-12745ms] RX       31 10 01 13 55 00
-[-12745ms] TX       70 31 90 30 61 31 F1 16 DA 73 00
-[-12527ms] RX       18 10 01 11 3A 00
-[-11919ms] RX       3B 10 01 12 5E 00
-[-11908ms] RX       10 3B 00 C0 0B 00
-[-11780ms] BREAK   
-[-11769ms] RX       18 10 01 15 3E 00
-[-11769ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
-[-11742ms] RX       31 10 01 13 55 00
-[-11742ms] TX       70 31 90 30 61 31 F1 17 DA 74 00
-[-11300ms] RX       71 10 01 12 94 00
-[-11289ms] RX       10 71 00 00 81 00
-[-10778ms] BREAK   
-[-10767ms] RX       18 10 01 15 3E 00
-[-10767ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
-[-10740ms] RX       31 10 01 13 55 00
-[-10740ms] TX       70 31 90 30 61 31 F1 18 DA 75 00
-[-10681ms] RX       31 10 01 12 54 00
-[-10681ms] TX       10 31 00 00 41 00
-[-10399ms] RX       18 10 80 0E B6 0A 00 00 00 C0 00
-[-10355ms] RX       70 10 91 90 A1 30 00 00 00 D1 00
-[-10328ms] RX       70 51 C0 81 02 00 00 00 04 11 F8 75 00 10 94 00
-[-10279ms] RX       70 51 92 81 D4 00 00 00 00 D4 00
-[-10262ms] RX       18 10 08 00 30 00
-[-10069ms] RX       18 10 01 11 3A 00
-[- 9776ms] BREAK   
-[- 9765ms] RX       18 10 01 15 3E 00
-[- 9765ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
-[- 9738ms] RX       31 10 01 13 55 00
-[- 9738ms] TX       70 31 90 30 61 31 F1 19 DA 76 00
-[- 9701ms] RX       70 10 C0 00 40 00 00 00 00 00 00 00 00 00 40 00
-[- 9684ms] RX       70 10 25 00 A5 00
-[- 9571ms] RX       18 10 08 00 30 00
-[- 9458ms] RX       3B 10 01 12 5E 00
-[- 9447ms] RX       10 3B 00 C0 0B 00
-[- 9048ms] RX       18 10 80 0E B6 0A 00 00 00 C0 00
-[- 9026ms] RX       18 10 81 00 A9 00 00 01 01 AB 00
-[- 9004ms] RX       70 10 91 00 11 00 00 00 00 11 00
-[- 8977ms] RX       70 51 C0 81 02 00 00 00 04 11 F8 75 00 10 94 00
-[- 8950ms] RX       70 51 C1 2D AF 2D 2D 2D 2D 2D 2D 2D 00 02 EC 00
-[- 8928ms] RX       70 51 92 81 D4 00 00 00 00 D4 00
-[- 8911ms] RX       18 10 08 00 30 00
-[- 8830ms] RX       71 10 01 12 94 00
-[- 8819ms] RX       10 71 00 00 81 00
-[- 8788ms] BREAK   
-[- 8776ms] RX       18 10 01 15 3E 00
-[- 8776ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
-[- 8749ms] RX       31 10 01 13 55 00
-[- 8749ms] TX       70 31 90 30 61 31 F1 20 DA 7D 00
-[- 8713ms] RX       70 10 C0 00 40 00 00 00 00 00 00 00 00 00 40 00
-[- 8483ms] RX       18 10 80 0E B6 0A 00 00 00 C0 00
-[- 8461ms] RX       18 10 81 01 AA 28 00 01 01 D4 00
-[- 8439ms] RX       70 10 91 90 A1 30 00 00 00 D1 00
-[- 8412ms] RX       70 51 C0 81 02 00 00 00 04 11 F8 75 00 10 94 00
-[- 8385ms] RX       70 51 C1 2D AF 2D 2D 2D 2D 2D 2D 2D 00 02 EC 00
-[- 8363ms] RX       70 51 92 81 D4 00 00 00 00 D4 00
-[- 8346ms] RX       18 10 08 00 30 00
-[- 8201ms] RX       31 10 01 12 54 00
-[- 8201ms] TX       10 31 00 00 41 00
-[- 7775ms] BREAK   
-[- 7764ms] RX       18 10 01 15 3E 00
-[- 7764ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
-[- 7737ms] RX       31 10 01 13 55 00
-[- 7737ms] TX       70 31 90 30 61 31 F1 21 DA 7E 00
-[- 7700ms] RX       70 10 C0 00 40 00 00 00 00 00 00 00 00 00 40 00
-[- 7571ms] RX       18 10 01 11 3A 00
-[- 7123ms] RX       18 10 08 00 30 00
-[- 6963ms] RX       3B 10 01 12 5E 00
-[- 6952ms] RX       10 3B 00 C0 0B 00
-[- 6776ms] BREAK   
-[- 6765ms] RX       18 10 01 15 3E 00
-[- 6765ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
-[- 6738ms] RX       31 10 01 13 55 00
-[- 6738ms] TX       70 31 90 30 61 31 F1 22 DA 7F 00
-[- 6344ms] RX       71 10 01 12 94 00
-[- 6333ms] RX       10 71 00 00 81 00
-[- 5774ms] BREAK   
-[- 5763ms] RX       18 10 01 15 3E 00
-[- 5763ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
-[- 5736ms] RX       31 10 01 13 55 00
-[- 5736ms] TX       70 31 90 30 61 31 F1 23 DA 80 00
-[- 5709ms] RX       31 10 01 12 54 00
-[- 5709ms] TX       10 31 00 00 41 00
-[- 5096ms] RX       18 10 01 11 3A 00
-[- 4787ms] BREAK   
-[- 4775ms] RX       18 10 01 15 3E 00
-[- 4775ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
-[- 4748ms] RX       31 10 01 13 55 00
-[- 4748ms] TX       70 31 90 30 61 31 F1 24 DA 81 00
-[- 4482ms] RX       3B 10 01 12 5E 00
-[- 4471ms] RX       10 3B 00 C0 0B 00
-[- 3869ms] RX       71 10 01 12 94 00
-[- 3858ms] RX       10 71 00 00 81 00
-[- 3778ms] BREAK   
-[- 3767ms] RX       18 10 01 15 3E 00
-[- 3767ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
-[- 3740ms] RX       31 10 01 13 55 00
-[- 3740ms] TX       70 31 90 30 61 31 F1 25 DA 82 00
-[- 3479ms] RX       18 10 81 00 A9 00 00 01 01 AB 00
-[- 3457ms] RX       70 10 91 00 11 00 00 00 00 11 00
-[- 3430ms] RX       70 51 C0 81 02 00 00 00 04 11 F8 75 00 10 94 00
-[- 3403ms] RX       70 51 C1 2D AF 2D 2D 2D 2D 2D 2D 2D 00 02 EC 00
-[- 3381ms] RX       70 51 92 81 D4 00 00 00 00 D4 00
-[- 3236ms] RX       31 10 01 12 54 00
-[- 3236ms] TX       10 31 00 00 41 00
-[- 2778ms] BREAK   
-[- 2767ms] RX       18 10 01 15 3E 00
-[- 2767ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
-[- 2740ms] RX       31 10 01 13 55 00
-[- 2740ms] TX       70 31 90 30 61 31 F1 26 DA 83 00
-[- 2703ms] RX       70 10 C0 00 40 00 00 00 00 00 00 00 00 00 40 00
-[- 2622ms] RX       18 10 01 11 3A 00
-[- 2014ms] RX       3B 10 01 12 5E 00
-[- 2003ms] RX       10 3B 00 C0 0B 00
-[- 1780ms] BREAK   
-[- 1769ms] RX       18 10 01 15 3E 00
-[- 1769ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
-[- 1742ms] RX       31 10 01 13 55 00
-[- 1742ms] TX       70 31 90 30 61 31 F1 27 DA 84 00
-[- 1395ms] RX       71 10 01 12 94 00
-[- 1384ms] RX       10 71 00 00 81 00
-[-  778ms] BREAK   
-[-  766ms] RX       18 10 01 15 3E 00
-[-  766ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
-[-  739ms] RX       31 10 01 13 55 00
-[-  739ms] TX       70 31 90 30 61 31 F1 28 DA 85 00
-[-    1ms] RX       18 10 01 00 29 00
-[-    1ms] RESET   
+[-16670ms] BREAK   
+[-16659ms] RX       18 10 01 15 3E 00
+[-16659ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[-16578ms] BREAK   
+[-16567ms] RX       18 10 01 15 3E 00
+[-16567ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[-16458ms] BREAK   
+[-16447ms] RX       18 10 01 15 3E 00
+[-16447ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[-16420ms] RX       31 10 01 13 55 00
+[-16420ms] TX       70 31 90 30 61 F1 99 02 1B 08 00
+[-16393ms] RX       31 14 01 13 59 00
+[-16355ms] BREAK   
+[-16344ms] RX       18 10 01 15 3E 00
+[-16344ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[-16317ms] RX       31 10 01 13 55 00
+[-16317ms] TX       70 31 90 30 61 F1 99 02 1B 08 00
+[-16290ms] RX       31 14 01 13 59 00
+[-16253ms] BREAK   
+[-16241ms] RX       18 10 01 15 3E 00
+[-16241ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[-16219ms] RX       18 14 01 15 42 00
+[-16166ms] BREAK   
+[-16154ms] RX       18 10 01 15 3E 00
+[-16154ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[-16128ms] RX       31 10 01 13 55 00
+[-16127ms] TX       70 31 90 30 61 F1 99 02 1B 08 00
+[-16080ms] BREAK   
+[-16069ms] RX       18 10 01 15 3E 00
+[-16069ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[-15988ms] BREAK   
+[-15977ms] RX       18 10 01 15 3E 00
+[-15977ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[-15950ms] RX       31 10 01 13 55 00
+[-15950ms] TX       70 31 DA 45 C0 52 52 4F 52 00 00 01 01 10 17 00
+[-15880ms] RX       18 11 87 AB 5B 04 00 00 00 5F 00
+[-15704ms] RX       18 10 08 00 30 00
+[-15687ms] RX       51 10 21 00 82 00
+[-15670ms] RX       18 10 08 00 30 00
+[-15648ms] RX       70 91 90 1F B0 46 01 21 02 1A 00
+[-15626ms] RX       70 C1 91 F0 B2 40 04 01 C0 B7 00
+[-15565ms] BAD      70 93 34 11 46 00
+[-15512ms] RX       70 91 94 0F A4 00 00 10 00 B4 00
+[-15485ms] RX       70 51 C1 2D AF 2D 2D 2D 2D 2D 2D 2D 00 02 EC 00
+[-15467ms] BAD      71 23 2A 61 8C 00
+[-15441ms] RX       70 51 92 02 55 00 00 00 00 55 00
+[-15121ms] RX       18 10 01 02 2B 00
+[-15105ms] RX       18 70 8C 00 14 80 05 0A 01 A4 00
+[-15094ms] RX       71 10 02 12 95 00
+[-15078ms] RX       18 71 8C 00 15 80 05 0A 01 A5 00
+[-15067ms] RX       71 10 01 05 87 00
+[-15040ms] RX       18 10 01 04 2D 00
+[-14992ms] RX       18 10 01 02 2B 00
+[-14894ms] RX       18 10 01 02 2B 00
+[-14845ms] RX       18 10 01 03 2C 00
+[-14823ms] BAD      19 91 8C 00 35 80 FD E8 0C A6 00
+[-14801ms] RX       18 91 8D 40 76 00 00 00 00 76 00
+[-14761ms] BAD      18 C3 18 01 94 00
+[-14713ms] RX       18 51 8D 10 06 00 00 00 00 06 00
+[-14647ms] RX       30 10 88 00 C8 F0 01 00 00 B9 00
+[-14629ms] BAD      50 10 23 FF 9F FC
+[-14603ms] RX       60 10 88 00 F8 00 00 00 00 F8 00
+[-14537ms] RX       91 10 88 00 29 2A 8D E8 01 C9 00
+[-14515ms] RX       92 10 88 00 2A 2A 80 00 01 D5 00
+[-14493ms] RX       93 10 88 00 2B 2A 80 00 01 D6 00
+[-14471ms] RX       94 10 88 00 2C 2A 80 00 01 D7 00
+[-14454ms] BAD      AA 21 10 00 5A 55
+[-14427ms] RX       91 10 89 40 6A 00 00 00 40 AA 00
+[-14410ms] BAD      90 21 12 00 56 00
+[-14384ms] RX       93 10 89 00 2C 00 00 00 00 2C 00
+[-14362ms] RX       94 10 89 00 2D 00 00 00 00 2D 00
+[-14296ms] RX       D0 10 88 00 68 B0 00 00 00 18 00
+[-14274ms] RX       53 10 88 00 EB 00 00 00 00 EB 00
+[-14256ms] BAD      46 21 13 00 D8 00
+[-14208ms] RX       18 10 01 01 2A 00
+[-14066ms] RX       70 10 C4 00 44 00 00 00 00 00 00 00 01 00 45 00
+[-14044ms] RX       70 10 B1 7C AD 05 01 00 C4 77 00
+[-14017ms] RX       70 10 C4 00 44 00 00 00 00 00 00 00 00 00 44 00
+[-13990ms] RX       70 10 C4 00 44 00 00 00 00 00 00 00 01 00 45 00
+[-13973ms] RX       70 10 2A 10 BA 00
+[-13956ms] RX       70 10 2F 01 B0 00
+[-13939ms] RX       30 10 2F 10 7F 00
+[-13922ms] RX       70 11 27 10 B8 00
+[-13905ms] RX       90 11 3E 0A E9 00
+[-13883ms] RX       70 11 9F B5 D5 02 00 00 2C 03 00
+[-13866ms] RX       18 10 08 00 30 00
+[-13812ms] RX       18 10 01 15 3E 00
+[-13796ms] RX       10 18 82 01 AB 00 00 00 00 AB 00
+[-13785ms] RX       3B 10 01 13 5F 00
+[-13774ms] RX       30 3B 70 A0 7B 00
+[-13747ms] RX       18 10 01 15 3E 00
+[-13735ms] BAD      10 31 04 03 56 00
+[-13720ms] RX       3B 10 01 13 5F 00
+[-13709ms] RX       10 3B 71 00 BC 00
+[-13570ms] RX       3B 10 01 12 5E 00
+[-13335ms] RX       18 11 87 EB 9B 04 00 00 00 9F 00
+[-13199ms] RX       18 10 08 00 30 00
+[-13023ms] RX       70 91 90 1F B0 46 01 21 02 1A 00
+[-13001ms] RX       70 91 9A 06 A1 00 00 02 02 A5 00
+[-12957ms] RX       70 91 94 0F A4 00 00 10 00 B4 00
+[-12881ms] RX       70 91 DB C0 9C 01 0A 07 04 04 04 05 06 00 C5 00
+[-12854ms] RX       70 91 D0 10 E1 C0 20 00 07 0A 0A 15 00 12 03 00
+[-12837ms] RX       71 10 01 12 94 00
+[-12826ms] RX       10 71 00 00 81 00
+[-12394ms] BAD      70 23 80 01 02 00 00 00 08 23 F0
+[-12363ms] RX       70 51 C1 2D AF 2D 2D 2D 2D 2D 2D 2D 00 02 EC 00
+[-11619ms] RX       3B 10 01 12 5E 00
+[-11608ms] RX       10 3B 00 C0 0B 00
+[-11565ms] RX       18 10 08 00 30 00
+[-10988ms] RX       71 10 01 12 94 00
+[-10977ms] RX       10 71 00 00 81 00
+[-10360ms] RX       18 10 01 11 3A 00
+[-10333ms] RX       70 51 C0 00 81 00 00 00 04 11 F8 75 00 F2 F5 00
+[- 9756ms] RX       3B 10 01 12 5E 00
+[- 8530ms] RX       18 10 01 11 3A 00
+[- 7922ms] RX       3B 10 01 12 5E 00
+[- 7911ms] RX       10 3B 00 C0 0B 00
+[- 7282ms] RX       10 71 00 00 81 00
+[- 6045ms] RX       10 3B 00 C0 0B 00
+[- 5416ms] RX       10 71 00 00 81 00
+[- 4190ms] RX       3B 10 01 12 5E 00
+[- 3561ms] RX       71 10 01 12 94 00
+[- 2341ms] RX       3B 10 01 12 5E 00
+[- 2330ms] RX       10 3B 00 C0 0B 00
+[- 1712ms] RX       71 10 01 12 94 00
+[- 1701ms] RX       10 71 00 00 81 00
+[- 1083ms] RX       18 10 01 11 3A 00
+[-  464ms] RX       10 3B 00 C0 0B 00
 =====================================
 
 ===== TEXT LOG (last ~8192 bytes) =====
- p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=2 cut=2 ovf=0 | 0x31 st=0x00 CD13 TR29 01:25 q=0
-[STAT] rx=13 ping=1 p15=3 claim=3 grant=2 brk=3/0/0 late=0 abort=1 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR29 01:27 q=0
-[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR29 01:29 q=0
-[NVS] Zapamietano: CD13 TR29, sekunda=93
-[STAT] rx=9 ping=1 p15=3 claim=3 grant=2 brk=3/0/0 late=0 abort=0 bad=0 glitch=2 cut=1 ovf=0 | 0x31 st=0x00 CD13 TR29 01:31 q=0
-[STAT] rx=9 ping=0 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR29 01:33 q=0
->> NEXT TRACK: CD13 TR30 (max=99)
-[Audio-info] Closing audio file
-[NVS] Zapamietano: CD13 TR30, sekunda=0
-[Audio] Async connecttoFS("/CD13.POLSKIE KS/Marek Kondrat - Mydełko FA.mp3") = OK
-[Audio] ▶ Odtwarzam: /CD13.POLSKIE KS/Marek Kondrat - Mydełko FA.mp3 (rozpoczęto dekodowanie)
+--- Sony Unilink: emulator zmieniarki CD + audio z USB ---
+[NVS] Wczytano ostatni utwor: CD4 TR60, sekunda=18
+[Unilink] Adres z poprzedniej sesji: 0x31 (odpowiadam na ping, czekam na discovery)
+[Unilink] Magistrala gotowa, przerwanie zegara w IRAM
+[Audio] Inicjalizacja...
+[Audio] Głośność: 18/21 (zlecone)
+=== BUS_ON = 1 ===
+[Audio] setPinout(BCK=7, LRCK=15, DIN=13) = OK
+[Audio] Task dekodowania uruchomiony na rdzeniu 0
+[Diagnostics] BŁĄD SYSTEMOWY: NO PENDRIVE
+[Audio] Inicjalizacja I2S zakończona — oczekuję na pendrive.
+[Audio] Inicjalizacja zlecona (dziala w tle).
+[Audio] Pendrive podpięty — skanowanie folderów...
+[Audio] Zmiana na pendrive! Oczekiwano 709452 wolnych klastrów, jest 673852.
+[Audio] Indeks nieaktualny lub brak. Wykonuję głębokie skanowanie...
+[Audio] CD01 [CD01.ABBA] nazwa="ABBA": 31 track(ów)
+>>> Wykryto USB. Ustawiono pierwsza niepusta plyte: CD1
+>> Adres 0x31 (radio pamieta adres z poprzedniej sesji), maska 0x04
+[STAT] rx=5 ping=1 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=1 bad=0 glitch=3 cut=1 ovf=0 | 0x31 st=0x80 CD1 TR1 00:00 q=0
+>>> Init zakonczone (selected=true) -> auto-start odtwarzania!
+[Audio] Async connecttoFS("/CD01.ABBA/01- Hasta Manana.mp3") = OK
+[Audio] ▶ Odtwarzam: /CD01.ABBA/01- Hasta Manana.mp3 (rozpoczęto dekodowanie)
 >>> 20 -> 00 (Playing!)
->> CD-TEXT: CD13 TR30 plyta="POLSKIE KS" utwor="Marek Kondrat - Mydełko FA"
 [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
-[Audio-info] VBR recognized, audioFileDuration is estimated
-[STAT] rx=18 ping=1 p15=6 claim=6 grant=6 brk=7/1/0 late=0 abort=2 bad=0 glitch=4 cut=2 ovf=0 | 0x31 st=0x00 CD13 TR30 00:01 q=0
-[STAT] rx=10 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR30 00:03 q=0
-[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR30 00:05 q=0
->> SCAN FF start: CD13 TR30 00:05
-[STAT] rx=17 ping=1 p15=6 claim=6 grant=5 brk=6/0/0 late=0 abort=0 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x00 CD13 TR30 00:13 q=0
->> SCAN stop (0x08 0x00): CD13 TR30 00:16
->>> 21 -> 00 (Seeking -> Playing!) pozycja 00:16
-[STAT] rx=12 ping=0 p15=3 claim=3 grant=3 brk=3/0/0 late=0 abort=1 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR30 00:17 q=0
->> NEXT TRACK: CD13 TR31 (max=99)
-[NVS] Zapamietano: CD13 TR31, sekunda=19
-[Audio-info] Closing audio file
->>> 20 -> 00 (Playing!)
-[Audio] Async connecttoFS("/CD13.POLSKIE KS/Maryla Rodowicz - Ale to juz bylo.mp3") = OK
-[Audio] ▶ Odtwarzam: /CD13.POLSKIE KS/Maryla Rodowicz - Ale to juz bylo.mp3 (rozpoczęto dekodowanie)
->> CD-TEXT: CD13 TR31 plyta="POLSKIE KS" utwor="Maryla Rodowicz - Ale to juz bylo"
-[Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
-[STAT] rx=22 ping=1 p15=8 claim=8 grant=7 brk=8/0/0 late=0 abort=0 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x00 CD13 TR31 00:01 q=0
-[STAT] rx=9 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 00:03 q=0
-[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 00:05 q=0
-[STAT] rx=9 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 00:07 q=0
-[STAT] rx=10 ping=0 p15=3 claim=3 grant=2 brk=3/0/0 late=0 abort=0 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x00 CD13 TR31 00:09 q=0
-[STAT] rx=10 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 00:11 q=0
-[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 00:13 q=0
-[STAT] rx=6 ping=1 p15=1 claim=1 grant=1 brk=2/1/0 late=0 abort=0 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x00 CD13 TR31 00:15 q=0
-[STAT] rx=8 ping=1 p15=3 claim=3 grant=3 brk=3/0/0 late=0 abort=0 bad=0 glitch=3 cut=2 ovf=0 | 0x31 st=0x00 CD13 TR31 00:17 q=0
-[STAT] rx=10 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 00:19 q=0
-[STAT] rx=23 ping=0 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 00:21 q=0
-[STAT] rx=18 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x00 CD13 TR31 00:23 q=0
-[STAT] rx=11 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 00:25 q=0
-[STAT] rx=15 ping=1 p15=3 claim=3 grant=2 brk=3/0/0 late=0 abort=1 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 00:27 q=0
-[STAT] rx=16 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 00:29 q=0
-[STAT] rx=11 ping=0 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=2 cut=1 ovf=0 | 0x31 st=0x00 CD13 TR31 00:31 q=0
-[NVS] Zapamietano: CD13 TR31, sekunda=31
-[STAT] rx=10 ping=1 p15=3 claim=3 grant=2 brk=3/0/0 late=0 abort=2 bad=0 glitch=2 cut=1 ovf=0 | 0x31 st=0x00 CD13 TR31 00:33 q=0
-[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 00:35 q=0
-[STAT] rx=23 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=2 cut=2 ovf=0 | 0x31 st=0x00 CD13 TR31 00:37 q=0
-[STAT] rx=25 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=3 cut=1 ovf=0 | 0x31 st=0x00 CD13 TR31 00:39 q=0
-[STAT] rx=17 ping=0 p15=3 claim=3 grant=2 brk=3/0/0 late=0 abort=1 bad=0 glitch=3 cut=2 ovf=0 | 0x31 st=0x00 CD13 TR31 00:41 q=0
-[STAT] rx=15 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x00 CD13 TR31 00:43 q=0
-[STAT] rx=15 ping=2 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=1 bad=0 glitch=3 cut=2 ovf=0 | 0x31 st=0x00 CD13 TR31 00:45 q=0
-[STAT] rx=24 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 00:47 q=0
-[STAT] rx=19 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 00:49 q=0
-[STAT] rx=17 ping=0 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 00:51 q=0
-[STAT] rx=13 ping=1 p15=4 claim=4 grant=2 brk=4/0/0 late=0 abort=2 bad=0 glitch=3 cut=1 ovf=0 | 0x31 st=0x00 CD13 TR31 00:53 q=0
-[STAT] rx=7 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 00:55 q=0
-[STAT] rx=10 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 00:57 q=0
-[STAT] rx=7 ping=0 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=2 cut=2 ovf=0 | 0x31 st=0x00 CD13 TR31 00:59 q=0
-[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 01:01 q=0
-[NVS] Zapamietano: CD13 TR31, sekunda=61
-[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 01:03 q=0
-[STAT] rx=11 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=1 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 01:05 q=0
-[STAT] rx=6 ping=0 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=3 cut=3 ovf=0 | 0x31 st=0x00 CD13 TR31 01:07 q=0
-[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 01:09 q=0
-[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 01:11 q=0
-[STAT] rx=10 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=1 bad=0 glitch=2 cut=1 ovf=0 | 0x31 st=0x00 CD13 TR31 01:13 q=0
-[STAT] rx=6 ping=0 p15=1 claim=1 grant=1 brk=2/1/0 late=0 abort=0 bad=0 glitch=2 cut=2 ovf=0 | 0x31 st=0x00 CD13 TR31 01:15 q=0
-[STAT] rx=10 ping=1 p15=3 claim=3 grant=3 brk=3/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 01:17 q=0
-[STAT] rx=15 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=1 cut=2 ovf=0 | 0x31 st=0x00 CD13 TR31 01:19 q=0
-[STAT] rx=26 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 01:21 q=0
-[STAT] rx=11 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 01:23 q=0
-[STAT] rx=9 ping=0 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR31 01:25 q=0
-[STAT] rx=14 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x00 CD13 TR31 01:27 q=0
->> Radio: reset magistrali (18 10 01 00) — ponowne discovery
+>> CD-TEXT: CD1 TR1 plyta="ERROR" utwor="NO PENDRIVE"
+[Audio] CD02 [CD02.DISCO 80] nazwa="DISCO 80": 61 track(ów)
+[STAT] rx=28 ping=0 p15=13 claim=13 grant=8 brk=15/2/0 late=0 abort=7 bad=0 glitch=25 cut=6 ovf=0 | 0x31 st=0x00 CD1 TR1 99:02 q=1
+>> Ekran 0x70 przejety przez 0x91 (cmd 0x90) — wstrzymuje ramki 0x70
+[Audio] CD03 [CD03.GDB i Italia] nazwa="GDB i Italia": 61 track(ów)
+=== BUS_ON = 0 (sesja zachowana) ===
+[Audio] Głośność: 18/21 (zlecone)
+=== BUS_ON = 1 ===
+[STAT] rx=40 ping=0 p15=6 claim=6 grant=4 brk=6/0/0 late=0 abort=6 bad=5 glitch=71 cut=33 ovf=0 | 0x31 st=0x00 CD1 TR1 99:04 q=0
+>> Ekran 0x70 przejety przez 0x91 (cmd 0x90) — wstrzymuje ramki 0x70
+[STAT] rx=42 ping=0 p15=2 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=4 glitch=53 cut=26 ovf=0 | 0x31 st=0x00 CD1 TR1 99:06 q=0
+[Audio] CD04 [CD04.Dokladka] nazwa="Dokladka": 93 track(ów)
+[Audio] CD05 [CD05.MIKE OLDFIELD] nazwa="MIKE OLDFIELD": 25 track(ów)
+[Audio] CD06 [CD06.CC BB MT] nazwa="CC BB MT": 47 track(ów)
+[STAT] rx=7 ping=0 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=1 glitch=5 cut=4 ovf=0 | 0x31 st=0x00 CD1 TR1 99:08 q=0
+[Audio] CD07 [CD07.For Your] nazwa="For Your": 55 track(ów)
+[STAT] rx=3 ping=0 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=0 glitch=7 cut=4 ovf=0 | 0x31 st=0x00 CD1 TR1 99:10 q=0
+[STAT] rx=4 ping=0 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=0 glitch=6 cut=3 ovf=0 | 0x31 st=0x00 CD1 TR1 99:02 q=0
+[Audio] CD08 [CD08.Best Of Italo] nazwa="Best Of Italo": 86 track(ów)
+[STAT] rx=2 ping=0 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=0 glitch=2 cut=4 ovf=0 | 0x31 st=0x00 CD1 TR1 99:04 q=0
+[STAT] rx=2 ping=0 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=0 glitch=4 cut=3 ovf=0 | 0x31 st=0x00 CD1 TR1 99:06 q=0
+[Audio] CD09 [CD09.POLSKIE] nazwa="POLSKIE": 99 track(ów)
+[STAT] rx=5 ping=0 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD1 TR1 99:08 q=0
+>> Radio nie pinguje 0x31 od 15s — ponowne dolaczenie
 
 =====================================

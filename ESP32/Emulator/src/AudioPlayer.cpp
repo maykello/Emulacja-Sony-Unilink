@@ -426,8 +426,15 @@ static bool findTrackPath(uint8_t disc, uint8_t track, char* outPath, size_t pat
     return true;
 }
 
+static volatile bool s_seekMuted = false;
+
 void audioSetMute(bool mute) {
     digitalWrite(I2S_XSMT_PIN, mute ? LOW : HIGH);
+}
+
+void audioSetSeekMute(bool mute) {
+    s_seekMuted = mute;
+    audioSetMute(mute);
 }
 
 // ============================================================
@@ -573,10 +580,13 @@ static void audioTaskFunc(void *param) {
                 }
                 if (audioMutex) xSemaphoreGive(audioMutex);
             }
-            if (!dacUnmuted && (millis() - playStartedMs >= 100)) {
+            if (!s_seekMuted && !dacUnmuted && (millis() - playStartedMs >= 100)) {
                 audioSetMute(false);
                 dacUnmuted = true;
                 Serial.println("[Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)");
+            } else if (s_seekMuted && dacUnmuted) {
+                audioSetMute(true);
+                dacUnmuted = false;
             }
         } else {
             if (dacUnmuted) {
@@ -675,11 +685,8 @@ bool audioInit() {
         }
         Serial.println("[Audio] Inicjalizacja zakończona — pendrive gotowy.");
     } else {
-        if (!usbDriveIsConnected()) {
-            Diagnostics::setError(Diagnostics::SystemError::NoUsb);
-        } else {
-            Diagnostics::setError(Diagnostics::SystemError::UsbFsErr);
-        }
+        // Nie zglaszamy bledu NoUsb od razu przy 0 ms uptime - audioLoop zglosi go dopiero
+        // po uplywie pelnego czasu rozbiegowego USB_ERROR_GRACE_MS, jesli pendrive sie nie zglosi.
         Serial.println("[Audio] Inicjalizacja I2S zakończona — oczekuję na pendrive.");
     }
     
