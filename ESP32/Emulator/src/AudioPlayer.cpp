@@ -18,10 +18,10 @@ Audio audio;
 // Przechowujemy posortowane nazwy plików dla każdego dysku.
 // trackFiles[disc][index] = nazwa pliku (basename, np. "Metallica - Enter Sandman.mp3")
 // trackCount[disc] = ile plików znaleziono na danym dysku
-// Indeksy: disc 1..10, track index 0-based wewnętrznie (externally 1-based)
+// Indeksy: disc 1..14, track index 0-based wewnętrznie (externally 1-based)
 #define MAX_TRACKS_STORED  MAX_TRACKS   // max 99 tracków na dysk
-static String trackFiles[MAX_DISCS + 1][MAX_TRACKS_STORED]; // [disc 1..10][0..98]
-static uint8_t trackCount[MAX_DISCS + 1]; // indeks 1..10, [0] nieużywany
+static String trackFiles[MAX_DISCS + 1][MAX_TRACKS_STORED]; // [disc 1..14][0..98]
+static uint8_t trackCount[MAX_DISCS + 1]; // indeks 1..14, [0] nieużywany
 
 // Katalog płyty na nośniku i etykieta pokazywana w radiu.
 // Konwencja nazw folderów: "CDnn" albo "CDnn.Nazwa" (np. "CD01.ABBA").
@@ -35,7 +35,7 @@ static String discLabel[MAX_DISCS + 1];    // np. "ABBA"
 // wywlaszczony przez petle, wiec nigdy nie trafi na przepisywany String.
 static volatile bool s_indexReady = false;
 static volatile bool songFinishedFlag = false;
-static bool isPlaying = false;
+static volatile bool isPlaying = false;
 static bool wasUsbMounted = false;   // do wykrywania hot-plug/unplug
 
 // Flaga "trwa zmiana utworu" — chroni przed FALSZYWYM wykryciem konca utworu.
@@ -66,11 +66,13 @@ static volatile uint32_t playRequestStartSec = 0;
 // zwolni mutex (np. po connecttoFS/decode), co zamraza odpowiedzi na radio,
 // licznik czasu i gubi powtorzone komendy FF/REW. Dlatego seek/stop/volume
 // przekazujemy jako ZADANIA, ktore realizuje task audio (Core 0).
-static volatile bool seekRequestPending = false;
-static volatile int  seekRequestDelta   = 0;   // akumulowany skok (+/- s)
-static volatile bool stopRequestPending = false;
-static volatile bool volRequestPending  = false;
-static volatile uint8_t volRequestValue = AUDIO_VOLUME;
+static volatile bool     seekRequestPending = false;
+static volatile int      seekRequestDelta   = 0;   // akumulowany skok (+/- s)
+static volatile bool     seekTargetPending  = false;
+static volatile uint32_t seekTargetSec      = 0;   // docelowa sekunda od poczatku utworu
+static volatile bool     stopRequestPending = false;
+static volatile bool     volRequestPending  = false;
+static volatile uint8_t  volRequestValue    = AUDIO_VOLUME;
 // Gdy true — audio_info pomija wysokoczęstotliwosciowe komunikaty dekodera.
 // Ustawiane z CdChanger na czas skanowania FF/REW (patrz audioSetInfoSquelch).
 static volatile bool infoSquelch = false;
@@ -386,7 +388,17 @@ static bool loadIndexFromFile() {
 
 // Zapis indeksu to zapis flash (LittleFS) — odkladamy go do okna, w ktorym
 // nie zaklocimy rozmowy z radiem (zwykle tuz po starcie trwa wtedy discovery).
-static bool s_indexSavePending = false;
+static volatile bool s_indexSavePending = false;
+
+void audioRefreshIndexFreeClusters() {
+    if (s_indexReady) {
+        s_indexSavePending = true;
+    }
+}
+
+bool audioIsBusyChangingTrack() {
+    return playRequestPending || trackChanging;
+}
 
 static void scanDiscs() {
     if (!loadIndexFromFile()) {
@@ -430,9 +442,48 @@ static void audioTaskFunc(void *param) {
     uint32_t pendingResumeSec = 0;
     
     for (;;) {
+        // --- Obsługa żądania nowej piosenki (ma pierwszenstwo przed zaleglym stop/seek) ---
+        if (playRequestPending) {
+            playRequestPending = false;
+            stopRequestPending = false;
+            seekRequestPending = false;
+            seekRequestDelta   = 0;
+            seekTargetPending  = false;
+            pendingResumeSec   = playRequestStartSec;
+            playRequestStartSec = 0;
+            audioSetMute(true);
+            dacUnmuted = false;
+            playStartedMs = 0;
+            
+            if (audioMutex) xSemaphoreTake(audioMutex, portMAX_DELAY);
+            audio.stopSong();
+            bool result = audio.connecttoFS(usbDriveGetFS(), playRequestPath);
+            if (audioMutex) xSemaphoreGive(audioMutex);
+            
+            Serial.printf("[Audio] Async connecttoFS(\"%s\") = %s\n", playRequestPath, result ? "OK" : "FAIL");
+            
+            if (!result) {
+                isPlaying = false;
+                songStarted = false;
+                songFinishedFlag = true; // Pomiń do następnego utworu
+                Diagnostics::setError(Diagnostics::SystemError::FileErr);
+            } else {
+                isPlaying = true;
+                if (Diagnostics::getError() == Diagnostics::SystemError::FileErr) {
+                    Diagnostics::clearError(Diagnostics::SystemError::FileErr);
+                }
+                Serial.printf("[Audio] ▶ Odtwarzam: %s (rozpoczęto dekodowanie)\n", playRequestPath);
+            }
+            // Zmiana utworu zakonczona — mozna znow wykrywac koniec utworu.
+            trackChanging = false;
+        }
+
         // --- Żądania sterujace z Core 1 (nieblokujace dla glownej petli) ---
         if (stopRequestPending) {
             stopRequestPending = false;
+            seekRequestPending = false;
+            seekRequestDelta   = 0;
+            seekTargetPending  = false;
             audioSetMute(true);
             dacUnmuted = false;
             playStartedMs = 0;
@@ -450,7 +501,23 @@ static void audioTaskFunc(void *param) {
             audio.setVolume(v);
             if (audioMutex) xSemaphoreGive(audioMutex);
         }
-        if (seekRequestPending) {
+        if (seekTargetPending) {
+            seekTargetPending = false;
+            seekRequestPending = false;
+            seekRequestDelta = 0;
+            uint32_t target = seekTargetSec;
+            if (audio.isRunning()) {
+                if (audioMutex) xSemaphoreTake(audioMutex, portMAX_DELAY);
+                uint32_t dur = audio.getAudioFileDuration();
+                if (dur > 1 && target >= dur) target = dur - 1;
+                int cur = (int)audio.getAudioCurrentTime();
+                int d   = (int)target - cur;
+                if (d != 0) {
+                    audio.setTimeOffset(d);
+                }
+                if (audioMutex) xSemaphoreGive(audioMutex);
+            }
+        } else if (seekRequestPending) {
             seekRequestPending = false;
             int d = seekRequestDelta;
             seekRequestDelta = 0;
@@ -459,37 +526,6 @@ static void audioTaskFunc(void *param) {
                 audio.setTimeOffset(d);
                 if (audioMutex) xSemaphoreGive(audioMutex);
             }
-        }
-
-        // --- Obsługa żądania nowej piosenki ---
-        if (playRequestPending) {
-            playRequestPending = false;
-            pendingResumeSec = playRequestStartSec;
-            playRequestStartSec = 0;
-            audioSetMute(true);
-            dacUnmuted = false;
-            playStartedMs = 0;
-            
-            if (audioMutex) xSemaphoreTake(audioMutex, portMAX_DELAY);
-            audio.stopSong();
-            bool result = audio.connecttoFS(usbDriveGetFS(), playRequestPath);
-            if (audioMutex) xSemaphoreGive(audioMutex);
-            
-            Serial.printf("[Audio] Async connecttoFS(\"%s\") = %s\n", playRequestPath, result ? "OK" : "FAIL");
-            
-            if (!result) {
-                isPlaying = false;
-                songFinishedFlag = true; // Pomiń do następnego utworu
-                Diagnostics::setError(Diagnostics::SystemError::FileErr);
-            } else {
-                isPlaying = true;
-                if (Diagnostics::getError() == Diagnostics::SystemError::FileErr) {
-                    Diagnostics::clearError(Diagnostics::SystemError::FileErr);
-                }
-                Serial.printf("[Audio] ▶ Odtwarzam: %s (rozpoczęto dekodowanie)\n", playRequestPath);
-            }
-            // Zmiana utworu zakonczona — mozna znow wykrywac koniec utworu.
-            trackChanging = false;
         }
 
         if (audioMutex && xSemaphoreTake(audioMutex, pdMS_TO_TICKS(5)) == pdTRUE) {
@@ -514,19 +550,30 @@ static void audioTaskFunc(void *param) {
         // Odciszamy dopiero po 100ms stabilnego działania dekodera (audio.isRunning()),
         // gdy bufor I2S DMA jest już stabilnie wypełniony próbkami i zegary są zsynchronizowane.
         if (isPlaying && audio.isRunning()) {
-            if (pendingResumeSec > 0) {
-                int cur = (int)audio.getAudioCurrentTime();
-                int delta = (int)pendingResumeSec - cur;
-                if (delta != 0) {
-                    audio.setTimeOffset(delta);
-                }
-                Serial.printf("[Audio] Wznowiono pozycję odtwarzania od: %lu s (delta=%d)\n",
-                              (unsigned long)pendingResumeSec, delta);
-                pendingResumeSec = 0;
-            }
+            songStarted = true;
             if (playStartedMs == 0) {
                 playStartedMs = millis();
-            } else if (!dacUnmuted && (millis() - playStartedMs >= 100)) {
+            }
+            // Wznowienie od zapamietanej sekundy wykonujemy dopiero po ~60ms dekodowania,
+            // gdy biblioteka ESP32-audioI2S przeszla juz naglowek ID3v2 i wyliczyla bitrate!
+            if (pendingResumeSec > 0 && (millis() - playStartedMs >= 60)) {
+                if (audioMutex) xSemaphoreTake(audioMutex, portMAX_DELAY);
+                uint32_t dur = audio.getAudioFileDuration();
+                if (dur > 2 && pendingResumeSec >= dur - 1) {
+                    pendingResumeSec = 0;
+                } else {
+                    int cur = (int)audio.getAudioCurrentTime();
+                    int delta = (int)pendingResumeSec - cur;
+                    if (delta != 0) {
+                        audio.setTimeOffset(delta);
+                    }
+                    Serial.printf("[Audio] Wznowiono pozycję odtwarzania od: %lu s (delta=%d)\n",
+                                  (unsigned long)pendingResumeSec, delta);
+                    pendingResumeSec = 0;
+                }
+                if (audioMutex) xSemaphoreGive(audioMutex);
+            }
+            if (!dacUnmuted && (millis() - playStartedMs >= 100)) {
                 audioSetMute(false);
                 dacUnmuted = true;
                 Serial.println("[Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)");
@@ -541,10 +588,6 @@ static void audioTaskFunc(void *param) {
         }
         
         loopCounter++;
-        if (loopCounter % 10000 == 0 && isPlaying) {
-            // Diagnostyka co jakiś czas: czy task w ogóle kręci
-            // Serial.printf("[Audio-Task] loop() żyje, isRunning=%d\n", audio.isRunning());
-        }
 
         if (isPlaying) {
             // Kiedy gra, oddaj czas procesora innym taskom o tym samym priorytecie
@@ -612,11 +655,7 @@ bool audioInit() {
     
     // Task dekodowania audio — Core 0 (razem z USB Host), priorytet 2.
     // KLUCZOWE: trzymamy dekoder z DALA od Core 1, na ktorym dziala petla
-    // Arduino + przerwanie zegara magistrali Unilink. Wczesniej dekoder (Core 1,
-    // prio 2) wywlaszczal petle (prio 1) na 10-20ms przy napelnianiu bufora, co
-    // powodowalo spoznione odpowiedzi na radio, gubione klawisze i nierowne
-    // odliczanie czasu. Teraz Core 1 nalezy w calosci do warstwy czasu
-    // rzeczywistego (Unilink), a Core 0 do "mediow" (USB + dekoder audio).
+    // Arduino + przerwanie zegara magistrali Unilink.
     BaseType_t ret = xTaskCreatePinnedToCore(
         audioTaskFunc, "audio_dec", 8192, NULL, 2, &audioTaskHandle, 0);
     if (ret != pdPASS) {
@@ -688,12 +727,14 @@ bool audioPlayTrack(uint8_t disc, uint8_t track, uint32_t startSec) {
     }
     
     // Zapisz ścieżkę do zmiennej globalnej i podnieś flagę dla taska asynchronicznego
-    // Zdejmujemy tym samym WSZELKIE operacje plikowe z głównego wątku (Core 0),
-    // by całkowicie uniknąć blokowania przerwań i timeoutów radia (co powodowało System Reset).
     audioSetMute(true);       // Wycisz sprzętowo DAC na czas zmiany/ładowania utworu
     strlcpy(playRequestPath, path, sizeof(playRequestPath));
     playRequestStartSec = startSec;
     songFinishedFlag = false;
+    stopRequestPending = false;
+    seekRequestPending = false;
+    seekRequestDelta = 0;
+    seekTargetPending = false;
     trackChanging = true;     // blokuj awaryjny detektor konca utworu
     songStarted = false;      // nowy utwor jeszcze nie ruszyl
     playRequestPending = true;
@@ -706,6 +747,8 @@ void audioStop() {
     // by reszta systemu natychmiast widziala "nie gram".
     audioSetMute(true);       // Wycisz sprzętowo DAC natychmiast
     isPlaying = false;
+    playRequestPending = false;
+    trackChanging = false;
     stopRequestPending = true;
     Serial.println("[Audio] ⏹ Zatrzymano (zlecone).");
 }
@@ -725,8 +768,6 @@ uint32_t audioGetDurationSec() {
 
 bool audioSeekRelative(int deltaSec) {
     if (!audioIsPlaying()) return false;
-    // Nieblokujaco: akumulujemy skok i zlecamy go taskowi audio. Glowna petla
-    // (Core 1) nie czeka na audioMutex, wiec radio i licznik czasu nie zwisza.
     seekRequestDelta += deltaSec;
     seekRequestPending = true;
     return true;
@@ -734,10 +775,9 @@ bool audioSeekRelative(int deltaSec) {
 
 bool audioSeekToSec(uint32_t targetSec) {
     if (!audioIsPlaying()) return false;
-    int audioNow = (int)audioGetCurrentTimeSec();
-    int delta = (int)targetSec - audioNow;
-    if (delta == 0) return true;
-    return audioSeekRelative(delta);
+    seekTargetSec = targetSec;
+    seekTargetPending = true;
+    return true;
 }
 
 void audioSetInfoSquelch(bool squelch) {
@@ -766,7 +806,6 @@ uint16_t audioGetTotalTrackCount() {
 // Interfejs nazw (źródło dla modułu CD-TEXT)
 // ============================================================
 
-// Pomocnicza: kopiuje napis do bufora, NUL-terminuje, zwraca liczbę znaków.
 static size_t copyBounded(const char* src, char* out, size_t maxLen) {
     if (!out || maxLen == 0) return 0;
     size_t n = 0;
@@ -785,13 +824,9 @@ size_t audioGetTrackName(uint8_t disc, uint8_t track, char* out, size_t maxLen) 
     if (!s_indexReady || disc < 1 || disc > MAX_DISCS) return 0;
     if (track < 1 || track > trackCount[disc]) return 0;
 
-    // track jest 1-based, tablica 0-based — nazwa pliku to nazwa utworu.
     const String &filename = trackFiles[disc][track - 1];
     if (filename.length() == 0) return 0;
 
-    // Odetnij rozszerzenie (.mp3/.wav/...) — nie jest częścią nazwy utworu.
-    // To NIE jest sanityzacja ASCII (ta odbywa się w CdText) — tylko wyodrębnienie
-    // właściwej nazwy z nazwy pliku.
     int dotPos = filename.lastIndexOf('.');
     String name = (dotPos > 0) ? filename.substring(0, dotPos) : filename;
 
@@ -802,10 +837,6 @@ size_t audioGetDiscName(uint8_t disc, char* out, size_t maxLen) {
     if (out && maxLen > 0) out[0] = '\0';
     if (disc < 1 || disc > MAX_DISCS) return 0;
 
-    // Nazwa płyty pochodzi z katalogu na pendrivie, ale pokazujemy tylko część
-    // po kropce: folder "CD01.ABBA" daje na ekranie "ABBA". Gdy folder nie ma
-    // sufiksu (samo "CD01") albo nośnik nie jest zamontowany — zostaje "CDnn",
-    // bo puste pole radio pokazuje jako brak nazwy płyty.
     if (s_indexReady && discLabel[disc].length() > 0) {
         return copyBounded(discLabel[disc].c_str(), out, maxLen);
     }
@@ -852,7 +883,6 @@ void audioLoop() {
         if (audioGetTotalTrackCount() == 0) {
             Diagnostics::setError(Diagnostics::SystemError::NoTracks);
         } else {
-            // Wyczyść ewentualne błędy USB/nośnika
             if (Diagnostics::getError() == Diagnostics::SystemError::NoUsb ||
                 Diagnostics::getError() == Diagnostics::SystemError::UsbFsErr ||
                 Diagnostics::getError() == Diagnostics::SystemError::NoTracks ||
@@ -899,8 +929,6 @@ void audioLoop() {
         if (!usbDriveHostIsRunning()) {
             Diagnostics::setError(Diagnostics::SystemError::UsbHostErr);
         } else if (!isMounted) {
-            // Boot i montowanie FAT trwaja sekundy. "NO PENDRIVE" w tym oknie
-            // klamie — pendrive jest, tylko jeszcze nie gotowy.
             if (millis() < USB_ERROR_GRACE_MS) {
                 // czekamy
             } else if (usbDriveIsConnected()) {
@@ -913,33 +941,16 @@ void audioLoop() {
         }
     }
     
-    // --- Dekodowanie audio → PRZENIESIONE na osobny task (audioTaskFunc) ---
-    // audio.loop() nie jest tu już wywoływane — działa na tasku "audio_dec"
-    // z priorytetem 2, dzięki czemu nie jest blokowane przez obsługę Unilink.
-    
     // --- Wykryj koniec piosenki (zabezpieczenie) ---
-    // Jeśli isRunning zmieniło się na false PO tym jak utwor faktycznie ruszyl
-    // (songStarted), oznacza to koniec utworu — nawet gdy callback eof nie przyszedl.
-    // UWAGA: gatujemy to flagami trackChanging i playRequestPending oraz debouncem,
-    // bo podczas zmiany utworu audio.stopSong() chwilowo daje isRunning()=false.
-    // NIE polegamy juz na getAudioCurrentTime() > 0 — przy naturalnym EOF biblioteka
-    // zeruje czas do 0, przez co stary warunek nigdy nie wykrywal konca utworu
-    // (zegar tykal w nieskonczonosc, brak AUTO-NEXT).
     static unsigned long notRunningSince = 0;
     if (isPlaying && !trackChanging && !playRequestPending) {
         if (audio.isRunning()) {
-            // Utwor faktycznie gra — zapamietaj, ze ruszyl, i wyzeruj licznik ciszy.
             songStarted = true;
             notRunningSince = 0;
-        } else if (songStarted) {
-            // Utwor wczesniej gral, a teraz isRunning()==false -> to koniec.
-            // NIE sprawdzamy juz getAudioCurrentTime() > 0, bo biblioteka przy
-            // naturalnym EOF zeruje czas do 0 (widoczne w logach: "Czas: 0 s").
-            // Falszywe wykrycia podczas zmiany utworu sa juz odciete flagami
-            // trackChanging / playRequestPending powyzej.
+        } else {
             if (notRunningSince == 0) {
                 notRunningSince = millis();
-            } else if (millis() - notRunningSince > 300) {
+            } else if (millis() - notRunningSince > (songStarted ? 300UL : 800UL)) {
                 Serial.println("[Audio] Wykryto koniec odtwarzania (isRunning()==false, debounce)");
                 audioSetMute(true);
                 isPlaying = false;
@@ -962,7 +973,6 @@ void audioRescan() {
 
 void audioSetVolume(uint8_t vol) {
     if (vol > 21) vol = 21;
-    // Nieblokujaco: zlec zmiane glosnosci taskowi audio.
     volRequestValue = vol;
     volRequestPending = true;
     Serial.printf("[Audio] Głośność: %d/21 (zlecone)\n", vol);
@@ -972,14 +982,8 @@ void audioSetVolume(uint8_t vol) {
 // Callbacki biblioteki ESP32-audioI2S
 // ============================================================
 
-// Jeśli biblioteka została skompilowana jako C, może szukać symboli C
-#ifdef __cplusplus
-#endif
-
 void audio_info(const char *info) {
     if (!info) return;
-    // Lawina tych komunikatow przy setTimeOffset (seek MP3) i otwarciu pliku
-    // blokuje wspoldzielony UART — Core 1 gubi okno odpowiedzi na `01 15`.
     if (infoSquelch) return;
     if (strstr(info, "decode error") ||
         strstr(info, "INVALID_") ||
@@ -1004,9 +1008,6 @@ void audio_info(const char *info) {
 }
 
 void audio_id3data(const char *info) {
-    // Lawina ID3 przy kazdym otwarciu MP3 (Album/Artist/Title/…) blokuje
-    // wspoldzielony UART z Core 1 — gubimy odpowiedzi na `01 15` i radio
-    // porzuca Request Polling. Tagow nie potrzebujemy na magistrali.
     (void)info;
 }
 
@@ -1044,6 +1045,3 @@ void audio_lasthost(const char *info) {
 void audio_eof_speech(const char *info) {
     Serial.printf("[Audio-eof-speech] %s\n", info);
 }
-
-#ifdef __cplusplus
-#endif

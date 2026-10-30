@@ -41,14 +41,17 @@ volatile uint32_t s_ringHead = 0;   // pisze przerwanie
 volatile uint32_t s_ringTail = 0;   // pisze zadanie
 
 // --- nadawanie ---
-uint8_t       s_txBuf[FRAME_MAX];
-uint8_t       s_txLen     = 0;
-uint8_t       s_txByte    = 0;
-uint8_t       s_txBit     = 0;
-volatile bool s_txActive  = false;
-bool          s_txStarted = false;
-uint32_t      s_txArmedUs = 0;
-volatile bool s_breakHolding = false;
+enum class TxKind : uint8_t { Other, Claim, Grant };
+
+uint8_t         s_txBuf[FRAME_MAX];
+uint8_t         s_txLen     = 0;
+uint8_t         s_txByte    = 0;
+uint8_t         s_txBit     = 0;
+volatile bool   s_txActive  = false;
+bool            s_txStarted = false;
+uint32_t        s_txArmedUs = 0;
+volatile TxKind s_txKind    = TxKind::Other;
+volatile bool   s_breakHolding = false;
 
 // --- szybka sciezka ---
 volatile bool     s_fpEnabled   = false;
@@ -59,6 +62,7 @@ uint8_t           s_fpClaim[11];
 volatile uint8_t  s_fpClaimMask = 0;
 uint8_t           s_fpGrant[FRAME_MAX];
 volatile uint8_t  s_fpGrantLen  = 0;
+volatile uint8_t  s_fpGrantSavedLen = 0;
 volatile uint32_t s_grantsServed = 0;
 volatile uint32_t s_claimsSent   = 0;
 volatile uint32_t s_lastClaimUs  = 0;
@@ -92,13 +96,24 @@ volatile uint32_t s_stTxDone = 0, s_stTxAborted = 0, s_stTxLate = 0, s_stBreaks 
     } while (0)
 #define UL_RX_RESET()                                                          \
     do { s_rxLen = 0; s_rxBit = 0; s_rxByte = 0; s_rxExpected = 0; } while (0)
-#define UL_ARM_TX(n, now)                                                      \
+#define UL_ARM_TX(n, now, kind)                                                \
     do {                                                                       \
         s_txLen = (uint8_t)(n); s_txByte = 0; s_txBit = 0;                     \
-        s_txStarted = false; s_txArmedUs = (now); s_txActive = true;           \
+        s_txStarted = false; s_txArmedUs = (now); s_txKind = (kind);           \
+        s_txActive = true;                                                     \
     } while (0)
 #define UL_TX_RELEASE()                                                        \
-    do { UL_OUTPUT_OFF(); UL_LATCH_RECESSIVE(); s_txActive = false; } while (0)
+    do {                                                                       \
+        UL_OUTPUT_OFF(); UL_LATCH_RECESSIVE();                                 \
+        s_txActive = false; s_txKind = TxKind::Other;                          \
+    } while (0)
+#define UL_TX_ABORT_RESTORE()                                                  \
+    do {                                                                       \
+        if (s_txKind == TxKind::Grant && s_fpGrantLen == 0 && s_fpGrantSavedLen != 0) { \
+            s_fpGrantLen = s_fpGrantSavedLen;                                  \
+        }                                                                      \
+        UL_TX_RELEASE();                                                       \
+    } while (0)
 
 // Odpowiedzi, ktorych master oczekuje najczesciej i bez ktorych resetuje
 // magistrale. Przygotowane przez zadanie protokolu, wysylane bez jego udzialu.
@@ -121,14 +136,14 @@ static inline uint8_t __attribute__((always_inline)) fastPathReply(uint32_t now)
         s_txBuf[3] = s_fpStatus;
         s_txBuf[4] = (uint8_t)(s_txBuf[0] + s_txBuf[1] + s_txBuf[2] + s_txBuf[3]);
         s_txBuf[5] = 0x00;
-        UL_ARM_TX(6, now);
+        UL_ARM_TX(6, now, TxKind::Other);
         return 6;
     }
     if (c2 == 0x15) {
         if (rad != ADDR_BROADCAST || tad != ADDR_MASTER) return 0;
         if (s_fpClaimMask == 0 || s_fpGrantLen == 0) return 0;
         UL_COPY(s_txBuf, s_fpClaim, 11);
-        UL_ARM_TX(11, now);
+        UL_ARM_TX(11, now, TxKind::Claim);
         s_claimsSent++;
         s_lastClaimUs = now;
         return 11;
@@ -138,9 +153,9 @@ static inline uint8_t __attribute__((always_inline)) fastPathReply(uint32_t now)
         const uint8_t n  = s_fpGrantLen;
         if (me == 0 || rad != me || tad != ADDR_MASTER || n == 0) return 0;
         UL_COPY(s_txBuf, s_fpGrant, n);
-        UL_ARM_TX(n, now);
+        s_fpGrantSavedLen = n;
         s_fpGrantLen = 0;
-        s_grantsServed++;
+        UL_ARM_TX(n, now, TxKind::Grant);
         return n;
     }
     return 0;
@@ -184,13 +199,24 @@ static void IRAM_ATTR onClockEdge(void*)
     s_lastEdgeUs = now;
     s_edgeCount++;
 
+    // Jezeli master zaczal taktowac w trakcie trzymania naszego impulsu Slave Break,
+    // NATYCHMIAST zwalniamy linie DATA na pierwszym zboczu zegara, by nie zewrzec
+    // pierwszych bajtow ramki mastera (co powodowalo SYSTEM RESET / pusty ekran 0x70).
+    if (s_breakHolding) {
+        UL_OUTPUT_OFF();
+        UL_LATCH_RECESSIVE();
+        s_breakHolding = false;
+        UL_RX_RESET();
+        s_rxSkip = false;
+    }
+
     bool handled = false;
     if (s_txActive) {
         if (s_txStarted && gap > BUS_FRAME_GAP_US) {
             // Master przestal taktowac nasza odpowiedz i zaczyna nowa ramke.
             // Natychmiast zwalniamy linie — inaczej nadalibysmy reszte bitow
             // w srodek jego ramki.
-            UL_TX_RELEASE();
+            UL_TX_ABORT_RESTORE();
             s_stTxAborted++;
         } else {
             const uint8_t bit = (uint8_t)((s_txBuf[s_txByte] >> (7 - s_txBit)) & 1u);
@@ -207,8 +233,14 @@ static void IRAM_ATTR onClockEdge(void*)
                 if (++s_txByte >= s_txLen) {
                     // Ostatni bajt ramki to zawsze 0x00, wiec zwolnienie linii
                     // po jego ostatnim bicie nie zmienia odczytu mastera.
+                    const TxKind doneKind = s_txKind;
                     UL_TX_RELEASE();
                     s_stTxDone++;
+                    if (doneKind == TxKind::Grant) {
+                        s_fpGrantSavedLen = 0;
+                        s_grantsServed++;
+                        notify = true;
+                    }
                     UL_RX_RESET();
                     s_rxSkip = true;
                 }
@@ -318,7 +350,7 @@ bool respond(const Frame& f, const uint8_t* bytes, int len)
     if (!s_txActive && !s_breakHolding && s_edgeCount == f.edgeSeq &&
         (uint32_t)(now - f.endUs) < BUS_RESPONSE_DEADLINE_US) {
         for (int i = 0; i < len; ++i) s_txBuf[i] = bytes[i];
-        UL_ARM_TX(len, now);
+        UL_ARM_TX(len, now, TxKind::Other);
         armed = true;
     } else {
         s_stTxLate++;
@@ -333,7 +365,7 @@ void abortTx()
 {
     portENTER_CRITICAL(&s_mux);
     if (s_txActive) {
-        UL_TX_RELEASE();
+        UL_TX_ABORT_RESTORE();
         s_stTxAborted++;
         UL_RX_RESET();
         s_rxSkip = true;
@@ -351,7 +383,7 @@ void service()
         if (noSlot || stall) {
             // Master nie taktuje juz naszej odpowiedzi. Linia NIGDY nie moze
             // zostac trzymana — inaczej radio nie wystartuje magistrali.
-            UL_TX_RELEASE();
+            UL_TX_ABORT_RESTORE();
             s_stTxAborted++;
             UL_RX_RESET();
             s_rxSkip = true;
@@ -378,15 +410,17 @@ void loadGrant(const uint8_t* bytes, int len, uint8_t claimMask)
     portENTER_CRITICAL(&s_mux);
     for (int i = 0; i < len; ++i) s_fpGrant[i] = bytes[i];
     for (int i = 0; i < 11; ++i) s_fpClaim[i] = claim[i];
-    s_fpClaimMask = claimMask;
-    s_fpGrantLen  = (uint8_t)len;
+    s_fpClaimMask     = claimMask;
+    s_fpGrantLen      = (uint8_t)len;
+    s_fpGrantSavedLen = (uint8_t)len;
     portEXIT_CRITICAL(&s_mux);
 }
 
 void clearGrant()
 {
     portENTER_CRITICAL(&s_mux);
-    s_fpGrantLen = 0;
+    s_fpGrantLen      = 0;
+    s_fpGrantSavedLen = 0;
     portEXIT_CRITICAL(&s_mux);
 }
 
@@ -439,19 +473,27 @@ BreakResult trySlaveBreak()
     portEXIT_CRITICAL(&s_mux);
     if (!quiet) return BreakResult::Busy;
 
-    // Pelne 3 ms — krotszy impuls master potrafi przeoczyc.
-    delayMicroseconds(BREAK_HOLD_US);
+    // Pelne 3 ms — ale jesli w tym czasie master zacznie taktowac, onClockEdge
+    // natychmiast zwolni linie i wyzeruje s_breakHolding, a my nie niszczymy
+    // odbieranej ramki przez UL_RX_RESET().
+    const uint32_t holdStart = UL_NOW_US();
+    while ((uint32_t)(UL_NOW_US() - holdStart) < BREAK_HOLD_US) {
+        if (!s_breakHolding || s_edgeCount != e0) break;
+        delayMicroseconds(20);
+    }
 
     portENTER_CRITICAL(&s_mux);
-    UL_OUTPUT_OFF();
-    UL_LATCH_RECESSIVE();
-    s_breakHolding = false;
-    // Przerwanie probkowalo nasz wlasny poziom w trakcie impulsu.
-    UL_RX_RESET();
-    s_rxSkip = true;
-    s_stBreaks++;
+    const bool completed = s_breakHolding && (s_edgeCount == e0);
+    if (s_breakHolding) {
+        UL_OUTPUT_OFF();
+        UL_LATCH_RECESSIVE();
+        s_breakHolding = false;
+        UL_RX_RESET();
+        s_rxSkip = true;
+    }
+    if (completed) s_stBreaks++;
     portEXIT_CRITICAL(&s_mux);
-    return BreakResult::Done;
+    return completed ? BreakResult::Done : BreakResult::Busy;
 }
 
 uint32_t nowUs()           { return UL_NOW_US(); }

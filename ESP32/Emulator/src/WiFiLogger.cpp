@@ -1,5 +1,6 @@
 #include "WiFiLogger.h"
 #include "UsbDrive.h"
+#include "AudioPlayer.h"
 #include <FS.h>
 
 // UWAGA: NIE WOLNO includowac Config.h w tym pliku!
@@ -100,10 +101,6 @@ void WiFiLoggerClass::loop() {
 
         // 3. Sprawdzanie stanu obecnego klienta i czyszczenie bufora RX
         if (clientConnected && activeClient) {
-            // Skrypt w Pythonie wysyła "pingi" (puste znaki nowej linii). 
-            // Musimy je na bieżąco odbierać i ignorować, w przeciwnym razie bufor RX
-            // ESP32 się zapcha. Funkcja connected() potrafi zwracać true nawet po zerwaniu,
-            // dopóki w buforze odbiorczym znajdują się nieodczytane bajty!
             while (activeClient.available()) {
                 activeClient.read(); 
             }
@@ -174,6 +171,7 @@ void WiFiLoggerClass::addToBlackbox(uint8_t c) {
 #include "Diagnostics.h"
 #include <esp_system.h>
 #include <dirent.h>
+#include <strings.h>
 
 // Nazwa powodu resetu ESP32 — do nagłówka crash logu
 static const char* espResetReasonName() {
@@ -191,6 +189,12 @@ static const char* espResetReasonName() {
     }
 }
 
+static const char* crashBaseName(const char* path) {
+    if (!path) return "";
+    const char* slash = strrchr(path, '/');
+    return slash ? (slash + 1) : path;
+}
+
 // Znajdz najwyzszy numer crash_NNNNN.txt w /CrashLogs/
 // i zwroc go. Jesli folder pusty, zwraca 0.
 // Jednoczesnie liczy ile plikow jest w folderze (outCount).
@@ -199,19 +203,24 @@ static int findMaxCrashNumber(fs::FS& fs, int& outCount) {
     int maxNum = 0;
 
     File dir = fs.open("/CrashLogs");
-    if (!dir || !dir.isDirectory()) return 0;
+    if (!dir || !dir.isDirectory()) {
+        if (dir) dir.close();
+        return 0;
+    }
 
     File entry = dir.openNextFile();
     while (entry) {
-        const char* name = entry.name();
-        // Szukamy plików crash_NNNNN.txt
-        if (strncmp(name, "crash_", 6) == 0) {
-            int num = atoi(name + 6);
+        const char* base = crashBaseName(entry.name());
+        // Szukamy plików crash_NNNNN.txt (ESP32 VFS zwraca pełną ścieżkę w entry.name()!)
+        if (strncasecmp(base, "crash_", 6) == 0) {
+            int num = atoi(base + 6);
             if (num > maxNum) maxNum = num;
             outCount++;
         }
+        entry.close();
         entry = dir.openNextFile();
     }
+    dir.close();
     return maxNum;
 }
 
@@ -221,20 +230,25 @@ static void deleteOldestCrashLog(fs::FS& fs) {
     char minName[64] = {};
 
     File dir = fs.open("/CrashLogs");
-    if (!dir || !dir.isDirectory()) return;
+    if (!dir || !dir.isDirectory()) {
+        if (dir) dir.close();
+        return;
+    }
 
     File entry = dir.openNextFile();
     while (entry) {
-        const char* name = entry.name();
-        if (strncmp(name, "crash_", 6) == 0) {
-            int num = atoi(name + 6);
+        const char* base = crashBaseName(entry.name());
+        if (strncasecmp(base, "crash_", 6) == 0) {
+            int num = atoi(base + 6);
             if (num < minNum) {
                 minNum = num;
-                snprintf(minName, sizeof(minName), "/CrashLogs/%s", name);
+                snprintf(minName, sizeof(minName), "/CrashLogs/%s", base);
             }
         }
+        entry.close();
         entry = dir.openNextFile();
     }
+    dir.close();
 
     if (minName[0]) {
         fs.remove(minName);
@@ -252,7 +266,7 @@ static char snapshotReason[64] = "";
 static bool s_hasCrashSnapshot = false;
 
 void WiFiLoggerClass::captureCrashSnapshot(const char* reason) {
-    if (s_hasCrashSnapshot) return; // zachowaj pierwsze zdarzenie z danej trasy
+    if (s_hasCrashSnapshot) return; // zachowaj pierwsze niezrzucone zdarzenie
     snapshotUptime = millis();
     if (reason) {
         strncpy(snapshotReason, reason, sizeof(snapshotReason) - 1);
@@ -359,16 +373,28 @@ void WiFiLoggerClass::dumpCrashLog(const char* reason) {
     bool hasData = fromSnapshot ? (snapshotFull || (snapshotTail != snapshotHead))
                                 : (blackboxFull || (blackboxTail != blackboxHead));
 
+    bool isFull = fromSnapshot ? snapshotFull : blackboxFull;
     if (hasData) {
-        do {
-            f.write((uint8_t)srcBuf[pos]);
-            pos = (pos + 1) % BLACKBOX_SIZE;
-            count++;
-        } while (pos != end);
+        if (!isFull && pos < end) {
+            size_t len = end - pos;
+            f.write((const uint8_t*)&srcBuf[pos], len);
+            count += len;
+        } else {
+            size_t len1 = BLACKBOX_SIZE - pos;
+            if (len1 > 0) {
+                f.write((const uint8_t*)&srcBuf[pos], len1);
+                count += len1;
+            }
+            if (end > 0) {
+                f.write((const uint8_t*)&srcBuf[0], end);
+                count += end;
+            }
+        }
     }
     f.println("\n=====================================");
 
     f.close();
+    audioRefreshIndexFreeClusters();
 
     ::Serial.printf("[CrashLog] Zapisano %s (%d B logów)\n", filename, count);
 

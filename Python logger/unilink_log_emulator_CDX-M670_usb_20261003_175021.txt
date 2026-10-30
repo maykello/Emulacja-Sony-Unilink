@@ -1,0 +1,114 @@
+[17:50:22.898] [STAT] rx=39 ping=0 p15=18 claim=18 grant=17 brk=19/2/0 late=0 abort=2 bad=0 glitch=8 cut=3 ovf=0 | 0x31 st=0x80 CD13 TR16 00:04 q=0
+[17:50:24.436] [STAT] rx=44 ping=1 p15=20 claim=20 grant=20 brk=21/1/0 late=0 abort=1 bad=0 glitch=3 cut=2 ovf=0 | 0x31 st=0x80 CD13 TR16 00:04 q=0
+[17:50:26.437] [STAT] rx=51 ping=1 p15=22 claim=22 grant=23 brk=22/0/0 late=0 abort=1 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR16 00:04 q=0
+[17:50:28.439] [STAT] rx=42 ping=1 p15=20 claim=20 grant=18 brk=21/1/0 late=0 abort=3 bad=0 glitch=8 cut=3 ovf=0 | 0x31 st=0x80 CD13 TR16 00:04 q=0
+[17:50:30.440] [STAT] rx=46 ping=1 p15=20 claim=20 grant=21 brk=21/1/0 late=0 abort=0 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR16 00:04 q=0
+[17:50:32.452] [STAT] rx=39 ping=0 p15=17 claim=17 grant=17 brk=20/2/0 late=0 abort=1 bad=0 glitch=5 cut=2 ovf=0 | 0x31 st=0x80 CD13 TR16 00:04 q=0
+[17:50:34.454] [STAT] rx=51 ping=1 p15=23 claim=23 grant=22 brk=22/0/0 late=0 abort=3 bad=0 glitch=3 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR16 00:04 q=0
+[17:50:36.455] [STAT] rx=50 ping=1 p15=22 claim=22 grant=22 brk=22/0/0 late=0 abort=1 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR16 00:04 q=0
+[17:51:00.290] [STAT] rx=51 ping=1 p15=22 claim=22 grant=22 brk=22/0/0 late=0 abort=1 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR16 00:04 q=0
+[17:51:00.293] [STAT] rx=44 ping=0 p15=13 claim=13 grant=13 brk=15/2/0 late=0 abort=0 bad=1 glitch=7 cut=6 ovf=0 | 0x31 st=0x80 CD13 TR16 00:04 q=0
+[17:51:00.296] [STAT] rx=54 ping=1 p15=13 claim=13 grant=11 brk=9/2/0 late=0 abort=0 bad=1 glitch=9 cut=8 ovf=0 | 0x31 st=0x80 CD13 TR16 00:04 q=0
+[17:51:00.297] >> PLAY command received!
+[17:51:00.297] [NVS] Zapamietano: CD13 TR16, sekunda=0
+[17:51:00.299] [Audio] Async connecttoFS("/CD13.POLSKIE KS/Lombard - Droga pani z TV.mp3") = OK
+[17:51:00.301] [Audio] ▶ Odtwarzam: /CD13.POLSKIE KS/Lombard - Droga pani z TV.mp3 (rozpoczęto dekodowanie)
+[17:51:00.303] [Audio] Wznowiono pozycję odtwarzania od: 4 s (delta=4)
+[17:51:00.304] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[17:51:00.305] >>> 20 -> 00 (Playing!)
+[17:51:00.310] [STAT] rx=61 ping=1 p15=13 claim=12 grant=12 brk=11/1/0 late=0 abort=1 bad=1 glitch=5 cut=3 ovf=0 | 0x31 st=0x00 CD13 TR16 00:00 q=0
+[17:51:00.312] [STAT] rx=26 ping=1 p15=10 claim=9 grant=8 brk=8/1/0 late=0 abort=1 bad=0 glitch=5 cut=3 ovf=0 | 0x31 st=0x00 CD13 TR16 00:02 q=0
+[17:51:00.315] [STAT] rx=10 ping=0 p15=3 claim=3 grant=2 brk=3/0/0 late=0 abort=0 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x00 CD13 TR16 00:04 q=0
+[17:51:00.317] [STAT] rx=10 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=1 bad=0 glitch=2 cut=1 ovf=0 | 0x31 st=0x00 CD13 TR16 00:06 q=0
+[17:51:00.320] [STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR16 00:08 q=0
+[17:51:00.322] [STAT] rx=8 ping=2 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=2 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR16 00:10 q=0
+[17:51:00.325] [STAT] rx=9 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=1 bad=0 glitch=2 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR16 00:12 q=0
+[17:51:00.327] [STAT] rx=11 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x00 CD13 TR16 00:14 q=0
+[17:51:00.328] >> NEXT TRACK: CD13 TR17 (max=99)
+[17:51:00.329] [Audio-info] Closing audio file
+[17:51:00.329] >>> 20 -> 00 (Playing!)
+[17:51:00.331] [Audio] Async connecttoFS("/CD13.POLSKIE KS/Lombard - Gołębi puch..mp3") = OK
+[17:51:00.333] [Audio] ▶ Odtwarzam: /CD13.POLSKIE KS/Lombard - Gołębi puch..mp3 (rozpoczęto dekodowanie)
+[17:51:00.334] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[17:51:00.335] >> CD-TEXT: CD13 TR17 plyta="POLSKIE KS" utwor="Lombard - Gołębi puch."
+[17:51:00.337] [Audio-info] VBR recognized, audioFileDuration is estimated
+[17:51:00.456] [STAT] rx=24 ping=0 p15=9 claim=9 grant=8 brk=9/0/0 late=0 abort=2 bad=0 glitch=4 cut=2 ovf=0 | 0x31 st=0x00 CD13 TR17 00:01 q=0
+[17:51:00.929] [NVS] Zapamietano: CD13 TR17, sekunda=1
+[17:51:02.455] [STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR17 00:03 q=0
+[17:51:04.456] [STAT] rx=9 ping=1 p15=3 claim=3 grant=1 brk=3/0/0 late=0 abort=0 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR17 00:05 q=0
+[17:51:04.982] >> NEXT TRACK: CD13 TR18 (max=99)
+[17:51:04.983] [Audio-info] Closing audio file
+[17:51:05.226] [Audio] Async connecttoFS("/CD13.POLSKIE KS/Lombard - Kryształowa..mp3") = OK
+[17:51:05.228] [Audio] ▶ Odtwarzam: /CD13.POLSKIE KS/Lombard - Kryształowa..mp3 (rozpoczęto dekodowanie)
+[17:51:05.238] >>> 20 -> 00 (Playing!)
+[17:51:05.334] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[17:51:05.377] >> CD-TEXT: CD13 TR18 plyta="POLSKIE KS" utwor="Lombard - Kryształowa."
+[17:51:05.618] [Audio-info] VBR recognized, audioFileDuration is estimated
+[17:51:05.935] [NVS] Zapamietano: CD13 TR18, sekunda=0
+[17:51:06.452] [STAT] rx=25 ping=2 p15=8 claim=8 grant=9 brk=8/0/0 late=0 abort=1 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR18 00:01 q=0
+[17:51:08.454] [STAT] rx=10 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD13 TR18 00:03 q=0
+[17:51:09.528] >> Radio: stop odtwarzania (87 audio off)
+[17:51:09.529] [Audio] ⏹ Zatrzymano (zlecone).
+[17:51:09.530] [Audio] DAC XSMT (GPIO 16) -> LOW (Wyciszono)
+[17:51:09.541] [Audio-info] Closing audio file
+[17:51:10.448] [STAT] rx=20 ping=0 p15=2 claim=1 grant=1 brk=1/0/0 late=0 abort=0 bad=1 glitch=1 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:10.953] [NVS] Zapamietano: CD13 TR18, sekunda=3
+[17:51:11.743] >>> C0 -> 80 (Idle)
+[17:51:12.449] [STAT] rx=20 ping=1 p15=8 claim=8 grant=6 brk=8/0/0 late=0 abort=1 bad=0 glitch=2 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:14.451] [STAT] rx=44 ping=2 p15=19 claim=19 grant=19 brk=21/1/0 late=0 abort=2 bad=0 glitch=5 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:16.453] [STAT] rx=40 ping=1 p15=18 claim=18 grant=17 brk=19/2/0 late=0 abort=0 bad=0 glitch=2 cut=2 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:18.454] [STAT] rx=45 ping=0 p15=20 claim=20 grant=20 brk=21/1/0 late=0 abort=0 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:20.455] [STAT] rx=49 ping=1 p15=22 claim=22 grant=22 brk=23/0/0 late=0 abort=1 bad=0 glitch=2 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:22.456] [STAT] rx=52 ping=1 p15=23 claim=23 grant=22 brk=22/0/0 late=0 abort=1 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:26.290] [STAT] rx=49 ping=1 p15=22 claim=22 grant=22 brk=22/0/0 late=0 abort=1 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:26.450] [STAT] rx=45 ping=1 p15=20 claim=20 grant=19 brk=21/1/0 late=0 abort=2 bad=0 glitch=3 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:28.453] [STAT] rx=51 ping=0 p15=22 claim=22 grant=21 brk=22/0/0 late=0 abort=1 bad=0 glitch=5 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:30.455] [STAT] rx=44 ping=1 p15=19 claim=19 grant=19 brk=21/1/0 late=0 abort=2 bad=0 glitch=3 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:32.457] [STAT] rx=50 ping=1 p15=23 claim=23 grant=23 brk=22/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:34.457] [STAT] rx=51 ping=1 p15=22 claim=22 grant=21 brk=22/0/0 late=0 abort=4 bad=0 glitch=4 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:36.452] [STAT] rx=47 ping=1 p15=20 claim=20 grant=19 brk=21/1/0 late=0 abort=2 bad=0 glitch=5 cut=3 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:38.458] [STAT] rx=50 ping=0 p15=22 claim=22 grant=22 brk=22/0/0 late=0 abort=1 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:40.455] [STAT] rx=34 ping=1 p15=15 claim=15 grant=15 brk=18/3/0 late=0 abort=0 bad=0 glitch=4 cut=3 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:42.459] [STAT] rx=43 ping=1 p15=20 claim=20 grant=19 brk=21/1/0 late=0 abort=0 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:44.456] [STAT] rx=42 ping=1 p15=18 claim=18 grant=19 brk=20/2/0 late=0 abort=1 bad=0 glitch=4 cut=3 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:46.460] [STAT] rx=47 ping=0 p15=21 claim=21 grant=21 brk=22/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:48.473] [STAT] rx=47 ping=1 p15=20 claim=20 grant=20 brk=20/1/0 late=0 abort=1 bad=0 glitch=4 cut=2 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:50.472] [STAT] rx=43 ping=1 p15=20 claim=20 grant=18 brk=21/1/0 late=0 abort=1 bad=0 glitch=3 cut=2 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:52.488] [STAT] rx=49 ping=1 p15=22 claim=22 grant=23 brk=23/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:54.481] [STAT] rx=52 ping=1 p15=23 claim=23 grant=22 brk=22/0/0 late=0 abort=2 bad=0 glitch=2 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:56.486] [STAT] rx=50 ping=0 p15=22 claim=22 grant=23 brk=22/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:51:58.481] [STAT] rx=49 ping=1 p15=23 claim=23 grant=22 brk=23/0/0 late=0 abort=1 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:00.481] [STAT] rx=52 ping=1 p15=22 claim=22 grant=23 brk=22/0/0 late=0 abort=1 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:02.484] [STAT] rx=44 ping=1 p15=20 claim=20 grant=19 brk=21/1/0 late=0 abort=0 bad=0 glitch=3 cut=2 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:04.482] [STAT] rx=44 ping=1 p15=19 claim=19 grant=20 brk=21/1/0 late=0 abort=0 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:06.486] [STAT] rx=45 ping=0 p15=20 claim=20 grant=20 brk=21/1/0 late=0 abort=1 bad=0 glitch=3 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:08.482] [STAT] rx=51 ping=1 p15=22 claim=22 grant=22 brk=22/0/0 late=0 abort=2 bad=0 glitch=3 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:10.487] [STAT] rx=46 ping=1 p15=20 claim=20 grant=20 brk=20/1/0 late=0 abort=2 bad=0 glitch=4 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:12.485] [STAT] rx=47 ping=1 p15=20 claim=20 grant=20 brk=21/1/0 late=0 abort=2 bad=0 glitch=6 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:14.483] [STAT] rx=44 ping=1 p15=19 claim=19 grant=19 brk=20/1/0 late=0 abort=0 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:16.483] [STAT] rx=49 ping=0 p15=22 claim=22 grant=22 brk=23/0/0 late=0 abort=1 bad=0 glitch=4 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:18.480] [STAT] rx=48 ping=2 p15=23 claim=23 grant=22 brk=22/0/0 late=0 abort=2 bad=0 glitch=3 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:20.489] [STAT] rx=51 ping=1 p15=22 claim=22 grant=23 brk=22/0/0 late=0 abort=1 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:22.488] [STAT] rx=45 ping=0 p15=20 claim=20 grant=19 brk=21/1/0 late=0 abort=1 bad=0 glitch=2 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:24.489] [STAT] rx=46 ping=1 p15=22 claim=22 grant=22 brk=23/0/0 late=0 abort=0 bad=0 glitch=2 cut=2 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:26.487] [STAT] rx=46 ping=1 p15=20 claim=20 grant=20 brk=20/1/0 late=0 abort=0 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:28.487] [STAT] rx=44 ping=1 p15=20 claim=20 grant=19 brk=21/1/0 late=0 abort=1 bad=0 glitch=4 cut=2 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:30.488] [STAT] rx=45 ping=0 p15=20 claim=20 grant=21 brk=21/1/0 late=0 abort=1 bad=0 glitch=6 cut=4 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:32.486] [STAT] rx=36 ping=1 p15=16 claim=16 grant=16 brk=19/3/0 late=0 abort=0 bad=0 glitch=3 cut=3 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:34.488] [STAT] rx=36 ping=1 p15=16 claim=16 grant=15 brk=18/2/0 late=0 abort=1 bad=0 glitch=3 cut=2 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:36.487] [STAT] rx=50 ping=1 p15=22 claim=22 grant=22 brk=22/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:38.487] [STAT] rx=52 ping=0 p15=22 claim=22 grant=23 brk=22/0/0 late=0 abort=2 bad=0 glitch=2 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:40.484] [STAT] rx=52 ping=1 p15=22 claim=22 grant=22 brk=22/0/0 late=0 abort=2 bad=0 glitch=3 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:42.503] [STAT] rx=48 ping=1 p15=22 claim=22 grant=22 brk=23/0/0 late=0 abort=2 bad=0 glitch=2 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:44.503] [STAT] rx=51 ping=1 p15=23 claim=23 grant=22 brk=22/0/0 late=0 abort=0 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:46.516] [STAT] rx=50 ping=0 p15=22 claim=22 grant=23 brk=23/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:48.508] [STAT] rx=50 ping=1 p15=23 claim=23 grant=22 brk=22/0/0 late=0 abort=2 bad=0 glitch=3 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:50.514] [STAT] rx=52 ping=1 p15=22 claim=22 grant=22 brk=22/0/0 late=0 abort=3 bad=0 glitch=3 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:52.510] [STAT] rx=49 ping=1 p15=22 claim=22 grant=23 brk=22/0/0 late=0 abort=1 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:54.526] [STAT] rx=50 ping=0 p15=22 claim=22 grant=22 brk=23/0/0 late=0 abort=1 bad=0 glitch=3 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:56.529] [STAT] rx=49 ping=1 p15=22 claim=22 grant=21 brk=22/0/0 late=0 abort=5 bad=0 glitch=8 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:52:58.524] [STAT] rx=40 ping=1 p15=18 claim=18 grant=17 brk=19/2/0 late=0 abort=0 bad=0 glitch=4 cut=2 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:53:00.523] [STAT] rx=50 ping=1 p15=22 claim=22 grant=22 brk=22/0/0 late=0 abort=1 bad=0 glitch=2 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:53:02.521] [STAT] rx=51 ping=1 p15=22 claim=22 grant=22 brk=22/0/0 late=0 abort=1 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:53:04.538] [STAT] rx=51 ping=0 p15=22 claim=22 grant=22 brk=23/0/0 late=0 abort=2 bad=0 glitch=2 cut=0 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0
+[17:53:06.541] [STAT] rx=44 ping=1 p15=20 claim=20 grant=20 brk=21/1/0 late=0 abort=0 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x80 CD13 TR18 00:04 q=0

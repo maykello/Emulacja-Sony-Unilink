@@ -61,7 +61,8 @@ unsigned long s_appointMs        = 0;
 unsigned long s_anyoneAnsweredMs = 0;
 unsigned long s_magicSentMs      = 0;
 uint8_t       s_magicStreak      = 0;
-bool          s_selected         = true;   // radio wybralo nas jako zrodlo
+bool          s_selected         = true;    // radio wybralo nas jako zrodlo
+bool          s_displayYielded   = false;   // inne urzadzenie (np. Tuner TA/ekran) przejelo 0x70
 
 volatile bool s_persistAddrPending = false;
 uint8_t       s_savedAddr  = 0;
@@ -92,20 +93,23 @@ struct DisplayKey {
     uint8_t status;
     uint8_t minutes;   // 0xFF = czas nieznany ("--:--")
     uint8_t seconds;
+    uint8_t flags;     // dolny nibbel flag przy numerze plyty (0x8 / 0xB / 0xA)
     bool    valid;
 };
 // Co radio faktycznie ma na ekranie (ostatnia DOSTARCZONA ramka ekranu).
-DisplayKey s_shown = { 0, 0, 0xFF, 0xFF, 0xFF, false };
+DisplayKey s_shown = { 0, 0, 0xFF, 0xFF, 0xFF, 0, false };
 
 enum class SlotKind : uint8_t { None, Queued, Display };
 SlotKind      s_slotKind     = SlotKind::None;
-DisplayKey    s_slotKey      = { 0, 0, 0xFF, 0xFF, 0xFF, false };
+DisplayKey    s_slotKey      = { 0, 0, 0xFF, 0xFF, 0xFF, 0, false };
 bool          s_slotCarriesScreen = false;   // dostarczenie aktualizuje s_shown
+bool          s_slotIsStatusC0    = false;   // true dla pelnej ramki 0xC0/0x8E, false dla 0x90
 uint32_t      s_slotClaimBase = 0;           // claimsSent() w chwili zaladowania slotu
 uint32_t      s_grantsSeen   = 0;
 uint32_t      s_claimsSeen   = 0;
 unsigned long s_lastClaimMs  = 0;
 unsigned long s_lastTimeFrameMs = 0;
+bool          s_justEndedSeek   = false;
 
 // Slave Break
 unsigned long s_nextBreakMs       = 0;
@@ -123,25 +127,21 @@ unsigned long s_lastStatMs = 0;
 
 // ---------------------------------------------------------------------------
 // Nibbel flag przy numerze plyty (D4 w 0x90, D9 w 0xC0). Pelny cykl w sniffie
-// prawdziwej zmieniarki (CD8): 0x88 tekst jeszcze nie poszedl, 0x8B nazwy wlasnie
-// wyslane, 0x8A stan ustalony — dopiero wtedy procesor ekranu (0x71) prosi o
-// nazwy ramka 84 D7.
+// prawdziwej zmieniarki (CD8, 144705.txt linie 4438..4933):
+//   etap 0 -> 0x8 (0x88): start utworu, wysylane pierwsze C0 i pierwszy blok D2+DA
+//   etap 1 -> 0xB (0x8B): wysylane drugie C0 i powtorzony blok D2+DA+D7
+//   etap 2 -> 0xA (0x8A): wysylane trzecie C0, po ktorym ekran (0x71) prosi o 84 D7
 // ---------------------------------------------------------------------------
-uint8_t s_textFlagState = 0;   // 0 = brak nazw, 1 = swiezo wyslane, 2 = ustalone
+uint8_t s_textFlagState = 0;   // 0 = 0x8, 1 = 0xB, 2 = 0xA
+uint8_t s_textPassSent  = 0;   // 0 = nic nie poszlo, 1 = poszedl pass 1 (0x8), 2 = poszedl pass 2 (0xB)
 
 uint8_t discFlagsNibble()
 {
     if (audioGetTrackCount(CdChanger::disk()) == 0 && !Diagnostics::hasError()) return 0x00;
-    if (CdChanger::isSeeking()) return 0x08;
     uint8_t flags = 0x08;
     if (s_textFlagState >= 1) flags |= 0x02;
     if (s_textFlagState == 1) flags |= 0x01;
     return flags;
-}
-
-inline void settleTextFlag()
-{
-    if (s_textFlagState == 1) s_textFlagState = 2;
 }
 
 uint8_t decodeFpad(uint8_t v)
@@ -152,11 +152,14 @@ uint8_t decodeFpad(uint8_t v)
 DisplayKey keyNow()
 {
     DisplayKey k;
+    const MechState ms   = CdChanger::mechState();
+    const bool timeKnown = (ms == MechState::Playing || ms == MechState::Seeking);
     k.disc    = CdChanger::disk();
     k.track   = CdChanger::track();
-    k.status  = UnilinkFrame::statusByte(CdChanger::mechState());
-    k.minutes = CdChanger::minutes();
-    k.seconds = CdChanger::seconds();
+    k.status  = UnilinkFrame::statusByte(ms);
+    k.minutes = timeKnown ? CdChanger::minutes() : 0xFF;
+    k.seconds = timeKnown ? CdChanger::seconds() : 0xFF;
+    k.flags   = discFlagsNibble();
     k.valid   = true;
     return k;
 }
@@ -169,6 +172,7 @@ DisplayKey keyFromC0(const uint8_t* b)
     k.minutes = (b[11] == 0xFF) ? 0xFF : decodeFpad(b[11]);
     k.seconds = (b[12] == 0xFF) ? 0xFF : UnilinkFrame::decodeBcd(b[12]);
     k.disc    = (uint8_t)(b[13] >> 4);
+    k.flags   = (uint8_t)(b[13] & 0x0F);
     k.valid   = true;
     return k;
 }
@@ -179,14 +183,16 @@ DisplayKey keyFromC0(const uint8_t* b)
 // 0xC0 — pelny status, 1:1 ze sniffu CDX-M670:
 //   70 31 C0 00 61 00 00 00 00 30 F1 F0 00 88 FA 00   (gra, TR1 0:00, CD8)
 //   77 31 C0 20 88 00 00 00 00 30 F2 FF FF 88 30 00   (zmiana utworu, czas nieznany)
+//   77 31 C0 40 A8 00 00 00 00 00 F1 F0 00 81 1A 00   (zmiana plyty)
 void buildStatusC0(uint8_t* f)
 {
     const MechState ms   = CdChanger::mechState();
     const uint8_t   disc = CdChanger::disk();
     const bool timeKnown = (ms == MechState::Playing || ms == MechState::Seeking);
     const bool discPresent = (audioGetTrackCount(disc) > 0) || Diagnostics::hasError();
+    const bool changingDisc = (ms == MechState::LoadingTrack);
 
-    f[0]  = (ms == MechState::ChangedCd) ? 0x77 : 0x70;
+    f[0]  = (ms == MechState::ChangedCd || ms == MechState::LoadingTrack) ? 0x77 : 0x70;
     f[1]  = s_myAddr;
     f[2]  = 0xC0;
     f[3]  = UnilinkFrame::statusByte(ms);
@@ -195,11 +201,13 @@ void buildStatusC0(uint8_t* f)
     f[6]  = 0x00;
     f[7]  = 0x00;
     f[8]  = 0x00;
-    f[9]  = discPresent ? 0x30 : 0x00;
+    f[9]  = (!changingDisc && discPresent) ? 0x30 : 0x00;
     f[10] = UnilinkFrame::encodeBcdFpad(CdChanger::track());
-    f[11] = timeKnown ? UnilinkFrame::encodeBcdFpad(CdChanger::minutes()) : 0xFF;
-    f[12] = timeKnown ? UnilinkFrame::encodeBcd(CdChanger::seconds()) : 0xFF;
-    f[13] = UnilinkFrame::discHighNibble(disc, discFlagsNibble());
+    f[11] = timeKnown ? UnilinkFrame::encodeBcdFpad(CdChanger::minutes())
+                      : (changingDisc ? 0xF0 : 0xFF);
+    f[12] = timeKnown ? UnilinkFrame::encodeBcd(CdChanger::seconds())
+                      : (changingDisc ? 0x00 : 0xFF);
+    f[13] = UnilinkFrame::discHighNibble(disc, changingDisc ? (discPresent ? 0x01 : 0x00) : discFlagsNibble());
     f[14] = UnilinkFrame::parity2(f[4], &f[5], 9);
     f[15] = 0x00;
 }
@@ -220,15 +228,15 @@ void buildTimeTick90(uint8_t* f)
     f[10] = 0x00;
 }
 
-// 0x8E — ekran zmieniarki w spoczynku: 70 31 8E C0 EF 00 00 00 80 6F 00
+// 0x8E — ekran zmieniarki w spoczynku: 70 31 8E 80 AF 90 00 00 A0 DF 00
 void buildIdle8E(uint8_t* f)
 {
     f[0]  = 0x70;
     f[1]  = s_myAddr;
     f[2]  = 0x8E;
-    f[3]  = 0xC0;
+    f[3]  = 0x80;
     f[4]  = UnilinkFrame::parity1(f[0], f[1], f[2], f[3]);
-    f[5]  = 0x00;
+    f[5]  = 0x90;
     f[6]  = 0x00;
     f[7]  = 0x00;
     f[8]  = UnilinkFrame::discHighNibble(CdChanger::disk(), 0x00);
@@ -236,10 +244,17 @@ void buildIdle8E(uint8_t* f)
     f[10] = 0x00;
 }
 
+bool textQueued();
+
 bool screenChanged(const DisplayKey& k)
 {
-    return !s_shown.valid || k.disc != s_shown.disc || k.track != s_shown.track ||
-           k.status != s_shown.status;
+    if (!s_shown.valid) return true;
+    if (k.disc != s_shown.disc || k.track != s_shown.track || k.status != s_shown.status) return true;
+    if (k.status == 0x00 && s_shown.seconds == 0xFF && k.seconds != 0xFF) return true;
+    // Przejscie flag CD-TEXT (0x8 -> 0xB -> 0xA) w stanie Playing wymaga wyslania
+    // pelnej ramki 0xC0, gdy poprzedni blok ramek tekstowych zszedl juz z kolejki.
+    if (k.status == 0x00 && !CdChanger::isSeeking() && !textQueued() && k.flags != s_shown.flags) return true;
+    return false;
 }
 
 int buildDisplayFrame(uint8_t* f, DisplayKey& key)
@@ -252,11 +267,10 @@ int buildDisplayFrame(uint8_t* f, DisplayKey& key)
         key.seconds = 0xFF;
         return 11;
     }
-    // Pelny 0xC0 przy zmianie plyty/utworu/stanu i w stanach przejsciowych.
+    // Pelny 0xC0 przy zmianie plyty/utworu/stanu/flag CD-TEXT i w stanach przejsciowych.
     // FF/REW: tylko 0x90 (czas plynie, ekran sie nie przeladowuje).
-    // 0xC0 w Playing przeladowuje ekran i zmazuje CD-TEXT.
-    if (screenChanged(key) ||
-        ms == MechState::LoadingTrack || ms == MechState::ChangedCd) {
+    if (!CdChanger::isSeeking() &&
+        (screenChanged(key) || ms == MechState::LoadingTrack || ms == MechState::ChangedCd)) {
         buildStatusC0(f);
         key = keyFromC0(f);
         return 16;
@@ -267,11 +281,17 @@ int buildDisplayFrame(uint8_t* f, DisplayKey& key)
 
 bool needDisplayFrame(unsigned long now)
 {
+    if (!s_selected || s_displayYielded) return false;
     const MechState ms = CdChanger::mechState();
     if (ms == MechState::Init) return false;
+    if (ms == MechState::Idle) {
+        // Jednorazowa ramka 0x8E przy wejsciu w Idle (np. koniec plyty przy Repeat Off)
+        return s_shown.valid && s_shown.status != 0x80;
+    }
     const DisplayKey k = keyNow();
-    if (screenChanged(k)) return true;
+    if (!CdChanger::isSeeking() && screenChanged(k)) return true;
     if (ms == MechState::Playing || ms == MechState::Seeking) {
+        if (s_justEndedSeek) return true;
         if (k.minutes != s_shown.minutes || k.seconds != s_shown.seconds) {
             const unsigned long minGap = (ms == MechState::Seeking) ? SEEK_TICK_MIN_MS : TIME_TICK_MIN_MS;
             return (now - s_lastTimeFrameMs) >= minGap;
@@ -290,20 +310,9 @@ void enqueueFrame(uint8_t priority, const uint8_t* bytes, int len)
     s_txQueue.enqueue(priority, bytes, (uint8_t)len);
 }
 
-void enqueueStatusC0()
-{
-    uint8_t f[16];
-    buildStatusC0(f);
-    enqueueFrame(Tx::PRIO_STATUS, f, sizeof(f));
-}
-
 // ---------------------------------------------------------------------------
 // CD-TEXT (wariant CDX-M670: 0xD2 utwor, 0xDA plyta, 0xD7 koniec bloku)
 // ---------------------------------------------------------------------------
-// Ze sniffu: 70 31 D2 4B BE 61 70 69 74 61 02 00 F1 10 D0 00  ("Kapita")
-//            70 31 D2 6E E1 73 6B 69 65 20 74 01 F1 10 23 00  ("nskie t")
-//            70 31 DA 00 7B 00 00 00 00 00 02 00 08 10 95 00  (pusta nazwa plyty)
-//            70 31 D7 00 78 00 00 00 00 00 02 00 00 1C 96 00  (koniec bloku)
 constexpr int TEXT_SLOTS = 8;   // CMD2 + D1..D7
 
 void trackTextNow(char* out, size_t len)
@@ -332,8 +341,6 @@ void discTextFor(uint8_t disc, char* out, size_t len)
     }
 }
 
-// Segment nazwy: do 6 znakow w slotach 0..5; nieostatni ma 0x02 w slocie 6,
-// ostatni 0x00 w slocie 6 i 0x01 w slocie 7.
 int buildTextSegment(const char* name, int offset, bool last, uint8_t* slots)
 {
     for (int i = 0; i < TEXT_SLOTS; ++i) slots[i] = 0x00;
@@ -398,7 +405,6 @@ void enqueueTextName(uint8_t cmd1, const char* rawName, uint8_t d8)
     enqueueTextFrame(cmd1, slots, d8);
 }
 
-// Nazwa plyty w bloku utworu: jedna ramka 0xDA (do 6 znakow, marker konca).
 void enqueueDiscIndicator(uint8_t disc)
 {
     char raw[64];
@@ -417,7 +423,6 @@ void enqueueDiscIndicator(uint8_t disc)
 
 bool textQueued() { return s_txQueue.countPriority(Tx::PRIO_CD_TEXT) > 0; }
 
-// Blok nazwy utworu: D2 (segmenty) + DA (plyta) [+ D7 na zadanie radia].
 bool enqueueTrackTextBlock(bool withEndMarker, bool force)
 {
     if (textQueued()) {
@@ -432,7 +437,6 @@ bool enqueueTrackTextBlock(bool withEndMarker, bool force)
     return true;
 }
 
-// Tryb OBD: odswiezamy tylko nazwe "utworu" (dane telemetrii).
 bool enqueueTrackTextOnly()
 {
     if (textQueued()) s_txQueue.dropPriority(Tx::PRIO_CD_TEXT);
@@ -452,7 +456,6 @@ void enqueueDiscTextBlock(uint8_t disc)
     enqueueTextEnd();
 }
 
-// Wariant 8-znakowy (zadanie 84 D9 z numerem pola w D1).
 void enqueueTextField8(bool isDisc, int field)
 {
     if (field < 0 || field > CdText::MAX_FIELD) return;
@@ -479,7 +482,6 @@ void enqueueTextField8(bool isDisc, int field)
     enqueueFrame(Tx::PRIO_CD_TEXT, f, sizeof(f));
 }
 
-// Numer plyty z D1 zadania 0x84 (F|nr albo surowy); inaczej biezaca plyta.
 uint8_t discFromRequest(const Frame& fr)
 {
     uint8_t disc = CdChanger::disk();
@@ -506,14 +508,14 @@ void resetCdTextCache()
     s_textSentRepeat = RepeatMode::Off;
     s_textSentError  = (Diagnostics::SystemError)255;
     s_textFlagState  = 0;
+    s_textPassSent   = 0;
 }
 
 void serviceCdText(unsigned long now)
 {
-    if (!s_appointed) return;
+    if (!s_appointed || !s_selected || s_displayYielded) return;
     const MechState ms = CdChanger::mechState();
     if (ms == MechState::Init || ms == MechState::Idle) return;
-    // FF/REW: tylko plynacy czas. Ten sam utwor — nie wysylamy nazw od nowa.
     if (ms == MechState::Seeking) {
         s_wasSeeking = true;
         return;
@@ -522,12 +524,6 @@ void serviceCdText(unsigned long now)
         s_wasSeeking = false;
     }
 
-    // C0 20 / C0 00 przeladowuje ekran. Nazwy przed Playing znikaja w tej samej
-    // chwili, w ktorej licznik rusza. Czekamy az radio dostanie Playing z czasem.
-    if (ms != MechState::Playing) return;
-    if (!s_shown.valid || s_shown.status != 0x00 || s_shown.seconds == 0xFF) return;
-    if (s_shown.disc != CdChanger::disk() || s_shown.track != CdChanger::track()) return;
-
     const uint8_t disc   = CdChanger::disk();
     const uint8_t track  = CdChanger::track();
     const RepeatMode rep = CdChanger::repeatMode();
@@ -535,31 +531,49 @@ void serviceCdText(unsigned long now)
 
     const bool changed = (disc != s_textSentDisc || track != s_textSentTrack ||
                           rep != s_textSentRepeat || err != s_textSentError);
-    bool obdRefresh = false;
-    if (rep != RepeatMode::Off && now - s_lastObdMs >= OBD_UPDATE_INTERVAL_MS) {
-        obdRefresh = true;
-        s_lastObdMs = now;
-    }
-    if (!changed && !obdRefresh) return;
-
     if (changed) {
-        s_textFlagState = 1;
+        // Nowy utwor/plyta: zaczynamy cykl flag 0x8 -> 0xB -> 0xA od stanu 0 (0x8),
+        // zanim zbudowana zostanie pierwsza ramka 0xC0 0x00 dla tego utworu.
+        s_textSentDisc   = disc;
+        s_textSentTrack  = track;
+        s_textSentRepeat = rep;
+        s_textSentError  = err;
+        s_textFlagState  = 0;
+        s_textPassSent   = 0;
+    }
+
+    if (ms != MechState::Playing) return;
+    if (!s_shown.valid || s_shown.status != 0x00 || s_shown.seconds == 0xFF) return;
+    if (s_shown.disc != disc || s_shown.track != track) return;
+
+    // 3-etapowa sekwencja OEM ze sniffu 144705.txt:
+    //   1) Po dostarczeniu C0 z flaga 0x8: wyslij D2+DA i przelacz flage na 0xB (stan 1).
+    //   2) Gdy kolejka D2+DA zejdzie, screenChanged() wysle C0 z flaga 0xB.
+    //      Po dostarczeniu C0 z flaga 0xB: wyslij D2+DA+D7 i przelacz flage na 0xA (stan 2).
+    //   3) Gdy kolejka zejdzie, screenChanged() wysle C0 z flaga 0xA (na co 0x71 odpowiada 84 D7).
+    if (s_textPassSent == 0 && s_shown.flags == 0x08) {
         if (!enqueueTrackTextBlock(false, true)) return;
-    } else {
-        if (!enqueueTrackTextOnly()) return;
-    }
-    s_textSentDisc   = disc;
-    s_textSentTrack  = track;
-    s_textSentRepeat = rep;
-    s_textSentError  = err;
-
-    if (changed) {
+        s_textPassSent  = 1;
+        s_textFlagState = 1; // nastepny 0xC0 po zejsciu kolejki dostanie flage 0x0B
         char name[64];
         char discName[64];
         trackTextNow(name, sizeof(name));
         discTextFor(disc, discName, sizeof(discName));
         Serial.printf(">> CD-TEXT: CD%u TR%u plyta=\"%s\" utwor=\"%s\"\n",
                       disc, track, discName, name);
+        return;
+    }
+
+    if (s_textPassSent == 1 && s_shown.flags == 0x0B && !textQueued()) {
+        if (!enqueueTrackTextBlock(true, true)) return;
+        s_textPassSent  = 2;
+        s_textFlagState = 2; // nastepny 0xC0 po zejsciu kolejki dostanie flage 0x0A
+        return;
+    }
+
+    if (s_textPassSent >= 2 && rep != RepeatMode::Off && now - s_lastObdMs >= OBD_UPDATE_INTERVAL_MS) {
+        s_lastObdMs = now;
+        enqueueTrackTextOnly();
     }
 }
 
@@ -581,7 +595,6 @@ void enqueueMiddle(uint8_t rad, uint8_t cmd1, uint8_t cmd2, const uint8_t* d, ui
     enqueueFrame(prio, f, sizeof(f));
 }
 
-// 10 31 C5 A2 A8 24 77 52 F0 ... 88 0D 00 (skan) / 10 31 D5 ... F1 ... (zmiana plyty)
 void enqueueDiscId(uint8_t disc, bool discChangeVariant)
 {
     uint8_t d[Magazine::DISC_ID_DATA_LEN];
@@ -599,8 +612,6 @@ void enqueueDiscId(uint8_t disc, bool discChangeVariant)
     enqueueFrame(Tx::PRIO_DISC_ID, f, sizeof(f));
 }
 
-// Powiadomienie o zmianie plyty. Sniff: 90 31 9C 00 5D 00 00 00 88 E5 00 (CD8
-// w magazynku) i 90 31 9C 00 5D 00 00 00 10 6D 00 (pusty slot CD1).
 void onDiscChanged(uint8_t disc)
 {
     const bool present = audioGetTrackCount(disc) > 0 || Diagnostics::hasError();
@@ -634,7 +645,9 @@ void clearPendingTx()
 {
     s_txQueue.clear();
     UnilinkBus::clearGrant();
-    s_slotKind = SlotKind::None;
+    s_slotKind          = SlotKind::None;
+    s_slotCarriesScreen = false;
+    s_slotIsStatusC0    = false;
     s_breakAwaitingPoll = false;
 }
 
@@ -648,6 +661,7 @@ void adoptAddress(uint8_t addr, uint8_t appointCmd2, unsigned long now, const ch
     s_magicStreak      = 0;
     s_appointMs        = now;
     s_lastOwnPingMs    = now;
+    s_displayYielded   = false;
     if ((appointCmd2 & 0x0F) != 0) s_claimMask = (uint8_t)(appointCmd2 & 0x0F);
     if (changed) {
         clearPendingTx();
@@ -662,19 +676,18 @@ void adoptAddress(uint8_t addr, uint8_t appointCmd2, unsigned long now, const ch
 void onBusReset(unsigned long now)
 {
     const bool wasAppointed = s_appointed;
-    const bool expected     = (now - s_magicSentMs) < 2000 ||
-                              (s_busOnSinceMs != 0 && (now - s_busOnSinceMs) < CRASHLOG_BUS_ON_GRACE_MS);
     s_appointed        = false;
     s_myAddr           = ADDR_GROUP_CD;
     s_nvsAddr          = 0;
     s_dualListenWaited = false;
+    s_displayYielded   = false;
     clearPendingTx();
     s_shown.valid = false;
     resetCdTextCache();
     Diagnostics::recordNote("RESET");
-    if (wasAppointed && !expected) {
+    if (wasAppointed) {
         Serial.println(">> Radio: reset magistrali (18 10 01 00) — ponowne discovery");
-        if (millis() > CRASHLOG_GRACE_MS) {
+        if (millis() > CRASHLOG_GRACE_MS && (now - s_busOnSinceMs) > CRASHLOG_BUS_ON_GRACE_MS) {
             Serial.captureCrashSnapshot("RADIO BUS RESET 18 10 01 00");
         }
     } else {
@@ -682,12 +695,9 @@ void onBusReset(unsigned long now)
     }
 }
 
-// Nieprzydzielona zmieniarka zglasza sie ramka 10 18 04 00 na 18 10 01 11 —
-// radio robi wtedy reset magistrali i discovery, w ktorym nas dopisuje.
 void maybeSendMagic(const Frame& f, unsigned long now)
 {
     if (s_nvsAddr != 0 && !s_dualListenWaited) {
-        // Najpierw dajemy radiu pelny cykl na ping pod adresem z poprzedniej sesji.
         s_dualListenWaited = true;
         return;
     }
@@ -711,11 +721,7 @@ void stopByRadio(const char* why)
     if (ms == MechState::Init || ms == MechState::Idle) return;
     Serial.printf(">> Radio: stop odtwarzania (%s)\n", why);
     CdChanger::sleep();
-    s_txQueue.clear();
-    if (s_slotKind != SlotKind::None && UnilinkBus::nowUs() - UnilinkBus::lastClaimUs() > 60000) {
-        UnilinkBus::clearGrant();
-        s_slotKind = SlotKind::None;
-    }
+    clearPendingTx();
 }
 
 // ---------------------------------------------------------------------------
@@ -727,7 +733,6 @@ void handleRequest84(const Frame& f)
     if (c2 == 0xD9) {
         enqueueTextField8(false, f.data[5]);
     } else if (c2 == 0xD7) {
-        // D4 = 0 -> nazwa plyty, inaczej nazwa utworu (sniff: 31 71 84 D7 FD 70 00 00 01 6E 00).
         const uint8_t d4 = (f.len >= 11) ? f.data[8] : 0x01;
         if (d4 == 0x00) {
             enqueueDiscTextBlock(discFromRequest(f));
@@ -747,8 +752,6 @@ void handleRequest84(const Frame& f)
 
 void handleDirectSelect(const Frame& f)
 {
-    // 0xB0 to ramka middle: numer plyty w dolnym nibblu CMD2, utwor w D1
-    // (0xFF/0x00 = sama plyta, od poczatku).
     const uint8_t disc = (uint8_t)(f.data[3] & 0x0F);
     uint8_t track = 1;
     if (f.len >= 11) {
@@ -774,10 +777,14 @@ void handleDirectSelect(const Frame& f)
 
 void handleCommand(const Frame& f, unsigned long now)
 {
+    s_selected = true;
+    if (s_displayYielded) {
+        s_displayYielded = false;
+        s_shown.valid    = false;
+    }
     const uint8_t c1 = f.data[2];
     switch (c1) {
         case 0x20:
-            s_selected = true;
             CdChanger::handlePlayCommand();
             break;
         case 0x24: CdChanger::seek(+SEEK_STEP_SEC); break;
@@ -835,7 +842,6 @@ void handleFrame(const Frame& f, unsigned long now)
         onBusReset(now);
         return;
     }
-    // Przy BUS_ON=0 radio rozmawia z wlasnymi urzadzeniami — nie odpowiadamy.
     if (!s_busActive) return;
 
     // --- Ping 01 12 (odpowiada przerwanie) ---
@@ -871,12 +877,14 @@ void handleFrame(const Frame& f, unsigned long now)
     // --- Grant 3X 10 01 13 (ramke wysyla przerwanie) ---
     if (s_appointed && rad == s_myAddr && fromMaster && c1 == 0x01 && c2 == 0x13) {
         if (!f.replyLen) {
-            // Nic nie bylo przygotowane — prawdziwa zmieniarka nigdy nie zostawia
-            // pustego slotu po grancie, wiec dajemy aktualny ekran.
             uint8_t fr[16];
             DisplayKey key;
             const int n = buildDisplayFrame(fr, key);
-            if (UnilinkBus::respond(f, fr, n)) Diagnostics::recordFrame("TX", fr, n);
+            if (UnilinkBus::respond(f, fr, n)) {
+                Diagnostics::recordFrame("TX", fr, n);
+                s_shown = key;
+                if (s_shown.seconds != 0xFF) s_lastTimeFrameMs = now;
+            }
         }
         s_stat.grants++;
         CdChanger::notePolled();
@@ -898,8 +906,6 @@ void handleFrame(const Frame& f, unsigned long now)
 
     // --- Appoint 3X 10 02 YY ---
     if (fromMaster && c1 == 0x02 && (rad & 0xF0) == ADDR_GROUP_CD) {
-        // 0x3B (wewnetrzny CD radia) tez lezy w grupie 0x3X — przydzial jest nasz
-        // tylko tuz po naszej odpowiedzi na ANYONE? albo dla naszego adresu.
         const bool forUs = (!s_appointed && (now - s_anyoneAnsweredMs) < APPOINT_AFTER_ANYONE_MS) ||
                            (!s_appointed && s_nvsAddr != 0 && rad == s_nvsAddr) ||
                            (s_appointed && rad == s_myAddr);
@@ -921,21 +927,85 @@ void handleFrame(const Frame& f, unsigned long now)
 
     if (!s_appointed) return;
 
+    // --- Arbitraz ekranu 0x70 (ochrona przed walka z Masterem/Tunerem z crash_00001.txt) ---
+    if (rad == 0x70) {
+        if (tad != s_myAddr && tad != ADDR_MASTER && tad != ADDR_DISPLAY &&
+            (c1 == 0xC0 || c1 == 0x90 || c1 == 0x92)) {
+            // Inne zrodlo (np. Tuner 0x51 przy komunikacie TA/RDS) pisze na ekran 0x70:
+            // oddajemy ekran do czasu ponownego wyboru zmieniarki.
+            if (!s_displayYielded) {
+                s_displayYielded = true;
+                clearPendingTx();
+                Serial.printf(">> Ekran 0x70 przejety przez 0x%02X (cmd 0x%02X) — wstrzymuje ramki 0x70\n", tad, c1);
+            }
+            return;
+        }
+        if (fromMaster && c1 == 0x25 && c2 == 0x00) {
+            if (!s_displayYielded) {
+                s_displayYielded = true;
+                clearPendingTx();
+                Serial.println(">> Master: 70 10 25 00 — wstrzymuje ramki ekranu 0x70");
+            }
+            return;
+        }
+        if (fromMaster && c1 == 0xC0 && c2 == 0x00 &&
+            s_shown.valid && s_shown.status == 0x00 &&
+            s_lastTimeFrameMs != 0 && (now - s_lastTimeFrameMs) < 120) {
+            // Master nadpisal nasz swiezo wyslany tick 0x90 pusta ramka 70 10 C0 00:
+            // nie walczymy o ekran, zeby nie wywolac resetu magistrali 18 10 01 00!
+            if (!s_displayYielded) {
+                s_displayYielded = true;
+                clearPendingTx();
+                Serial.println(">> Master nadpisal ekran 0x70 po naszym 0x90 — ustępuje ekranu");
+            }
+            return;
+        }
+        if (fromMaster && c1 == 0x91 && f.len >= 6 && f.data[5] == s_myAddr) {
+            // Master przelaczyl widok ekranu 0x70 z powrotem na nasze zrodlo (70 10 91 .. 31)
+            if (s_displayYielded) {
+                s_displayYielded = false;
+                s_shown.valid    = false;
+                Serial.println(">> Master przywrocil ekran 0x70 dla zmieniarki");
+            }
+            return;
+        }
+    }
+
     // --- Rozglaszane informacje radia ---
     if (rad == ADDR_BROADCAST) {
         if (fromMaster && c1 == 0x08 && c2 == 0x00) {
+            if (CdChanger::isSeeking()) {
+                s_justEndedSeek = true;
+            }
             CdChanger::stopSeekScan();   // puszczenie klawisza FF/REW
         } else if (c1 == 0x87 && (tad == ADDR_MASTER || tad == 0x11)) {
-            // Bit 0 = wyjscie audio zmieniarki wlaczone. Prawdziwa zmieniarka po
-            // 87 6A / 87 2A przechodzi w status 0x80 (sniff 165726, 16:58:58).
             if ((c2 & 0x01) == 0) {
                 s_selected = false;
                 stopByRadio("87 audio off");
+            } else {
+                const bool wasSelected = s_selected;
+                s_selected       = true;
+                s_displayYielded = false;
+                if (!wasSelected) s_shown.valid = false;
+                // Jezeli radio wlaczylo tor audio zmieniarki (87 29), a my stoimy w Init/Idle
+                // (np. radio nie przyslalo osobnego 0x20 PLAY po starcie), ruszamy od razu!
+                const MechState ms = CdChanger::mechState();
+                if (ms == MechState::Init || ms == MechState::Idle) {
+                    Serial.println(">> [0x87] Audio ON dla zmieniarki -> start odtwarzania!");
+                    CdChanger::handlePlayCommand();
+                }
             }
         } else if (fromMaster && c1 == 0xF0) {
-            // Zmiana zrodla: CMD2 = nowe zrodlo (18 10 F0 31 ... = my, F0 51 = tuner).
             if (c2 == s_myAddr) {
-                s_selected = true;
+                const bool wasSelected = s_selected;
+                s_selected       = true;
+                s_displayYielded = false;
+                if (!wasSelected) s_shown.valid = false;
+                const MechState ms = CdChanger::mechState();
+                if (ms == MechState::Init || ms == MechState::Idle) {
+                    Serial.println(">> [0xF0] Radio wybralo zmieniarke -> start odtwarzania!");
+                    CdChanger::handlePlayCommand();
+                }
             } else {
                 s_selected = false;
                 stopByRadio("radio wybralo inne zrodlo");
@@ -961,32 +1031,66 @@ void loadDisplaySlot(unsigned long now)
     s_slotKind          = SlotKind::Display;
     s_slotKey           = key;
     s_slotCarriesScreen = true;
+    s_slotIsStatusC0    = (f[2] == 0xC0 || f[2] == 0x8E);
 }
 
 void loadNextSlot(unsigned long now)
 {
-    Tx::TxItem item;
-    if (s_txQueue.dequeue(item)) {
-        if (item.len == 16 && item.bytes[2] == 0xC0) {
-            const DisplayKey qk = keyFromC0(item.bytes);
-            const DisplayKey nk = keyNow();
-            if (qk.disc != nk.disc || qk.track != nk.track || qk.status != nk.status) {
-                loadNextSlot(now);
+    const bool cdTextAllowed = (CdChanger::mechState() == MechState::Playing) &&
+                               !CdChanger::isSeeking() && !s_displayYielded &&
+                               s_shown.valid && (s_shown.status == 0x00) && (s_shown.seconds != 0xFF);
+
+    // 1. Pilne ramki protokolowe (status 0x9C, DiscID 0xC5/0xD5, magazynek 0x95/0x97)
+    //    maja pierwszenstwo przed wszystkim.
+    if (!s_txQueue.isEmpty()) {
+        const int prio = s_txQueue.peekPriority();
+        if (prio < Tx::PRIO_CD_TEXT) {
+            Tx::TxItem item;
+            if (s_txQueue.dequeue(item)) {
+                if (item.len == 16 && item.bytes[2] == 0xC0) {
+                    const DisplayKey qk = keyFromC0(item.bytes);
+                    const DisplayKey nk = keyNow();
+                    if (qk.disc != nk.disc || qk.track != nk.track || qk.status != nk.status) {
+                        loadNextSlot(now);
+                        return;
+                    }
+                }
+                s_slotClaimBase = UnilinkBus::claimsSent();
+                UnilinkBus::loadGrant(item.bytes, item.len, s_claimMask);
+                s_slotKind          = SlotKind::Queued;
+                s_slotCarriesScreen = (item.len == 16 && item.bytes[2] == 0xC0);
+                s_slotIsStatusC0    = s_slotCarriesScreen;
+                if (s_slotCarriesScreen) s_slotKey = keyFromC0(item.bytes);
                 return;
             }
         }
-        s_slotClaimBase = UnilinkBus::claimsSent();
-        UnilinkBus::loadGrant(item.bytes, item.len, s_claimMask);
-        s_slotKind = SlotKind::Queued;
-        s_slotCarriesScreen = (item.len == 16 && item.bytes[2] == 0xC0);
-        if (s_slotCarriesScreen) s_slotKey = keyFromC0(item.bytes);
-        return;
     }
+
+    // 2. Ramka ekranu (0xC0 lub 1 Hz tick 0x90) ma pierwszenstwo przed CD-TEXTem,
+    //    dzieki czemu licznik 1 Hz nigdy nie potyka sie w trakcie wysylania nazw!
     if (needDisplayFrame(now)) {
         loadDisplaySlot(now);
-    } else if (s_slotKind != SlotKind::None) {
+        return;
+    }
+
+    // 3. W oknie miedzy sekundami wysylamy oczekujace segmenty CD-TEXT (D2/DA/D7).
+    if (!s_txQueue.isEmpty() && cdTextAllowed) {
+        Tx::TxItem item;
+        if (s_txQueue.dequeue(item)) {
+            s_slotClaimBase     = UnilinkBus::claimsSent();
+            UnilinkBus::loadGrant(item.bytes, item.len, s_claimMask);
+            s_slotKind          = SlotKind::Queued;
+            s_slotCarriesScreen = false;
+            s_slotIsStatusC0    = false;
+            return;
+        }
+    }
+
+    if (s_slotKind != SlotKind::None) {
         UnilinkBus::clearGrant();
-        s_slotKind = SlotKind::None;
+        s_slotKind          = SlotKind::None;
+        s_slotCarriesScreen = false;
+        s_slotIsStatusC0    = false;
     }
 }
 
@@ -994,9 +1098,9 @@ bool displaySlotStale()
 {
     const DisplayKey k = keyNow();
     if (k.disc != s_slotKey.disc || k.track != s_slotKey.track || k.status != s_slotKey.status) return true;
-    if (s_slotKey.seconds == 0xFF && k.seconds != 0xFF) return true;
+    if (k.status == 0x00 && s_slotKey.seconds == 0xFF && k.seconds != 0xFF) return true;
     if (s_slotKey.seconds == 0xFF) return false;
-    return k.minutes != s_slotKey.minutes || k.seconds != s_slotKey.seconds;
+    return k.minutes != s_slotKey.minutes || k.seconds != s_slotKey.seconds || k.flags != s_slotKey.flags;
 }
 
 void trackGrants(unsigned long now)
@@ -1012,17 +1116,23 @@ void trackGrants(unsigned long now)
         if (s_slotKind != SlotKind::None && s_slotCarriesScreen) {
             s_shown = s_slotKey;
             if (s_shown.seconds != 0xFF) s_lastTimeFrameMs = now;
-            settleTextFlag();
+            s_justEndedSeek = false;
         }
-        s_slotKind = SlotKind::None;
+        s_slotKind          = SlotKind::None;
+        s_slotCarriesScreen = false;
+        s_slotIsStatusC0    = false;
     }
 }
 
 void maybeBreak(unsigned long now)
 {
+    const MechState ms = CdChanger::mechState();
+    if (ms == MechState::Init || !s_selected || !s_busActive || !s_appointed) {
+        s_breakAwaitingPoll = false;
+        return;
+    }
     if (s_breakAwaitingPoll) {
         if (now - s_breakDoneMs < BREAK_POLL_WAIT_MS) return;
-        // Impuls poszedl, a master nie odpowiedzial 01 15.
         s_breakAwaitingPoll = false;
         s_stat.breakNoPoll++;
         if (s_breakFailStreak < 6) s_breakFailStreak++;
@@ -1058,30 +1168,55 @@ void scheduleTx(unsigned long now)
     if (!s_appointed || !s_busActive) {
         if (s_slotKind != SlotKind::None) {
             UnilinkBus::clearGrant();
-            s_slotKind = SlotKind::None;
+            s_slotKind          = SlotKind::None;
+            s_slotCarriesScreen = false;
+            s_slotIsStatusC0    = false;
         }
         s_breakAwaitingPoll = false;
         return;
     }
-    // Po zgloszeniu (82 xx) grant przychodzi ~10-30 ms pozniej — slotu wtedy
-    // nie ruszamy.
+
+    // Nie ruszamy slotu ani nie wywolujemy Slave Break, dopoki przerwanie
+    // aktualnie taktuje odpowiedz na magistrali.
+    if (UnilinkBus::isTransmitting()) return;
+
+    const MechState ms = CdChanger::mechState();
+    if (ms == MechState::Init || !s_selected || s_displayYielded) {
+        if (s_slotKind == SlotKind::Display) {
+            UnilinkBus::clearGrant();
+            s_slotKind          = SlotKind::None;
+            s_slotCarriesScreen = false;
+            s_slotIsStatusC0    = false;
+        }
+        s_breakAwaitingPoll = false;
+        if (s_txQueue.isEmpty() || s_displayYielded) {
+            return;
+        }
+    }
+
+    // Jezeli przerwanie odrzucilo nadawanie grantu (abort) i przywrocilo bufor,
+    // ale s_slotKind byl juz wyczyszczony lub odwrotnie, synchronizujemy stan.
+    if (s_slotKind != SlotKind::None && !UnilinkBus::grantLoaded()) {
+        s_slotKind          = SlotKind::None;
+        s_slotCarriesScreen = false;
+        s_slotIsStatusC0    = false;
+    }
+
     const bool claimInFlight = (s_slotKind != SlotKind::None) &&
                                UnilinkBus::claimsSent() != s_slotClaimBase &&
                                (now - s_lastClaimMs) < CLAIM_GRANT_WAIT_MS;
     if (!claimInFlight) {
-        if (s_slotKind == SlotKind::None ||
-            (s_slotKind == SlotKind::Display && !s_txQueue.isEmpty())) {
-            // Czas ma pierwszenstwo przed CD-TEXT: inaczej --:-- zostaje na
-            // czas bloku nazw, a radio nigdy nie dostaje 0x90.
-            const bool timeDue = needDisplayFrame(now) &&
-                                 CdChanger::mechState() == MechState::Playing &&
-                                 s_txQueue.countPriority(Tx::PRIO_STATUS) == 0;
-            if (timeDue && !s_txQueue.isEmpty()) loadDisplaySlot(now);
-            else loadNextSlot(now);
+        if (s_slotKind == SlotKind::None) {
+            loadNextSlot(now);
         } else if (s_slotKind == SlotKind::Display) {
-            if (CdChanger::mechState() == MechState::Init) {
+            if (ms == MechState::Init || !s_selected || s_displayYielded) {
                 UnilinkBus::clearGrant();
-                s_slotKind = SlotKind::None;
+                s_slotKind          = SlotKind::None;
+                s_slotCarriesScreen = false;
+                s_slotIsStatusC0    = false;
+            } else if (!s_txQueue.isEmpty() && s_txQueue.peekPriority() < Tx::PRIO_CD_TEXT) {
+                // Pilne zadanie protokolowe (np. 84 95 / 84 97 / 9C / D5) zastepuje slot ekranu
+                loadNextSlot(now);
             } else if (displaySlotStale()) {
                 loadDisplaySlot(now);
             }
@@ -1103,28 +1238,30 @@ void updateBusOn(unsigned long now)
     if (raw != s_busActive && (now - s_busEdgeMs) >= BUS_ON_DEBOUNCE_MS) {
         s_busActive = raw;
         if (raw) {
-            s_busOffSinceMs = 0;
-            s_busOnSinceMs  = now;
-            s_busOffStopped = false;
-            s_lastFrameMs   = now;
-            s_lastOwnPingMs = now;
+            s_busOffSinceMs  = 0;
+            s_busOnSinceMs   = now;
+            s_busOffStopped  = false;
+            s_displayYielded = false;
+            s_lastFrameMs    = now;
+            s_lastOwnPingMs  = now;
             CdChanger::wake();
             Serial.println("=== BUS_ON = 1 ===");
         } else {
             s_busOffSinceMs = now;
+            s_selected      = false;
             UnilinkBus::abortTx();
             UnilinkBus::clearGrant();
-            s_slotKind = SlotKind::None;
+            s_slotKind          = SlotKind::None;
+            s_slotCarriesScreen = false;
+            s_slotIsStatusC0    = false;
             s_breakAwaitingPoll = false;
             Serial.println("=== BUS_ON = 0 (sesja zachowana) ===");
         }
     }
-    // Radio wylaczone na dluzej niz faza BUS_ON=0 w jego discovery (~220 ms):
-    // zatrzymujemy muzyke, ale adres zostaje — po wlaczeniu radio czesto pinguje
-    // nas pod tym samym adresem.
     if (!s_busActive && !s_busOffStopped && s_busOffSinceMs != 0 &&
         now - s_busOffSinceMs >= BUS_OFF_AUDIO_STOP_MS) {
         s_busOffStopped = true;
+        s_selected      = false;
         CdChanger::sleep();
         s_txQueue.clear();
         s_shown.valid = false;
@@ -1152,15 +1289,12 @@ void updateFastPath()
 
 void serviceHealth(unsigned long now)
 {
-    if (!s_busActive) return;
+    if (!s_busActive || !s_selected) return;
     if (!s_silentReported && s_lastFrameMs != 0 && now - s_lastFrameMs > RADIO_SILENT_MS) {
         s_silentReported = true;
         Serial.println(">> Radio milczy (BUS_ON=1, brak ramek)");
         if (millis() > CRASHLOG_GRACE_MS) Serial.captureCrashSnapshot("RADIO SILENT (BUS_ON=1)");
     }
-    // Radio aktywnie odpytuje inne urzadzenia, a nas od dawna nie pinguje: zapomnialo
-    // o nas bez resetu magistrali. Wracamy do stanu "nieprzydzielona" (z nasluchem
-    // pod starym adresem), zeby dolaczyc ramka 10 18 04 00.
     if (s_appointed && now - s_lastOwnPingMs > RADIO_FORGOT_US_MS && now - s_lastFrameMs < 1000) {
         Serial.printf(">> Radio nie pinguje 0x%02X od %lus — ponowne dolaczenie\n",
                       (uint8_t)s_myAddr, (now - s_lastOwnPingMs) / 1000);

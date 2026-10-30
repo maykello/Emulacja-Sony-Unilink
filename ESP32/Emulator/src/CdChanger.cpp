@@ -24,15 +24,9 @@ static unsigned long playBaseMs = 0;
 static MechState     cdState      = MechState::Init;
 static unsigned long seekStartTime = 0;
 static unsigned long initWaitTime  = 0;   // 0 = jeszcze nie bylo pierwszego PINGa
+static unsigned long audioSilenceSinceMs = 0;
 
 // Ile razy radio odpytalo nas o status/ekran, odkad weszlismy w biezacy stan.
-// Prawdziwa zmieniarka jest wolna: kazdy etap (ladowanie, zmiana plyty) trwa u
-// niej dosc dlugo, by radio zdazylo go ODCZYTAC i pokazac na wyswietlaczu.
-// Nasz mechanizm jest wirtualny i przelaczalby stany w kilkadziesiat ms —
-// szybciej, niz radio zdazy zapytac. Radio widzialoby wtedy tylko stan koncowy,
-// przez co ekran nie odswiezal numeru plyty ani napisu LOAD. Dlatego kazde
-// przejscie wymaga NIE TYLKO uplywu czasu, ale i tego, by radio przynajmniej
-// raz zobaczylo biezacy stan.
 static uint16_t pollsInState = 0;
 
 static inline void enterState(MechState s) {
@@ -44,33 +38,21 @@ static inline void enterState(MechState s) {
 static bool needDisplayUpdate = false;
 
 // --- TRYBY ODTWARZANIA (Repeat / Shuffle / Intro) — Wymaganie 8 ---
-// Domyslnie wszystko wylaczone (Off/false/false), tak jak po wlozeniu plyty.
 static PlayModes playModesState = { RepeatMode::Off, false, false };
 
 // --- PRZEWIJANIE — CIAGLE SKANOWANIE CUE/REVIEW (FF/REW) ---
-// scanDir: 0 = brak skanowania, +1 = do przodu (FF), -1 = do tylu (REW).
-// Nacisniecie klawisza (0x24/0x25) startuje skan, puszczenie (broadcast
-// `08 00`) go konczy. Pozycje liczymy CIAGLE z czasu trzymania — patrz
-// scanDistanceSec — wiec licznik plynie plynnie i przyspiesza, zamiast skakac
-// po rownych porcjach.
 static int           seekScanDir   = 0;
 static unsigned long seekScanStart = 0;
 static uint32_t      seekAnchorSec = 0;  // pozycja w chwili nacisniecia klawisza
 static unsigned long lastAudioSeek = 0;  // ostatni setTimeOffset podczas skanu
 
 // --- PAMIEC NIEULOTNA (NVS) ---
-// Zapamietuje ostatnio odtwarzany utwor i sekunde, by po wylaczeniu radia (BUS=0) wznowic
-// od tej samej plyty/utworu i pozycji czasowej.
 static Preferences prefs;
 static uint8_t  lastSavedDisk   = 0;
 static uint8_t  lastSavedTrack  = 0;
 static uint32_t lastSavedSec    = 0;
 // Pozycja, od ktorej wznowimy odtwarzanie (po starcie albo po zatrzymaniu przez radio).
 static volatile uint32_t resumeSecOnBoot = 0;
-// Zapis NVS wstrzymuje na czas operacji flash wszystkie zadania (takze zadanie
-// magistrali), wiec robi go WYLACZNIE petla glowna w oknie wskazanym przez
-// UnilinkProtocol::flashWriteWindow(). Logika zmieniarki tylko zaznacza, ze jest
-// cos do zapisania.
 static volatile bool persistPending = false;
 static bool alreadyAsleep  = false;
 static unsigned long lastPeriodicPersist = 0;
@@ -81,7 +63,6 @@ constexpr unsigned long PERIODIC_PERSIST_MS = 30000;
 // ============================================================
 static void doPersist(uint32_t sec = 0) {
     persistPending = false;
-    // Zapis tylko gdy cos sie zmienilo (oszczedzamy zywotnosc NVS).
     if (currentDisk == lastSavedDisk && currentTrack == lastSavedTrack && sec == lastSavedSec) return;
     prefs.putUChar("disk", currentDisk);
     prefs.putUChar("track", currentTrack);
@@ -112,11 +93,6 @@ static void loadLast() {
 // ============================================================
 // Wejscie w faze ladowania/szukania + start odtwarzania pliku
 // ============================================================
-// `discChanged` = wjezdzamy na INNA plyte (stan LoadingTrack 0x40 -> ChangedCd 0x20 -> Playing 0x00).
-// Przy zmianie samego utworu wchodzimy w ChangedCd (0x20) na SEEK_DURATION_MS:
-// radio dostaje 77 31 C0 20 z czasem FF:FF ("--:--"), potem C0 00 z licznikiem.
-// CD-TEXT idzie DOPIERO po pokazaniu Playing — C0 00 przeladowuje ekran i
-// zmazaloby nazwe wyslana w trakcie --:--.
 static bool loadDiscChanged = false;
 
 static void enterSeek(bool discChanged = false) {
@@ -124,19 +100,37 @@ static void enterSeek(bool discChanged = false) {
     loadDiscChanged = discChanged;
     enterState(discChanged ? MechState::LoadingTrack : MechState::ChangedCd);
     seekStartTime = millis();
+    audioSilenceSinceMs = 0;
+
+    // Jezeli wybrana plyta jest pusta, a indeks USB jest juz gotowy, przechodzimy
+    // na pierwsza niepusta plyte.
+    if (audioIndexReady() && audioGetTrackCount(currentDisk) == 0 && !Diagnostics::hasError()) {
+        uint8_t nextDisc = audioFindNextNonEmptyDisc(currentDisk);
+        if (nextDisc != 0) {
+            currentDisk  = nextDisc;
+            currentTrack = 1;
+            resumeSecOnBoot = 0;
+        }
+    }
+    if (audioIndexReady() && audioGetTrackCount(currentDisk) > 0 &&
+        currentTrack > audioGetTrackCount(currentDisk)) {
+        currentTrack = 1;
+        resumeSecOnBoot = 0;
+    }
 
     uint32_t startSec = resumeSecOnBoot;
-    resumeSecOnBoot = 0; // zuzyj tylko raz przy pierwszym rozruchu po starcie
 
     playSeconds = (uint8_t)(startSec % 60);
     playMinutes = (uint8_t)((startSec / 60) % 100);
-    playBaseMs  = millis() - (unsigned long)startSec * 1000;
+    playBaseMs  = millis() - (unsigned long)startSec * 1000UL;
     needDisplayUpdate = true;
 
     persistPending = true;  // zapamietamy wybor, gdy magistrala bedzie bezczynna
 
-    if (!audioPlayTrack(currentDisk, currentTrack, startSec)) {
-        Serial.printf("[Audio] Brak pliku CD%02d/%02d — szukam nastepnego...\n",
+    if (audioPlayTrack(currentDisk, currentTrack, startSec)) {
+        resumeSecOnBoot = 0; // zuzyj dopiero gdy nosnik faktycznie przyjal zlecenie
+    } else {
+        Serial.printf("[Audio] Nosnik jeszcze niegotowy lub brak pliku CD%02d/%02d — czekam na USB...\n",
                       currentDisk, currentTrack);
     }
 }
@@ -149,20 +143,23 @@ void begin() {
     loadLast();
 }
 
-// Wejscie w Playing po fazie ladowania. Licznik ustawiamy na RZECZYWISTA pozycje
-// dekodera, a nie na 00:00: audio ruszylo juz w enterSeek, wiec twarde zerowanie
-// rozjezdzaloby wyswietlacz z dzwiekiem o caly czas trwania fazy LOAD.
 static void enterPlaying(unsigned long now) {
     enterState(MechState::Playing);
+    audioSilenceSinceMs = 0;
     if (Diagnostics::hasError()) {
         playMinutes = 99;
         playSeconds = 1;
         playBaseMs  = now;
     } else {
-        uint32_t t = audioIsPlaying() ? audioGetCurrentTimeSec() : 0;
+        uint32_t plannedSec = (uint32_t)playMinutes * 60u + (uint32_t)playSeconds;
+        uint32_t decoderSec = audioIsPlaying() ? audioGetCurrentTimeSec() : 0;
+        // Jezeli wznawiamy od zapamietanej pozycji (plannedSec > 0), a dekoder
+        // jeszcze wykonuje asynchroniczny skok setTimeOffset (decoderSec == 0),
+        // zachowujemy plannedSec zamiast zerowac licznik do 00:00!
+        uint32_t t = (decoderSec > 0) ? decoderSec : plannedSec;
         playMinutes = (uint8_t)((t / 60) % 100);
         playSeconds = (uint8_t)(t % 60);
-        playBaseMs  = now - (unsigned long)t * 1000;
+        playBaseMs  = now - (unsigned long)t * 1000UL;
     }
     needDisplayUpdate = true;
 }
@@ -178,21 +175,32 @@ void update(unsigned long now, bool radioEngaged, bool selected) {
             Serial.println(">>> CdChanger: wejscie w Playing (Error Mode 99:01..99:10)");
         }
     } else {
-        // C0 -> 80 (po INIT_DURATION_MS od pierwszego PINGa, gdy sesja aktywna)
+        // C0 -> 80 (po INIT_DURATION_MS od pierwszego PINGa, gdy sesja aktywna).
+        // Jezeli radio wybralo nas jako zrodlo (selected == true), automatycznie
+        // ruszamy z odtwarzaniem (nawet jesli radio pominelo komzy 0x20 PLAY po
+        // wznowieniu adresu z NVS lub wyslalo tylko 87 29 Audio ON)!
         if (cdState == MechState::Init && radioEngaged && initWaitTime != 0 &&
             (now - initWaitTime > INIT_DURATION_MS)) {
-            enterState(MechState::Idle);
-            Serial.println(">>> C0 -> 80 (Idle)");
+            if (selected && !alreadyAsleep && audioIndexReady()) {
+                Serial.println(">>> Init zakonczone (selected=true) -> auto-start odtwarzania!");
+                enterSeek(false);
+            } else {
+                enterState(MechState::Idle);
+                needDisplayUpdate = true;
+                Serial.println(">>> C0 -> 80 (Idle)");
+            }
+        } else if (cdState == MechState::Idle && radioEngaged && selected &&
+                   !alreadyAsleep && audioIndexReady() && initWaitTime != 0 &&
+                   (now - initWaitTime > INIT_DURATION_MS)) {
+            Serial.println(">>> Idle + selected=true -> auto-start odtwarzania!");
+            enterSeek(false);
         }
     }
 
     // 0x40 -> [0x20] -> 0x00 (LoadingTrack -> [ChangedCd] -> Playing).
-    // Warunek `pollsInState` gwarantuje, ze radio zobaczylo stan posredni —
-    // patrz komentarz przy deklaracji pollsInState. Stan ChangedCd (0x20)
-    // przechodzimy TYLKO przy faktycznej zmianie plyty.
     if (cdState == MechState::LoadingTrack &&
         ((now - seekStartTime > LOAD_DURATION_MS && pollsInState > 0) ||
-         (now - seekStartTime > 600))) {
+         (now - seekStartTime > 500))) {
         if (loadDiscChanged) {
             enterState(MechState::ChangedCd);
             seekStartTime = millis();
@@ -204,37 +212,21 @@ void update(unsigned long now, bool radioEngaged, bool selected) {
         }
     } else if (cdState == MechState::ChangedCd &&
                ((now - seekStartTime > SEEK_DURATION_MS && pollsInState > 0) ||
-                (now - seekStartTime > 600))) {
+                (now - seekStartTime > 500))) {
         enterPlaying(now);
         Serial.println(">>> 20 -> 00 (Playing!)");
     }
 
     // 0x21 -> 0x00 (Seeking -> Playing) — po zatrzymaniu przewijania
-    // Wymaganie 10.2: broadcast 0x08 0x00 (RAD=0x18) zwraca do Playing.
-    // Zatrzymanie skanu zatrzaskowego (seekScanDir=0) tez powinno zwrócic do Playing.
     if (cdState == MechState::Seeking && seekScanDir == 0) {
         enterState(MechState::Playing);
         needDisplayUpdate = true;
-        // NIE resetujemy tu czasu! playBaseMs/playMinutes/playSeconds zostaly juz
-        // ustawione przez doSeekStep na pozycje, do ktorej przewinieto. Wczesniej
-        // bylo tu `playBaseMs = now`, co po przewijaniu zerowalo czas na ekranie
-        // (np. przewiniete do 01:09, a wyswietlacz pokazywal 00:00 — rozjazd z
-        // faktyczna pozycja audio). Zachowujemy przewinieta pozycje.
         Serial.printf(">>> 21 -> 00 (Seeking -> Playing!) pozycja %02d:%02d\n",
                       playMinutes, playSeconds);
     }
 
-    // Czas odtwarzania liczony z bazowego znacznika — monotonicznie i bez
-    // dryftu/przeskokow niezaleznie od jitteru petli.
-    //
-    // [NAPRAWA ZASTYGANIA] Zmiana sekundy USTAWIA needDisplayUpdate. Dzieki
-    // temu isDisplayDirty() jest true co sekunde w Playing, co gwarantuje ze
-    // wantsBus() zwraca true i emulator ZAWSZE sie zglasza w arbitrazu 01 15.
-    // Prawdziwa zmieniarka co sekunde raportuje nowy czas — nasz emulator tez.
     if (cdState == MechState::Playing) {
         if (Diagnostics::hasError()) {
-            // W stanie błędu licznik zapętla się w zakresie 99:01 - 99:10,
-            // sygnalizując anomalię i utrzymując regularny rytm magistrali.
             uint32_t elapsed = (now - playBaseMs) / 1000;
             uint8_t newMin = 99;
             uint8_t newSec = 1 + (uint8_t)(elapsed % 10);  // 1..10 (01..10)
@@ -244,6 +236,28 @@ void update(unsigned long now, bool radioEngaged, bool selected) {
                 needDisplayUpdate = true;
             }
         } else {
+            // Samonaprawa: jezeli jestesmy w stanie Playing, indeks USB jest gotowy,
+            // a dekoder audio nie gra (np. komenda PLAY przyszla zanim pendrive dokonczyl
+            // montowanie), ponawiamy uruchomienie utworu od biezacej sekundy!
+            if (radioEngaged && selected && audioIndexReady() &&
+                !audioIsPlaying() && !audioIsBusyChangingTrack()) {
+                if (audioSilenceSinceMs == 0) {
+                    audioSilenceSinceMs = now ? now : 1;
+                } else if (now - audioSilenceSinceMs >= 600) {
+                    audioSilenceSinceMs = now;
+                    uint32_t sec = resumeSecOnBoot ? (uint32_t)resumeSecOnBoot
+                                                   : ((uint32_t)playMinutes * 60u + (uint32_t)playSeconds);
+                    Serial.printf(">>> [Auto-Resume] Stan Playing bez audio — uruchamiam CD%d TR%d (%lus)\n",
+                                  currentDisk, currentTrack, (unsigned long)sec);
+                    if (audioPlayTrack(currentDisk, currentTrack, sec)) {
+                        resumeSecOnBoot = 0;
+                        playBaseMs = now - sec * 1000UL;
+                    }
+                }
+            } else {
+                audioSilenceSinceMs = 0;
+            }
+
             uint32_t elapsed = (now - playBaseMs) / 1000;
             uint8_t newMin = (uint8_t)((elapsed / 60) % 100);
             uint8_t newSec = (uint8_t)(elapsed % 60);
@@ -272,13 +286,6 @@ void serviceAutoAdvance() {
     currentDisk  = next.nextDisc;
     currentTrack = next.nextTrack;
 
-    // Zatrzymujemy odtwarzanie WYLACZNIE w trybie Repeat Off, gdy nie ma kolejnego
-    // utworu (ostatni utwor ostatniej plyty). We wszystkich innych przypadkach
-    // ponownie startujemy audio:
-    //   - Repeat One  -> ten sam utwor (modelNextTrack zwraca te sama pozycje;
-    //                    bez enterSeek utwor po prostu by zamilkl — to byl blad),
-    //   - Repeat All  -> nastepny / zawiniety (lub ten sam, gdy jedna plyta/utwor),
-    //   - Repeat Off  -> nastepny utwor, dopoki jakis jest.
     bool stop = (playModesState.repeat == RepeatMode::Off) && !moved;
     if (stop) {
         enterState(MechState::Idle);      // koniec listy — zatrzymanie mechanizmu
@@ -298,11 +305,12 @@ void serviceMediaMount() {
 
     if (isMounted && !wasMounted) {
         wasMounted = true;
-        // Jesli wczytana z NVS plyta ma utwory — zostajemy na niej (wznawiamy).
-        // W przeciwnym razie wybieramy pierwsza niepusta plyte.
         if (audioGetTrackCount(currentDisk) > 0) {
             uint8_t maxTr = audioGetTrackCount(currentDisk);
-            if (currentTrack > maxTr) currentTrack = 1;
+            if (currentTrack > maxTr) {
+                currentTrack = 1;
+                resumeSecOnBoot = 0;
+            }
             Serial.printf(">>> Wykryto USB. Wznawiam zapamietana plyte: CD%d TR%d\n",
                           currentDisk, currentTrack);
         } else {
@@ -310,19 +318,21 @@ void serviceMediaMount() {
             if (firstDisc != 0) {
                 currentDisk = firstDisc;
                 currentTrack = 1;
+                resumeSecOnBoot = 0;
                 Serial.printf(">>> Wykryto USB. Ustawiono pierwsza niepusta plyte: CD%d\n",
                               currentDisk);
             }
         }
 
-        // --- AUTOMATYCZNY POWRÓT DO GRY PO HOT-PLUG USB ---
-        // Mechanizm czekal na muzyke (Playing/ladowanie, tez w trybie bledu "brak
-        // pendrive'a") albo radio ma nas wybranych jako zrodlo.
-        if (cdState == MechState::Playing || cdState == MechState::LoadingTrack ||
-            cdState == MechState::ChangedCd ||
-            (UnilinkProtocol::isAllocated() && UnilinkProtocol::isSelected())) {
-            Serial.println(">>> Hot-plug USB: Wznawiam odtwarzanie (enterSeek)!");
-            enterSeek(/*discChanged=*/true);
+        // --- AUTOMATYCZNY POWRÓT DO GRY PO HOT-PLUG / STARCIE USB ---
+        if (!alreadyAsleep &&
+            (cdState == MechState::Playing || cdState == MechState::LoadingTrack ||
+             cdState == MechState::ChangedCd ||
+             (UnilinkProtocol::isAllocated() && UnilinkProtocol::isSelected()))) {
+            if (!audioIsPlaying() && !audioIsBusyChangingTrack()) {
+                Serial.println(">>> USB gotowe: Wznawiam odtwarzanie (enterSeek)!");
+                enterSeek(/*discChanged=*/false);
+            }
         }
     } else if (!isMounted && wasMounted) {
         wasMounted = false;
@@ -330,18 +340,18 @@ void serviceMediaMount() {
 }
 
 void handlePlayCommand() {
-    // Radio potrafi WIELOKROTNIE wysylac PLAY w trakcie grania. Jesli juz gramy,
-    // NIE restartujemy utworu od zera (dotyczy tez sytuacji po SYSTEM RESET radia
-    // w trakcie grania: audio nie zostalo zatrzymane).
-    if (audioIsPlaying()) {
-        if (cdState != MechState::Playing) {
-            uint32_t t = audioGetCurrentTimeSec();
+    alreadyAsleep = false;
+    if (audioIsPlaying() || audioIsBusyChangingTrack()) {
+        if (cdState != MechState::Playing && cdState != MechState::LoadingTrack &&
+            cdState != MechState::ChangedCd) {
+            uint32_t t = audioIsPlaying() ? audioGetCurrentTimeSec()
+                                          : ((uint32_t)playMinutes * 60u + (uint32_t)playSeconds);
             playMinutes = (uint8_t)((t / 60) % 100);
             playSeconds = (uint8_t)(t % 60);
-            playBaseMs = millis() - (unsigned long)t * 1000;  // baza = teraz - pozycja
+            playBaseMs = millis() - (unsigned long)t * 1000UL;
             enterState(MechState::Playing);
             needDisplayUpdate = true;
-            Serial.printf(">> PLAY (wznowienie bez restartu, np. po resecie radia: %02d:%02d)\n",
+            Serial.printf(">> PLAY (wznowienie bez restartu: %02d:%02d)\n",
                           playMinutes, playSeconds);
         } else {
             Serial.println(">> PLAY (juz gram — ignoruje, nie restartuje utworu)");
@@ -355,9 +365,10 @@ void handlePlayCommand() {
 void nextTrack() {
     stopSeekScan();
     uint8_t maxTr = audioGetTrackCount(currentDisk);
-    if (maxTr == 0) maxTr = MAX_TRACK_PER_DISC;  // fallback bez nosnika
+    if (maxTr == 0) maxTr = MAX_TRACK_PER_DISC;
     if (currentTrack < maxTr) {
         currentTrack++;
+        resumeSecOnBoot = 0;
         enterSeek();
         Serial.printf(">> NEXT TRACK: CD%d TR%d (max=%d)\n", currentDisk, currentTrack, maxTr);
     } else {
@@ -367,14 +378,10 @@ void nextTrack() {
 
 void prevTrack() {
     stopSeekScan();
-    // Uzywamy NASZEGO licznika czasu (nie pozycji dekodera, ktora jest
-    // niewiarygodna w trakcie zmiany utworu). Dzieki temu zachowanie jest
-    // deterministyczne: w srodku utworu track- restartuje biezacy utwor, a
-    // ponowne track- (gdy czas znow ~0) cofa do poprzedniego.
     uint32_t currentSec = (uint32_t)playMinutes * 60 + playSeconds;
+    resumeSecOnBoot = 0;
 
     if (currentSec > 2) {
-        // Cofnij na poczatek obecnego utworu
         enterSeek();
         Serial.printf(">> PREV TRACK (Restart utworu): CD%d TR%d\n", currentDisk, currentTrack);
     } else if (currentTrack > 1) {
@@ -382,7 +389,6 @@ void prevTrack() {
         enterSeek();
         Serial.printf(">> PREV TRACK: CD%d TR%d\n", currentDisk, currentTrack);
     } else {
-        // Na 1 utworze, <= 2s -> cofnij na poczatek pierwszego utworu
         enterSeek();
         Serial.println(">> PREV TRACK (Restart 1 utworu, brak poprzedniego)");
     }
@@ -398,6 +404,7 @@ void nextDisc() {
         if (currentDisk > MAX_DISC) currentDisk = 1;
     }
     currentTrack = 1;
+    resumeSecOnBoot = 0;
     enterSeek(/*discChanged=*/true);
     Serial.printf(">> NEXT DISC: CD%d\n", currentDisk);
 }
@@ -413,17 +420,15 @@ void prevDisc() {
         currentDisk--;
     }
     currentTrack = 1;
+    resumeSecOnBoot = 0;
     enterSeek(/*discChanged=*/true);
     Serial.printf(">> PREV DISC: CD%d\n", currentDisk);
 }
 
-// Ustaw pozycje odtwarzania (sekundy od poczatku utworu) na naszym liczniku.
-// Ekran oznaczamy jako brudny tylko przy ZMIANIE wyswietlanej sekundy — inaczej
-// przy skanowaniu wolalibysmy o magistrale w kazdej iteracji petli.
 static void setPlayPosition(uint32_t sec) {
     uint8_t m = (uint8_t)((sec / 60) % 100);
     uint8_t s = (uint8_t)(sec % 60);
-    playBaseMs = millis() - (unsigned long)sec * 1000;
+    playBaseMs = millis() - (unsigned long)sec * 1000UL;
     if (m != playMinutes || s != playSeconds) {
         playMinutes = m;
         playSeconds = s;
@@ -432,11 +437,12 @@ static void setPlayPosition(uint32_t sec) {
 }
 
 // Ile sekund materialu przeskanowano po `elapsedMs` trzymania klawisza FF/REW.
-// Trzy etapy predkosci (Config.h): najpierw wolno — da sie trafic w konkretne
-// miejsce — potem coraz szybciej, jak w oryginalnej zmieniarce.
+// Startujemy od 1 s od razu w chwili nacisniecia klawisza (tak jak oryginalna
+// zmieniarka Sony, zeby nawet krotkie przytrzymanie od razu przesuwalo czas),
+// a dalej trzystopniowe przyspieszenie.
 static uint32_t scanDistanceSec(unsigned long elapsedMs) {
     unsigned long t = elapsedMs;
-    uint32_t dist = 0;
+    uint32_t dist = 1;
 
     unsigned long seg = (t < SCAN_PHASE1_MS) ? t : SCAN_PHASE1_MS;
     dist += (uint32_t)(seg * SCAN_RATE1 / 1000);
@@ -453,7 +459,6 @@ static uint32_t scanDistanceSec(unsigned long elapsedMs) {
     return dist;
 }
 
-// Dopchnij dekoder do aktualnej pozycji wyswietlacza (jeden setTimeOffset).
 static void syncAudioToDisplayClock() {
     uint32_t target = (uint32_t)playMinutes * 60u + (uint32_t)playSeconds;
     audioSeekToSec(target);
@@ -463,34 +468,34 @@ static void syncAudioToDisplayClock() {
 static void endSeekScan() {
     seekScanDir = 0;
     needDisplayUpdate = true;
-    // Finalny sync: ekran pokazuje pozycje po skanie, audio moze byc w tyle
-    // (aktualizowane tylko co SEEK_AUDIO_MS).
     syncAudioToDisplayClock();
     audioSetInfoSquelch(false);
 }
 
 void seek(int deltaSec) {
-    // Komenda FF/REW od radia (0x24/0x25) = WCISNIECIE klawisza. Puszczenie
-    // przychodzi jako broadcast `08 00` i trafia do stopSeekScan().
     if (cdState != MechState::Playing && cdState != MechState::Seeking) return;
     const int dir = (deltaSec >= 0) ? +1 : -1;
     const unsigned long now = millis();
 
-    // Ten sam kierunek w trakcie skanu = powtorzona ramka od radia. Skan trwa
-    // dalej; NIE restartujemy kotwicy, bo zgubiloby to przyspieszenie.
     if (seekScanDir == dir) return;
 
-    // Start skanu (albo zmiana kierunku): kotwica = biezaca pozycja, od niej
-    // liczymy przebyty dystans jako funkcje czasu trzymania klawisza.
     seekAnchorSec = (uint32_t)playMinutes * 60 + playSeconds;
     seekScanDir   = dir;
     seekScanStart = now;
-    lastAudioSeek = now;   // pierwszy podglad audio dopiero po SEEK_AUDIO_MS
+    lastAudioSeek = now;
 
     if (cdState != MechState::Seeking) {
         enterState(MechState::Seeking);
         audioSetInfoSquelch(true);
     }
+
+    // Natychmiast przesun licznik o pierwsza sekunde, aby ekran zareagowal bez zwloki
+    long target = (long)seekAnchorSec + (long)dir;
+    if (target < 0) target = 0;
+    const uint32_t dur = audioGetDurationSec();
+    if (dur > 1 && target > (long)(dur - 1)) target = (long)(dur - 1);
+    setPlayPosition((uint32_t)target);
+
     needDisplayUpdate = true;
     Serial.printf(">> SCAN %s start: CD%d TR%d %02d:%02d\n",
                   dir > 0 ? "FF" : "REW", currentDisk, currentTrack,
@@ -500,14 +505,11 @@ void seek(int deltaSec) {
 void serviceSeekRepeat(unsigned long now) {
     if (seekScanDir == 0) return;
 
-    // Skanowanie tylko w stanach Playing lub Seeking. W innych (LoadingTrack,
-    // ChangedCd itp.) automatycznie konczymy.
     if (cdState != MechState::Playing && cdState != MechState::Seeking) {
         endSeekScan();
         return;
     }
 
-    // Bezpiecznik: gdyby radio nie przyslalo `08 00` konczacego przewijanie.
     if (now - seekScanStart > SEEK_SCAN_MAX_MS) {
         Serial.printf(">> SCAN auto-stop (limit %lus): CD%d TR%d %02d:%02d\n",
                       SEEK_SCAN_MAX_MS / 1000, currentDisk, currentTrack,
@@ -516,24 +518,34 @@ void serviceSeekRepeat(unsigned long now) {
         return;
     }
 
-    // Pozycja liczona CIAGLE z czasu trzymania klawisza — licznik plynie gladko
-    // i przyspiesza, zamiast skakac co stala porcje sekund.
     long target = (long)seekAnchorSec +
                   (long)seekScanDir * (long)scanDistanceSec(now - seekScanStart);
-    if (target < 0) target = 0;
     const uint32_t dur = audioGetDurationSec();
-    if (dur > 1 && target > (long)(dur - 1)) target = (long)(dur - 1);
+
+    if (target < 0) {
+        target = 0;
+    } else if (dur > 2 && target >= (long)(dur - 1)) {
+        // Prawdziwa zmieniarka po przewinieciu do konca utworu przechodzi na nastepny utwor
+        uint8_t maxTr = audioGetTrackCount(currentDisk);
+        if (maxTr == 0) maxTr = MAX_TRACK_PER_DISC;
+        if (currentTrack < maxTr) {
+            endSeekScan();
+            currentTrack++;
+            resumeSecOnBoot = 0;
+            enterSeek(false);
+            Serial.printf(">> SCAN FF koniec utworu -> NEXT TRACK CD%d TR%d\n", currentDisk, currentTrack);
+            return;
+        }
+        target = (long)(dur - 1);
+    }
     setPlayPosition((uint32_t)target);
 
-    // Slyszalne cue: co SEEK_AUDIO_MS dekoder wskakuje w biezaca pozycje.
+    // Slyszalne cue co SEEK_AUDIO_MS
     if (now - lastAudioSeek >= SEEK_AUDIO_MS) {
         syncAudioToDisplayClock();
     }
 }
 
-// --- ZATRZYMANIE SKANOWANIA: PUSZCZENIE KLAWISZA (broadcast `18 10 08 00`) ---
-// Potwierdzone logami: `08 00` przychodzi dokladnie tyle po ramce 0x24/0x25, ile
-// trwalo przytrzymanie klawisza (np. FF 21:07:00.3 -> `08 00` 21:07:03.6).
 void stopSeekScan() {
     if (seekScanDir != 0) {
         Serial.printf(">> SCAN stop (0x08 0x00): CD%d TR%d %02d:%02d\n",
@@ -542,12 +554,12 @@ void stopSeekScan() {
     }
 }
 
-// --- BEZPOŚREDNI WYBÓR PŁYTY/UTWORU (0xB0) ---
 void selectDiscTrack(uint8_t disc, uint8_t track) {
     stopSeekScan();
     const bool discChanged = (disc != currentDisk);
     currentDisk  = disc;
     currentTrack = track;
+    resumeSecOnBoot = 0;
     enterSeek(discChanged);
     needDisplayUpdate = true;
 }
@@ -558,17 +570,12 @@ void resetToInit() {
 }
 
 void resetToAllocated() {
-    // Lekki reset po SYSTEM RESET radia: zachowaj stan odtwarzania jezeli audio
-    // nadal gra. Prawdziwe radio podczas SYSTEM RESET nie zatrzymuje zmieniarki
-    // — po re-discovery zmieniarka wraca z zachowanym stanem (sniff potwierdza:
-    // po resecie zmieniarka odpowiada aktualnym czasem, nie zerowym).
-    if (audioIsPlaying()) {
-        // Audio gra — zachowaj stan Playing i zsynchronizuj czas z pozycja dekodera.
-        uint32_t t = audioGetCurrentTimeSec();
+    if (audioIsPlaying() || audioIsBusyChangingTrack()) {
+        uint32_t t = audioIsPlaying() ? audioGetCurrentTimeSec()
+                                      : ((uint32_t)playMinutes * 60u + (uint32_t)playSeconds);
         playMinutes = (uint8_t)((t / 60) % 100);
         playSeconds = (uint8_t)(t % 60);
-        playBaseMs = millis() - (unsigned long)t * 1000;
-        // Upewnij sie ze jestesmy w stanie Playing (moze byc Init/Idle po starym resecie)
+        playBaseMs = millis() - (unsigned long)t * 1000UL;
         if (cdState != MechState::Playing) {
             enterState(MechState::Playing);
         }
@@ -576,39 +583,32 @@ void resetToAllocated() {
         Serial.printf(">> resetToAllocated: audio gra, zachowuje Playing %02d:%02d\n",
                       playMinutes, playSeconds);
     } else {
-        // Audio nie gra — normalny reset do Init.
         resetToInit();
     }
 }
 
-// --- TRYBY REPEAT / SHUFFLE / INTRO (Wymaganie 8) ---
-// Zmiana trybu oznacza zakolejkowanie ramki 0x94.
-// Te metody sa wywolywane przez UnilinkProtocol (handlePacket) przy
-// komendach 0x34/0x35/0x36 — po kazdej zmianie (wlacznie z auto-advance)
-// zakolejkowana jest ramka 0x94 przez CdChanger::enqueueModeIcons().
 void toggleRepeat() {
-    // Cykl pelny na potrzeby OBD: Off -> One (Turbo) -> All (Paliwo) -> Off
     switch (playModesState.repeat) {
         case RepeatMode::Off: playModesState.repeat = RepeatMode::One; break;
         case RepeatMode::One: playModesState.repeat = RepeatMode::All; break;
         case RepeatMode::All: playModesState.repeat = RepeatMode::Off; break;
     }
     needDisplayUpdate = true;
-    enqueueModeIcons();  // zakolejkuj ramke 0x94
+    enqueueModeIcons();
     Serial.printf(">> TOGGLE REPEAT -> %d\n", (int)playModesState.repeat);
 }
 
 void toggleShuffle() {
-    playModesState.shuffle = !playModesState.shuffle;   // R8.2
+    playModesState.shuffle = !playModesState.shuffle;
     needDisplayUpdate = true;
-    enqueueModeIcons();  // zakolejkuj ramke 0x94
+    enqueueModeIcons();
     Serial.printf(">> TOGGLE SHUFFLE -> %d\n", playModesState.shuffle ? 1 : 0);
 }
 
 void toggleIntro() {
-    playModesState.intro = !playModesState.intro;       // R8.3
+    playModesState.intro = !playModesState.intro;
     needDisplayUpdate = true;
-    enqueueModeIcons();  // zakolejkuj ramke 0x94
+    enqueueModeIcons();
     Serial.printf(">> TOGGLE INTRO -> %d\n", playModesState.intro ? 1 : 0);
 }
 
@@ -623,8 +623,6 @@ void notePolled() {
 }
 
 void sleep() {
-    // Wielokrotne wywolanie (BUS_ON=0, 87 xx z bitem 0 = 0, zmiana zrodla) nie
-    // moze nadpisac zapamietanej pozycji zerem.
     if (alreadyAsleep) return;
     alreadyAsleep = true;
 
@@ -632,6 +630,8 @@ void sleep() {
     audioSetInfoSquelch(false);
     if (audioIsPlaying()) {
         resumeSecOnBoot = audioGetCurrentTimeSec();
+    } else if (cdState == MechState::Playing) {
+        resumeSecOnBoot = (uint32_t)playMinutes * 60u + (uint32_t)playSeconds;
     }
     persistPending = true;
     audioStop();
@@ -653,7 +653,6 @@ void servicePersist(bool flashWriteAllowed) {
         lastPeriodicPersist = now;
         return;
     }
-    // Strata pozycji po naglym zaniku zasilania: najwyzej PERIODIC_PERSIST_MS.
     if (cdState == MechState::Playing && audioIsPlaying() &&
         now - lastPeriodicPersist > PERIODIC_PERSIST_MS) {
         lastPeriodicPersist = now;
@@ -667,22 +666,11 @@ void persistNow() {
 }
 
 void wake() {
-    // Pobudka — upewnij sie, ze DAC ma docelowa glosnosc.
-    alreadyAsleep = false;  // Faza 1.2: pozwol sleep() na ponowne dzialanie
+    alreadyAsleep = false;
     audioSetVolume(AUDIO_VOLUME);
 }
 
-// --- KOLEJKOWANIE RAMKI IKON 0x94 (R8.4, Wymaganie 8.4) ---
-// Wywolywane po kazdej zmianie trybu (toggle* lub selectNextTrackAuto).
-// Buduje gotowa ramke 0x94 i zakolekcja ja w TxQueue. Adresowanie: RAD=0x70,
-// TAD=myAddr, CMD1=0x94 (middle, 4 bajty danych D1..D4).
-// Priorytet: Tx::PRIO_MAGAZINE (jak inne ramki statusowe).
-// Zawiera kodowanie stanu trybow w D1 (shuffle bit0, intro bit1, repeat w bity 4-5).
 void enqueueModeIcons() {
-    // Delegacja do UnilinkProtocol — tylko on ma dostep do globalnego `myAddr`
-    // i funkcji `enqueue()`. To jedno zrodlo prawdy o budowie i nadawaniu ramek.
-    // W trybie testowym (PBT) ta funkcja nie jest uzywana — PBT testuja
-    // UnilinkFrame::encodeIconData/decodeIconData w izolacji (zadanie 11.5).
     UnilinkProtocol::enqueueModeIconsHelper((uint8_t)playModesState.repeat,
                                             playModesState.shuffle,
                                             playModesState.intro);
@@ -691,9 +679,6 @@ void enqueueModeIcons() {
 MechState mechState() { return cdState; }
 bool isSeeking() { return cdState == MechState::Seeking; }
 
-// Bajt statusu §7.1 wysylany w PONG i ramkach statusu. Mapowanie realizuje
-// czysta funkcja UnilinkFrame::statusByte (jedno zrodlo prawdy, testowalne na
-// hoscie — Property 7 / zadanie 6.3).
 uint8_t statusByte() { return UnilinkFrame::statusByte(cdState); }
 
 uint8_t disk()     { return currentDisk; }
@@ -701,7 +686,6 @@ uint8_t track()    { return currentTrack; }
 uint8_t minutes()  { return playMinutes; }
 uint8_t seconds()  { return playSeconds; }
 
-// --- USTAWIANIE STANU (dla protokolu: 0xB0 bezposredni wybor plyty) ---
 void setDisk(uint8_t disc) {
     if (disc >= 1 && disc <= MAX_DISC) {
         currentDisk = disc;
@@ -721,48 +705,37 @@ bool       intro()      { return playModesState.intro; }
 bool isDisplayDirty()  { return needDisplayUpdate; }
 void clearDisplayDirty() { needDisplayUpdate = false; }
 
-// --- MODELCZYG FUNKCJE DO TESTOW PROPERTY-BASED (Property 16) ---
-// Wydziela czysta logike wyboru nastepnego utworu dla testow.
 NextTrackResult modelNextTrack(PlayModes modes, uint8_t disc, uint8_t track,
                                uint8_t maxDisc, uint8_t maxTrack) {
     NextTrackResult result = {disc, track};
     
     switch (modes.repeat) {
         case RepeatMode::One:
-            // Repeat::One -> powtarzamy ten sam utwór (nie zmieniamy pozycji)
-            // Nie wywołujemy enterSeek w serviceAutoAdvance dla Repeat::One
             break;
             
         case RepeatMode::All:
-            // Repeat::All -> zawijamy po ostatniej plycie (wracamy do CD1)
             if (track < maxTrack) {
                 result.nextTrack = track + 1;
             } else {
-                // Ostatni utwor na plycie
                 result.nextTrack = 1;
-                // Znajdz nastepna niepusta plyte
                 uint8_t nextNonEmpty = audioFindNextNonEmptyDisc(disc);
                 if (nextNonEmpty != 0) {
                     result.nextDisc = nextNonEmpty;
                 } else {
-                    // Brak nastepnej plyty - zawijamy do CD1
                     result.nextDisc = (disc >= maxDisc) ? 1 : disc + 1;
                 }
             }
             break;
             
         case RepeatMode::Off:
-            // Repeat::Off -> zatrzymujemy po ostatnim utworze ostatniej plyty
             if (track < maxTrack) {
                 result.nextTrack = track + 1;
             } else {
-                // Ostatni utwor na plycie - sprawdzamy czy sa kolejne plyty
                 uint8_t nextNonEmpty = audioFindNextNonEmptyDisc(disc);
                 if (nextNonEmpty != 0) {
                     result.nextDisc = nextNonEmpty;
                     result.nextTrack = 1;
                 }
-                // W przeciwnym razie pozostajemy na ostatnim utworze (brak zawijania)
             }
             break;
     }

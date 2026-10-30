@@ -20,6 +20,7 @@
 #include "Config.h"
 #include "UnilinkBus.h"
 #include "UnilinkProtocol.h"
+#include "UsbDrive.h"
 #include <Arduino.h>
 #include <LittleFS.h>
 #include <esp_system.h>
@@ -43,15 +44,19 @@ static const char* resetReasonName(esp_reset_reason_t r)
 // (przetwornica trzymana pinem PIN_POWER_LATCH).
 static void powerOff()
 {
-    Serial.println("=== BUS_ON=0 przez 4 s: zapis stanu i odciecie zasilania ===");
+    Serial.println("=== BUS_ON=0: zapis stanu i odciecie zasilania ===");
     CdChanger::persistNow();
     UnilinkProtocol::persistNow();
     if (Serial.hasCrashSnapshot()) Serial.dumpCrashLog();
     Serial.flush();
 #if ENABLE_WIFI
-    delay(5000);   // pakiety TCP musza fizycznie wyjsc w eter
+    if (WiFiLogger.hasClient()) {
+        delay(1000);   // pakiety TCP musza fizycznie wyjsc w eter
+    } else {
+        delay(100);
+    }
 #else
-    delay(200);
+    delay(100);
 #endif
     if (UnilinkBus::busOnRaw()) {   // radio wrocilo w miedzyczasie
         busOffSinceMs = 0;
@@ -100,8 +105,6 @@ void setup()
         Serial.printf("[CrashLog] Restart ESP32: %s\n", resetReasonName(rr));
         char reason[48];
         snprintf(reason, sizeof(reason), "ESP RESTART: %s", resetReasonName(rr));
-        // Zrzut na pendrive nastapi po wylaczeniu radia (pendrive nie jest
-        // jeszcze zamontowany).
         Serial.captureCrashSnapshot(reason);
     }
 }
@@ -110,7 +113,7 @@ void loop()
 {
     const unsigned long now = millis();
 
-    if (UnilinkBus::busOnRaw()) {
+    if (UnilinkProtocol::busActive()) {
         busOffSinceMs = 0;
         if (!powerLatchActive) {
             digitalWrite(PIN_POWER_LATCH, HIGH);
@@ -132,6 +135,13 @@ void loop()
     audioLoop();
 
     const bool flashOk = UnilinkProtocol::flashWriteWindow();
+    // Jezeli wystapil reset magistrali (ktory trwal ~220 ms i radio wrocilo do BUS_ON=1),
+    // zrzucamy oczekujacy snapshot na pendrive USB (USB Host dziala na Core 0, a przerwanie
+    // Unilink w IRAM) w bezpiecznym oknie miedzy pingami, dzieki czemu bufor jest gotowy
+    // na kolejne zdarzenia z tej samej trasy!
+    if (flashOk && Serial.hasCrashSnapshot() && usbDriveIsMounted()) {
+        Serial.dumpCrashLog();
+    }
     CdChanger::servicePersist(flashOk);
     UnilinkProtocol::servicePersist(flashOk);
 

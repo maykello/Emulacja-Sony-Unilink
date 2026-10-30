@@ -98,5 +98,7 @@ void audioSetVolume(uint8_t vol);
 // Sterowanie wyciszeniem sprzętowym DAC (XSMT na PCM5102A, GPIO 16).
 // true = wycisz (LOW), false = odcisz (HIGH).
 void audioSetMute(bool mute);
+void audioRefreshIndexFreeClusters();
+bool audioIsBusyChangingTrack();
 
 #endif // AUDIO_PLAYER_H

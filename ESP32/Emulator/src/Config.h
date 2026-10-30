@@ -53,8 +53,8 @@ constexpr unsigned long CLAIM_GRANT_WAIT_MS   = 60;    // zgloszenie 82 xx -> gr
 // --- RAMKI EKRANU ---
 // Czas: 0x90 przy kazdej zmianie sekundy (jak oryginal). Minimalny odstep
 // pochlania tylko jitter; przy FF/REW czas zmienia sie szybciej niz 1 Hz.
-constexpr unsigned long TIME_TICK_MIN_MS = 500;
-constexpr unsigned long SEEK_TICK_MIN_MS = 250;
+constexpr unsigned long TIME_TICK_MIN_MS = 250;
+constexpr unsigned long SEEK_TICK_MIN_MS = 100;
 
 // --- SESJA Z RADIEM ---
 constexpr uint8_t ADDR_GROUP_CD  = 0x30;   // grupa zmieniarek CD (adres przed przydzialem)
@@ -66,7 +66,7 @@ constexpr unsigned long BUS_ON_DEBOUNCE_MS     = 12;
 // CDX-M670 robi discovery wewnetrznych urzadzen przy BUS_ON=0 przez ~220 ms.
 // Dluzszy zanik = radio wylaczone: stop muzyki (adres zostaje).
 constexpr unsigned long BUS_OFF_AUDIO_STOP_MS  = 500;
-constexpr unsigned long BUS_OFF_SUICIDE_DELAY_MS = 4000;  // potem odciecie zasilania
+constexpr unsigned long BUS_OFF_SUICIDE_DELAY_MS = 2000;  // potem odciecie zasilania (2 s po zaniku BUS_ON)
 
 constexpr unsigned long APPOINT_AFTER_ANYONE_MS = 300;   // appoint idzie ~10 ms po naszym 8C
 constexpr unsigned long MAGIC_MIN_INTERVAL_MS   = 1500;  // 10 18 04 00 najwyzej raz na cykl
@@ -116,7 +116,7 @@ constexpr int           CDTEXT_D2_MAX_CHARS    = 12;
 constexpr unsigned long OBD_UPDATE_INTERVAL_MS = 1000;   // tryb OBD (Repeat One/All)
 
 // --- CRASH LOG (pendrive) ---
-constexpr unsigned long CRASHLOG_GRACE_MS              = 60000;  // nie zapisuj startu radia
+constexpr unsigned long CRASHLOG_GRACE_MS              = 15000;  // nie zapisuj startu radia
 constexpr unsigned long CRASHLOG_BUS_ON_GRACE_MS       = 3000;   // 01 00 po BUS_ON = discovery
 constexpr unsigned long CRASHLOG_DUMP_AFTER_BUS_OFF_MS = 600;
 constexpr unsigned long USB_ERROR_GRACE_MS             = 8000;   // zanim "NO PENDRIVE"
