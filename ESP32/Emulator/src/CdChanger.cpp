@@ -369,10 +369,24 @@ void nextTrack() {
     if (currentTrack < maxTr) {
         currentTrack++;
         resumeSecOnBoot = 0;
-        enterSeek();
+        enterSeek(false);
         Serial.printf(">> NEXT TRACK: CD%d TR%d (max=%d)\n", currentDisk, currentTrack, maxTr);
     } else {
-        Serial.println(">> NEXT TRACK zablokowany: to ostatni utwor na plycie.");
+        // Koniec plyty -> przejscie na nastepne niepuste CD (lub zawiniecie do CD01)
+        uint8_t prevDisc = currentDisk;
+        uint8_t nextNonEmpty = audioFindNextNonEmptyDisc(currentDisk);
+        if (nextNonEmpty != 0) {
+            currentDisk = nextNonEmpty;
+        } else {
+            currentDisk++;
+            if (currentDisk > MAX_DISC) currentDisk = 1;
+        }
+        currentTrack = 1;
+        resumeSecOnBoot = 0;
+        const bool discChanged = (currentDisk != prevDisc);
+        enterSeek(discChanged);
+        Serial.printf(">> NEXT TRACK (koniec CD%d -> CD%d TR%d)\n",
+                      prevDisc, currentDisk, currentTrack);
     }
 }
 
@@ -382,15 +396,32 @@ void prevTrack() {
     resumeSecOnBoot = 0;
 
     if (currentSec > 2) {
-        enterSeek();
+        enterSeek(false);
         Serial.printf(">> PREV TRACK (Restart utworu): CD%d TR%d\n", currentDisk, currentTrack);
     } else if (currentTrack > 1) {
         currentTrack--;
-        enterSeek();
+        enterSeek(false);
         Serial.printf(">> PREV TRACK: CD%d TR%d\n", currentDisk, currentTrack);
     } else {
-        enterSeek();
-        Serial.println(">> PREV TRACK (Restart 1 utworu, brak poprzedniego)");
+        // Poczatek plyty (TR01, czas <= 2s) -> przejscie na poprzednie niepuste CD na ostatni utwor
+        uint8_t prevDisc = currentDisk;
+        uint8_t prevNonEmpty = audioFindPrevNonEmptyDisc(currentDisk);
+        if (prevNonEmpty != 0) {
+            currentDisk = prevNonEmpty;
+        } else if (currentDisk <= 1) {
+            currentDisk = MAX_DISC;
+        } else {
+            currentDisk--;
+        }
+
+        uint8_t lastTr = audioGetTrackCount(currentDisk);
+        if (lastTr == 0) lastTr = 1;
+        currentTrack = lastTr;
+        resumeSecOnBoot = 0;
+        const bool discChanged = (currentDisk != prevDisc);
+        enterSeek(discChanged);
+        Serial.printf(">> PREV TRACK (poczatek CD%d -> CD%d TR%d [ostatni])\n",
+                      prevDisc, currentDisk, currentTrack);
     }
 }
 

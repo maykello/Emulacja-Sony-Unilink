@@ -789,8 +789,24 @@ void handleCommand(const Frame& f, unsigned long now)
             break;
         case 0x24: CdChanger::seek(+SEEK_STEP_SEC); break;
         case 0x25: CdChanger::seek(-SEEK_STEP_SEC); break;
-        case 0x26: CdChanger::nextTrack(); serviceCdText(now); break;
-        case 0x27: CdChanger::prevTrack(); serviceCdText(now); break;
+        case 0x26: {
+            const uint8_t oldDisc = CdChanger::disk();
+            CdChanger::nextTrack();
+            if (CdChanger::disk() != oldDisc) {
+                onDiscChanged(CdChanger::disk());
+            }
+            serviceCdText(now);
+            break;
+        }
+        case 0x27: {
+            const uint8_t oldDisc = CdChanger::disk();
+            CdChanger::prevTrack();
+            if (CdChanger::disk() != oldDisc) {
+                onDiscChanged(CdChanger::disk());
+            }
+            serviceCdText(now);
+            break;
+        }
         case 0x28:
             CdChanger::nextDisc();
             onDiscChanged(CdChanger::disk());
@@ -1352,7 +1368,11 @@ void busTask(void*)
 
         CdChanger::serviceMediaMount();
         CdChanger::update(now, s_appointed, s_selected);
+        const uint8_t dBeforeAuto = CdChanger::disk();
         CdChanger::serviceAutoAdvance();
+        if (CdChanger::disk() != dBeforeAuto) {
+            onDiscChanged(CdChanger::disk());
+        }
         CdChanger::serviceSeekRepeat(now);
         serviceCdText(now);
 
