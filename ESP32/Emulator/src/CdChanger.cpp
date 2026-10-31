@@ -357,7 +357,7 @@ void handlePlayCommand() {
         }
     } else {
         Serial.println(">> PLAY command received!");
-        enterSeek();
+        enterSeek(/*discChanged=*/true);
     }
 }
 

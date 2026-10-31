@@ -151,7 +151,7 @@ static inline uint8_t __attribute__((always_inline)) fastPathReply(uint32_t now)
     if (c2 == 0x13) {
         const uint8_t me = s_fpMyAddr;
         const uint8_t n  = s_fpGrantLen;
-        if (me == 0 || rad != me || tad != ADDR_MASTER || n == 0) return 0;
+        if (me == 0 || rad != me || (tad != ADDR_MASTER && tad != ADDR_DISPLAY) || n == 0) return 0;
         UL_COPY(s_txBuf, s_fpGrant, n);
         s_fpGrantSavedLen = n;
         s_fpGrantLen = 0;

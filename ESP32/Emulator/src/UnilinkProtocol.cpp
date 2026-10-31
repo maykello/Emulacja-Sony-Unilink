@@ -579,6 +579,29 @@ void serviceCdText(unsigned long now)
     }
 }
 
+// --- Ramki rejestracyjne / sterujace (short 6B) ------------------------------
+void enqueueShort(uint8_t rad, uint8_t cmd1, uint8_t cmd2, uint8_t prio)
+{
+    uint8_t f[6];
+    f[0]  = rad;
+    f[1]  = s_myAddr;
+    f[2]  = cmd1;
+    f[3]  = cmd2;
+    f[4]  = UnilinkFrame::parity1(f[0], f[1], f[2], f[3]);
+    f[5]  = 0x00;
+    enqueueFrame(prio, f, sizeof(f));
+}
+
+void enqueueChangerRegistration()
+{
+    // Rejestracja w zarządcy grupy zmieniarek (ADDR_GROUP_CD = 0x30)
+    // 1:1 ze sniffu CDX-M670 (144705.txt linie 14:47:23.609 i 14:47:23.813):
+    //   30 31 70 A0 71 00 (możliwości: CD changer, CD-TEXT)
+    //   30 31 70 10 E1 00 (gotowość: napęd 1 online)
+    enqueueShort(ADDR_GROUP_CD, 0x70, 0xA0, Tx::PRIO_STATUS);
+    enqueueShort(ADDR_GROUP_CD, 0x70, 0x10, Tx::PRIO_STATUS);
+}
+
 // --- Magazynek / identyfikator plyty / ikony ---------------------------------
 void enqueueMiddle(uint8_t rad, uint8_t cmd1, uint8_t cmd2, const uint8_t* d, uint8_t prio)
 {
@@ -665,14 +688,14 @@ void adoptAddress(uint8_t addr, uint8_t appointCmd2, unsigned long now, const ch
     s_lastOwnPingMs    = now;
     s_displayYielded   = false;
     if ((appointCmd2 & 0x0F) != 0) s_claimMask = (uint8_t)(appointCmd2 & 0x0F);
-    if (changed) {
-        clearPendingTx();
-        s_shown.valid = false;
-        resetCdTextCache();
-        CdChanger::resetToAllocated();
-    }
+    clearPendingTx();
+    s_shown.valid = false;
+    resetCdTextCache();
+    CdChanger::resetToAllocated();
+    enqueueChangerRegistration();
     s_persistAddrPending = true;
-    Serial.printf(">> Adres 0x%02X (%s), maska 0x%02X\n", addr, how, s_claimMask);
+    Serial.printf(">> Adres 0x%02X (%s), maska 0x%02X -> zakolejkowano rejestracje 0x30\n",
+                  addr, how, s_claimMask);
 }
 
 void onBusReset(unsigned long now)
@@ -683,6 +706,8 @@ void onBusReset(unsigned long now)
     s_nvsAddr          = 0;
     s_dualListenWaited = false;
     s_displayYielded   = false;
+    s_lastPoll15Ms     = now;
+    s_nextBreakMs      = now + 1500;
     clearPendingTx();
     s_shown.valid = false;
     resetCdTextCache();
@@ -739,7 +764,11 @@ void handleRequest84(const Frame& f)
         if (d4 == 0x00) {
             enqueueDiscTextBlock(discFromRequest(f));
         } else {
-            enqueueTrackTextBlock(true, true);
+            if (s_textFlagState >= 2) {
+                enqueueTextEnd();
+            } else {
+                enqueueTrackTextBlock(true, true);
+            }
         }
     } else if (c2 == 0xD2) {
         enqueueTrackTextBlock(true, true);
@@ -788,6 +817,7 @@ void handleCommand(const Frame& f, unsigned long now)
     switch (c1) {
         case 0x20:
             CdChanger::handlePlayCommand();
+            onDiscChanged(CdChanger::disk());
             break;
         case 0x24: CdChanger::seek(+SEEK_STEP_SEC); break;
         case 0x25: CdChanger::seek(-SEEK_STEP_SEC); break;
@@ -854,6 +884,7 @@ void handleFrame(const Frame& f, unsigned long now)
     const uint8_t c1  = f.data[2];
     const uint8_t c2  = f.data[3];
     const bool fromMaster = (tad == ADDR_MASTER);
+    const bool fromHost   = (tad == ADDR_MASTER || tad == ADDR_DISPLAY);
 
     // Reset magistrali obowiazuje zawsze, takze przy BUS_ON=0.
     if (rad == ADDR_BROADCAST && fromMaster && c1 == 0x01 && c2 == 0x00) {
@@ -863,7 +894,7 @@ void handleFrame(const Frame& f, unsigned long now)
     if (!s_busActive) return;
 
     // --- Ping 01 12 (odpowiada przerwanie) ---
-    if (c1 == 0x01 && c2 == 0x12 && (tad == ADDR_MASTER || tad == ADDR_DISPLAY)) {
+    if (c1 == 0x01 && c2 == 0x12 && fromHost) {
         const uint8_t pa = pingAddrNow();
         if (pa == 0 || rad != pa) return;
         if (!f.replyLen) {
@@ -876,7 +907,7 @@ void handleFrame(const Frame& f, unsigned long now)
         if (!s_appointed && rad == s_nvsAddr) {
             adoptAddress(rad, 0x00, now, "radio pamieta adres z poprzedniej sesji");
         }
-        if (fromMaster) CdChanger::noteFirstPing();
+        if (fromHost) CdChanger::noteFirstPing();
         CdChanger::notePolled();
         return;
     }
@@ -893,8 +924,8 @@ void handleFrame(const Frame& f, unsigned long now)
         return;
     }
 
-    // --- Grant 3X 10 01 13 (ramke wysyla przerwanie) ---
-    if (s_appointed && rad == s_myAddr && fromMaster && c1 == 0x01 && c2 == 0x13) {
+    // --- Grant 3X 10/14 01 13 (ramke wysyla przerwanie) ---
+    if (s_appointed && rad == s_myAddr && fromHost && c1 == 0x01 && c2 == 0x13) {
         if (!s_selected) {
             s_selected       = true;
             s_displayYielded = false;
@@ -1010,22 +1041,23 @@ void handleFrame(const Frame& f, unsigned long now)
             }
             CdChanger::stopSeekScan();   // puszczenie klawisza FF/REW
         } else if (c1 == 0x87 && (tad == ADDR_MASTER || tad == 0x11)) {
-            if ((c2 & 0x01) == 0) {
-                // Ramka 87 z bitem 0=0 to soft-mute/wyciszenie audio w przedwzmacniaczu radia (np. przy starcie radia 87 2A).
-                // Zgodnie ze specyfikacja Sony i logami OE zmieniarka nie zatrzymuje wtedy mechanizmu i nie zeruje s_selected!
-                Serial.printf(">> [Audio Bus] Radio sygnalizuje audio MUTE (87 %02X)\n", c2);
-            } else {
+            if (c2 == 0x29) {
+                // Specyficzna komenda przedwzmacniacza CDX-M670: tor audio zmieniarki CD (0x31) aktywny
                 const bool wasSelected = s_selected;
                 s_selected       = true;
                 s_displayYielded = false;
                 if (!wasSelected) s_shown.valid = false;
-                // Jezeli radio wlaczylo tor audio zmieniarki (87 29), a my stoimy w Init/Idle
-                // (np. radio nie przyslalo osobnego 0x20 PLAY po starcie), ruszamy od razu!
                 const MechState ms = CdChanger::mechState();
                 if (ms == MechState::Init || ms == MechState::Idle) {
-                    Serial.println(">> [0x87] Audio ON dla zmieniarki -> start odtwarzania!");
+                    Serial.println(">> [0x87 29] Audio ON dla zmieniarki -> start odtwarzania!");
                     CdChanger::handlePlayCommand();
                 }
+            } else if ((c2 & 0x01) == 0) {
+                // Ramka 87 z bitem 0=0 to soft-mute/wyciszenie audio w przedwzmacniaczu radia (np. przy starcie radia 87 2A)
+                Serial.printf(">> [Audio Bus] Radio sygnalizuje audio MUTE (87 %02X)\n", c2);
+            } else {
+                // Inne urzadzenie ma aktywny tor audio (np. 87 AB = Tuner) - NIE wymuszamy s_selected = true!
+                Serial.printf(">> [Audio Bus] Radio przelaczylo tor audio (87 %02X)\n", c2);
             }
         } else if (fromMaster && c1 == 0xF0) {
             if (c2 == s_myAddr) {
@@ -1040,7 +1072,7 @@ void handleFrame(const Frame& f, unsigned long now)
                 }
             } else {
                 s_selected = false;
-                stopByRadio("radio wybralo inne zrodlo");
+                stopByRadio("radio wybralo inne zrodlo (F0)");
             }
         }
         return;
@@ -1158,48 +1190,11 @@ void trackGrants(unsigned long now)
 
 void maybeBreak(unsigned long now)
 {
-    const MechState ms = CdChanger::mechState();
-    if (ms == MechState::Init || !s_selected || !s_busActive || !s_appointed) {
-        s_breakAwaitingPoll = false;
-        return;
-    }
-    // Master cyklicznie rozglasza 18 10 01 15 (tak jak w oryginalnym radiu OE).
-    // Gdy master aktywnie odpytuje 01 15, NIE wolno zwierac linii DATA do masy przez Slave Break,
-    // bo niszczy to ramki na magistrali i powoduje wywalenie radia (18 10 01 00 Reset).
-    if (s_lastPoll15Ms != 0 && (now - s_lastPoll15Ms) < BREAK_MASTER_POLL_TIMEOUT_MS) {
-        s_breakAwaitingPoll = false;
-        return;
-    }
-    if (s_breakAwaitingPoll) {
-        if (now - s_breakDoneMs < BREAK_POLL_WAIT_MS) return;
-        s_breakAwaitingPoll = false;
-        s_stat.breakNoPoll++;
-        if (s_breakFailStreak < 6) s_breakFailStreak++;
-        unsigned long backoff = BREAK_RETRY_FAIL_MS << (s_breakFailStreak - 1);
-        if (backoff > BREAK_BACKOFF_MAX_MS) backoff = BREAK_BACKOFF_MAX_MS;
-        s_nextBreakMs = now + backoff;
-        return;
-    }
-    if (s_nextBreakMs != 0 && (long)(now - s_nextBreakMs) < 0) return;
-    if (UnilinkBus::isTransmitting()) return;
-
-    const UnilinkBus::BreakResult r = UnilinkBus::trySlaveBreak();
-    const unsigned long after = millis();
-    if (r == UnilinkBus::BreakResult::Done) {
-        s_breakAwaitingPoll = true;
-        s_breakDoneMs       = after;
-        s_noWaveStreak      = 0;
-        s_stat.breaks++;
-        Diagnostics::recordNote("BREAK");
-    } else if (r == UnilinkBus::BreakResult::Busy) {
-        s_nextBreakMs = after + BREAK_RETRY_BUSY_MS;
-    } else {
-        s_stat.breakNoWave++;
-        if (s_noWaveStreak < 6) s_noWaveStreak++;
-        unsigned long backoff = BREAK_RETRY_NOWAVE_MS << (s_noWaveStreak - 1);
-        if (backoff > BREAK_BACKOFF_MAX_MS) backoff = BREAK_BACKOFF_MAX_MS;
-        s_nextBreakMs = after + backoff;
-    }
+    // Wzorzec OE: Slave Break wyłączony (pusta funkcja).
+    // Zmieniarka OE nigdy nie ściąga linii DATA do masy podczas normalnej pracy.
+    // Cała komunikacja opiera się na Request Polling (18 10 01 15) radia i odpowiedziach 82 04.
+    (void)now;
+    s_breakAwaitingPoll = false;
 }
 
 void scheduleTx(unsigned long now)
@@ -1284,6 +1279,8 @@ void updateBusOn(unsigned long now)
             s_selected       = false; // Czekamy na F0 31, 87 ON lub komende do 0x31 (radio moze wlaczyc sie na FM Tuner)
             s_lastFrameMs    = now;
             s_lastOwnPingMs  = now;
+            s_lastPoll15Ms   = now;
+            s_nextBreakMs    = now + 1500;
             CdChanger::wake();
             Serial.println("=== BUS_ON = 1 ===");
         } else {
@@ -1340,17 +1337,12 @@ void serviceHealth(unsigned long now)
         if (millis() > CRASHLOG_GRACE_MS) Serial.captureCrashSnapshot("RADIO SILENT (BUS_ON=1)");
     }
     if (s_appointed && now - s_lastOwnPingMs > RADIO_FORGOT_US_MS && now - s_lastFrameMs < 1000) {
-        Serial.printf(">> Radio nie pinguje 0x%02X od %lus — ponowne dolaczenie\n",
+        Serial.printf(">> Radio nie pinguje 0x%02X od %lus (ruch na magistrali) -> Standby (zachowuje adres)\n",
                       (uint8_t)s_myAddr, (now - s_lastOwnPingMs) / 1000);
-        const uint8_t old = s_myAddr;
-        s_appointed        = false;
-        s_myAddr           = ADDR_GROUP_CD;
-        s_nvsAddr          = old;
-        s_dualListenWaited = true;
+        s_selected = false;
+        CdChanger::sleep();
         clearPendingTx();
         s_shown.valid = false;
-        resetCdTextCache();
-        if (millis() > CRASHLOG_GRACE_MS) Serial.captureCrashSnapshot("RADIO STOPPED PINGING US");
     }
 }
 

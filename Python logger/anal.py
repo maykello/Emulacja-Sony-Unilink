@@ -10,7 +10,11 @@ def analyze_unilink_log(file_path):
     # Słownik urządzeń (możesz dodawać własne)
     DEVICES = {
         0x10: "RADIO(Master)",
-        0x18: "CD_CHANGER_1",
+        0x11: "RADIO_PREAMP(0x11)",
+        0x14: "RADIO_DISP_CTRL(0x14)",
+        0x18: "BROADCAST",
+        0x31: "CD_CHANGER_1",
+        0x51: "RADIO_RDS/TUNER(0x51)",
         0x3B: "MD_CHANGER/CD_2",
         0x30: "DEVICE_30",
         0x31: "DEVICE_31",
