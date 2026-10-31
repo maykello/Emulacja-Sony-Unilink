@@ -36,7 +36,7 @@ constexpr uint32_t BUS_TX_NO_SLOT_TIMEOUT_US = 9000;  // master nie zaczal slotu
 constexpr uint32_t BUS_TX_STALL_TIMEOUT_US   = 2000;  // master przestal taktowac
 
 // --- SLAVE BREAK ---
-constexpr uint32_t BREAK_QUIET_BEFORE_US = 8000;   // cisza zegara po ostatnim zboczu (za slotem odpowiedzi)
+constexpr uint32_t BREAK_QUIET_BEFORE_US = 25000;  // 25 ms ciszy zegara po ostatnim zboczu (zapewnia zakonczenie dowolnej transakcji)
 constexpr uint32_t BREAK_HOLD_US         = 2500;   // dlugosc impulsu ściągnięcia DATA do masy (2.5 ms)
 constexpr unsigned long FOREIGN_POLL_GUARD_MS = 30; // okno ochronne po zapytaniu do innego urzadzenia
 constexpr unsigned long BREAK_INTERVAL_MIN_MS = 150; // minimalny odstep miedzy brejkami

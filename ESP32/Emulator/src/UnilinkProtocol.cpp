@@ -295,7 +295,7 @@ bool needDisplayFrame(unsigned long now)
     if (!CdChanger::isSeeking() && screenChanged(k)) return true;
     if (ms == MechState::Playing || ms == MechState::Seeking) {
         if (s_justEndedSeek) return true;
-        if (k.minutes != s_shown.minutes || k.seconds != s_shown.seconds || (now - s_lastTimeFrameMs) >= 700) {
+        if (k.minutes != s_shown.minutes || k.seconds != s_shown.seconds) {
             const unsigned long minGap = (ms == MechState::Seeking) ? SEEK_TICK_MIN_MS : TIME_TICK_MIN_MS;
             return (now - s_lastTimeFrameMs) >= minGap;
         }
@@ -1182,13 +1182,40 @@ void trackGrants(unsigned long now)
 
 void maybeBreak(unsigned long now)
 {
-    // Radio CDX-M670 jako Master nieprzerwanie odpytuje zmieniarke (Ping 01 12,
-    // Request Polling 01 15 oraz Grant 01 13 co 1.00s i po kazdej komendzie).
-    // Wymuszanie Slave Break (sciaganie DATA w dol) w trakcie odtwarzania
-    // niszczy ramki radia i powoduje crash procesora radia (Watchdog Reset / BUS ON -> 0V).
-    // Zgodnie ze sniffem oryginalnej zmieniarki Sony OE — Slave Break nie jest uzywany.
-    (void)now;
-    s_breakAwaitingPoll = false;
+    const MechState ms = CdChanger::mechState();
+    if (ms == MechState::Init || !s_selected || !s_busActive || !s_appointed) {
+        s_breakAwaitingPoll = false;
+        return;
+    }
+    // Dodatkowa ochrona przed kolizja z odpowiedzia wewnetrznych urzadzen radia (np. 0x3B lub 0x71)
+    if (now < s_suppressBreakUntilMs) return;
+
+    if (s_breakAwaitingPoll) {
+        if (now - s_breakDoneMs < BREAK_POLL_WAIT_MS) return;
+        // Radio nie odpowiedzialo w oknie BREAK_POLL_WAIT_MS
+        s_breakAwaitingPoll = false;
+        s_stat.breakNoPoll++;
+        if (s_breakFailStreak < 6) s_breakFailStreak++;
+        unsigned long backoff = BREAK_RETRY_FAIL_MS << (s_breakFailStreak - 1);
+        if (backoff > BREAK_BACKOFF_MAX_MS) backoff = BREAK_BACKOFF_MAX_MS;
+        s_nextBreakMs = now + backoff;
+        return;
+    }
+
+    if (s_nextBreakMs != 0 && (long)(now - s_nextBreakMs) < 0) return;
+    if (UnilinkBus::isTransmitting()) return;
+
+    const UnilinkBus::BreakResult r = UnilinkBus::trySlaveBreak();
+    const unsigned long after = millis();
+    if (r == UnilinkBus::BreakResult::Done) {
+        s_breakAwaitingPoll = true;
+        s_breakDoneMs       = after;
+        s_nextBreakMs       = after + BREAK_INTERVAL_MIN_MS;
+        s_stat.breaks++;
+        Diagnostics::recordNote("BREAK");
+    } else if (r == UnilinkBus::BreakResult::Busy) {
+        s_nextBreakMs = after + BREAK_RETRY_BUSY_MS;
+    }
 }
 
 void scheduleTx(unsigned long now)

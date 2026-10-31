@@ -1,0 +1,39 @@
+[22:28:35.077] [STAT] rx=5 ping=0 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR13 00:50 q=0
+[22:28:36.287] [STAT] rx=3 ping=2 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=1 bad=0 glitch=2 cut=1 ovf=0 | 0x31 st=0x00 CD4 TR13 00:52 q=0
+[22:28:38.201] >> NEXT TRACK: CD4 TR14 (max=93)
+[22:28:38.212] [Audio-info] Closing audio file
+[22:28:38.254] [NVS] Zapamietano: CD4 TR14, sekunda=0
+[22:28:38.288] [STAT] rx=7 ping=1 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x20 CD4 TR14 00:00 q=0
+[22:28:38.448] >>> 20 -> 00 (Playing!)
+[22:28:38.460] [Audio] Async connecttoFS("/CD04.Dokladka/Bee Gees - Stayin' Alive.mp3") = OK
+[22:28:38.462] [Audio] ▶ Odtwarzam: /CD04.Dokladka/Bee Gees - Stayin' Alive.mp3 (rozpoczęto dekodowanie)
+[22:28:38.557] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[22:28:40.293] [STAT] rx=5 ping=0 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR14 00:01 q=0
+[22:28:42.290] [STAT] rx=4 ping=1 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR14 00:03 q=0
+[22:28:44.289] [STAT] rx=3 ping=1 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x00 CD4 TR14 00:05 q=0
+[22:28:46.290] [STAT] rx=5 ping=0 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR14 00:07 q=0
+[22:28:46.721] >> NEXT TRACK: CD4 TR15 (max=93)
+[22:28:46.721] [Audio-info] Closing audio file
+[22:28:46.965] [Audio] Async connecttoFS("/CD04.Dokladka/Bee Gees - Tragedy.mp3") = OK
+[22:28:46.966] [Audio] ▶ Odtwarzam: /CD04.Dokladka/Bee Gees - Tragedy.mp3 (rozpoczęto dekodowanie)
+[22:28:47.082] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[22:28:47.219] >>> 20 -> 00 (Playing!)
+[22:28:48.294] [STAT] rx=8 ping=1 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR15 00:01 q=0
+[22:28:48.831] [NVS] Zapamietano: CD4 TR15, sekunda=1
+[22:28:50.293] [STAT] rx=4 ping=1 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR15 00:03 q=0
+[22:28:52.292] [STAT] rx=5 ping=2 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR15 00:05 q=0
+[22:28:54.291] [STAT] rx=5 ping=1 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR15 00:07 q=0
+[22:28:56.290] [STAT] rx=6 ping=1 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR15 00:09 q=0
+[22:28:56.534] >> NEXT TRACK: CD4 TR16 (max=93)
+[22:28:56.534] [Audio-info] Closing audio file
+[22:28:56.535] [NVS] Zapamietano: CD4 TR16, sekunda=0
+[22:28:56.780] [Audio] Async connecttoFS("/CD04.Dokladka/Belle Epoque -Black is Black.mp3") = OK
+[22:28:56.782] [Audio] ▶ Odtwarzam: /CD04.Dokladka/Belle Epoque -Black is Black.mp3 (rozpoczęto dekodowanie)
+[22:28:56.898] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[22:28:57.035] >>> 20 -> 00 (Playing!)
+[22:28:58.288] [STAT] rx=7 ping=0 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR16 00:01 q=0
+[22:29:00.288] [STAT] rx=2 ping=1 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x00 CD4 TR16 00:03 q=0
+[22:29:02.287] [STAT] rx=4 ping=1 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=0 glitch=0 cut=1 ovf=0 | 0x31 st=0x00 CD4 TR16 00:05 q=0
+[22:29:03.653] >> [Audio Bus] Radio sygnalizuje audio MUTE (87 6A)
+[22:29:03.675] >> [Audio Bus] Radio sygnalizuje audio MUTE (87 2A)
+[22:29:04.286] [STAT] rx=14 ping=0 p15=0 claim=0 grant=0 brk=0/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR16 00:07 q=0
