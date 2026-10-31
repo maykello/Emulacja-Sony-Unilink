@@ -295,7 +295,7 @@ bool needDisplayFrame(unsigned long now)
     if (!CdChanger::isSeeking() && screenChanged(k)) return true;
     if (ms == MechState::Playing || ms == MechState::Seeking) {
         if (s_justEndedSeek) return true;
-        if (k.minutes != s_shown.minutes || k.seconds != s_shown.seconds) {
+        if (k.minutes != s_shown.minutes || k.seconds != s_shown.seconds || (now - s_lastTimeFrameMs) >= 700) {
             const unsigned long minGap = (ms == MechState::Seeking) ? SEEK_TICK_MIN_MS : TIME_TICK_MIN_MS;
             return (now - s_lastTimeFrameMs) >= minGap;
         }
@@ -677,6 +677,15 @@ void clearPendingTx()
     s_breakAwaitingPoll = false;
 }
 
+void loadDisplaySlot(unsigned long now);
+
+void onTrackNavigated(unsigned long now)
+{
+    clearPendingTx();
+    resetCdTextCache();
+    loadDisplaySlot(now);
+}
+
 void adoptAddress(uint8_t addr, uint8_t appointCmd2, unsigned long now, const char* how)
 {
     const bool changed = !s_appointed || s_myAddr != addr;
@@ -799,6 +808,7 @@ void handleDirectSelect(const Frame& f)
     if (maxTrack == 0) maxTrack = MAX_TRACKS;
     if (discValid && track >= 1 && track <= maxTrack) {
         CdChanger::selectDiscTrack(disc, track);
+        onTrackNavigated(millis());
         onDiscChanged(disc);
         serviceCdText(millis());
         Serial.printf(">> 0xB0: CD%u TR%u\n", disc, track);
@@ -818,6 +828,7 @@ void handleCommand(const Frame& f, unsigned long now)
     switch (c1) {
         case 0x20:
             CdChanger::handlePlayCommand();
+            onTrackNavigated(now);
             onDiscChanged(CdChanger::disk());
             break;
         case 0x24: CdChanger::seek(+SEEK_STEP_SEC); break;
@@ -825,6 +836,7 @@ void handleCommand(const Frame& f, unsigned long now)
         case 0x26: {
             const uint8_t oldDisc = CdChanger::disk();
             CdChanger::nextTrack();
+            onTrackNavigated(now);
             if (CdChanger::disk() != oldDisc) {
                 onDiscChanged(CdChanger::disk());
             }
@@ -834,6 +846,7 @@ void handleCommand(const Frame& f, unsigned long now)
         case 0x27: {
             const uint8_t oldDisc = CdChanger::disk();
             CdChanger::prevTrack();
+            onTrackNavigated(now);
             if (CdChanger::disk() != oldDisc) {
                 onDiscChanged(CdChanger::disk());
             }
@@ -842,11 +855,13 @@ void handleCommand(const Frame& f, unsigned long now)
         }
         case 0x28:
             CdChanger::nextDisc();
+            onTrackNavigated(now);
             onDiscChanged(CdChanger::disk());
             serviceCdText(now);
             break;
         case 0x29:
             CdChanger::prevDisc();
+            onTrackNavigated(now);
             onDiscChanged(CdChanger::disk());
             serviceCdText(now);
             break;
@@ -1167,41 +1182,13 @@ void trackGrants(unsigned long now)
 
 void maybeBreak(unsigned long now)
 {
-    const MechState ms = CdChanger::mechState();
-    if (ms == MechState::Init || !s_selected || !s_busActive || !s_appointed) {
-        s_breakAwaitingPoll = false;
-        return;
-    }
-    // Ochrona przed kolizja z odpowiedzia wewnetrznych urzadzen radia (np. 0x3B lub 0x71)
-    if (now < s_suppressBreakUntilMs) return;
-
-    if (s_breakAwaitingPoll) {
-        if (now - s_breakDoneMs < BREAK_POLL_WAIT_MS) return;
-        // Radio nie odpowiedzialo w oknie BREAK_POLL_WAIT_MS
-        s_breakAwaitingPoll = false;
-        s_stat.breakNoPoll++;
-        if (s_breakFailStreak < 6) s_breakFailStreak++;
-        unsigned long backoff = BREAK_RETRY_FAIL_MS << (s_breakFailStreak - 1);
-        if (backoff > BREAK_BACKOFF_MAX_MS) backoff = BREAK_BACKOFF_MAX_MS;
-        s_nextBreakMs = now + backoff;
-        return;
-    }
-
-    if (s_nextBreakMs != 0 && (long)(now - s_nextBreakMs) < 0) return;
-    if (UnilinkBus::isTransmitting()) return;
-
-    const UnilinkBus::BreakResult r = UnilinkBus::trySlaveBreak();
-    const unsigned long after = millis();
-    if (r == UnilinkBus::BreakResult::Done) {
-        s_breakAwaitingPoll = true;
-        s_breakDoneMs       = after;
-        s_nextBreakMs       = after + BREAK_INTERVAL_MIN_MS;
-        s_noWaveStreak      = 0;
-        s_stat.breaks++;
-        Diagnostics::recordNote("BREAK");
-    } else if (r == UnilinkBus::BreakResult::Busy) {
-        s_nextBreakMs = after + BREAK_RETRY_BUSY_MS;
-    }
+    // Radio CDX-M670 jako Master nieprzerwanie odpytuje zmieniarke (Ping 01 12,
+    // Request Polling 01 15 oraz Grant 01 13 co 1.00s i po kazdej komendzie).
+    // Wymuszanie Slave Break (sciaganie DATA w dol) w trakcie odtwarzania
+    // niszczy ramki radia i powoduje crash procesora radia (Watchdog Reset / BUS ON -> 0V).
+    // Zgodnie ze sniffem oryginalnej zmieniarki Sony OE — Slave Break nie jest uzywany.
+    (void)now;
+    s_breakAwaitingPoll = false;
 }
 
 void scheduleTx(unsigned long now)
@@ -1257,7 +1244,10 @@ void scheduleTx(unsigned long now)
                 s_slotIsStatusC0    = false;
             } else if (!s_txQueue.isEmpty() && s_txQueue.peekPriority() < Tx::PRIO_CD_TEXT) {
                 // Pilne zadanie protokolowe (np. 84 95 / 84 97 / 9C / D5) zastepuje slot ekranu
-                loadNextSlot(now);
+                // TYLKO jesli slot NIE niesie ramki statusu 0xC0/0x8E (ekran musi zobaczyc zmiane natychmiast)
+                if (!s_slotIsStatusC0) {
+                    loadNextSlot(now);
+                }
             } else if (displaySlotStale()) {
                 loadDisplaySlot(now);
             }
@@ -1402,9 +1392,13 @@ void busTask(void*)
         CdChanger::serviceMediaMount();
         CdChanger::update(now, s_appointed, s_selected);
         const uint8_t dBeforeAuto = CdChanger::disk();
+        const uint8_t tBeforeAuto = CdChanger::track();
         CdChanger::serviceAutoAdvance();
         if (CdChanger::disk() != dBeforeAuto) {
+            onTrackNavigated(now);
             onDiscChanged(CdChanger::disk());
+        } else if (CdChanger::track() != tBeforeAuto) {
+            onTrackNavigated(now);
         }
         CdChanger::serviceSeekRepeat(now);
         serviceCdText(now);
