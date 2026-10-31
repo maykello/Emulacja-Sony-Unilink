@@ -35,20 +35,15 @@ constexpr uint32_t BUS_RESPONSE_DEADLINE_US  = 4000;
 constexpr uint32_t BUS_TX_NO_SLOT_TIMEOUT_US = 9000;  // master nie zaczal slotu
 constexpr uint32_t BUS_TX_STALL_TIMEOUT_US   = 2000;  // master przestal taktowac
 
-// --- SLAVE BREAK (fala bezczynnosci ~8 ms dominujaca / ~8 ms recesywna) ---
-constexpr uint32_t BREAK_QUIET_BEFORE_US = 8000;   // po ostatnim zboczu (za slotem odpowiedzi)
-constexpr uint32_t BREAK_SEARCH_MAX_US   = 40000;  // ile maks. czekamy na fale (2.5 okresu)
-constexpr uint32_t BREAK_IDLE_LOW_MIN_US = 6000;   // min. dlugosc fazy dominujacej
-constexpr uint32_t BREAK_IDLE_LOW_MAX_US = 30000;  // linia "przyklejona" — rezygnujemy
-constexpr uint32_t BREAK_SETTLE_US       = 2000;   // opoznienie w fazie recesywnej
-constexpr uint32_t BREAK_HOLD_US         = 3000;   // dlugosc impulsu
-
-constexpr unsigned long BREAK_POLL_WAIT_MS    = 60;    // tyle czekamy na 18 10 01 15
+// --- SLAVE BREAK ---
+constexpr uint32_t BREAK_QUIET_BEFORE_US = 8000;   // cisza zegara po ostatnim zboczu (za slotem odpowiedzi)
+constexpr uint32_t BREAK_HOLD_US         = 2500;   // dlugosc impulsu ściągnięcia DATA do masy (2.5 ms)
+constexpr unsigned long FOREIGN_POLL_GUARD_MS = 30; // okno ochronne po zapytaniu do innego urzadzenia
+constexpr unsigned long BREAK_INTERVAL_MIN_MS = 150; // minimalny odstep miedzy brejkami
+constexpr unsigned long BREAK_POLL_WAIT_MS    = 60;    // tyle czekamy na 18 10 01 15 po Break
 constexpr unsigned long BREAK_RETRY_BUSY_MS   = 5;     // magistrala zajeta ramkami
-constexpr unsigned long BREAK_RETRY_NOWAVE_MS = 30;    // brak fali bezczynnosci
 constexpr unsigned long BREAK_RETRY_FAIL_MS   = 150;   // Break bez 01 15 (dalej x2)
 constexpr unsigned long BREAK_BACKOFF_MAX_MS  = 2000;
-constexpr unsigned long BREAK_MASTER_POLL_TIMEOUT_MS = 2500;  // Nie uzywaj Slave Break gdy master pinguje 01 15
 constexpr unsigned long CLAIM_GRANT_WAIT_MS   = 60;    // zgloszenie 82 xx -> grant 01 13
 
 // --- RAMKI EKRANU ---

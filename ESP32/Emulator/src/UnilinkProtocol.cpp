@@ -114,11 +114,12 @@ bool          s_justEndedSeek   = false;
 unsigned long s_lastPoll15Ms      = 0;
 
 // Slave Break
-unsigned long s_nextBreakMs       = 0;
-bool          s_breakAwaitingPoll = false;
-unsigned long s_breakDoneMs       = 0;
-uint8_t       s_breakFailStreak   = 0;
-uint8_t       s_noWaveStreak      = 0;
+unsigned long s_nextBreakMs          = 0;
+bool          s_breakAwaitingPoll    = false;
+unsigned long s_breakDoneMs          = 0;
+uint8_t       s_breakFailStreak      = 0;
+uint8_t       s_noWaveStreak         = 0;
+unsigned long s_suppressBreakUntilMs = 0;
 
 // Statystyki [STAT]
 struct ProtoStats {
@@ -771,7 +772,7 @@ void handleRequest84(const Frame& f)
             }
         }
     } else if (c2 == 0xD2) {
-        enqueueTrackTextBlock(true, true);
+        enqueueTrackTextBlock(false, true);
     } else if (c2 == 0xDA || c2 == 0xDD) {
         enqueueDiscTextBlock(discFromRequest(f));
     } else if (c2 == 0x95) {
@@ -893,6 +894,16 @@ void handleFrame(const Frame& f, unsigned long now)
     }
     if (!s_busActive) return;
 
+    // Okno ochronne przed kolizjami ze Slave Break:
+    // Gdy Master rozmawia z innym urzadzeniem (np. 0x3B = wewnetrzne CD, 0x71 = kontroler wyswietlacza),
+    // urzadzenie to odpowiada z opoznieniem 6-15ms. Blokujemy break na 30ms, by nie zderzyc sie z jego odpowiedzia!
+    if (fromHost && rad != s_myAddr && rad != ADDR_BROADCAST) {
+        s_suppressBreakUntilMs = now + FOREIGN_POLL_GUARD_MS;
+    }
+    if (rad == ADDR_DISPLAY && tad != s_myAddr) {
+        s_suppressBreakUntilMs = now + FOREIGN_POLL_GUARD_MS;
+    }
+
     // --- Ping 01 12 (odpowiada przerwanie) ---
     if (c1 == 0x01 && c2 == 0x12 && fromHost) {
         const uint8_t pa = pingAddrNow();
@@ -989,46 +1000,12 @@ void handleFrame(const Frame& f, unsigned long now)
 
     if (!s_appointed) return;
 
-    // --- Arbitraz ekranu 0x70 (ochrona przed walka z Masterem/Tunerem z crash_00001.txt) ---
-    if (rad == 0x70) {
-        if (tad != s_myAddr && tad != ADDR_MASTER && tad != ADDR_DISPLAY &&
-            (c1 == 0xC0 || c1 == 0x90 || c1 == 0x92)) {
-            // Inne zrodlo (np. Tuner 0x51 przy komunikacie TA/RDS) pisze na ekran 0x70:
-            // oddajemy ekran do czasu ponownego wyboru zmieniarki.
-            if (!s_displayYielded) {
-                s_displayYielded = true;
-                clearPendingTx();
-                Serial.printf(">> Ekran 0x70 przejety przez 0x%02X (cmd 0x%02X) — wstrzymuje ramki 0x70\n", tad, c1);
-            }
-            return;
-        }
-        if (fromMaster && c1 == 0x25 && c2 == 0x00) {
-            if (!s_displayYielded) {
-                s_displayYielded = true;
-                clearPendingTx();
-                Serial.println(">> Master: 70 10 25 00 — wstrzymuje ramki ekranu 0x70");
-            }
-            return;
-        }
-        if (fromMaster && c1 == 0xC0 && c2 == 0x00 &&
-            s_shown.valid && s_shown.status == 0x00 &&
-            s_lastTimeFrameMs != 0 && (now - s_lastTimeFrameMs) < 120) {
-            // Master nadpisal nasz swiezo wyslany tick 0x90 pusta ramka 70 10 C0 00:
-            // nie walczymy o ekran, zeby nie wywolac resetu magistrali 18 10 01 00!
-            if (!s_displayYielded) {
-                s_displayYielded = true;
-                clearPendingTx();
-                Serial.println(">> Master nadpisal ekran 0x70 po naszym 0x90 — ustępuje ekranu");
-            }
-            return;
-        }
-        if (fromMaster && c1 == 0x91 && f.len >= 6 && f.data[5] == s_myAddr) {
-            // Master przelaczyl widok ekranu 0x70 z powrotem na nasze zrodlo (70 10 91 .. 31)
-            if (s_displayYielded) {
-                s_displayYielded = false;
-                s_shown.valid    = false;
-                Serial.println(">> Master przywrocil ekran 0x70 dla zmieniarki");
-            }
+    // --- Arbitraz ekranu 0x70 ---
+    if (rad == ADDR_DISPLAY) {
+        if (tad != s_myAddr) {
+            // Chwilowe okno ochronne gdy inne zrodlo (np. Master lub Tuner 0x51/0x91) pisze do 0x70.
+            // Dajemy im pierwszenstwo w tym samym ulamku sekundy, ale NIE czyscimy wlasnej kolejki TX.
+            s_suppressBreakUntilMs = now + FOREIGN_POLL_GUARD_MS;
             return;
         }
     }
@@ -1190,11 +1167,41 @@ void trackGrants(unsigned long now)
 
 void maybeBreak(unsigned long now)
 {
-    // Wzorzec OE: Slave Break wyłączony (pusta funkcja).
-    // Zmieniarka OE nigdy nie ściąga linii DATA do masy podczas normalnej pracy.
-    // Cała komunikacja opiera się na Request Polling (18 10 01 15) radia i odpowiedziach 82 04.
-    (void)now;
-    s_breakAwaitingPoll = false;
+    const MechState ms = CdChanger::mechState();
+    if (ms == MechState::Init || !s_selected || !s_busActive || !s_appointed) {
+        s_breakAwaitingPoll = false;
+        return;
+    }
+    // Ochrona przed kolizja z odpowiedzia wewnetrznych urzadzen radia (np. 0x3B lub 0x71)
+    if (now < s_suppressBreakUntilMs) return;
+
+    if (s_breakAwaitingPoll) {
+        if (now - s_breakDoneMs < BREAK_POLL_WAIT_MS) return;
+        // Radio nie odpowiedzialo w oknie BREAK_POLL_WAIT_MS
+        s_breakAwaitingPoll = false;
+        s_stat.breakNoPoll++;
+        if (s_breakFailStreak < 6) s_breakFailStreak++;
+        unsigned long backoff = BREAK_RETRY_FAIL_MS << (s_breakFailStreak - 1);
+        if (backoff > BREAK_BACKOFF_MAX_MS) backoff = BREAK_BACKOFF_MAX_MS;
+        s_nextBreakMs = now + backoff;
+        return;
+    }
+
+    if (s_nextBreakMs != 0 && (long)(now - s_nextBreakMs) < 0) return;
+    if (UnilinkBus::isTransmitting()) return;
+
+    const UnilinkBus::BreakResult r = UnilinkBus::trySlaveBreak();
+    const unsigned long after = millis();
+    if (r == UnilinkBus::BreakResult::Done) {
+        s_breakAwaitingPoll = true;
+        s_breakDoneMs       = after;
+        s_nextBreakMs       = after + BREAK_INTERVAL_MIN_MS;
+        s_noWaveStreak      = 0;
+        s_stat.breaks++;
+        Diagnostics::recordNote("BREAK");
+    } else if (r == UnilinkBus::BreakResult::Busy) {
+        s_nextBreakMs = after + BREAK_RETRY_BUSY_MS;
+    }
 }
 
 void scheduleTx(unsigned long now)
@@ -1337,12 +1344,18 @@ void serviceHealth(unsigned long now)
         if (millis() > CRASHLOG_GRACE_MS) Serial.captureCrashSnapshot("RADIO SILENT (BUS_ON=1)");
     }
     if (s_appointed && now - s_lastOwnPingMs > RADIO_FORGOT_US_MS && now - s_lastFrameMs < 1000) {
-        Serial.printf(">> Radio nie pinguje 0x%02X od %lus (ruch na magistrali) -> Standby (zachowuje adres)\n",
+        Serial.printf(">> Radio nie pinguje 0x%02X od %lus (ruch na magistrali) -> ponowne nasluchiwanie\n",
                       (uint8_t)s_myAddr, (now - s_lastOwnPingMs) / 1000);
-        s_selected = false;
+        const uint8_t old = s_myAddr;
+        s_appointed        = false;
+        s_selected         = false;
+        s_myAddr           = ADDR_GROUP_CD;
+        s_nvsAddr          = old;
+        s_dualListenWaited = true;
         CdChanger::sleep();
         clearPendingTx();
-        s_shown.valid = false;
+        s_shown.valid      = false;
+        resetCdTextCache();
     }
 }
 

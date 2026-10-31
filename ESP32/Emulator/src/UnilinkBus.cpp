@@ -436,31 +436,8 @@ BreakResult trySlaveBreak()
     if (s_txActive || (uint32_t)(t0 - s_lastEdgeUs) < BREAK_QUIET_BEFORE_US) {
         return BreakResult::Busy;
     }
-
-    // 0 = czekam na faze dominujaca, 1 = w fazie dominujacej, 2 = w fazie recesywnej
-    uint8_t  phase = 0;
-    uint32_t mark  = t0;
-    for (;;) {
-        const uint32_t t = UL_NOW_US();
-        if (s_edgeCount != e0 || s_txActive) return BreakResult::Busy;
-        if ((REG_READ(GPIO_IN_REG) & BUS_ON_MASK) == 0) return BreakResult::Busy;
-        if ((uint32_t)(t - t0) > BREAK_SEARCH_MAX_US) return BreakResult::NoIdleWave;
-
-        const bool dom = UL_DATA_DOMINANT() != 0;
-        if (phase == 0) {
-            if (dom) { phase = 1; mark = t; }
-        } else if (phase == 1) {
-            if (!dom) {
-                if ((uint32_t)(t - mark) >= BREAK_IDLE_LOW_MIN_US) { phase = 2; mark = t; }
-                else phase = 0;
-            } else if ((uint32_t)(t - mark) > BREAK_IDLE_LOW_MAX_US) {
-                return BreakResult::NoIdleWave;
-            }
-        } else {
-            if (dom) { phase = 1; mark = t; }
-            else if ((uint32_t)(t - mark) >= BREAK_SETTLE_US) break;
-        }
-        delayMicroseconds(20);
+    if ((REG_READ(GPIO_IN_REG) & BUS_ON_MASK) == 0) {
+        return BreakResult::Busy;
     }
 
     portENTER_CRITICAL(&s_mux);
@@ -473,9 +450,9 @@ BreakResult trySlaveBreak()
     portEXIT_CRITICAL(&s_mux);
     if (!quiet) return BreakResult::Busy;
 
-    // Pelne 3 ms — ale jesli w tym czasie master zacznie taktowac, onClockEdge
-    // natychmiast zwolni linie i wyzeruje s_breakHolding, a my nie niszczymy
-    // odbieranej ramki przez UL_RX_RESET().
+    // Trzymaj DATA dominant przez BREAK_HOLD_US (np. 2500 us).
+    // Jesli w tym czasie master ruszy z zegarem, onClockEdge natychmiast
+    // puszcza linie i zeruje s_breakHolding, a my nie niszczymy ramki.
     const uint32_t holdStart = UL_NOW_US();
     while ((uint32_t)(UL_NOW_US() - holdStart) < BREAK_HOLD_US) {
         if (!s_breakHolding || s_edgeCount != e0) break;
