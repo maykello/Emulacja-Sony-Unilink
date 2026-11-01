@@ -933,6 +933,14 @@ void handleFrame(const Frame& f, unsigned long now)
         s_suppressBreakUntilMs = now + FOREIGN_POLL_GUARD_MS;
     }
 
+    // Radio wlaczone na zrodle CD adresuje zapamietana zmieniarke bez discovery,
+    // a F0 31 / PLAY potrafia przyjsc przed pierwszym pingiem — kazda ramka do
+    // zapamietanego adresu go przejmuje, zanim zostanie obsluzona.
+    if (!s_appointed && s_nvsAddr != 0 && (fromHost || tad == 0x11) &&
+        (rad == s_nvsAddr || (rad == ADDR_BROADCAST && c1 == 0xF0 && c2 == s_nvsAddr))) {
+        adoptAddress(s_nvsAddr, 0x00, now, "radio pamieta adres z poprzedniej sesji");
+    }
+
     // --- Ping 01 12 (odpowiada przerwanie) ---
     if (c1 == 0x01 && c2 == 0x12 && fromHost) {
         const uint8_t pa = pingAddrNow();
@@ -944,9 +952,6 @@ void handleFrame(const Frame& f, unsigned long now)
         }
         s_stat.pings++;
         s_lastOwnPingMs = now;
-        if (!s_appointed && rad == s_nvsAddr) {
-            adoptAddress(rad, 0x00, now, "radio pamieta adres z poprzedniej sesji");
-        }
         if (fromHost) CdChanger::noteFirstPing();
         CdChanger::notePolled();
         return;
