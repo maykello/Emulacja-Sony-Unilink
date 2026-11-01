@@ -13,6 +13,7 @@ namespace UnilinkBus {
 namespace {
 
 constexpr uint32_t DATA_MASK   = 1UL << PIN_DATA;
+constexpr uint32_t CLOCK_MASK  = 1UL << PIN_CLOCK;
 constexpr uint32_t BUS_ON_MASK = 1UL << PIN_BUS_ON;
 constexpr uint32_t RING_SIZE   = 32;   // potega dwojki
 constexpr uint32_t RING_MASK   = RING_SIZE - 1;
@@ -68,7 +69,7 @@ volatile uint32_t s_claimsSent   = 0;
 volatile uint32_t s_lastClaimUs  = 0;
 
 // --- statystyki ---
-volatile uint32_t s_stFrames = 0, s_stGlitches = 0, s_stBroken = 0, s_stOverflow = 0;
+volatile uint32_t s_stFrames = 0, s_stGlitches = 0, s_stSpikes = 0, s_stBroken = 0, s_stOverflow = 0;
 volatile uint32_t s_stTxDone = 0, s_stTxAborted = 0, s_stTxLate = 0, s_stBreaks = 0;
 
 } // namespace
@@ -161,11 +162,8 @@ static inline uint8_t __attribute__((always_inline)) fastPathReply(uint32_t now)
     return 0;
 }
 
-static inline void __attribute__((always_inline)) frameComplete(uint32_t now)
+static inline void __attribute__((always_inline)) pushFrame(uint32_t now, uint8_t replyLen, bool broken)
 {
-    s_stFrames++;
-    const uint8_t replyLen = fastPathReply(now);
-
     const uint32_t head = s_ringHead;
     const uint32_t next = (head + 1) & RING_MASK;
     if (next == s_ringTail) {
@@ -176,11 +174,18 @@ static inline void __attribute__((always_inline)) frameComplete(uint32_t now)
     UL_COPY(f.data, s_rxBuf, s_rxLen);
     f.len      = s_rxLen;
     f.replyLen = replyLen;
+    f.broken   = broken;
     if (replyLen) UL_COPY(f.reply, s_txBuf, replyLen);
     f.endUs   = now;
     f.edgeSeq = s_edgeCount;
     __asm__ __volatile__("" ::: "memory");
     s_ringHead = next;
+}
+
+static inline void __attribute__((always_inline)) frameComplete(uint32_t now)
+{
+    s_stFrames++;
+    pushFrame(now, fastPathReply(now), false);
 }
 
 static void IRAM_ATTR onClockEdge(void*)
@@ -189,6 +194,14 @@ static void IRAM_ATTR onClockEdge(void*)
     bool notify = false;
 
     portENTER_CRITICAL_ISR(&s_mux);
+    if (BUS_CLOCK_LEVEL_CHECK) {
+        const bool clockHigh = (REG_READ(GPIO_IN_REG) & CLOCK_MASK) != 0;
+        if (clockHigh != (CLOCK_EDGE == RISING)) {
+            s_stSpikes++;
+            portEXIT_CRITICAL_ISR(&s_mux);
+            return;
+        }
+    }
     const uint32_t gap = now - s_lastEdgeUs;
     if (gap < BUS_CLOCK_GLITCH_US) {
         // Odbicie/zaklocenie na linii zegara — prawdziwe zbocza dziela ~125 us.
@@ -251,7 +264,13 @@ static void IRAM_ATTR onClockEdge(void*)
 
     if (!handled) {
         if (gap > BUS_FRAME_GAP_US) {
-            if (s_rxLen != 0 || s_rxBit != 0) s_stBroken++;
+            if (s_rxLen != 0 || s_rxBit != 0) {
+                s_stBroken++;
+                if (s_rxLen >= 2) {
+                    pushFrame(now, 0, true);
+                    notify = true;
+                }
+            }
             UL_RX_RESET();
             s_rxSkip = false;
         }
@@ -436,8 +455,30 @@ BreakResult trySlaveBreak()
     if (s_txActive || (uint32_t)(t0 - s_lastEdgeUs) < BREAK_QUIET_BEFORE_US) {
         return BreakResult::Busy;
     }
-    if ((REG_READ(GPIO_IN_REG) & BUS_ON_MASK) == 0) {
-        return BreakResult::Busy;
+    // 0 = czekam na faze dominujaca, 1 = w fazie dominujacej, 2 = w fazie recesywnej
+    uint8_t  phase = 0;
+    uint32_t mark  = t0;
+    for (;;) {
+        const uint32_t t = UL_NOW_US();
+        if (s_edgeCount != e0 || s_txActive) return BreakResult::Busy;
+        if ((REG_READ(GPIO_IN_REG) & BUS_ON_MASK) == 0) return BreakResult::Busy;
+        if ((uint32_t)(t - t0) > BREAK_SEARCH_MAX_US) return BreakResult::NoIdleWave;
+
+        const bool dom = UL_DATA_DOMINANT() != 0;
+        if (phase == 0) {
+            if (dom) { phase = 1; mark = t; }
+        } else if (phase == 1) {
+            if (!dom) {
+                if ((uint32_t)(t - mark) >= BREAK_IDLE_LOW_MIN_US) { phase = 2; mark = t; }
+                else phase = 0;
+            } else if ((uint32_t)(t - mark) > BREAK_IDLE_LOW_MAX_US) {
+                return BreakResult::NoIdleWave;
+            }
+        } else {
+            if (dom) { phase = 1; mark = t; }
+            else if ((uint32_t)(t - mark) >= BREAK_SETTLE_US) break;
+        }
+        delayMicroseconds(20);
     }
 
     portENTER_CRITICAL(&s_mux);
@@ -450,9 +491,8 @@ BreakResult trySlaveBreak()
     portEXIT_CRITICAL(&s_mux);
     if (!quiet) return BreakResult::Busy;
 
-    // Trzymaj DATA dominant przez BREAK_HOLD_US (np. 2500 us).
-    // Jesli w tym czasie master ruszy z zegarem, onClockEdge natychmiast
-    // puszcza linie i zeruje s_breakHolding, a my nie niszczymy ramki.
+    // Jesli w trakcie impulsu master ruszy z zegarem, onClockEdge natychmiast
+    // puszcza linie i zeruje s_breakHolding, a my nie niszczymy jego ramki.
     const uint32_t holdStart = UL_NOW_US();
     while ((uint32_t)(UL_NOW_US() - holdStart) < BREAK_HOLD_US) {
         if (!s_breakHolding || s_edgeCount != e0) break;
@@ -483,6 +523,7 @@ void takeStats(Stats& out)
     portENTER_CRITICAL(&s_mux);
     out.frames    = s_stFrames;    s_stFrames    = 0;
     out.glitches  = s_stGlitches;  s_stGlitches  = 0;
+    out.spikes    = s_stSpikes;    s_stSpikes    = 0;
     out.broken    = s_stBroken;    s_stBroken    = 0;
     out.overflow  = s_stOverflow;  s_stOverflow  = 0;
     out.txDone    = s_stTxDone;    s_stTxDone    = 0;

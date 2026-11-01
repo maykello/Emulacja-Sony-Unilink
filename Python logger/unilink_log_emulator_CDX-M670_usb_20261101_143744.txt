@@ -1,0 +1,51 @@
+[14:37:46.882] [STAT] rx=5 ping=1 p15=0 claim=0 grant=0 brk=1/1/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR20 01:41 q=0
+[14:37:48.880] [STAT] rx=5 ping=0 p15=0 claim=0 grant=0 brk=1/1/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR20 01:43 q=0
+[14:37:50.882] [STAT] rx=6 ping=1 p15=0 claim=0 grant=0 brk=1/1/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR20 01:45 q=0
+[14:37:52.884] [STAT] rx=10 ping=1 p15=3 claim=3 grant=3 brk=4/1/0 late=0 abort=1 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR20 01:47 q=0
+[14:37:54.885] [STAT] rx=5 ping=1 p15=1 claim=1 grant=1 brk=3/1/0 late=0 abort=1 bad=0 glitch=2 cut=1 ovf=0 | 0x31 st=0x00 CD4 TR20 01:49 q=0
+[14:37:56.877] [STAT] rx=11 ping=0 p15=3 claim=3 grant=3 brk=3/1/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR20 01:51 q=0
+[14:37:58.878] [STAT] rx=9 ping=1 p15=2 claim=2 grant=1 brk=3/1/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR20 01:53 q=0
+[14:37:59.741] >> [Audio Bus] Radio przelaczylo tor audio (87 AB)
+[14:37:59.763] >> [Audio Bus] Radio przelaczylo tor audio (87 EB)
+[14:37:59.880] >> PLAY (juz gram — ignoruje, nie restartuje utworu)
+[14:38:00.745] >> CD-TEXT: CD4 TR20 plyta="Dokladka" utwor="Catherine Ferry - Un, Deux, Trois"
+[14:38:00.882] [STAT] rx=30 ping=1 p15=2 claim=2 grant=2 brk=5/2/0 late=0 abort=1 bad=1 glitch=6 cut=2 ovf=0 | 0x31 st=0x00 CD4 TR20 01:55 q=4
+[14:38:02.885] [STAT] rx=20 ping=1 p15=3 claim=3 grant=3 brk=7/5/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR20 01:57 q=2
+[14:38:04.876] [STAT] rx=11 ping=1 p15=0 claim=0 grant=0 brk=1/1/0 late=0 abort=0 bad=0 glitch=2 cut=2 ovf=0 | 0x31 st=0x00 CD4 TR20 01:59 q=2
+[14:38:06.878] [STAT] rx=13 ping=0 p15=4 claim=4 grant=4 brk=7/3/0 late=0 abort=1 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR20 02:01 q=3
+[14:38:08.880] [STAT] rx=4 ping=1 p15=0 claim=0 grant=0 brk=2/2/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR20 02:03 q=3
+[14:38:09.796] [NVS] Zapamietano: CD4 TR20, sekunda=123
+[14:38:10.881] [STAT] rx=16 ping=1 p15=0 claim=0 grant=0 brk=1/1/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR20 02:05 q=3
+[14:38:12.883] [STAT] rx=12 ping=1 p15=0 claim=0 grant=0 brk=1/1/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR20 02:07 q=3
+[14:38:14.885] [STAT] rx=13 ping=1 p15=0 claim=0 grant=0 brk=1/1/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR20 02:09 q=3
+[14:38:16.875] [STAT] rx=7 ping=0 p15=0 claim=0 grant=0 brk=1/1/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR20 02:11 q=3
+[14:38:18.876] [STAT] rx=6 ping=1 p15=1 claim=1 grant=1 brk=5/4/0 late=0 abort=0 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR20 02:13 q=3
+[14:38:19.025] >> [Audio Bus] Radio sygnalizuje audio MUTE (87 6A)
+[14:38:19.047] >> [Audio Bus] Radio sygnalizuje audio MUTE (87 2A)
+[14:38:20.880] [STAT] rx=10 ping=1 p15=0 claim=0 grant=0 brk=1/1/0 late=0 abort=0 bad=0 glitch=2 cut=2 ovf=0 | 0x31 st=0x00 CD4 TR20 02:15 q=3
+[14:38:22.881] [STAT] rx=5 ping=1 p15=0 claim=0 grant=0 brk=1/1/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR20 02:17 q=3
+[14:38:24.882] [STAT] rx=9 ping=0 p15=2 claim=2 grant=2 brk=5/2/0 late=0 abort=0 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x00 CD4 TR20 02:19 q=1
+[14:38:26.875] [STAT] rx=3 ping=1 p15=0 claim=0 grant=0 brk=2/3/0 late=0 abort=0 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x00 CD4 TR20 02:21 q=1
+[14:38:28.876] [STAT] rx=4 ping=1 p15=0 claim=0 grant=0 brk=1/1/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR20 02:23 q=1
+[14:38:30.878] [STAT] rx=5 ping=1 p15=0 claim=0 grant=0 brk=1/0/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR20 02:25 q=1
+[14:38:32.879] [STAT] rx=6 ping=1 p15=0 claim=0 grant=0 brk=0/1/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR20 02:27 q=1
+[14:38:34.500] [Audio-info] Closing audio file
+[14:38:34.502] [Audio-info] End of file "Catherine Ferry - Un, Deux, Trois.mp3"
+[14:38:34.503] [Audio-eof] Koniec utworu: Catherine Ferry - Un, Deux, Trois.mp3
+[14:38:34.504] [Audio] DAC XSMT (GPIO 16) -> LOW (Wyciszono)
+[14:38:34.505] >> AUTO-NEXT: CD4 TR21 (repeat=0, moved=1)
+[14:38:34.748] [Audio] Async connecttoFS("/CD04.Dokladka/Chicory Tip - Son Of My Father.mp3") = OK
+[14:38:34.750] [Audio] ▶ Odtwarzam: /CD04.Dokladka/Chicory Tip - Son Of My Father.mp3 (rozpoczęto dekodowanie)
+[14:38:34.866] [Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[14:38:34.879] [STAT] rx=4 ping=0 p15=0 claim=0 grant=0 brk=1/1/0 late=0 abort=0 bad=0 glitch=1 cut=0 ovf=0 | 0x31 st=0x20 CD4 TR21 00:00 q=0
+[14:38:34.995] >>> 20 -> 00 (Playing!)
+[14:38:35.069] >> CD-TEXT: CD4 TR21 plyta="Dokladka" utwor="Chicory Tip - Son Of My Father"
+[14:38:35.385] [NVS] Zapamietano: CD4 TR21, sekunda=0
+[14:38:36.881] [STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=6/4/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR21 00:01 q=1
+[14:38:38.882] [STAT] rx=4 ping=1 p15=0 claim=0 grant=0 brk=1/1/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR21 00:03 q=1
+[14:38:40.875] [STAT] rx=5 ping=1 p15=0 claim=0 grant=0 brk=1/1/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR21 00:05 q=1
+[14:38:42.876] [STAT] rx=18 ping=1 p15=6 claim=6 grant=6 brk=9/2/0 late=0 abort=1 bad=0 glitch=2 cut=1 ovf=0 | 0x31 st=0x00 CD4 TR21 00:07 q=2
+[14:38:44.877] [STAT] rx=5 ping=0 p15=0 claim=0 grant=0 brk=2/3/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR21 00:09 q=2
+[14:38:46.879] [STAT] rx=4 ping=1 p15=0 claim=0 grant=0 brk=1/1/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR21 00:11 q=2
+[14:38:48.880] [STAT] rx=4 ping=1 p15=0 claim=0 grant=0 brk=1/1/0 late=0 abort=0 bad=0 glitch=0 cut=0 ovf=0 | 0x31 st=0x00 CD4 TR21 00:13 q=2
+[14:38:50.882] [STAT] rx=16 ping=1 p15=5 claim=5 grant=6 brk=6/1/0 late=0 abort=1 bad=0 glitch=1 cut=1 ovf=0 | 0x31 st=0x00 CD4 TR21 00:15 q=0

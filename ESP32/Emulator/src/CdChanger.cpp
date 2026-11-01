@@ -600,6 +600,13 @@ void resetToInit() {
 }
 
 void resetToAllocated() {
+    // Czas dekodera dla VBR jest tylko szacunkiem — przestawienie na niego zegara,
+    // ktory juz biegnie, daje na ekranie skok o kilka sekund.
+    if (cdState == MechState::Playing && audioIsPlaying()) {
+        needDisplayUpdate = true;
+        Serial.printf(">> resetToAllocated: gram dalej %02d:%02d\n", playMinutes, playSeconds);
+        return;
+    }
     if (audioIsPlaying() || audioIsBusyChangingTrack()) {
         uint32_t t = audioIsPlaying() ? audioGetCurrentTimeSec()
                                       : ((uint32_t)playMinutes * 60u + (uint32_t)playSeconds);

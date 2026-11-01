@@ -34,7 +34,7 @@ void begin();
 bool isAllocated();
 
 // Czy radio ma nas wybranych jako zrodlo (PLAY / 18 10 F0 <nasz adres>)?
-// Kasowane przez wybor innego zrodla (F0) i wylaczenie audio (87, bit 0 = 0).
+// Kasowane przez wybor innego zrodla (F0) i wylaczenie radia (87 bez bitow 0 i 1).
 bool isSelected();
 
 // Stan BUS_ON po filtracji (true = radio wlaczone).

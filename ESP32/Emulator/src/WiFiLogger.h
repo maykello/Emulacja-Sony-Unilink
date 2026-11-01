@@ -63,13 +63,9 @@ private:
     bool clientConnected = false;
     unsigned long lastReconnectAttempt = 0;
 
-    // Bufor kołowy (czarna skrzynka) przechowujący ostatnie ~8KB logów
-    char blackboxBuf[BLACKBOX_SIZE];
-    size_t blackboxHead = 0;
-    size_t blackboxTail = 0;
-    bool blackboxFull = false;
-
-    void addToBlackbox(uint8_t c);
+    // Czarna skrzynka (ostatnie ~8KB logow) lezy w .noinit w WiFiLogger.cpp —
+    // po restarcie panic/WDT begin() przenosi ja do migawki crash logu.
+    void restoreBlackbox();
 };
 
 extern WiFiLoggerClass WiFiLogger;

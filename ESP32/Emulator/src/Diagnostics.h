@@ -19,7 +19,12 @@
 
 namespace Diagnostics {
 
-// Zapisz ramke do bufora. label: krotki znacznik ("RX", "TX").
+// Inicjalizacja bufora (przed pierwszym recordFrame). Bufor lezy w .noinit:
+// gdy keepPrevious (restart po panic/WDT), zawartosc sprzed restartu trafia do
+// migawki. Zwraca true, gdy migawke odtworzono.
+bool begin(bool keepPrevious);
+
+// Zapisz ramke do bufora. label: krotki znacznik ("RX", "TX", do 5 znakow).
 void recordFrame(const char* label, const uint8_t* data, int len);
 
 // Zapisz zdarzenie tekstowe (np. "BREAK").

@@ -50,6 +50,9 @@ TaskHandle_t s_task = nullptr;
 Preferences  s_prefs;
 
 volatile bool    s_appointed = false;
+// true tylko po prawdziwym appoint (3X 10 02 YY) w biezacej sesji radia. Adres
+// przejety z NVS na podstawie pingu jest domniemany — ANYONE go uniewaznia.
+bool             s_appointConfirmed = false;
 volatile uint8_t s_myAddr    = ADDR_GROUP_CD;
 uint8_t          s_claimMask = CLAIM_MASK_DEFAULT;
 // Adres z poprzedniej sesji (NVS). Dopoki radio nie przydzieli adresu, odpowiadamy
@@ -690,6 +693,7 @@ void adoptAddress(uint8_t addr, uint8_t appointCmd2, unsigned long now, const ch
 {
     const bool changed = !s_appointed || s_myAddr != addr;
     s_appointed        = true;
+    s_appointConfirmed = false;
     s_myAddr           = addr;
     s_nvsAddr          = 0;
     s_dualListenWaited = false;
@@ -712,6 +716,7 @@ void onBusReset(unsigned long now)
 {
     const bool wasAppointed = s_appointed;
     s_appointed        = false;
+    s_appointConfirmed = false;
     s_myAddr           = ADDR_GROUP_CD;
     s_nvsAddr          = 0;
     s_dualListenWaited = false;
@@ -819,12 +824,16 @@ void handleDirectSelect(const Frame& f)
 
 void handleCommand(const Frame& f, unsigned long now)
 {
-    s_selected = true;
-    if (s_displayYielded) {
-        s_displayYielded = false;
-        s_shown.valid    = false;
-    }
     const uint8_t c1 = f.data[2];
+    // Zapytania o tekst/magazynek (84 xx, np. od procesora ekranu 0x71) przychodza
+    // tez, gdy radio gra z innego zrodla — nie oznaczaja wyboru zmieniarki.
+    if (c1 != 0x84) {
+        s_selected = true;
+        if (s_displayYielded) {
+            s_displayYielded = false;
+            s_shown.valid    = false;
+        }
+    }
     switch (c1) {
         case 0x20:
             CdChanger::handlePlayCommand();
@@ -885,6 +894,11 @@ uint8_t pingAddrNow()
 
 void handleFrame(const Frame& f, unsigned long now)
 {
+    if (f.broken) {
+        Diagnostics::recordFrame("CUT", f.data, f.len);
+        s_stat.bad++;
+        return;
+    }
     if (UnilinkFrame::validate(f.data, f.len) != UnilinkFrame::ValidateResult::Ok) {
         Diagnostics::recordFrame("BAD", f.data, f.len);
         s_stat.bad++;
@@ -952,11 +966,6 @@ void handleFrame(const Frame& f, unsigned long now)
 
     // --- Grant 3X 10/14 01 13 (ramke wysyla przerwanie) ---
     if (s_appointed && rad == s_myAddr && fromHost && c1 == 0x01 && c2 == 0x13) {
-        if (!s_selected) {
-            s_selected       = true;
-            s_displayYielded = false;
-            s_shown.valid    = false;
-        }
         if (!f.replyLen) {
             uint8_t fr[16];
             DisplayKey key;
@@ -974,9 +983,9 @@ void handleFrame(const Frame& f, unsigned long now)
 
     // --- ANYONE? 18 10 01 02 ---
     if (rad == ADDR_BROADCAST && fromMaster && c1 == 0x01 && c2 == 0x02) {
-        // Jezeli master rozpoczyna re-enumeracje magistrali (>2 s od ostatniego appoint),
-        // resetujemy sesje i bierzemy udzial w discovery.
-        if (s_appointed && (now - s_appointMs) > 2000) {
+        // Discovery uniewaznia adres przejety z NVS (radio go nie przydzielilo w tej
+        // sesji) oraz przydzial starszy niz 2 s (zgubiony reset 01 00).
+        if (s_appointed && (!s_appointConfirmed || (now - s_appointMs) > 2000)) {
             s_nvsAddr   = s_myAddr;
             s_appointed = false;
             s_selected  = false;
@@ -1004,6 +1013,7 @@ void handleFrame(const Frame& f, unsigned long now)
             Diagnostics::recordFrame("TX", info, sizeof(info));
         }
         adoptAddress(rad, c2, now, "appoint");
+        s_appointConfirmed = true;
         return;
     }
 
@@ -1033,23 +1043,17 @@ void handleFrame(const Frame& f, unsigned long now)
             }
             CdChanger::stopSeekScan();   // puszczenie klawisza FF/REW
         } else if (c1 == 0x87 && (tad == ADDR_MASTER || tad == 0x11)) {
-            if (c2 == 0x29) {
-                // Specyficzna komenda przedwzmacniacza CDX-M670: tor audio zmieniarki CD (0x31) aktywny
-                const bool wasSelected = s_selected;
-                s_selected       = true;
-                s_displayYielded = false;
-                if (!wasSelected) s_shown.valid = false;
-                const MechState ms = CdChanger::mechState();
-                if (ms == MechState::Init || ms == MechState::Idle) {
-                    Serial.println(">> [0x87 29] Audio ON dla zmieniarki -> start odtwarzania!");
-                    CdChanger::handlePlayCommand();
-                }
-            } else if ((c2 & 0x01) == 0) {
-                // Ramka 87 z bitem 0=0 to soft-mute/wyciszenie audio w przedwzmacniaczu radia (np. przy starcie radia 87 2A)
-                Serial.printf(">> [Audio Bus] Radio sygnalizuje audio MUTE (87 %02X)\n", c2);
+            // Stan zasilania radia. Wlaczone: 2B/6B/AB/EB (bity 0 i 1 ustawione).
+            // Wylaczenie: 6A, 2A -> ~10 s -> 22 -> BUS_ON=0; po wybudzeniu przez
+            // 01 11 przy zgaszonym radiu: 29 -> ~10 s -> 21 -> BUS_ON=0.
+            // Prawdziwa zmieniarka po wylaczeniu przestaje grac i nadawac (ping
+            // 0x80) — radio zdejmuje BUS_ON dopiero, gdy zrodlo jest bezczynne.
+            if ((c2 & 0x03) != 0x03) {
+                Serial.printf(">> Radio wylaczone (87 %02X)\n", c2);
+                s_selected = false;
+                stopByRadio("radio wylaczone");
             } else {
-                // Inne urzadzenie ma aktywny tor audio (np. 87 AB = Tuner) - NIE wymuszamy s_selected = true!
-                Serial.printf(">> [Audio Bus] Radio przelaczylo tor audio (87 %02X)\n", c2);
+                Serial.printf(">> Radio wlaczone (87 %02X)\n", c2);
             }
         } else if (fromMaster && c1 == 0xF0) {
             if (c2 == s_myAddr) {
@@ -1182,13 +1186,15 @@ void trackGrants(unsigned long now)
 
 void maybeBreak(unsigned long now)
 {
-    const MechState ms = CdChanger::mechState();
-    if (ms == MechState::Init || !s_selected || !s_busActive || !s_appointed) {
+    // Slot zawiera tylko ramki dozwolone w biezacym stanie (ekran wylacznie po
+    // wyborze zrodla), wiec Break nie zalezy od wyboru — rejestracja 30 31 70 ..
+    // po appoint idzie wlasnym Breakiem, jak w oryginale.
+    if (!s_busActive || !s_appointed) {
         s_breakAwaitingPoll = false;
         return;
     }
     // Dodatkowa ochrona przed kolizja z odpowiedzia wewnetrznych urzadzen radia (np. 0x3B lub 0x71)
-    if (now < s_suppressBreakUntilMs) return;
+    if ((long)(now - s_suppressBreakUntilMs) < 0) return;
 
     if (s_breakAwaitingPoll) {
         if (now - s_breakDoneMs < BREAK_POLL_WAIT_MS) return;
@@ -1211,10 +1217,17 @@ void maybeBreak(unsigned long now)
         s_breakAwaitingPoll = true;
         s_breakDoneMs       = after;
         s_nextBreakMs       = after + BREAK_INTERVAL_MIN_MS;
+        s_noWaveStreak      = 0;
         s_stat.breaks++;
         Diagnostics::recordNote("BREAK");
     } else if (r == UnilinkBus::BreakResult::Busy) {
         s_nextBreakMs = after + BREAK_RETRY_BUSY_MS;
+    } else {
+        s_stat.breakNoWave++;
+        if (s_noWaveStreak < 6) s_noWaveStreak++;
+        unsigned long backoff = BREAK_RETRY_NOWAVE_MS << (s_noWaveStreak - 1);
+        if (backoff > BREAK_BACKOFF_MAX_MS) backoff = BREAK_BACKOFF_MAX_MS;
+        s_nextBreakMs = after + backoff;
     }
 }
 
@@ -1243,8 +1256,8 @@ void scheduleTx(unsigned long now)
             s_slotCarriesScreen = false;
             s_slotIsStatusC0    = false;
         }
-        s_breakAwaitingPoll = false;
         if (s_txQueue.isEmpty() || s_displayYielded) {
+            s_breakAwaitingPoll = false;
             return;
         }
     }
@@ -1383,11 +1396,12 @@ void serviceStats(unsigned long now)
     UnilinkBus::Stats bs;
     UnilinkBus::takeStats(bs);
     if (s_busActive || bs.frames) {
-        Serial.printf("[STAT] rx=%lu ping=%u p15=%u claim=%u grant=%u brk=%u/%u/%u late=%lu abort=%lu bad=%u glitch=%lu cut=%lu ovf=%lu | %s0x%02X st=0x%02X CD%u TR%u %02u:%02u q=%u\n",
+        Serial.printf("[STAT] rx=%lu ping=%u p15=%u claim=%u grant=%u brk=%u/%u/%u late=%lu abort=%lu bad=%u glitch=%lu spike=%lu cut=%lu ovf=%lu | %s0x%02X st=0x%02X CD%u TR%u %02u:%02u q=%u\n",
                       (unsigned long)bs.frames, s_stat.pings, s_stat.poll15, s_stat.claims, s_stat.grants,
                       s_stat.breaks, s_stat.breakNoPoll, s_stat.breakNoWave,
                       (unsigned long)bs.txLate, (unsigned long)bs.txAborted, s_stat.bad,
-                      (unsigned long)bs.glitches, (unsigned long)bs.broken, (unsigned long)bs.overflow,
+                      (unsigned long)bs.glitches, (unsigned long)bs.spikes, (unsigned long)bs.broken,
+                      (unsigned long)bs.overflow,
                       s_appointed ? "" : "!", s_appointed ? (uint8_t)s_myAddr : s_nvsAddr,
                       UnilinkFrame::statusByte(CdChanger::mechState()),
                       CdChanger::disk(), CdChanger::track(), CdChanger::minutes(), CdChanger::seconds(),

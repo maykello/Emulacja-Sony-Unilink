@@ -32,6 +32,7 @@ struct Frame {
     uint8_t  data[FRAME_MAX];
     uint8_t  len;
     uint8_t  replyLen;             // > 0: przerwanie juz odpowiedzialo ramka `reply`
+    bool     broken;               // ramka ucieta przerwa zegara (`len` = odebrane bajty)
     uint8_t  reply[FRAME_MAX];
     uint32_t endUs;                // czas ostatniego zbocza ramki (esp_timer, us)
     uint32_t edgeSeq;              // licznik zboczy w chwili konca ramki
@@ -77,8 +78,8 @@ uint32_t lastClaimUs();
 // Gdy magistrala jest bezczynna, master trzyma na DATA fale ~8 ms poziomu
 // dominujacego / ~8 ms recesywnego. Slave zglasza chec nadawania, sciagajac
 // linie na ~3 ms w fazie recesywnej, ~2 ms po jej poczatku. Master odpowiada
-// wtedy `18 10 01 15`. Funkcja czeka na fale aktywnie (ograniczony czas) i
-// natychmiast rezygnuje, gdy na zegarze pojawi sie ruch.
+// wtedy `18 10 01 15`. Funkcja czeka na fale aktywnie (do BREAK_SEARCH_MAX_US)
+// i natychmiast rezygnuje, gdy na zegarze pojawi sie ruch.
 enum class BreakResult : uint8_t { Done, Busy, NoIdleWave };
 BreakResult trySlaveBreak();
 
@@ -90,6 +91,7 @@ bool busOnRaw();
 struct Stats {
     uint32_t frames;
     uint32_t glitches;     // zbocza odrzucone jako zaklocenia
+    uint32_t spikes;       // zbocza odrzucone, bo CLOCK juz wrocil do stanu sprzed zbocza
     uint32_t broken;       // niekompletne ramki ucięte przerwa
     uint32_t overflow;     // ramki zgubione przez pelny bufor
     uint32_t txDone;

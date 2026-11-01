@@ -2,6 +2,8 @@
 #include "UsbDrive.h"
 #include "AudioPlayer.h"
 #include <FS.h>
+#include <esp_attr.h>
+#include <esp_system.h>
 
 // UWAGA: NIE WOLNO includowac Config.h w tym pliku!
 // Config.h zawiera `#define Serial WiFiLogger`, co powodowaloby nieskonczona
@@ -22,7 +24,27 @@ WiFiLoggerClass WiFiLogger;
 // Logi pisze kilka zadan naraz (magistrala, audio, USB, petla glowna).
 static portMUX_TYPE s_blackboxMux = portMUX_INITIALIZER_UNLOCKED;
 
+// Bufor kolowy w .noinit: przezywa restart po panic/WDT (nie po wlaczeniu zasilania).
+static constexpr size_t   BB_SIZE  = WiFiLoggerClass::BLACKBOX_SIZE;
+static constexpr uint32_t BB_MAGIC = 0x424C4B42;
+static __NOINIT_ATTR char     blackboxBuf[BB_SIZE];
+static __NOINIT_ATTR uint32_t blackboxHead;
+static __NOINIT_ATTR uint32_t blackboxTail;
+static __NOINIT_ATTR uint32_t blackboxFull;
+static __NOINIT_ATTR uint32_t blackboxMagic;
+static __NOINIT_ATTR uint32_t blackboxLastMs;   // millis() ostatniego wpisu
+
+static inline void addToBlackbox(uint8_t c) {
+    blackboxBuf[blackboxHead] = (char)c;
+    blackboxHead = (blackboxHead + 1) % BB_SIZE;
+    if (blackboxHead == blackboxTail) {
+        blackboxTail = (blackboxTail + 1) % BB_SIZE;
+        blackboxFull = 1;
+    }
+}
+
 void WiFiLoggerClass::begin(unsigned long baud) {
+    restoreBlackbox();
 #if !ARDUINO_USB_CDC_ON_BOOT
     // Bez bufora nadawczego kazdy printf czeka, az bajty zejda do 128-bajtowego
     // FIFO UART — zadanie magistrali nie moze na tym stac.
@@ -124,7 +146,7 @@ void WiFiLoggerClass::loop() {
 
 size_t WiFiLoggerClass::write(uint8_t c) {
     portENTER_CRITICAL(&s_blackboxMux);
-    addToBlackbox(c);
+    if (blackboxMagic == BB_MAGIC) addToBlackbox(c);
     portEXIT_CRITICAL(&s_blackboxMux);
     ::Serial.write(c);
 #if ENABLE_WIFI
@@ -136,9 +158,13 @@ size_t WiFiLoggerClass::write(uint8_t c) {
 }
 
 size_t WiFiLoggerClass::write(const uint8_t *buffer, size_t size) {
+    const uint32_t nowMs = millis();
     portENTER_CRITICAL(&s_blackboxMux);
-    for (size_t i = 0; i < size; i++) {
-        addToBlackbox(buffer[i]);
+    if (blackboxMagic == BB_MAGIC) {
+        for (size_t i = 0; i < size; i++) {
+            addToBlackbox(buffer[i]);
+        }
+        blackboxLastMs = nowMs;
     }
     portEXIT_CRITICAL(&s_blackboxMux);
     ::Serial.write(buffer, size);
@@ -157,15 +183,6 @@ void WiFiLoggerClass::flush() {
         activeClient.flush();
     }
 #endif
-}
-
-void WiFiLoggerClass::addToBlackbox(uint8_t c) {
-    blackboxBuf[blackboxHead] = (char)c;
-    blackboxHead = (blackboxHead + 1) % BLACKBOX_SIZE;
-    if (blackboxHead == blackboxTail) {
-        blackboxTail = (blackboxTail + 1) % BLACKBOX_SIZE;
-        blackboxFull = true;
-    }
 }
 
 #include "Diagnostics.h"
@@ -291,6 +308,31 @@ void WiFiLoggerClass::captureCrashSnapshot(const char* reason) {
 
     Diagnostics::captureSnapshot();
     s_hasCrashSnapshot = true;
+}
+
+// Wolane na samym poczatku begin(), zanim cokolwiek trafi do bufora.
+void WiFiLoggerClass::restoreBlackbox() {
+    const esp_reset_reason_t rr = esp_reset_reason();
+    const bool crashed = rr == ESP_RST_PANIC || rr == ESP_RST_INT_WDT || rr == ESP_RST_TASK_WDT ||
+                         rr == ESP_RST_WDT || rr == ESP_RST_BROWNOUT;
+    const bool valid = blackboxMagic == BB_MAGIC && blackboxHead < BB_SIZE && blackboxTail < BB_SIZE &&
+                       (blackboxFull != 0 || blackboxHead != blackboxTail);
+    if (crashed && valid) {
+        memcpy(snapshotTextBuf, blackboxBuf, BB_SIZE);
+        snapshotHead   = blackboxHead;
+        snapshotTail   = blackboxTail;
+        snapshotFull   = blackboxFull != 0;
+        snapshotUptime = blackboxLastMs;
+        snprintf(snapshotReason, sizeof(snapshotReason), "ESP CRASH: %s (log sprzed restartu)",
+                 espResetReasonName());
+        s_hasCrashSnapshot = true;
+    }
+    Diagnostics::begin(crashed && valid);
+    blackboxHead   = 0;
+    blackboxTail   = 0;
+    blackboxFull   = 0;
+    blackboxLastMs = 0;
+    blackboxMagic  = BB_MAGIC;
 }
 
 bool WiFiLoggerClass::hasCrashSnapshot() const {

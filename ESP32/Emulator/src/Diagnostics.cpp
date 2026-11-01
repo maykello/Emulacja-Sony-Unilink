@@ -3,32 +3,48 @@
 // =============================================================================
 #include "Diagnostics.h"
 #include "Config.h"   // Serial -> WiFiLogger: komunikaty trafiaja tez do czarnej skrzynki
+#include <esp_attr.h>
 
 namespace Diagnostics {
 
 constexpr int RING_SIZE     = 128;   // ile ostatnich zdarzen pamietamy
 constexpr int MAX_FRAME_LEN = 16;   // najdluzsza ramka UniLink
+constexpr int LABEL_LEN     = 6;
+constexpr uint32_t RING_MAGIC = 0x44494147;
 
+// Etykieta jako kopia tekstu, nie wskaznik: bufor przezywa restart (.noinit)
+// i jest czytany juz po nim.
 struct Entry {
     unsigned long timeMs;
-    const char*   label;
+    char          label[LABEL_LEN];
     uint8_t       len;
     uint8_t       data[MAX_FRAME_LEN];
 };
 
-static Entry ring[RING_SIZE];
-static int   head  = 0;     // indeks nastepnego wpisu
-static int   count = 0;     // ile wpisow zapisano (do RING_SIZE)
+// .noinit: zawartosc przezywa restart po panic/WDT; begin() ja przejmuje.
+static __NOINIT_ATTR Entry    ring[RING_SIZE];
+static __NOINIT_ATTR int      head;        // indeks nastepnego wpisu
+static __NOINIT_ATTR int      count;       // ile wpisow zapisano (do RING_SIZE)
+static __NOINIT_ATTR uint32_t ringMagic;
 static portMUX_TYPE s_ringMux = portMUX_INITIALIZER_UNLOCKED;
 
+static void copyLabel(char* dst, const char* src) {
+    int i = 0;
+    if (src) {
+        for (; i < LABEL_LEN - 1 && src[i] != '\0'; ++i) dst[i] = src[i];
+    }
+    dst[i] = '\0';
+}
+
 void recordFrame(const char* label, const uint8_t* data, int len) {
+    if (ringMagic != RING_MAGIC) return;   // przed begin(): head/count to smieci
     if (len < 0 || data == nullptr) len = 0;
     if (len > MAX_FRAME_LEN) len = MAX_FRAME_LEN;
     const unsigned long t = millis();
     portENTER_CRITICAL(&s_ringMux);
     Entry& e = ring[head];
     e.timeMs = t;
-    e.label  = label;
+    copyLabel(e.label, label);
     e.len = (uint8_t)len;
     for (int i = 0; i < len; i++) e.data[i] = data[i];
     head = (head + 1) % RING_SIZE;
@@ -79,6 +95,28 @@ static int   snapshotHead = 0;
 static int   snapshotCount = 0;
 static unsigned long snapshotNow = 0;
 static bool  s_hasSnapshot = false;
+
+bool begin(bool keepPrevious) {
+    const bool valid = ringMagic == RING_MAGIC && head >= 0 && head < RING_SIZE &&
+                       count > 0 && count <= RING_SIZE;
+    bool kept = false;
+    if (keepPrevious && valid) {
+        memcpy(snapshotRing, ring, sizeof(ring));
+        for (int i = 0; i < RING_SIZE; ++i) {
+            snapshotRing[i].label[LABEL_LEN - 1] = '\0';
+            if (snapshotRing[i].len > MAX_FRAME_LEN) snapshotRing[i].len = MAX_FRAME_LEN;
+        }
+        snapshotHead  = head;
+        snapshotCount = count;
+        snapshotNow   = snapshotRing[(head - 1 + RING_SIZE) % RING_SIZE].timeMs;
+        s_hasSnapshot = true;
+        kept = true;
+    }
+    head      = 0;
+    count     = 0;
+    ringMagic = RING_MAGIC;
+    return kept;
+}
 
 void captureSnapshot() {
     if (s_hasSnapshot) return; // zachowaj pierwsze zdarzenie z sesji
