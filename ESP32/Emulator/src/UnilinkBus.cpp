@@ -4,9 +4,11 @@
 #include "UnilinkBus.h"
 #include "Config.h"
 #include "driver/gpio.h"
+#include "driver/pcnt.h"
 #include "esp_intr_alloc.h"
 #include "esp_timer.h"
 #include "soc/gpio_reg.h"
+#include "soc/pcnt_reg.h"
 
 namespace UnilinkBus {
 
@@ -68,9 +70,22 @@ volatile uint32_t s_grantsServed = 0;
 volatile uint32_t s_claimsSent   = 0;
 volatile uint32_t s_lastClaimUs  = 0;
 
+// --- licznik sprzetowy zboczy (PCNT) ---
+// Liczy zbocza zegara niezaleznie od CPU. "Paczka" = zbocza od przerwy miedzy
+// ramkami do nastepnej przerwy (ramka albo slot odpowiedzi).
+bool     s_pcntOk     = false;
+int32_t  s_pcntPrev   = 0;    // stan licznika na pierwszym zboczu biezacej paczki
+uint32_t s_burstIsr   = 0;    // zbocza przyjete przez przerwanie w biezacej paczce
+uint32_t s_burstGlitch = 0;
+uint32_t s_burstSpike  = 0;
+// Paczka zamknieta na biezacym zboczu (ramka, ktora wlasnie sie skonczyla).
+uint8_t  s_lbPcnt = 0, s_lbIsr = 0, s_lbGlitch = 0, s_lbSpike = 0;
+bool     s_lbValid = false;
+
 // --- statystyki ---
 volatile uint32_t s_stFrames = 0, s_stGlitches = 0, s_stSpikes = 0, s_stBroken = 0, s_stOverflow = 0;
 volatile uint32_t s_stTxDone = 0, s_stTxAborted = 0, s_stTxLate = 0, s_stBreaks = 0;
+volatile uint32_t s_stRecovered = 0, s_stLostIsr = 0, s_stLostPin = 0;
 
 } // namespace
 
@@ -162,7 +177,8 @@ static inline uint8_t __attribute__((always_inline)) fastPathReply(uint32_t now)
     return 0;
 }
 
-static inline void __attribute__((always_inline)) pushFrame(uint32_t now, uint8_t replyLen, bool broken)
+static inline void __attribute__((always_inline)) pushFrame(uint32_t now, uint8_t replyLen, bool broken,
+                                                            bool recovered = false)
 {
     const uint32_t head = s_ringHead;
     const uint32_t next = (head + 1) & RING_MASK;
@@ -172,12 +188,18 @@ static inline void __attribute__((always_inline)) pushFrame(uint32_t now, uint8_
     }
     Frame& f = s_ring[head];
     UL_COPY(f.data, s_rxBuf, s_rxLen);
-    f.len      = s_rxLen;
-    f.replyLen = replyLen;
-    f.broken   = broken;
+    f.len       = s_rxLen;
+    f.replyLen  = replyLen;
+    f.broken    = broken;
+    f.recovered = recovered;
     if (replyLen) UL_COPY(f.reply, s_txBuf, replyLen);
     f.endUs   = now;
     f.edgeSeq = s_edgeCount;
+    const bool diag = (broken || recovered) && s_lbValid;
+    f.pcntEdges   = diag ? s_lbPcnt : 0;
+    f.isrEdges    = diag ? s_lbIsr : 0;
+    f.glitchEdges = diag ? s_lbGlitch : 0;
+    f.spikeEdges  = diag ? s_lbSpike : 0;
     __asm__ __volatile__("" ::: "memory");
     s_ringHead = next;
 }
@@ -186,6 +208,111 @@ static inline void __attribute__((always_inline)) frameComplete(uint32_t now)
 {
     s_stFrames++;
     pushFrame(now, fastPathReply(now), false);
+}
+
+static inline uint8_t __attribute__((always_inline)) sat8(uint32_t v) { return v > 255 ? 255 : (uint8_t)v; }
+
+// Wolane na pierwszym zboczu po przerwie: podsumowuje paczke, ktora sie skonczyla.
+// Licznik PCNT zawiera juz biezace zbocze, wiec roznica = zbocza konczonej paczki.
+static inline void __attribute__((always_inline)) closeBurst()
+{
+    s_lbValid = false;
+    if (s_pcntOk) {
+        const int32_t cnt = (int16_t)(REG_READ(PCNT_U0_CNT_REG) & 0xFFFF);
+        const int32_t d   = cnt - s_pcntPrev;
+        if (d >= 0) {
+            s_lbPcnt   = sat8((uint32_t)d);
+            s_lbIsr    = sat8(s_burstIsr);
+            s_lbGlitch = sat8(s_burstGlitch);
+            s_lbSpike  = sat8(s_burstSpike);
+            s_lbValid  = true;
+        }
+        if (cnt > 30000) {
+            // Zerowanie, zanim licznik dojdzie do limitu. Kolejne zbocze najwczesniej
+            // za takt (~125 us), wiec niczego nie gubimy.
+            REG_SET_BIT(PCNT_CTRL_REG, PCNT_PULSE_CNT_RST_U0);
+            REG_CLR_BIT(PCNT_CTRL_REG, PCNT_PULSE_CNT_RST_U0);
+            s_pcntPrev = 0;
+        } else {
+            s_pcntPrev = cnt;
+        }
+    }
+    s_burstIsr    = 1;
+    s_burstGlitch = 0;
+    s_burstSpike  = 0;
+}
+
+// Ramka z brakujacym bitem: czy PCNT widzial zbocze, ktorego przerwanie nie przyjelo?
+static inline void __attribute__((always_inline)) classifyLostBit()
+{
+    if (!s_lbValid || (REG_READ(GPIO_IN_REG) & BUS_ON_MASK) == 0) return;
+    if (s_lbPcnt > s_lbIsr) s_stLostIsr++;
+    else                    s_stLostPin++;
+}
+
+static inline bool __attribute__((always_inline)) isOneBitDeletion(uint64_t r47, uint64_t t48)
+{
+    // r47 = t48 z usunietym jednym bitem <=> istnieje p: bity przed p zgodne z t48,
+    // bity od p zgodne z t48 przesunietym o 1. a = niezgodnosci wariantu "bez
+    // przesuniecia", b = "z przesunieciem"; warunek: najstarszy bit a lezy nizej
+    // niz najmlodszy bit b.
+    constexpr uint64_t M47 = (1ULL << 47) - 1;
+    const uint64_t a   = r47 ^ (t48 >> 1);
+    const uint64_t b   = r47 ^ (t48 & M47);
+    const uint64_t low = b ? (b & (~b + 1)) : (1ULL << 47);
+    return a < low;
+}
+
+static inline uint64_t __attribute__((always_inline)) frame6(uint8_t rad, uint8_t tad, uint8_t c2)
+{
+    const uint8_t sum = (uint8_t)(rad + tad + 0x01 + c2);
+    return ((uint64_t)rad << 40) | ((uint64_t)tad << 32) | ((uint64_t)0x01 << 24) |
+           ((uint64_t)c2 << 16) | ((uint64_t)sum << 8);
+}
+
+// Master taktuje juz slot odpowiedzi, a odebralismy tylko 47 bitow 6-bajtowej
+// ramki. Jezeli to ping / grant / 01 15 do nas z jednym zgubionym bitem,
+// odtwarzamy ja i odpowiadamy w tym slocie (bez odpowiedzi na ping radio
+// resetuje magistrale). Zwraca -1, gdy nie udalo sie odtworzyc ramki, a w
+// przeciwnym razie dlugosc uzbrojonej odpowiedzi (0 = szybka sciezka nie odpowiada).
+static inline int __attribute__((always_inline)) recoverSlippedFrame(uint32_t now)
+{
+    if (!s_fpEnabled || s_rxLen != 5 || s_rxBit != 7) return -1;
+    const uint64_t r = ((uint64_t)s_rxBuf[0] << 39) | ((uint64_t)s_rxBuf[1] << 31) |
+                       ((uint64_t)s_rxBuf[2] << 23) | ((uint64_t)s_rxBuf[3] << 15) |
+                       ((uint64_t)s_rxBuf[4] << 7)  | (uint64_t)(s_rxByte & 0x7F);
+    const uint8_t pa = s_fpPingAddr;
+    const uint8_t me = s_fpMyAddr;
+    uint64_t cand[5];
+    int n = 0;
+    if (pa != 0) {
+        cand[n++] = frame6(pa, ADDR_MASTER, 0x12);
+        cand[n++] = frame6(pa, ADDR_DISPLAY, 0x12);
+    }
+    if (me != 0) {
+        cand[n++] = frame6(me, ADDR_MASTER, 0x13);
+        cand[n++] = frame6(me, ADDR_DISPLAY, 0x13);
+    }
+    cand[n++] = frame6(ADDR_BROADCAST, ADDR_MASTER, 0x15);
+
+    int hit = -1;
+    for (int i = 0; i < n; ++i) {
+        if (isOneBitDeletion(r, cand[i])) {
+            if (hit >= 0) return -1;   // niejednoznaczne — nie zgadujemy
+            hit = i;
+        }
+    }
+    if (hit < 0) return -1;
+    // Stale przesuniecia: zmienne przesuniecie 64-bit to wywolanie funkcji libgcc.
+    const uint64_t t = cand[hit];
+    s_rxBuf[0] = (uint8_t)(t >> 40);
+    s_rxBuf[1] = (uint8_t)(t >> 32);
+    s_rxBuf[2] = (uint8_t)(t >> 24);
+    s_rxBuf[3] = (uint8_t)(t >> 16);
+    s_rxBuf[4] = (uint8_t)(t >> 8);
+    s_rxBuf[5] = (uint8_t)t;
+    s_rxLen = 6;
+    return fastPathReply(now);
 }
 
 static void IRAM_ATTR onClockEdge(void*)
@@ -198,6 +325,7 @@ static void IRAM_ATTR onClockEdge(void*)
         const bool clockHigh = (REG_READ(GPIO_IN_REG) & CLOCK_MASK) != 0;
         if (clockHigh != (CLOCK_EDGE == RISING)) {
             s_stSpikes++;
+            s_burstSpike++;
             portEXIT_CRITICAL_ISR(&s_mux);
             return;
         }
@@ -206,11 +334,16 @@ static void IRAM_ATTR onClockEdge(void*)
     if (gap < BUS_CLOCK_GLITCH_US) {
         // Odbicie/zaklocenie na linii zegara — prawdziwe zbocza dziela ~125 us.
         s_stGlitches++;
+        s_burstGlitch++;
         portEXIT_CRITICAL_ISR(&s_mux);
         return;
     }
     s_lastEdgeUs = now;
     s_edgeCount++;
+
+    const bool frameGap = gap > BUS_FRAME_GAP_US;
+    if (frameGap) closeBurst();
+    else          s_burstIsr++;
 
     // Jezeli master zaczal taktowac w trakcie trzymania naszego impulsu Slave Break,
     // NATYCHMIAST zwalniamy linie DATA na pierwszym zboczu zegara, by nie zewrzec
@@ -223,9 +356,23 @@ static void IRAM_ATTR onClockEdge(void*)
         s_rxSkip = false;
     }
 
+    // Pierwsze zbocze slotu po ramce, w ktorej zabraklo jednego bitu. Odtworzona
+    // odpowiedz idzie juz od tego zbocza, tak jak przy normalnie odebranej ramce.
+    if (frameGap && !s_txActive && !s_rxSkip && s_rxLen == 5 && s_rxBit == 7) {
+        const int replyLen = recoverSlippedFrame(now);
+        if (replyLen >= 0) {
+            classifyLostBit();
+            s_stRecovered++;
+            pushFrame(now, (uint8_t)replyLen, false, true);
+            notify = true;
+            UL_RX_RESET();
+            s_rxSkip = true;
+        }
+    }
+
     bool handled = false;
     if (s_txActive) {
-        if (s_txStarted && gap > BUS_FRAME_GAP_US) {
+        if (s_txStarted && frameGap) {
             // Master przestal taktowac nasza odpowiedz i zaczyna nowa ramke.
             // Natychmiast zwalniamy linie — inaczej nadalibysmy reszte bitow
             // w srodek jego ramki.
@@ -263,10 +410,11 @@ static void IRAM_ATTR onClockEdge(void*)
     }
 
     if (!handled) {
-        if (gap > BUS_FRAME_GAP_US) {
+        if (frameGap) {
             if (s_rxLen != 0 || s_rxBit != 0) {
                 s_stBroken++;
                 if (s_rxLen >= 2) {
+                    classifyLostBit();
                     pushFrame(now, 0, true);
                     notify = true;
                 }
@@ -319,6 +467,30 @@ bool begin(TaskHandle_t notifyTask)
     pinMode(PIN_DATA, INPUT);
     UL_LATCH_RECESSIVE();
 
+    // PCNT na tym samym pinie co przerwanie (przez macierz GPIO) — tylko diagnostyka.
+    // Filtr 20 cykli APB (0.25 us) gasi dzwonienie, a zbocze jest juz policzone,
+    // zanim przerwanie odczyta licznik.
+    pcnt_config_t pc = {};
+    pc.pulse_gpio_num = PIN_CLOCK;
+    pc.ctrl_gpio_num  = PCNT_PIN_NOT_USED;
+    pc.channel        = PCNT_CHANNEL_0;
+    pc.unit           = PCNT_UNIT_0;
+    pc.pos_mode       = (CLOCK_EDGE == FALLING) ? PCNT_COUNT_DIS : PCNT_COUNT_INC;
+    pc.neg_mode       = (CLOCK_EDGE == FALLING) ? PCNT_COUNT_INC : PCNT_COUNT_DIS;
+    pc.lctrl_mode     = PCNT_MODE_KEEP;
+    pc.hctrl_mode     = PCNT_MODE_KEEP;
+    pc.counter_h_lim  = 32767;
+    pc.counter_l_lim  = -32768;
+    s_pcntOk = pcnt_unit_config(&pc) == ESP_OK &&
+               pcnt_set_filter_value(PCNT_UNIT_0, 20) == ESP_OK &&
+               pcnt_filter_enable(PCNT_UNIT_0) == ESP_OK &&
+               pcnt_counter_pause(PCNT_UNIT_0) == ESP_OK &&
+               pcnt_counter_clear(PCNT_UNIT_0) == ESP_OK &&
+               pcnt_counter_resume(PCNT_UNIT_0) == ESP_OK;
+    // pcnt_unit_config wlacza podciaganie na pinie — linia ma zostac jak dotad.
+    gpio_set_pull_mode((gpio_num_t)PIN_CLOCK, GPIO_FLOATING);
+    s_pcntPrev = 0;
+
     s_lastEdgeUs = UL_NOW_US();
 
     gpio_set_intr_type((gpio_num_t)PIN_CLOCK,
@@ -348,6 +520,7 @@ bool begin(TaskHandle_t notifyTask)
 }
 
 bool isrInIram() { return s_isrIram; }
+bool pcntActive() { return s_pcntOk; }
 
 bool popFrame(Frame& out)
 {
@@ -530,6 +703,9 @@ void takeStats(Stats& out)
     out.txAborted = s_stTxAborted; s_stTxAborted = 0;
     out.txLate    = s_stTxLate;    s_stTxLate    = 0;
     out.breaks    = s_stBreaks;    s_stBreaks    = 0;
+    out.recovered = s_stRecovered; s_stRecovered = 0;
+    out.lostIsr   = s_stLostIsr;   s_stLostIsr   = 0;
+    out.lostPin   = s_stLostPin;   s_stLostPin   = 0;
     portEXIT_CRITICAL(&s_mux);
 }
 

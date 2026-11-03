@@ -89,9 +89,11 @@ constexpr unsigned long RADIO_FORGOT_US_MS      = 15000;
 
 // --- ZAPIS FLASH (NVS/LittleFS) ---
 // Operacja flash zatrzymuje zadania (przerwanie magistrali dziala dalej). Zapis
-// robimy tuz po naszej odpowiedzi na ping — kolejny ping za ~2.5 s.
+// robimy po naszej odpowiedzi na ping — kolejny ping za ~2.5 s. Start okna za
+// pingiem procesora ekranu (31 14 01 12 ~28 ms po pingu radia): w 2 z 3 crash
+// logow zgubiony byl wlasnie on, w trakcie zapisu NVS.
 constexpr unsigned long FLASH_AFTER_APPOINT_MS         = 3000;
-constexpr unsigned long FLASH_WINDOW_AFTER_PING_MIN_MS = 15;
+constexpr unsigned long FLASH_WINDOW_AFTER_PING_MIN_MS = 60;
 constexpr unsigned long FLASH_WINDOW_AFTER_PING_MAX_MS = 400;
 
 // --- ZADANIE MAGISTRALI ---

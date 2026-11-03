@@ -262,8 +262,10 @@ static bool saveIndexToFile() {
         Serial.println("[Audio] Błąd pobierania wolnych klastrów.");
     }
     
+    Diagnostics::recordNote("FLASH");
     File file = LittleFS.open(INDEX_FILE_PATH, FILE_WRITE);
     if (!file) {
+        Diagnostics::recordNote("FLEND");
         Serial.println("[Audio] Błąd otwarcia pliku indeksu do zapisu w LittleFS.");
         return false;
     }
@@ -281,6 +283,7 @@ static bool saveIndexToFile() {
         }
     }
     file.close();
+    Diagnostics::recordNote("FLEND");
     Serial.printf("[Audio] Zapisano indeks do pliku (free_clusters=%lu).\n", (unsigned long)fre_clust);
     return true;
 }
@@ -440,6 +443,11 @@ void audioSetSeekMute(bool mute) {
 // ============================================================
 // Task dekodowania audio (FreeRTOS)
 // ============================================================
+// Docelowa sekunda wznowienia, dopoki dekoder do niej nie doskoczy. Do tego czasu
+// dekoder gra (wyciszony) od poczatku pliku i jego czas nie moze trafic na ekran
+// ani do NVS (nadpisalby zapamietana pozycje).
+static volatile uint32_t s_resumeTargetSec = 0;
+
 static void audioTaskFunc(void *param) {
     Serial.printf("[Audio] Task dekodowania uruchomiony na rdzeniu %d\n", xPortGetCoreID());
     uint32_t loopCounter = 0;
@@ -447,6 +455,8 @@ static void audioTaskFunc(void *param) {
     unsigned long playStartedMs = 0;
     bool dacUnmuted = false;
     uint32_t pendingResumeSec = 0;
+    unsigned long resumeIssuedMs = 0;
+    constexpr unsigned long RESUME_GIVE_UP_MS = 5000;
     
     for (;;) {
         // --- Obsługa żądania nowej piosenki (ma pierwszenstwo przed zaleglym stop/seek) ---
@@ -472,6 +482,8 @@ static void audioTaskFunc(void *param) {
             if (!result) {
                 isPlaying = false;
                 songStarted = false;
+                pendingResumeSec = 0;
+                s_resumeTargetSec = 0;
                 songFinishedFlag = true; // Pomiń do następnego utworu
                 Diagnostics::setError(Diagnostics::SystemError::FileErr);
             } else {
@@ -500,6 +512,7 @@ static void audioTaskFunc(void *param) {
             isPlaying = false;
             songStarted = false;
             pendingResumeSec = 0;
+            s_resumeTargetSec = 0;
         }
         if (volRequestPending) {
             volRequestPending = false;
@@ -561,26 +574,43 @@ static void audioTaskFunc(void *param) {
             if (playStartedMs == 0) {
                 playStartedMs = millis();
             }
-            // Wznowienie od zapamietanej sekundy wykonujemy dopiero po ~60ms dekodowania,
-            // gdy biblioteka ESP32-audioI2S przeszla juz naglowek ID3v2 i wyliczyla bitrate!
-            if (pendingResumeSec > 0 && (millis() - playStartedMs >= 60)) {
+            // Skok do zapamietanej sekundy jest mozliwy dopiero, gdy biblioteka zna
+            // bitrate (po naglowku i pierwszych ramkach; duze tagi ID3 z okladka
+            // czytaja sie z pendrive'a dluzej). Wczesniej setTimeOffset() po cichu
+            // nic nie robi i utwor gra od poczatku. Skok bezwzgledny: wzgledny liczy
+            // od pozycji odczytu pliku, ktora przez bufor wyprzedza odtwarzanie.
+            if (pendingResumeSec > 0) {
                 if (audioMutex) xSemaphoreTake(audioMutex, portMAX_DELAY);
-                uint32_t dur = audio.getAudioFileDuration();
-                if (dur > 2 && pendingResumeSec >= dur - 1) {
-                    pendingResumeSec = 0;
-                } else {
-                    int cur = (int)audio.getAudioCurrentTime();
-                    int delta = (int)pendingResumeSec - cur;
-                    if (delta != 0) {
-                        audio.setTimeOffset(delta);
+                const uint32_t dur = audio.getAudioFileDuration();
+                if (dur > 0) {
+                    if (dur > 2 && pendingResumeSec >= dur - 1) {
+                        Serial.printf("[Audio] Zapamietana pozycja %lu s poza utworem (%lu s) — gram od poczatku\n",
+                                      (unsigned long)pendingResumeSec, (unsigned long)dur);
+                        pendingResumeSec  = 0;
+                        s_resumeTargetSec = 0;
+                    } else if (audio.setAudioPlayPosition((uint16_t)pendingResumeSec)) {
+                        Serial.printf("[Audio] Wznowiono pozycję odtwarzania od: %lu s (po %lu ms)\n",
+                                      (unsigned long)pendingResumeSec, millis() - playStartedMs);
+                        pendingResumeSec = 0;
+                        resumeIssuedMs   = millis();
+                        playStartedMs    = millis();   // odcisz ~100 ms po skoku
                     }
-                    Serial.printf("[Audio] Wznowiono pozycję odtwarzania od: %lu s (delta=%d)\n",
-                                  (unsigned long)pendingResumeSec, delta);
-                    pendingResumeSec = 0;
+                } else if (millis() - playStartedMs > RESUME_GIVE_UP_MS) {
+                    Serial.printf("[Audio] Nie udalo sie wznowic od %lu s (brak bitrate) — gram od poczatku\n",
+                                  (unsigned long)pendingResumeSec);
+                    pendingResumeSec  = 0;
+                    s_resumeTargetSec = 0;
                 }
                 if (audioMutex) xSemaphoreGive(audioMutex);
+            } else if (s_resumeTargetSec != 0) {
+                // Skok wykonuje sie w kolejnym audio.loop(); dopiero potem czas dekodera
+                // jest wiarygodny.
+                if (audio.getAudioCurrentTime() + 2 >= s_resumeTargetSec ||
+                    millis() - resumeIssuedMs > 2000) {
+                    s_resumeTargetSec = 0;
+                }
             }
-            if (!s_seekMuted && !dacUnmuted && (millis() - playStartedMs >= 100)) {
+            if (!s_seekMuted && !dacUnmuted && pendingResumeSec == 0 && (millis() - playStartedMs >= 100)) {
                 audioSetMute(false);
                 dacUnmuted = true;
                 Serial.println("[Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)");
@@ -737,6 +767,7 @@ bool audioPlayTrack(uint8_t disc, uint8_t track, uint32_t startSec) {
     audioSetMute(true);       // Wycisz sprzętowo DAC na czas zmiany/ładowania utworu
     strlcpy(playRequestPath, path, sizeof(playRequestPath));
     playRequestStartSec = startSec;
+    s_resumeTargetSec = startSec;
     songFinishedFlag = false;
     stopRequestPending = false;
     seekRequestPending = false;
@@ -766,6 +797,8 @@ bool audioIsPlaying() {
 
 uint32_t audioGetCurrentTimeSec() {
     if (!audioIsPlaying()) return 0;
+    const uint32_t target = s_resumeTargetSec;
+    if (target != 0) return target;
     return audio.getAudioCurrentTime();
 }
 

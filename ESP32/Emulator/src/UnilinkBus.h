@@ -33,9 +33,16 @@ struct Frame {
     uint8_t  len;
     uint8_t  replyLen;             // > 0: przerwanie juz odpowiedzialo ramka `reply`
     bool     broken;               // ramka ucieta przerwa zegara (`len` = odebrane bajty)
+    bool     recovered;            // odtworzona z ramki z jednym zgubionym bitem
     uint8_t  reply[FRAME_MAX];
     uint32_t endUs;                // czas ostatniego zbocza ramki (esp_timer, us)
     uint32_t edgeSeq;              // licznik zboczy w chwili konca ramki
+    // Tylko dla broken/recovered: zbocza w tej ramce wg licznika sprzetowego
+    // (PCNT) i wg przerwania oraz zbocza odrzucone przez przerwanie.
+    uint8_t  pcntEdges;
+    uint8_t  isrEdges;
+    uint8_t  glitchEdges;
+    uint8_t  spikeEdges;
 };
 
 // Konfiguruje piny i przerwanie zegara. `notifyTask` jest budzone po kazdej
@@ -44,6 +51,8 @@ bool begin(TaskHandle_t notifyTask);
 
 // Czy przerwanie dziala w IRAM (odporne na zapisy flash)?
 bool isrInIram();
+// Czy dziala sprzetowy licznik zboczy zegara (diagnostyka zgubionych bitow)?
+bool pcntActive();
 
 // Kolejna kompletna ramka odebrana przez przerwanie.
 bool popFrame(Frame& out);
@@ -98,6 +107,11 @@ struct Stats {
     uint32_t txAborted;    // nadawanie przerwane (master przestal taktowac)
     uint32_t txLate;       // odpowiedzi odrzucone, bo slot juz minal
     uint32_t breaks;
+    uint32_t recovered;    // ramki do nas odtworzone mimo zgubionego bitu
+    // Ramki z brakujacym bitem: zbocze doszlo do pinu (PCNT je widzial), ale
+    // przerwanie go nie przyjelo — albo nie doszlo do pinu wcale.
+    uint32_t lostIsr;
+    uint32_t lostPin;
 };
 // Zwraca liczniki od poprzedniego wywolania i je zeruje.
 void takeStats(Stats& out);

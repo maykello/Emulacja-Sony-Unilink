@@ -79,6 +79,10 @@ unsigned long s_busEdgeMs     = 0;
 unsigned long s_busOffSinceMs = 0;
 unsigned long s_busOnSinceMs  = 0;
 bool          s_busOffStopped = false;
+// Radio zapowiedzialo wylaczenie (87 xx bez bitow 0 i 1) — pozniejszy zanik
+// BUS_ON jest wtedy normalny i nie trafia do crash logu.
+bool          s_radioAnnouncedOff = false;
+bool          s_sessionAtBusOff   = false;   // mielismy adres w chwili zaniku BUS_ON
 
 // Aktywnosc radia
 unsigned long          s_lastFrameMs    = 0;
@@ -892,10 +896,20 @@ uint8_t pingAddrNow()
     return s_nvsAddr;
 }
 
+// Po CUT/FIX: zbocza tej ramki — PCNT, przyjete przez przerwanie, glitch, spike.
+// PCNT > przerwanie: zbocze doszlo do pinu, ale ESP go nie przyjal.
+void recordEdges(const Frame& f)
+{
+    if (!UnilinkBus::pcntActive()) return;
+    const uint8_t e[4] = { f.pcntEdges, f.isrEdges, f.glitchEdges, f.spikeEdges };
+    Diagnostics::recordFrame("EDGE", e, sizeof(e));
+}
+
 void handleFrame(const Frame& f, unsigned long now)
 {
     if (f.broken) {
         Diagnostics::recordFrame("CUT", f.data, f.len);
+        recordEdges(f);
         s_stat.bad++;
         return;
     }
@@ -906,7 +920,8 @@ void handleFrame(const Frame& f, unsigned long now)
     }
     s_lastFrameMs    = now;
     s_silentReported = false;
-    Diagnostics::recordFrame("RX", f.data, f.len);
+    Diagnostics::recordFrame(f.recovered ? "FIX" : "RX", f.data, f.len);
+    if (f.recovered) recordEdges(f);
     if (f.replyLen) Diagnostics::recordFrame("TX", f.reply, f.replyLen);
 
     const uint8_t rad = f.data[0];
@@ -1055,10 +1070,12 @@ void handleFrame(const Frame& f, unsigned long now)
             // 0x80) — radio zdejmuje BUS_ON dopiero, gdy zrodlo jest bezczynne.
             if ((c2 & 0x03) != 0x03) {
                 Serial.printf(">> Radio wylaczone (87 %02X)\n", c2);
+                s_radioAnnouncedOff = true;
                 s_selected = false;
                 stopByRadio("radio wylaczone");
             } else {
                 Serial.printf(">> Radio wlaczone (87 %02X)\n", c2);
+                s_radioAnnouncedOff = false;
             }
         } else if (fromMaster && c1 == 0xF0) {
             if (c2 == s_myAddr) {
@@ -1323,11 +1340,15 @@ void updateBusOn(unsigned long now)
             s_lastOwnPingMs  = now;
             s_lastPoll15Ms   = now;
             s_nextBreakMs    = now + 1500;
+            s_radioAnnouncedOff = false;
             CdChanger::wake();
+            Diagnostics::recordNote("BUSON");
             Serial.println("=== BUS_ON = 1 ===");
         } else {
-            s_busOffSinceMs = now;
-            s_selected      = false;
+            s_busOffSinceMs   = now;
+            s_sessionAtBusOff = s_appointed && s_selected;
+            s_selected        = false;
+            Diagnostics::recordNote("BUSOF");
             if (s_appointed) {
                 s_nvsAddr   = s_myAddr;
                 s_appointed = false;
@@ -1345,6 +1366,13 @@ void updateBusOn(unsigned long now)
         now - s_busOffSinceMs >= BUS_OFF_AUDIO_STOP_MS) {
         s_busOffStopped = true;
         s_selected      = false;
+        // Zanik dluzszy niz discovery radia, bez zapowiedzi 87 OFF, w trakcie
+        // grania ze zmieniarki = radio padlo (lub zasilanie). Migawka teraz, zapis
+        // na pendrive przed odcieciem zasilania (powerOff).
+        if (s_sessionAtBusOff && !s_radioAnnouncedOff && millis() > CRASHLOG_GRACE_MS) {
+            Serial.println(">> BUS_ON zniknal bez zapowiedzi wylaczenia radia (87 OFF)");
+            Serial.captureCrashSnapshot("BUS_ON LOST (bez 87 OFF)");
+        }
         CdChanger::sleep();
         s_txQueue.clear();
         s_shown.valid = false;
@@ -1401,11 +1429,12 @@ void serviceStats(unsigned long now)
     UnilinkBus::Stats bs;
     UnilinkBus::takeStats(bs);
     if (s_busActive || bs.frames) {
-        Serial.printf("[STAT] rx=%lu ping=%u p15=%u claim=%u grant=%u brk=%u/%u/%u late=%lu abort=%lu bad=%u glitch=%lu spike=%lu cut=%lu ovf=%lu | %s0x%02X st=0x%02X CD%u TR%u %02u:%02u q=%u\n",
+        Serial.printf("[STAT] rx=%lu ping=%u p15=%u claim=%u grant=%u brk=%u/%u/%u late=%lu abort=%lu bad=%u glitch=%lu spike=%lu cut=%lu fix=%lu lost=%lu/%lu ovf=%lu | %s0x%02X st=0x%02X CD%u TR%u %02u:%02u q=%u\n",
                       (unsigned long)bs.frames, s_stat.pings, s_stat.poll15, s_stat.claims, s_stat.grants,
                       s_stat.breaks, s_stat.breakNoPoll, s_stat.breakNoWave,
                       (unsigned long)bs.txLate, (unsigned long)bs.txAborted, s_stat.bad,
                       (unsigned long)bs.glitches, (unsigned long)bs.spikes, (unsigned long)bs.broken,
+                      (unsigned long)bs.recovered, (unsigned long)bs.lostIsr, (unsigned long)bs.lostPin,
                       (unsigned long)bs.overflow,
                       s_appointed ? "" : "!", s_appointed ? (uint8_t)s_myAddr : s_nvsAddr,
                       UnilinkFrame::statusByte(CdChanger::mechState()),
@@ -1420,8 +1449,9 @@ void busTask(void*)
     if (!UnilinkBus::begin(xTaskGetCurrentTaskHandle())) {
         Serial.println("[Unilink] BLAD: nie udalo sie uruchomic przerwania zegara!");
     } else {
-        Serial.printf("[Unilink] Magistrala gotowa, przerwanie zegara %s\n",
-                      UnilinkBus::isrInIram() ? "w IRAM" : "POZA IRAM (zapis flash zaklocza odbior!)");
+        Serial.printf("[Unilink] Magistrala gotowa, przerwanie zegara %s, PCNT %s\n",
+                      UnilinkBus::isrInIram() ? "w IRAM" : "POZA IRAM (zapis flash zaklocza odbior!)",
+                      UnilinkBus::pcntActive() ? "aktywny" : "NIEDOSTEPNY");
     }
     for (;;) {
         ulTaskNotifyTake(pdTRUE, 1);
@@ -1463,9 +1493,11 @@ void writeAddress()
     const uint8_t mask = s_claimMask;
     if (!s_appointed) return;
     if (s_savedAlloc && addr == s_savedAddr && mask == s_savedMask) return;
+    Diagnostics::recordNote("FLASH");
     s_prefs.putUChar("myAddr", addr);
     s_prefs.putBool("allocated", true);
     s_prefs.putUChar("claimMask", mask);
+    Diagnostics::recordNote("FLEND");
     s_savedAddr  = addr;
     s_savedMask  = mask;
     s_savedAlloc = true;

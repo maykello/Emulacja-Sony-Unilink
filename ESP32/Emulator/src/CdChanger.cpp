@@ -64,9 +64,11 @@ constexpr unsigned long PERIODIC_PERSIST_MS = 30000;
 static void doPersist(uint32_t sec = 0) {
     persistPending = false;
     if (currentDisk == lastSavedDisk && currentTrack == lastSavedTrack && sec == lastSavedSec) return;
+    Diagnostics::recordNote("FLASH");
     prefs.putUChar("disk", currentDisk);
     prefs.putUChar("track", currentTrack);
     prefs.putUInt("sec", sec);
+    Diagnostics::recordNote("FLEND");
     lastSavedDisk  = currentDisk;
     lastSavedTrack = currentTrack;
     lastSavedSec   = sec;
