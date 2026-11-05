@@ -89,7 +89,8 @@ Podział pracy:
 
 Wnioski dla odbiornika [EMUL]:
 - Przerwa w zegarze **> 1 ms** (`BUS_FRAME_GAP_US`) = początek nowej ramki albo slotu.
-- Zbocza bliżej niż **30 µs** od poprzedniego to zakłócenie (`glitch`).
+- Zbocza bliżej niż **5 µs** od poprzedniego to zakłócenie (`glitch`); w trakcie
+  naszego nadawania i Breaka próg to **30 µs** (§15.3).
 - Po zboczu przerwanie sprawdza, czy CLOCK nadal jest wysoki. Jeśli nie, to szpilka
   (`spike`) i zbocze jest ignorowane.
 - Pierwszy bajt ramki `< 0x10` albo `0xFF` nie jest początkiem ramki (pusty slot,
@@ -626,11 +627,51 @@ Sprawdzono offline:
 [EMUL] PCNT liczy zbocza CLOCK niezależnie od CPU. Przy każdej ramce `CUT`/`FIX`
 crash log dostaje wpis:
 ```
-EDGE PP II GG SS   ; hex: zbocza wg PCNT, przyjęte przez przerwanie, glitch, spike
+EDGE PP II GG SS LL MM ; hex: zbocza wg PCNT, przyjęte przez przerwanie, glitch,
+                       ;      spike, największe opóźnienie przerwania (µs),
+                       ;      najkrótszy odstęp między zboczami w ramce (µs)
 ```
-- `PP > II` — zbocze doszło do pinu, a ESP go nie przyjął (problem po stronie
-  oprogramowania lub opóźnienia przerwania).
+- `PP > II` — zbocze doszło do pinu, a ESP go nie przyjął.
 - `PP == II` — zbocze nie dotarło czysto do pinu (sygnał lub sprzęt).
+
+[POTW] Jazdy z 4–5.11.2026:
+- wszystkie ucięte ramki miały `PP` równe **dokładnie** liczbie bitów ramki
+  (48 dla 6 B, 88 dla 11 B), a przerwanie przyjęło o tyle mniej, ile było
+  odrzuceń `glitch`/`spike`,
+- po pomiarze opóźnienia okazało się, że przerwanie było w tych ramkach **na czas**
+  (opóźnienie 7–9 µs).
+
+Wniosek: wszystkie zbocza są prawdziwe, ale **CDX-M670 czasem taktuje dwa bity
+w odstępie < 30 µs** (albo daje bardzo krótki stan wysoki). Dawny filtr 30 µs
+wyrzucał wtedy prawdziwy bit. Od 5.11.2026 przy odbiorze filtr to 5 µs
+(`BUS_CLOCK_GLITCH_RX_US`). 30 µs zostaje tylko na czas naszego nadawania
+i Breaka (przesłuch z DATA). W `[STAT]` pole `short=` liczy bity przyjęte
+dzięki tej zmianie.
+
+### 15.3a. Opóźnienie przerwania (MCPWM capture)
+[EMUL] Kanał 0 MCPWM0 zapisuje sprzętowo chwilę każdego zbocza CLOCK. Przerwanie
+na wejściu wyzwala programowo kanał 1. Różnica to opóźnienie obsługi zbocza
+(licznik taktowany APB, 80 MHz).
+- W `[STAT]` pole `lat=MAX/N`: największe opóźnienie w µs i liczba zboczy
+  obsłużonych później niż 30 µs.
+- W osi czasu crash logu wpis `SLOW HH LL NN` (co najwyżej co 200 ms):
+  opóźnienie ostatniego spóźnionego zbocza (µs, 16 bit) i liczba takich zboczy
+  od poprzedniego wpisu.
+
+Przy bicie ~125 µs filtr glitch (30 µs) gubi bit, gdy przerwanie spóźni się o
+więcej niż ~95 µs.
+
+### 15.3b. Unikanie alokacji na rdzeniu 1
+[EMUL] Alokator sterty w IDF 4.4 (`malloc`/`free`) przeszukuje liniowo listę
+wolnych bloków z wyłączonymi przerwaniami. Sterta jest pokawałkowana przez
+~1000 obiektów `String` z indeksu utworów. Dlatego na rdzeniu 1 (przerwanie
+zegara, zadanie magistrali, `loop()`):
+- `Serial.printf` formatuje w stałym buforze 256 B (`WiFiLoggerClass::printf`)
+  zamiast `Print::printf`, który dla linii > 63 znaków robi `malloc`,
+- nazwy utworów do CD-TEXT kopiowane są bez tymczasowych `String`.
+
+Po tej zmianie opóźnienie spadło do typowo 2–8 µs (maks. 45 µs). Liczba
+zgubionych bitów się jednak nie zmieniła — ich przyczyną był filtr (§15.3).
 
 ### 15.4. Linia `[STAT]` (co 2 s)
 | Pole | Znaczenie |
@@ -644,12 +685,14 @@ EDGE PP II GG SS   ; hex: zbocza wg PCNT, przyjęte przez przerwanie, glitch, sp
 | `cut` | niekompletne ramki (także pojedyncze fałszywe bity po Breaku) |
 | `fix` | ramki odtworzone (§15.2) |
 | `lost=a/b` | ucięte ramki: zbocze przegapione przez ESP / nie dotarło do pinu |
+| `lat=m/n` | największe opóźnienie przerwania (µs) / liczba zboczy obsłużonych po > 30 µs |
+| `short` | bity przyjęte w odstępie 5–30 µs od poprzedniego (dawniej gubione) |
 | `ovf` | przepełnienie bufora ramek |
 
 ### 15.5. Crash log na pendrive (`/CrashLogs/crash_NNNNN.txt`)
 Zawartość:
 - ostatnie 128 zdarzeń magistrali: `RX`, `TX`, `CUT`, `BAD`, `FIX`, `EDGE`,
-  `BREAK`, `RESET`, `FLASH`/`FLEND`, `BUSON`/`BUSOF`,
+  `SLOW`, `BREAK`, `RESET`, `FLASH`/`FLEND`, `BUSON`/`BUSOF`,
 - ostatnie ~8 KB logu tekstowego.
 
 Powody zapisu:

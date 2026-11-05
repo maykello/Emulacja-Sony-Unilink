@@ -7,7 +7,11 @@
 #include "driver/pcnt.h"
 #include "esp_intr_alloc.h"
 #include "esp_timer.h"
+#include "driver/periph_ctrl.h"
+#include "esp_rom_gpio.h"
 #include "soc/gpio_reg.h"
+#include "soc/gpio_sig_map.h"
+#include "soc/mcpwm_reg.h"
 #include "soc/pcnt_reg.h"
 
 namespace UnilinkBus {
@@ -78,14 +82,28 @@ int32_t  s_pcntPrev   = 0;    // stan licznika na pierwszym zboczu biezacej pacz
 uint32_t s_burstIsr   = 0;    // zbocza przyjete przez przerwanie w biezacej paczce
 uint32_t s_burstGlitch = 0;
 uint32_t s_burstSpike  = 0;
+uint32_t s_burstMaxLat = 0;   // najwieksze opoznienie przerwania w paczce (us)
+uint32_t s_burstMinGap = 0xFFFFFFFF;   // najkrotszy odstep miedzy przerwaniami w paczce (us)
 // Paczka zamknieta na biezacym zboczu (ramka, ktora wlasnie sie skonczyla).
-uint8_t  s_lbPcnt = 0, s_lbIsr = 0, s_lbGlitch = 0, s_lbSpike = 0;
+uint8_t  s_lbPcnt = 0, s_lbIsr = 0, s_lbGlitch = 0, s_lbSpike = 0, s_lbLat = 0, s_lbMinGap = 0;
 bool     s_lbValid = false;
+
+// --- pomiar opoznienia przerwania (MCPWM capture) ---
+// Kanal 0 zapisuje chwile zbocza CLOCK sprzetowo, kanal 1 przerwanie wyzwala
+// programowo przy wejsciu. Roznica = opoznienie obslugi zbocza. Licznik
+// przechwytywania taktowany APB (80 MHz).
+constexpr uint32_t CAP_TICKS_PER_US = 80;
+constexpr uint32_t LAT_REPORT_US    = 30;   // tyle zostawia filtr glitch przy bicie ~125 us
+bool              s_capOk      = false;
+volatile uint32_t s_stLatMax   = 0;
+volatile uint32_t s_stLatOver  = 0;
+volatile uint32_t s_slowSeq    = 0;   // licznik zboczy obsluzonych za pozno (bez zerowania)
+volatile uint32_t s_slowLastUs = 0;
 
 // --- statystyki ---
 volatile uint32_t s_stFrames = 0, s_stGlitches = 0, s_stSpikes = 0, s_stBroken = 0, s_stOverflow = 0;
 volatile uint32_t s_stTxDone = 0, s_stTxAborted = 0, s_stTxLate = 0, s_stBreaks = 0;
-volatile uint32_t s_stRecovered = 0, s_stLostIsr = 0, s_stLostPin = 0;
+volatile uint32_t s_stRecovered = 0, s_stLostIsr = 0, s_stLostPin = 0, s_stShortBits = 0;
 
 } // namespace
 
@@ -200,6 +218,8 @@ static inline void __attribute__((always_inline)) pushFrame(uint32_t now, uint8_
     f.isrEdges    = diag ? s_lbIsr : 0;
     f.glitchEdges = diag ? s_lbGlitch : 0;
     f.spikeEdges  = diag ? s_lbSpike : 0;
+    f.maxLatUs    = diag ? s_lbLat : 0;
+    f.minGapUs    = diag ? s_lbMinGap : 0;
     __asm__ __volatile__("" ::: "memory");
     s_ringHead = next;
 }
@@ -225,6 +245,8 @@ static inline void __attribute__((always_inline)) closeBurst()
             s_lbIsr    = sat8(s_burstIsr);
             s_lbGlitch = sat8(s_burstGlitch);
             s_lbSpike  = sat8(s_burstSpike);
+            s_lbLat    = sat8(s_burstMaxLat);
+            s_lbMinGap = sat8(s_burstMinGap);
             s_lbValid  = true;
         }
         if (cnt > 30000) {
@@ -240,6 +262,29 @@ static inline void __attribute__((always_inline)) closeBurst()
     s_burstIsr    = 1;
     s_burstGlitch = 0;
     s_burstSpike  = 0;
+    s_burstMaxLat = 0;
+    s_burstMinGap = 0xFFFFFFFF;
+}
+
+static inline void __attribute__((always_inline)) noteLatency(uint32_t lat)
+{
+    if (!s_capOk || (REG_READ(GPIO_IN_REG) & BUS_ON_MASK) == 0) return;
+    if (lat > s_burstMaxLat) s_burstMaxLat = lat;
+    if (lat > s_stLatMax)    s_stLatMax = lat;
+    if (lat > LAT_REPORT_US) {
+        s_stLatOver++;
+        s_slowSeq++;
+        s_slowLastUs = lat;
+    }
+}
+
+// Opoznienie od sprzetowo zapisanej chwili ostatniego zbocza do teraz (us).
+static inline uint32_t __attribute__((always_inline)) edgeLatencyUs()
+{
+    REG_WRITE(MCPWM_CAP_CH1_CFG_REG(0), MCPWM_CAP1_EN | MCPWM_CAP1_SW);
+    const uint32_t nowTicks  = REG_READ(MCPWM_CAP_CH1_REG(0));
+    const uint32_t edgeTicks = REG_READ(MCPWM_CAP_CH0_REG(0));
+    return (nowTicks - edgeTicks) / CAP_TICKS_PER_US;
 }
 
 // Ramka z brakujacym bitem: czy PCNT widzial zbocze, ktorego przerwanie nie przyjelo?
@@ -318,12 +363,15 @@ static inline int __attribute__((always_inline)) recoverSlippedFrame(uint32_t no
 static void IRAM_ATTR onClockEdge(void*)
 {
     const uint32_t now = UL_NOW_US();
+    const uint32_t lat = s_capOk ? edgeLatencyUs() : 0;
     bool notify = false;
 
     portENTER_CRITICAL_ISR(&s_mux);
     if (BUS_CLOCK_LEVEL_CHECK) {
         const bool clockHigh = (REG_READ(GPIO_IN_REG) & CLOCK_MASK) != 0;
         if (clockHigh != (CLOCK_EDGE == RISING)) {
+            // Prawdziwe zbocze obsluzone za pozno (zegar juz opadl) albo szpilka.
+            noteLatency(lat);
             s_stSpikes++;
             s_burstSpike++;
             portEXIT_CRITICAL_ISR(&s_mux);
@@ -331,19 +379,22 @@ static void IRAM_ATTR onClockEdge(void*)
         }
     }
     const uint32_t gap = now - s_lastEdgeUs;
-    if (gap < BUS_CLOCK_GLITCH_US) {
-        // Odbicie/zaklocenie na linii zegara — prawdziwe zbocza dziela ~125 us.
+    if (gap < s_burstMinGap) s_burstMinGap = gap;
+    if (gap < (s_txActive || s_breakHolding ? BUS_CLOCK_GLITCH_US : BUS_CLOCK_GLITCH_RX_US)) {
+        // Odbicie/zaklocenie na linii zegara.
         s_stGlitches++;
         s_burstGlitch++;
         portEXIT_CRITICAL_ISR(&s_mux);
         return;
     }
+    if (gap < BUS_CLOCK_GLITCH_US) s_stShortBits++;   // przyjete tylko dzieki filtrowi RX
     s_lastEdgeUs = now;
     s_edgeCount++;
 
     const bool frameGap = gap > BUS_FRAME_GAP_US;
     if (frameGap) closeBurst();
     else          s_burstIsr++;
+    noteLatency(lat);
 
     // Jezeli master zaczal taktowac w trakcie trzymania naszego impulsu Slave Break,
     // NATYCHMIAST zwalniamy linie DATA na pierwszym zboczu zegara, by nie zewrzec
@@ -491,6 +542,18 @@ bool begin(TaskHandle_t notifyTask)
     gpio_set_pull_mode((gpio_num_t)PIN_CLOCK, GPIO_FLOATING);
     s_pcntPrev = 0;
 
+    // MCPWM0 capture: kanal 0 = zbocze CLOCK, kanal 1 = wyzwalanie programowe.
+    // Bez sterownika (ten instalowalby przerwanie na kazde zbocze).
+    periph_module_enable(PERIPH_PWM0_MODULE);
+    REG_SET_BIT(MCPWM_CLK_REG(0), MCPWM_CLK_EN);
+    esp_rom_gpio_connect_in_signal(PIN_CLOCK, PWM0_CAP0_IN_IDX, false);
+    REG_WRITE(MCPWM_INT_ENA_REG(0), 0);
+    REG_WRITE(MCPWM_CAP_TIMER_CFG_REG(0), MCPWM_CAP_TIMER_EN);
+    REG_WRITE(MCPWM_CAP_CH0_CFG_REG(0),
+              MCPWM_CAP0_EN | ((CLOCK_EDGE == FALLING ? 1u : 2u) << MCPWM_CAP0_MODE_S));
+    REG_WRITE(MCPWM_CAP_CH1_CFG_REG(0), MCPWM_CAP1_EN);
+    s_capOk = true;
+
     s_lastEdgeUs = UL_NOW_US();
 
     gpio_set_intr_type((gpio_num_t)PIN_CLOCK,
@@ -521,6 +584,16 @@ bool begin(TaskHandle_t notifyTask)
 
 bool isrInIram() { return s_isrIram; }
 bool pcntActive() { return s_pcntOk; }
+bool latencyActive() { return s_capOk; }
+
+uint32_t slowEdges(uint32_t& lastLatUs)
+{
+    portENTER_CRITICAL(&s_mux);
+    const uint32_t seq = s_slowSeq;
+    lastLatUs = s_slowLastUs;
+    portEXIT_CRITICAL(&s_mux);
+    return seq;
+}
 
 bool popFrame(Frame& out)
 {
@@ -706,6 +779,9 @@ void takeStats(Stats& out)
     out.recovered = s_stRecovered; s_stRecovered = 0;
     out.lostIsr   = s_stLostIsr;   s_stLostIsr   = 0;
     out.lostPin   = s_stLostPin;   s_stLostPin   = 0;
+    out.latMaxUs  = s_stLatMax;    s_stLatMax    = 0;
+    out.latOver   = s_stLatOver;   s_stLatOver   = 0;
+    out.shortBits = s_stShortBits; s_stShortBits = 0;
     portEXIT_CRITICAL(&s_mux);
 }
 

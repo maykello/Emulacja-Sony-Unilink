@@ -901,8 +901,26 @@ uint8_t pingAddrNow()
 void recordEdges(const Frame& f)
 {
     if (!UnilinkBus::pcntActive()) return;
-    const uint8_t e[4] = { f.pcntEdges, f.isrEdges, f.glitchEdges, f.spikeEdges };
+    const uint8_t e[6] = { f.pcntEdges, f.isrEdges, f.glitchEdges, f.spikeEdges, f.maxLatUs, f.minGapUs };
     Diagnostics::recordFrame("EDGE", e, sizeof(e));
+}
+
+// Zbocza zegara obsluzone pozniej niz 30 us -> wpis "SLOW" w osi czasu (co
+// najwyzej raz na 200 ms): opoznienie ostatniego w us (2 bajty) i ich liczba.
+void serviceSlowEdges(unsigned long now)
+{
+    static uint32_t      seen   = 0;
+    static unsigned long lastMs = 0;
+    if (!UnilinkBus::latencyActive()) return;
+    uint32_t lastLat = 0;
+    const uint32_t seq = UnilinkBus::slowEdges(lastLat);
+    if (seq == seen || now - lastMs < 200) return;
+    const uint32_t n = seq - seen;
+    seen   = seq;
+    lastMs = now;
+    if (lastLat > 0xFFFF) lastLat = 0xFFFF;
+    const uint8_t d[3] = { (uint8_t)(lastLat >> 8), (uint8_t)lastLat, (uint8_t)(n > 255 ? 255 : n) };
+    Diagnostics::recordFrame("SLOW", d, sizeof(d));
 }
 
 void handleFrame(const Frame& f, unsigned long now)
@@ -1429,12 +1447,13 @@ void serviceStats(unsigned long now)
     UnilinkBus::Stats bs;
     UnilinkBus::takeStats(bs);
     if (s_busActive || bs.frames) {
-        Serial.printf("[STAT] rx=%lu ping=%u p15=%u claim=%u grant=%u brk=%u/%u/%u late=%lu abort=%lu bad=%u glitch=%lu spike=%lu cut=%lu fix=%lu lost=%lu/%lu ovf=%lu | %s0x%02X st=0x%02X CD%u TR%u %02u:%02u q=%u\n",
+        Serial.printf("[STAT] rx=%lu ping=%u p15=%u claim=%u grant=%u brk=%u/%u/%u late=%lu abort=%lu bad=%u glitch=%lu spike=%lu cut=%lu fix=%lu lost=%lu/%lu lat=%lu/%lu short=%lu ovf=%lu | %s0x%02X st=0x%02X CD%u TR%u %02u:%02u q=%u\n",
                       (unsigned long)bs.frames, s_stat.pings, s_stat.poll15, s_stat.claims, s_stat.grants,
                       s_stat.breaks, s_stat.breakNoPoll, s_stat.breakNoWave,
                       (unsigned long)bs.txLate, (unsigned long)bs.txAborted, s_stat.bad,
                       (unsigned long)bs.glitches, (unsigned long)bs.spikes, (unsigned long)bs.broken,
                       (unsigned long)bs.recovered, (unsigned long)bs.lostIsr, (unsigned long)bs.lostPin,
+                      (unsigned long)bs.latMaxUs, (unsigned long)bs.latOver, (unsigned long)bs.shortBits,
                       (unsigned long)bs.overflow,
                       s_appointed ? "" : "!", s_appointed ? (uint8_t)s_myAddr : s_nvsAddr,
                       UnilinkFrame::statusByte(CdChanger::mechState()),
@@ -1482,6 +1501,7 @@ void busTask(void*)
         updateFastPath();
         scheduleTx(millis());
         now = millis();
+        serviceSlowEdges(now);
         serviceHealth(now);
         serviceStats(now);
     }

@@ -176,6 +176,17 @@ size_t WiFiLoggerClass::write(const uint8_t *buffer, size_t size) {
     return size;
 }
 
+size_t WiFiLoggerClass::printf(const char *format, ...) {
+    char buf[256];
+    va_list ap;
+    va_start(ap, format);
+    const int n = vsnprintf(buf, sizeof(buf), format, ap);
+    va_end(ap);
+    if (n <= 0) return 0;
+    const size_t len = (n < (int)sizeof(buf)) ? (size_t)n : sizeof(buf) - 1;
+    return write((const uint8_t*)buf, len);
+}
+
 void WiFiLoggerClass::flush() {
     ::Serial.flush();
 #if ENABLE_WIFI

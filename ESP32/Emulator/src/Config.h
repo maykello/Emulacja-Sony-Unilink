@@ -26,7 +26,12 @@ constexpr uint8_t PIN_POWER_LATCH = 9;   // podtrzymanie przetwornicy (HIGH = wl
 constexpr bool INVERT_DATA = true;
 constexpr int  CLOCK_EDGE  = RISING;   // zbocze, na ktorym probkujemy i wystawiamy bit
 
-constexpr uint32_t BUS_CLOCK_GLITCH_US      = 30;    // zbocza blizej niz to = zaklocenie
+constexpr uint32_t BUS_CLOCK_GLITCH_US      = 30;    // zbocza blizej niz to = zaklocenie (gdy nadajemy)
+// Przy odbiorze: CDX-M670 czasem taktuje dwa bity w odstepie < 30 us (PCNT liczy
+// wtedy dokladnie tyle zboczy, ile bitow ma ramka, a przerwanie jest na czas).
+// Filtr 30 us wyrzucal prawdziwe zbocze. Przesluch z naszej linii DATA, przed
+// ktorym chroni 30 us, wystepuje tylko gdy sami nadajemy.
+constexpr uint32_t BUS_CLOCK_GLITCH_RX_US   = 5;
 // Przerwanie sprawdza, czy CLOCK nadal jest na poziomie po zboczu. Krotkie szpilki
 // (m.in. przesluch z naszej linii DATA przy Break/nadawaniu) znikaja, zanim
 // przerwanie ruszy, i nie licza sie jako bit. Wymaga stanu wysokiego zegara

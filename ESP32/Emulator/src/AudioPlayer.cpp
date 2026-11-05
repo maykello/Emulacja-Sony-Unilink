@@ -867,10 +867,14 @@ size_t audioGetTrackName(uint8_t disc, uint8_t track, char* out, size_t maxLen) 
     const String &filename = trackFiles[disc][track - 1];
     if (filename.length() == 0) return 0;
 
-    int dotPos = filename.lastIndexOf('.');
-    String name = (dotPos > 0) ? filename.substring(0, dotPos) : filename;
-
-    return copyBounded(name.c_str(), out, maxLen);
+    // Bez String::substring — wolane z rdzenia magistrali (patrz WiFiLoggerClass::printf).
+    const int dotPos = filename.lastIndexOf('.');
+    const size_t copied = copyBounded(filename.c_str(), out, maxLen);
+    if (dotPos > 0 && (size_t)dotPos < copied) {
+        out[dotPos] = '\0';
+        return (size_t)dotPos;
+    }
+    return copied;
 }
 
 size_t audioGetDiscName(uint8_t disc, char* out, size_t maxLen) {
@@ -956,7 +960,9 @@ void audioLoop() {
     }
     wasUsbMounted = isMounted;
 
-    if (s_indexSavePending && isMounted && UnilinkProtocol::flashWriteWindow()) {
+    // Pelny zapis indeksu (dziesiatki KB, setki ms operacji flash) tylko przy
+    // zgaszonym radiu — w trakcie sesji zatrzymywalby zadanie magistrali.
+    if (s_indexSavePending && isMounted && !UnilinkProtocol::busActive()) {
         s_indexSavePending = false;
         saveIndexToFile();
     }

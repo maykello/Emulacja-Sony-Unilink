@@ -43,6 +43,8 @@ struct Frame {
     uint8_t  isrEdges;
     uint8_t  glitchEdges;
     uint8_t  spikeEdges;
+    uint8_t  maxLatUs;             // najwieksze opoznienie przerwania w tej ramce (us, max 255)
+    uint8_t  minGapUs;             // najkrotszy odstep miedzy zboczami w tej ramce (us, max 255)
 };
 
 // Konfiguruje piny i przerwanie zegara. `notifyTask` jest budzone po kazdej
@@ -53,6 +55,11 @@ bool begin(TaskHandle_t notifyTask);
 bool isrInIram();
 // Czy dziala sprzetowy licznik zboczy zegara (diagnostyka zgubionych bitow)?
 bool pcntActive();
+// Czy dziala sprzetowy pomiar opoznienia przerwania (MCPWM capture)?
+bool latencyActive();
+// Licznik zboczy obsluzonych pozniej niz 30 us (rosnie bez zerowania) oraz
+// opoznienie ostatniego z nich — do wpisow "SLOW" w osi czasu crash logu.
+uint32_t slowEdges(uint32_t& lastLatUs);
 
 // Kolejna kompletna ramka odebrana przez przerwanie.
 bool popFrame(Frame& out);
@@ -112,6 +119,13 @@ struct Stats {
     // przerwanie go nie przyjelo — albo nie doszlo do pinu wcale.
     uint32_t lostIsr;
     uint32_t lostPin;
+    // Opoznienie obslugi zbocza zegara (sprzetowy znacznik czasu MCPWM):
+    // maksimum oraz liczba zboczy obsluzonych pozniej niz 30 us.
+    uint32_t latMaxUs;
+    uint32_t latOver;
+    // Bity przyjete przy odbiorze w odstepie 5..30 us od poprzedniego — dawniej
+    // odrzucane jako zaklocenie (BUS_CLOCK_GLITCH_RX_US).
+    uint32_t shortBits;
 };
 // Zwraca liczniki od poprzedniego wywolania i je zeruje.
 void takeStats(Stats& out);

@@ -27,6 +27,11 @@ public:
     virtual size_t write(const uint8_t *buffer, size_t size) override;
     virtual void flush() override;
 
+    // Zamiast Print::printf: tamten dla linii > 63 znakow robi malloc. Alokator
+    // IDF 4.4 przeszukuje liste wolnych blokow z wylaczonymi przerwaniami, co
+    // opoznia przerwanie zegara magistrali (ten sam rdzen). Dluzsze linie sa obcinane.
+    size_t printf(const char *format, ...) __attribute__((format(printf, 2, 3)));
+
     bool isWiFiConnected() const {
 #if ENABLE_WIFI
         return wifiConnected;
