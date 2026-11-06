@@ -1,0 +1,195 @@
+===== CRASH LOG =====
+Reason:    BUS_ON LOST (bez 87 OFF)
+Uptime:    1988777 ms
+ESP Reset: POWERON
+File:      /CrashLogs/crash_00005.txt
+=====================
+
+===== BUS FRAMES (last 128) =====
+[-16466ms] BREAK   
+[-16455ms] RX       18 10 01 15 3E 00
+[-16455ms] TX       10 18 82 02 AC 00 00 00 00 AC 00
+[-16428ms] RX       31 10 01 13 55 00
+[-16428ms] TX       70 31 90 30 61 22 F1 47 4A 05 00
+[-15890ms] RX       18 10 01 11 3A 00
+[-15453ms] BREAK   
+[-15442ms] RX       18 10 01 15 3E 00
+[-15442ms] TX       10 18 82 02 AC 00 00 00 00 AC 00
+[-15415ms] RX       31 10 01 13 55 00
+[-15415ms] TX       70 31 90 30 61 22 F1 48 4A 06 00
+[-15276ms] RX       3B 10 01 12 5E 00
+[-15265ms] RX       10 3B 00 C0 0B 00
+[-14663ms] RX       31 10 01 12 54 00
+[-14663ms] TX       10 31 00 00 41 00
+[-14460ms] BREAK   
+[-14449ms] RX       18 10 01 15 3E 00
+[-14449ms] TX       10 18 82 02 AC 00 00 00 00 AC 00
+[-14422ms] RX       31 10 01 13 55 00
+[-14422ms] TX       70 31 90 30 61 22 F1 49 4A 07 00
+[-14044ms] RX       18 10 01 11 3A 00
+[-13463ms] BREAK   
+[-13452ms] RX       18 10 01 15 3E 00
+[-13452ms] TX       10 18 82 02 AC 00 00 00 00 AC 00
+[-13425ms] RX       31 10 01 13 55 00
+[-13425ms] TX       70 31 90 30 61 22 F1 50 4A 0E 00
+[-13398ms] RX       31 14 01 13 59 00
+[-13398ms] TX       70 31 90 30 61 22 F1 50 4A 0E 00
+[-13371ms] RX       3B 10 01 12 5E 00
+[-13360ms] RX       10 3B 00 C0 0B 00
+[-12758ms] RX       31 10 01 12 54 00
+[-12758ms] TX       10 31 00 00 41 00
+[-12460ms] BREAK   
+[-12449ms] RX       18 10 01 15 3E 00
+[-12449ms] TX       10 18 82 02 AC 00 00 00 00 AC 00
+[-12422ms] RX       31 10 01 13 55 00
+[-12422ms] TX       70 31 90 30 61 22 F1 51 4A 0F 00
+[-12139ms] RX       18 10 01 11 3A 00
+[-11531ms] RX       3B 10 01 12 5E 00
+[-11520ms] RX       10 3B 00 C0 0B 00
+[-11457ms] BREAK   
+[-11446ms] RX       18 10 01 15 3E 00
+[-11446ms] TX       10 18 82 02 AC 00 00 00 00 AC 00
+[-11419ms] RX       31 10 01 13 55 00
+[-11419ms] TX       70 31 90 30 61 22 F1 52 4A 10 00
+[-10912ms] RX       31 10 01 12 54 00
+[-10912ms] TX       10 31 00 00 41 00
+[-10454ms] BREAK   
+[-10443ms] RX       18 10 01 15 3E 00
+[-10443ms] TX       10 18 82 02 AC 00 00 00 00 AC 00
+[-10416ms] RX       31 10 01 13 55 00
+[-10416ms] TX       70 31 90 30 61 22 F1 53 4A 11 00
+[-10294ms] RX       18 10 01 11 3A 00
+[- 9686ms] RX       3B 10 01 12 5E 00
+[- 9675ms] RX       10 3B 00 C0 0B 00
+[- 9467ms] BREAK   
+[- 9456ms] RX       18 10 01 15 3E 00
+[- 9456ms] TX       10 18 82 02 AC 00 00 00 00 AC 00
+[- 9429ms] RX       31 10 01 13 55 00
+[- 9429ms] TX       70 31 90 30 61 22 F1 54 4A 12 00
+[- 9067ms] RX       31 10 01 12 54 00
+[- 9067ms] TX       10 31 00 00 41 00
+[- 8465ms] BREAK   
+[- 8454ms] RX       18 10 01 15 3E 00
+[- 8454ms] TX       10 18 82 02 AC 00 00 00 00 AC 00
+[- 8427ms] RX       31 10 01 13 55 00
+[- 8427ms] TX       70 31 90 30 61 22 F1 55 4A 13 00
+[- 8400ms] RX       18 10 01 11 3A 00
+[- 7792ms] RX       3B 10 01 12 5E 00
+[- 7781ms] RX       10 3B 00 C0 0B 00
+[- 7462ms] BREAK   
+[- 7450ms] RX       18 10 01 15 3E 00
+[- 7450ms] TX       10 18 82 02 AC 00 00 00 00 AC 00
+[- 7424ms] RX       31 10 01 13 55 00
+[- 7424ms] TX       70 31 90 30 61 22 F1 56 4A 14 00
+[- 7173ms] RX       31 10 01 12 54 00
+[- 7173ms] TX       10 31 00 00 41 00
+[- 6560ms] RX       18 10 01 11 3A 00
+[- 6458ms] BREAK   
+[- 6447ms] RX       18 10 01 15 3E 00
+[- 6447ms] TX       10 18 82 02 AC 00 00 00 00 AC 00
+[- 6420ms] RX       31 10 01 13 55 00
+[- 6420ms] TX       70 31 90 30 61 22 F1 57 4A 15 00
+[- 5946ms] RX       3B 10 01 12 5E 00
+[- 5935ms] RX       10 3B 00 C0 0B 00
+[- 5456ms] BREAK   
+[- 5445ms] RX       18 10 01 15 3E 00
+[- 5445ms] TX       10 18 82 02 AC 00 00 00 00 AC 00
+[- 5418ms] RX       31 10 01 13 55 00
+[- 5418ms] TX       70 31 90 30 61 22 F1 58 4A 16 00
+[- 5370ms] RX       70 C1 91 22 E4 49 00 01 E0 0E 00
+[- 5321ms] RX       31 10 01 12 54 00
+[- 5321ms] TX       10 31 00 00 41 00
+[- 4708ms] RX       18 10 01 11 3A 00
+[- 4463ms] BREAK   
+[- 4452ms] RX       18 10 01 15 3E 00
+[- 4452ms] TX       10 18 82 02 AC 00 00 00 00 AC 00
+[- 4425ms] RX       31 10 01 13 55 00
+[- 4425ms] TX       70 31 90 30 61 22 F1 59 4A 17 00
+[- 4094ms] RX       3B 10 01 12 5E 00
+[- 4083ms] RX       10 3B 00 C0 0B 00
+[- 3481ms] RX       31 10 01 12 54 00
+[- 3481ms] TX       10 31 00 00 41 00
+[- 3439ms] BREAK   
+[- 3428ms] RX       18 10 01 15 3E 00
+[- 3428ms] TX       10 18 82 02 AC 00 00 00 00 AC 00
+[- 3401ms] RX       31 10 01 13 55 00
+[- 3401ms] TX       70 31 90 30 61 22 F2 00 4A BF 00
+[- 2863ms] RX       18 10 01 11 3A 00
+[- 2457ms] BREAK   
+[- 2446ms] RX       18 10 01 15 3E 00
+[- 2446ms] TX       10 18 82 02 AC 00 00 00 00 AC 00
+[- 2419ms] RX       31 10 01 13 55 00
+[- 2419ms] TX       70 31 90 30 61 22 F2 01 4A C0 00
+[- 2249ms] RX       3B 10 01 12 5E 00
+[- 2238ms] RX       10 3B 00 C0 0B 00
+[- 1636ms] RX       31 10 01 12 54 00
+[- 1636ms] TX       10 31 00 00 41 00
+[- 1465ms] BREAK   
+[- 1454ms] RX       18 10 01 15 3E 00
+[- 1454ms] TX       10 18 82 02 AC 00 00 00 00 AC 00
+[- 1427ms] RX       31 10 01 13 55 00
+[- 1427ms] TX       70 31 90 30 61 22 F2 02 4A C1 00
+[- 1017ms] RX       18 10 01 11 3A 00
+[-  538ms] BUSOF   
+[-  511ms] FLASH   
+[-  380ms] FLEND   
+[-  369ms] FLASH   
+=====================================
+
+===== TEXT LOG (last ~8192 bytes) =====
+0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 00:28 q=0
+[STAT] rx=9 ping=1 p15=2 claim=2 grant=3 brk=2/0/0 late=0 abort=1 bad=0 glitch=1 spike=1 cut=0 fix=0 lost=0/0 lat=28/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 00:30 q=0
+[NVS] Zapamietano: CD4 TR22, sekunda=30
+[STAT] rx=10 ping=2 p15=2 claim=2 grant=3 brk=2/0/0 late=0 abort=1 bad=0 glitch=2 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 00:32 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 00:34 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=6/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 00:36 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=1 bad=0 glitch=0 spike=1 cut=0 fix=0 lost=0/0 lat=22/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 00:38 q=0
+[STAT] rx=9 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=6/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 00:40 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=9/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 00:42 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=1 bad=0 glitch=2 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 00:44 q=0
+[STAT] rx=9 ping=1 p15=2 claim=2 grant=3 brk=2/0/0 late=0 abort=1 bad=0 glitch=1 spike=0 cut=0 fix=0 lost=0/0 lat=9/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 00:46 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=4/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 00:48 q=0
+[STAT] rx=10 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=6/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 00:50 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=4/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 00:52 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=4/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 00:54 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=6/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 00:56 q=0
+[STAT] rx=9 ping=2 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=1 lost=1/0 lat=5/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 00:58 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=6/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:00 q=0
+[NVS] Zapamietano: CD4 TR22, sekunda=64
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:02 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=6/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:04 q=0
+[STAT] rx=9 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=8/0 short=2 ovf=0 | 0x31 st=0x00 CD4 TR22 01:06 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=2/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:08 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=6/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:10 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=4/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:12 q=0
+[STAT] rx=10 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=1 bad=0 glitch=1 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:14 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=2/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:16 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:18 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=3/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:20 q=0
+[STAT] rx=10 ping=2 p15=3 claim=3 grant=2 brk=3/0/0 late=0 abort=1 bad=0 glitch=1 spike=0 cut=0 fix=1 lost=1/0 lat=11/0 short=1 ovf=0 | 0x31 st=0x00 CD4 TR22 01:22 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=2/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:24 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:26 q=0
+[STAT] rx=10 ping=3 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=1 bad=0 glitch=2 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:28 q=0
+[STAT] rx=9 ping=1 p15=2 claim=2 grant=3 brk=2/0/0 late=0 abort=1 bad=0 glitch=0 spike=1 cut=0 fix=0 lost=0/0 lat=29/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:30 q=0
+[NVS] Zapamietano: CD4 TR22, sekunda=95
+[STAT] rx=9 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=2/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:32 q=0
+[STAT] rx=11 ping=1 p15=2 claim=2 grant=5 brk=2/0/0 late=0 abort=1 bad=0 glitch=4 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=1 ovf=0 | 0x31 st=0x00 CD4 TR22 01:34 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=1 ovf=0 | 0x31 st=0x00 CD4 TR22 01:36 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=1 bad=0 glitch=1 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:38 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=2/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:40 q=0
+[STAT] rx=16 ping=1 p15=4 claim=4 grant=5 brk=4/0/0 late=0 abort=4 bad=0 glitch=3 spike=2 cut=0 fix=0 lost=0/0 lat=30/0 short=1 ovf=0 | 0x31 st=0x00 CD4 TR22 01:42 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:44 q=0
+[STAT] rx=12 ping=1 p15=2 claim=2 grant=4 brk=2/0/0 late=0 abort=3 bad=0 glitch=4 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=1 ovf=0 | 0x31 st=0x00 CD4 TR22 01:46 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=2/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:48 q=0
+[STAT] rx=10 ping=2 p15=2 claim=2 grant=3 brk=2/0/0 late=0 abort=1 bad=0 glitch=1 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:50 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=6/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:52 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:54 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=2/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:56 q=0
+[STAT] rx=9 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 01:58 q=0
+[STAT] rx=9 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=5/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 02:00 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR22 02:02 q=0
+=== BUS_ON = 0 (sesja zachowana) ===
+[NVS] Zapamietano: CD4 TR22, sekunda=127
+>> BUS_ON zniknal bez zapowiedzi wylaczenia radia (87 OFF)
+
+=====================================

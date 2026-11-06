@@ -1,0 +1,204 @@
+===== CRASH LOG =====
+Reason:    BUS_ON LOST (bez 87 OFF)
+Uptime:    1577255 ms
+ESP Reset: POWERON
+File:      /CrashLogs/crash_00004.txt
+=====================
+
+===== BUS FRAMES (last 128) =====
+[- 9431ms] RX       31 10 01 12 54 00
+[- 9431ms] TX       10 31 00 00 41 00
+[- 8945ms] RX       31 11 26 10 78 00
+[- 8928ms] RX       18 10 08 00 30 00
+[- 8891ms] BREAK   
+[- 8880ms] RX       18 10 01 15 3E 00
+[- 8880ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[- 8853ms] RX       31 10 01 13 55 00
+[- 8853ms] TX       77 31 C0 20 88 00 00 00 00 30 19 FF FF 48 17 00
+[- 8805ms] RX       18 10 01 11 3A 00
+[- 8671ms] BREAK   
+[- 8660ms] RX       18 10 01 15 3E 00
+[- 8660ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[- 8633ms] RX       31 10 01 13 55 00
+[- 8633ms] TX       70 31 C0 00 61 00 00 00 00 30 19 F0 00 48 E2 00
+[- 8580ms] BREAK   
+[- 8569ms] RX       18 10 01 15 3E 00
+[- 8569ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[- 8542ms] RX       31 10 01 13 55 00
+[- 8542ms] TX       70 31 D2 42 B5 72 6F 74 68 65 02 00 19 10 02 00
+[- 8489ms] BREAK   
+[- 8478ms] RX       18 10 01 15 3E 00
+[- 8478ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[- 8451ms] RX       31 10 01 13 55 00
+[- 8451ms] TX       70 31 D2 72 E5 68 6F 6F 64 20 00 01 19 10 D9 00
+[- 8399ms] BREAK   
+[- 8387ms] RX       18 10 01 15 3E 00
+[- 8387ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[- 8360ms] RX       31 10 01 13 55 00
+[- 8360ms] TX       70 31 DA 44 BF 6F 6B 6C 61 64 00 01 04 10 DF 00
+[- 8308ms] BREAK   
+[- 8297ms] RX       18 10 01 15 3E 00
+[- 8297ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[- 8270ms] RX       31 10 01 13 55 00
+[- 8270ms] TX       70 31 C0 00 61 00 00 00 00 30 19 F0 00 4B E5 00
+[- 8217ms] BREAK   
+[- 8206ms] RX       18 10 01 15 3E 00
+[- 8206ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[- 8179ms] RX       31 10 01 13 55 00
+[- 8179ms] TX       70 31 D2 42 B5 72 6F 74 68 65 02 00 19 10 02 00
+[- 8147ms] RX       3B 10 01 12 5E 00
+[- 8136ms] RX       10 3B 00 C0 0B 00
+[- 8104ms] BREAK   
+[- 8093ms] RX       18 10 01 15 3E 00
+[- 8093ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[- 8066ms] RX       31 10 01 13 55 00
+[- 8066ms] TX       70 31 D2 72 E5 68 6F 6F 64 20 00 01 19 10 D9 00
+[- 8013ms] BREAK   
+[- 8002ms] RX       18 10 01 15 3E 00
+[- 8002ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[- 7975ms] RX       31 10 01 13 55 00
+[- 7975ms] TX       70 31 DA 44 BF 6F 6B 6C 61 64 00 01 04 10 DF 00
+[- 7922ms] BREAK   
+[- 7911ms] RX       18 10 01 15 3E 00
+[- 7911ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[- 7884ms] RX       31 10 01 13 55 00
+[- 7884ms] TX       70 31 D7 00 78 00 00 00 00 00 02 00 00 1C 96 00
+[- 7832ms] BREAK   
+[- 7820ms] RX       18 10 01 15 3E 00
+[- 7820ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[- 7793ms] RX       31 10 01 13 55 00
+[- 7793ms] TX       70 31 C0 00 61 00 00 00 00 30 19 F0 00 4A E4 00
+[- 7522ms] RX       71 10 01 12 94 00
+[- 7511ms] RX       10 71 00 00 81 00
+[- 7479ms] BREAK   
+[- 7468ms] RX       18 10 01 15 3E 00
+[- 7468ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[- 7441ms] RX       31 10 01 13 55 00
+[- 7441ms] TX       70 31 90 30 61 19 F0 01 4A B5 00
+[- 6903ms] RX       31 10 01 12 54 00
+[- 6903ms] TX       10 31 00 00 41 00
+[- 6842ms] FLASH   
+[- 6837ms] FLEND   
+[- 6669ms] BREAK   
+[- 6657ms] RX       18 10 01 15 3E 00
+[- 6657ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[- 6630ms] RX       31 10 01 13 55 00
+[- 6630ms] TX       70 31 90 30 61 19 F0 02 4A B6 00
+[- 6284ms] RX       18 10 01 11 3A 00
+[- 5676ms] RX       3B 10 01 12 5E 00
+[- 5665ms] RX       10 3B 00 C0 0B 00
+[- 5633ms] BREAK   
+[- 5622ms] RX       18 10 01 15 3E 00
+[- 5622ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[- 5595ms] RX       31 10 01 13 55 00
+[- 5595ms] TX       70 31 90 30 61 19 F0 03 4A B7 00
+[- 5568ms] RX       31 14 01 13 59 00
+[- 5568ms] TX       70 31 90 30 61 19 F0 03 4A B7 00
+[- 5046ms] RX       71 10 01 12 94 00
+[- 5035ms] RX       10 71 00 00 81 00
+[- 4668ms] BREAK   
+[- 4657ms] RX       18 10 01 15 3E 00
+[- 4657ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[- 4630ms] RX       31 10 01 13 55 00
+[- 4630ms] TX       70 31 90 30 61 19 F0 04 4A B8 00
+[- 4427ms] RX       31 10 01 12 54 00
+[- 4427ms] TX       10 31 00 00 41 00
+[- 3798ms] RX       18 10 01 11 3A 00
+[- 3681ms] BREAK   
+[- 3670ms] RX       18 10 01 15 3E 00
+[- 3670ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[- 3643ms] RX       31 10 01 13 55 00
+[- 3643ms] TX       70 31 90 30 61 19 F0 05 4A B9 00
+[- 3184ms] RX       3B 10 01 12 5E 00
+[- 3173ms] RX       10 3B 00 C0 0B 00
+[- 2679ms] BREAK   
+[- 2667ms] RX       18 10 01 15 3E 00
+[- 2667ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[- 2640ms] RX       31 10 01 13 55 00
+[- 2640ms] TX       70 31 90 30 61 19 F0 06 4A BA 00
+[- 2566ms] RX       71 10 01 12 94 00
+[- 2555ms] RX       10 71 00 00 81 00
+[- 1953ms] RX       31 10 01 12 54 00
+[- 1953ms] TX       10 31 00 00 41 00
+[- 1670ms] BREAK   
+[- 1659ms] RX       18 10 01 15 3E 00
+[- 1659ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[- 1632ms] RX       31 10 01 13 55 00
+[- 1632ms] TX       70 31 90 30 61 19 F0 07 4A BB 00
+[- 1334ms] RX       18 10 01 11 3A 00
+[-  726ms] RX       3B 10 01 12 5E 00
+[-  715ms] RX       10 3B 00 C0 0B 00
+[-  683ms] BREAK   
+[-  672ms] RX       18 10 01 15 3E 00
+[-  672ms] TX       10 18 82 04 AE 00 00 00 00 AE 00
+[-  645ms] RX       31 10 01 13 55 00
+[-  645ms] TX       70 31 90 30 61 19 F0 08 4A BC 00
+[-  503ms] BUSOF   
+=====================================
+
+===== TEXT LOG (last ~8192 bytes) =====
+ate=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=5/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 00:40 q=0
+[STAT] rx=9 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=4/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 00:42 q=0
+[STAT] rx=10 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=12/0 short=1 ovf=0 | 0x31 st=0x00 CD4 TR17 00:44 q=0
+[STAT] rx=9 ping=0 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 00:46 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=6/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 00:48 q=0
+[STAT] rx=9 ping=1 p15=3 claim=3 grant=2 brk=3/0/0 late=0 abort=1 bad=0 glitch=1 spike=1 cut=0 fix=1 lost=1/0 lat=28/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 00:50 q=0
+[STAT] rx=11 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=6/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 00:52 q=0
+[STAT] rx=9 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=1 ovf=0 | 0x31 st=0x00 CD4 TR17 00:54 q=0
+[STAT] rx=8 ping=0 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=1 cut=0 fix=0 lost=0/0 lat=28/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 00:56 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=6/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 00:58 q=0
+[STAT] rx=10 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=2/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 01:00 q=0
+[NVS] Zapamietano: CD4 TR17, sekunda=61
+[STAT] rx=7 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=1 cut=0 fix=1 lost=1/0 lat=32/1 short=2 ovf=0 | 0x31 st=0x00 CD4 TR17 01:02 q=0
+[STAT] rx=9 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 01:04 q=0
+[STAT] rx=9 ping=0 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=6/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 01:06 q=0
+[STAT] rx=10 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=2/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 01:08 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=1 ovf=0 | 0x31 st=0x00 CD4 TR17 01:10 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 01:12 q=0
+[STAT] rx=10 ping=1 p15=3 claim=3 grant=2 brk=3/0/0 late=0 abort=0 bad=1 glitch=1 spike=1 cut=1 fix=0 lost=1/0 lat=44/1 short=1 ovf=0 | 0x31 st=0x00 CD4 TR17 01:14 q=0
+[STAT] rx=10 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=1 spike=0 cut=0 fix=0 lost=0/0 lat=8/0 short=1 ovf=0 | 0x31 st=0x00 CD4 TR17 01:16 q=0
+[STAT] rx=9 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=1 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=2 ovf=0 | 0x31 st=0x00 CD4 TR17 01:18 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=2/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 01:20 q=0
+[STAT] rx=9 ping=1 p15=2 claim=2 grant=3 brk=2/0/0 late=0 abort=1 bad=0 glitch=1 spike=1 cut=0 fix=0 lost=0/0 lat=30/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 01:22 q=0
+[STAT] rx=9 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=1 bad=0 glitch=1 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=2 ovf=0 | 0x31 st=0x00 CD4 TR17 01:24 q=0
+[STAT] rx=15 ping=1 p15=4 claim=4 grant=5 brk=4/0/0 late=0 abort=4 bad=0 glitch=6 spike=0 cut=0 fix=0 lost=0/0 lat=11/0 short=3 ovf=0 | 0x31 st=0x00 CD4 TR17 01:26 q=0
+[STAT] rx=9 ping=0 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=2/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 01:28 q=0
+[STAT] rx=9 ping=1 p15=2 claim=2 grant=3 brk=2/0/0 late=0 abort=1 bad=0 glitch=1 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 01:30 q=0
+[STAT] rx=7 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=1 lost=1/0 lat=11/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 01:32 q=0
+[NVS] Zapamietano: CD4 TR17, sekunda=93
+[STAT] rx=10 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 01:34 q=0
+[STAT] rx=9 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=2/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 01:36 q=0
+[STAT] rx=9 ping=0 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=1 bad=0 glitch=1 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 01:38 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=2 ovf=0 | 0x31 st=0x00 CD4 TR17 01:40 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=6/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 01:42 q=0
+[STAT] rx=11 ping=1 p15=2 claim=2 grant=3 brk=2/0/0 late=0 abort=1 bad=0 glitch=0 spike=1 cut=0 fix=0 lost=0/0 lat=20/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 01:44 q=0
+[STAT] rx=9 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=1 bad=0 glitch=1 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 01:46 q=0
+[STAT] rx=8 ping=0 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=1 glitch=0 spike=0 cut=1 fix=0 lost=1/0 lat=34/1 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 01:48 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=1 bad=0 glitch=1 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 01:50 q=0
+[STAT] rx=9 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=2/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR17 01:52 q=0
+>> NEXT TRACK: CD4 TR18 (max=93)
+[NVS] Zapamietano: CD4 TR18, sekunda=113
+[Audio-info] Closing audio file
+>>> 20 -> 00 (Playing!)
+[Audio] Async connecttoFS("/CD04.Dokladka/Blondie - Heart of Glass.mp3") = OK
+[Audio] ▶ Odtwarzam: /CD04.Dokladka/Blondie - Heart of Glass.mp3 (rozpoczęto dekodowanie)
+>> CD-TEXT: CD4 TR18 plyta="Dokladka" utwor="Blondie - Heart of Glass"
+[Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[STAT] rx=19 ping=1 p15=5 claim=5 grant=6 brk=6/0/0 late=0 abort=4 bad=0 glitch=4 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=1 ovf=0 | 0x31 st=0x00 CD4 TR18 00:00 q=0
+[STAT] rx=21 ping=1 p15=8 claim=8 grant=8 brk=7/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=9/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR18 00:02 q=0
+>> NEXT TRACK: CD4 TR19 (max=93)
+[Audio-info] Closing audio file
+>>> 20 -> 00 (Playing!)
+[Audio] Async connecttoFS("/CD04.Dokladka/Brotherhood of Man - Save Your Kisses For Me.mp3") = OK
+[Audio] ▶ Odtwarzam: /CD04.Dokladka/Brotherhood of Man - Save Your Kisses For Me.mp3 (rozpoczęto dekodowanie)
+>> CD-TEXT: CD4 TR19 plyta="Dokladka" utwor="Brotherhood of Man - Save Your Kisses For Me"
+[Audio] DAC XSMT (GPIO 16) -> HIGH (Odciszono)
+[STAT] rx=31 ping=0 p15=12 claim=12 grant=12 brk=12/0/0 late=0 abort=1 bad=0 glitch=1 spike=0 cut=0 fix=0 lost=0/0 lat=7/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR19 00:01 q=0
+[NVS] Zapamietano: CD4 TR19, sekunda=1
+[STAT] rx=9 ping=1 p15=2 claim=2 grant=3 brk=2/0/0 late=0 abort=1 bad=0 glitch=0 spike=1 cut=0 fix=0 lost=0/0 lat=19/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR19 00:03 q=0
+[STAT] rx=8 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=5/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR19 00:05 q=0
+[STAT] rx=10 ping=1 p15=2 claim=2 grant=2 brk=2/0/0 late=0 abort=0 bad=0 glitch=0 spike=0 cut=0 fix=0 lost=0/0 lat=6/0 short=0 ovf=0 | 0x31 st=0x00 CD4 TR19 00:07 q=0
+=== BUS_ON = 0 (sesja zachowana) ===
+>> BUS_ON zniknal bez zapowiedzi wylaczenia radia (87 OFF)
+
+=====================================
