@@ -28,3 +28,15 @@ Wlutowane w zmieniarkę:
 Fioletowy - BUS ON
 Niebieski - DATA
 Zielony - CLOCK
+
+Kabelki z radia:
+Zielony BUS ON
+Zółty CLOCK
+Niebieski DATA
+
+Kable z CDX-M670 (dolutowałem bo rozwaliłem gniazdko Unilink)
+biało czerwony - PLUS BAT
+różowo biały - DATA
+morsko biały - BUS ON
+biało czarny- CLOCK
+brazowo niebieski - MASA
